@@ -1,0 +1,19 @@
+# Product Images Placeholder
+
+This directory is for storing product images. The following images are referenced in the database:
+
+- Chicken-Breast-Boneless.-2-copy-2.jpg
+- Chicken-Curry-Cut-copy-2.jpg  
+- Chicken-Drumstick-3-copy-2.jpg
+- Chicken-Kheema-copy-2.jpg
+- Chicken-Legs-copy-2.jpg
+- Chicken-Liver-copy-2.jpg
+- Chicken-Wings-copy-2.jpg
+- Whole-Chicken-5-copy-2.jpg
+
+To add actual images:
+1. Place the image files in this directory
+2. Make sure the filenames match exactly
+3. The images will automatically display in the product catalog
+
+For now, the app will show a chicken emoji (🍗) as a fallback for missing images.
