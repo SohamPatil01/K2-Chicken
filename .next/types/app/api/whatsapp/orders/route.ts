@@ -1,4 +1,4 @@
-// File: /Users/ravindrapatil/K2chicken/app/api/whatsapp/orders/route.ts
+// File: /Users/soham/Desktop/Frontend/k2chicken/app/api/whatsapp/orders/route.ts
 import * as entry from '../../../../../../app/api/whatsapp/orders/route.js'
 import type { NextRequest } from 'next/server.js'
 

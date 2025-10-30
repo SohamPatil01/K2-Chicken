@@ -162,7 +162,7 @@ export default function OrderManagement() {
                     <MapPin size={16} className="mt-0.5" />
                     <span>
                       {selectedOrder.delivery_type === 'pickup' 
-                        ? '123 Chicken Street, Cluck City, CC 12345' 
+                        ? 'Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027' 
                         : selectedOrder.delivery_address
                       }
                     </span>

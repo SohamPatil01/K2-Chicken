@@ -1,20 +1,15 @@
 {
   "pages": {
-    "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
-    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/admin/page": [
+    "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/page.js"
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/whatsapp-test/page": [
       "static/chunks/webpack.js",
@@ -26,20 +21,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/cart/page.js"
     ],
-    "/checkout/page": [
+    "/recipes/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/checkout/page.js"
+      "static/chunks/app/recipes/page.js"
     ],
-    "/order-confirmation/[id]/page": [
+    "/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/order-confirmation/[id]/page.js"
+      "static/chunks/app/admin/page.js"
     ],
-    "/not-found": [
+    "/admin/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/admin/login/page.js"
     ]
   }
 }

@@ -29,7 +29,23 @@ export async function GET(
         return NextResponse.json({ error: 'Order not found' }, { status: 404 })
       }
       
-      return NextResponse.json(result.rows[0])
+      const order = result.rows[0]
+      
+      // Transform the order to match the expected format
+      const transformedOrder = {
+        id: order.id,
+        customer_name: order.customer_name,
+        customer_phone: order.customer_phone,
+        delivery_address: order.delivery_address,
+        delivery_type: order.delivery_address === 'Pickup at store' ? 'pickup' : 'delivery',
+        total_amount: order.total_amount,
+        status: order.status,
+        estimated_delivery: order.estimated_delivery,
+        created_at: order.created_at,
+        items: order.items || []
+      }
+      
+      return NextResponse.json(transformedOrder)
     } finally {
       client.release()
     }

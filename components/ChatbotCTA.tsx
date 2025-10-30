@@ -1,4 +1,5 @@
 import { MessageCircle, Smartphone, Clock, Users } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ChatbotCTA() {
   return (
@@ -55,13 +56,13 @@ export default function ChatbotCTA() {
               Try Our WhatsApp Chatbot Now!
             </h3>
             <p className="text-gray-600 mb-6">
-              Click the chat button in the bottom right corner to start ordering or ask any questions about our menu.
+              Click the button below to start ordering or ask any questions about our menu through our WhatsApp chatbot.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="flex items-center justify-center bg-green-500 text-white px-6 py-3 rounded-lg">
+              <Link href="/whatsapp-test" className="flex items-center justify-center bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 <span className="font-semibold">Start Chatting</span>
-              </div>
+              </Link>
               <div className="text-sm text-gray-500 flex items-center justify-center">
                 <Clock className="h-4 w-4 mr-1" />
                 Available 24/7

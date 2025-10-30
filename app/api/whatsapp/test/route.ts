@@ -14,11 +14,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log(`Processing message for user ${user_id}: ${message}`);
+
     // Initialize chatbot
     const chatbot = new WhatsAppChatbot();
     
-    // Process message
-    const response = await chatbot.handleMessage(user_id, message);
+    // Process message with timeout
+    const response = await Promise.race([
+      chatbot.handleMessage(user_id, message),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      )
+    ]) as any;
+    
+    console.log(`Chatbot response for user ${user_id}:`, response);
     
     return NextResponse.json({
       success: true,
@@ -28,13 +37,18 @@ export async function POST(request: NextRequest) {
     console.error('Error processing test message:', error);
     console.error('Error details:', error.message);
     console.error('Error stack:', error.stack);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to process message',
-        details: error.message 
-      },
-      { status: 500 }
-    );
+    
+    // Return a user-friendly error response
+    return NextResponse.json({
+      success: true,
+      response: {
+        response: "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.",
+        buttons: [
+          { type: "reply", reply: { id: "hi", title: "Start Over" } },
+          { type: "reply", reply: { id: "view_menu", title: "View Menu" } },
+          { type: "reply", reply: { id: "talk_human", title: "Talk to Human" } }
+        ]
+      }
+    });
   }
 }

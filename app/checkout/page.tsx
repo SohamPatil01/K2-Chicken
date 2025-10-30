@@ -191,7 +191,7 @@ export default function CheckoutPage() {
                     <h3 className="font-semibold text-gray-900">Pickup Information</h3>
                   </div>
                   <p className="text-sm text-gray-700">
-                    <strong>Store Address:</strong> 123 Chicken Street, Cluck City, CC 12345
+                    <strong>Store Address:</strong> Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     We'll call you when your order is ready for pickup!

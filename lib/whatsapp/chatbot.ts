@@ -49,8 +49,8 @@ export interface WhatsAppOrder {
 
 export class WhatsAppChatbot {
   private restaurant_name = "K2 Chicken";
-  private restaurant_address = "123 Chicken Street, Flavor Town, FT 90210";
-  private restaurant_phone = "+1 (555) 123-4567";
+  private restaurant_address = "Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027";
+  private restaurant_phone = "8484978622";
   private restaurant_website = "www.k2chicken.com";
   private operating_hours = {
     "Monday": "11:00 AM - 10:00 PM",
@@ -90,8 +90,11 @@ export class WhatsAppChatbot {
       const cart = sessionData.cart || [];
       const currentMenuCategory = sessionData.current_menu_category;
       const lastItemAdded = sessionData.last_item_added;
+      const orderType = sessionData.order_type;
+      const deliveryAddress = sessionData.delivery_address;
+      const paymentMethod = sessionData.payment_method;
       
-      console.log(`Restoring session for user ${session.user_id}, state: ${session.state}, cart length: ${cart.length}, category: ${currentMenuCategory}, last_item: ${lastItemAdded ? lastItemAdded.name : 'null'}`);
+      console.log(`Restoring session for user ${session.user_id}, state: ${session.state}, cart length: ${cart.length}, category: ${currentMenuCategory}, last_item: ${lastItemAdded ? lastItemAdded.name : 'null'}, order_type: ${orderType}, delivery_address: ${deliveryAddress}, payment_method: ${paymentMethod}`);
       
       return {
         user_id: session.user_id,
@@ -99,7 +102,10 @@ export class WhatsAppChatbot {
         session_data: sessionData,
         cart: cart,
         current_menu_category: currentMenuCategory,
-        last_item_added: lastItemAdded
+        last_item_added: lastItemAdded,
+        order_type: orderType,
+        delivery_address: deliveryAddress,
+        payment_method: paymentMethod
       };
     } catch (error) {
       console.error('Error in getSession:', error);
@@ -902,6 +908,7 @@ export class WhatsAppChatbot {
   private async handleOrderTypeSelection(session: UserSession, message: string): Promise<{ response: string; buttons?: any[] }> {
     if (message === "delivery") {
       session.order_type = 'delivery';
+      session.session_data.order_type = 'delivery';
       session.state = 'REQUESTING_DELIVERY_ADDRESS';
       await this.updateSession(session.user_id, session);
       
@@ -909,7 +916,9 @@ export class WhatsAppChatbot {
       return { response, buttons: [] };
     } else if (message === "pickup") {
       session.order_type = 'pickup';
+      session.session_data.order_type = 'pickup';
       session.delivery_address = this.restaurant_address;
+      session.session_data.delivery_address = this.restaurant_address;
       session.state = 'SELECTING_PAYMENT_METHOD';
       await this.updateSession(session.user_id, session);
       
@@ -926,6 +935,7 @@ export class WhatsAppChatbot {
 
   private async handleDeliveryAddressInput(session: UserSession, message: string): Promise<{ response: string; buttons: any[] }> {
     session.delivery_address = message;
+    session.session_data.delivery_address = message;
     session.state = 'SELECTING_PAYMENT_METHOD';
     await this.updateSession(session.user_id, session);
     
@@ -940,8 +950,10 @@ export class WhatsAppChatbot {
   private async handlePaymentMethodSelection(session: UserSession, message: string): Promise<{ response: string; buttons: any[] }> {
     if (message === "cash_on_delivery") {
       session.payment_method = "Cash on Delivery";
+      session.session_data.payment_method = "Cash on Delivery";
     } else if (message === "online_payment") {
       session.payment_method = "Online Payment";
+      session.session_data.payment_method = "Online Payment";
     } else {
       return this.sendFallbackMessage(session);
     }
@@ -1035,7 +1047,9 @@ export class WhatsAppChatbot {
         whatsapp_user_id: session.user_id
       };
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/orders/shared`, {
+      console.log('Sending order data:', JSON.stringify(orderData, null, 2));
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1045,14 +1059,16 @@ export class WhatsAppChatbot {
       
       const result = await response.json();
       
-      if (result.success) {
+      console.log('Order creation response:', response.status, result);
+      
+      if (response.ok && result.id) {
         // Clear cart
         session.cart = [];
         session.session_data.cart = [];
         session.state = 'MAIN_MENU';
         await this.updateSession(session.user_id, session);
         
-        const response = `✅ Order confirmed! Your order #${result.order.order_number} has been placed.\n\nTotal: ₹${total.toFixed(0)}\nEstimated delivery: ${new Date(result.order.estimated_delivery).toLocaleTimeString()}\n\nThank you for choosing ${this.restaurant_name}!`;
+        const response = `✅ Order confirmed! Your order #${result.id} has been placed.\n\nTotal: ₹${total.toFixed(0)}\nEstimated delivery: ${new Date(result.estimated_delivery).toLocaleTimeString()}\n\nThank you for choosing ${this.restaurant_name}!`;
         const buttons = [
           { type: "reply", reply: { id: "place_order", title: " Place Another Order" } },
           { type: "reply", reply: { id: "track_order", title: " Track My Order" } },

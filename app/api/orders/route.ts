@@ -5,31 +5,56 @@ export async function POST(request: NextRequest) {
   try {
     const { customerName, customerPhone, deliveryAddress, deliveryType, items, total } = await request.json()
     
-    // Use the shared order API for consistency
-    const orderData = {
-      customerName,
-      customerPhone,
-      deliveryAddress,
-      deliveryType,
-      items,
-      total,
-      source: 'website'
-    }
+    const client = await pool.connect()
     
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/orders/shared`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData)
-    })
-    
-    const result = await response.json()
-    
-    if (result.success) {
-      return NextResponse.json(result.order)
-    } else {
-      throw new Error('Failed to create order')
+    try {
+      // Start transaction
+      await client.query('BEGIN')
+      
+      // Insert order
+      const orderResult = await client.query(`
+        INSERT INTO orders (customer_name, customer_phone, delivery_address, total_amount, status, estimated_delivery)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *
+      `, [
+        customerName,
+        customerPhone,
+        deliveryType === 'delivery' ? deliveryAddress : 'Pickup at store',
+        total,
+        'pending',
+        new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000)
+      ])
+      
+      const order = orderResult.rows[0]
+      
+      // Insert order items
+      for (const item of items) {
+        await client.query(`
+          INSERT INTO order_items (order_id, product_id, quantity, price)
+          VALUES ($1, $2, $3, $4)
+        `, [order.id, item.product.id, item.quantity, item.product.price])
+      }
+      
+      // Commit transaction
+      await client.query('COMMIT')
+      
+      // Return order with items
+      const orderWithItems = {
+        ...order,
+        items: items.map((item: any) => ({ 
+          product_name: item.product.name,
+          quantity: item.quantity,
+          price: item.product.price
+        }))
+      }
+      
+      return NextResponse.json(orderWithItems)
+    } catch (error) {
+      // Rollback transaction on error
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
     }
   } catch (error) {
     console.error('Error creating order:', error)

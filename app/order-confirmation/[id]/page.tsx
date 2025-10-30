@@ -29,10 +29,15 @@ export default function OrderConfirmationPage() {
   const [currentStatus, setCurrentStatus] = useState<string>('')
 
   useEffect(() => {
+    console.log('useEffect triggered, params:', params)
     if (params.id) {
+      console.log('Fetching order for ID:', params.id)
       fetchOrder(params.id as string)
       const cleanup = setupStatusStream(params.id as string)
       return cleanup
+    } else {
+      console.log('No order ID found in params')
+      setLoading(false)
     }
   }, [params.id])
 
@@ -65,14 +70,21 @@ export default function OrderConfirmationPage() {
   }
 
   const fetchOrder = async (orderId: string) => {
+    console.log('Fetching order with ID:', orderId)
     try {
       const response = await fetch(`/api/orders/${orderId}`)
+      console.log('Response status:', response.status)
       if (response.ok) {
         const data = await response.json()
+        console.log('Order data:', data)
         setOrder(data)
+      } else {
+        console.error('Failed to fetch order:', response.status, response.statusText)
+        setOrder(null)
       }
     } catch (error) {
       console.error('Error fetching order:', error)
+      setOrder(null)
     } finally {
       setLoading(false)
     }
@@ -161,7 +173,7 @@ export default function OrderConfirmationPage() {
                   <p className="font-medium">{order.delivery_type === 'pickup' ? 'Pickup Location' : 'Delivery Address'}</p>
                   <p className="text-sm text-gray-600">
                     {order.delivery_type === 'pickup' 
-                      ? '123 Chicken Street, Cluck City, CC 12345' 
+                      ? 'Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027' 
                       : order.delivery_address
                     }
                   </p>
@@ -286,6 +298,9 @@ export default function OrderConfirmationPage() {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/" className="btn-primary">
             Order More Chicken 🍗
+          </Link>
+          <Link href="/whatsapp-test" className="btn-secondary">
+            Chat with WhatsApp Bot 💬
           </Link>
           <Link href="/recipes" className="btn-secondary">
             View Recipes 👨‍🍳

@@ -64,9 +64,9 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
             <div className="space-y-2 text-gray-300">
-              <p>📞 (555) CHICKEN-1</p>
-              <p>📧 hello@chickenvicken.com</p>
-              <p>📍 123 Chicken Street<br />Cluck City, CC 12345</p>
+              <p>📞 8484978622</p>
+              <p>📧 hello@k2chicken.com</p>
+              <p>📍 Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027</p>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-// File: /Users/ravindrapatil/K2chicken/app/whatsapp-test/page.tsx
+// File: /Users/soham/Desktop/Frontend/k2chicken/app/whatsapp-test/page.tsx
 import * as entry from '../../../../app/whatsapp-test/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
