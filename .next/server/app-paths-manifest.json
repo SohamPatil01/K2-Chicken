@@ -1,13 +1,14 @@
 {
-  "/whatsapp-test/page": "app/whatsapp-test/page.js",
-  "/page": "app/page.js",
-  "/cart/page": "app/cart/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/api/products/route": "app/api/products/route.js",
+  "/order-confirmation/[id]/page": "app/order-confirmation/[id]/page.js",
   "/admin/page": "app/admin/page.js",
-  "/api/recipes/route": "app/api/recipes/route.js",
-  "/api/admin/me/route": "app/api/admin/me/route.js",
-  "/api/admin/login/route": "app/api/admin/login/route.js",
+  "/checkout/page": "app/checkout/page.js",
+  "/page": "app/page.js",
+  "/recipes/page": "app/recipes/page.js",
+  "/api/orders/new/count/route": "app/api/orders/new/count/route.js",
   "/api/orders/route": "app/api/orders/route.js",
-  "/api/whatsapp/orders/route": "app/api/whatsapp/orders/route.js"
+  "/api/orders/[id]/route": "app/api/orders/[id]/route.js",
+  "/api/products/route": "app/api/products/route.js",
+  "/api/whatsapp/orders/route": "app/api/whatsapp/orders/route.js",
+  "/api/inventory/history/route": "app/api/inventory/history/route.js",
+  "/api/recipes/route": "app/api/recipes/route.js"
 }

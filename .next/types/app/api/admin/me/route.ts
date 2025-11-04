@@ -1,4 +1,4 @@
-// File: /Users/soham/Desktop/Frontend/k2chicken/app/api/admin/me/route.ts
+// File: /Users/ravindrapatil/Documents/GitHub/k2chicken/app/api/admin/me/route.ts
 import * as entry from '../../../../../../app/api/admin/me/route.js'
 import type { NextRequest } from 'next/server.js'
 

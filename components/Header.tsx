@@ -15,18 +15,16 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <span className="text-2xl font-black text-white">K2</span>
+          <Link href="/" className="group">
+            <div className="relative inline-block group-hover:scale-110 transition-transform duration-300">
+              <img 
+                src="/logo.svg" 
+                alt="Chicken Vicken" 
+                className="h-12 w-auto"
+              />
+              <div className="text-sm font-semibold text-[#FF6B35] hidden sm:block mt-1" style={{ marginLeft: '38px' }}>
+                K2 Chicken
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                Chicken Vicken
-              </div>
-              <div className="text-xs text-gray-500 font-medium">Finger Lickin' Good</div>
             </div>
           </Link>
 

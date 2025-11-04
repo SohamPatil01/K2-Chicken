@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { createWhatsAppOrder } from '@/lib/whatsapp/orderService';
 
 // Get all WhatsApp orders
 export async function GET(request: NextRequest) {
@@ -79,90 +79,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      user_id,
-      order_type,
-      delivery_address,
-      contact_phone,
-      payment_method,
-      items
-    } = body;
-
-    // Validate required fields
-    if (!user_id || !order_type || !payment_method || !items || items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-
-    const client = await pool.connect();
     
-    try {
-      await client.query('BEGIN');
-      
-      // Generate order ID
-      const order_id = `WA${Date.now().toString().slice(-8)}`;
-      
-      // Calculate totals
-      const subtotal = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
-      const delivery_fee = order_type === 'delivery' ? 5.00 : 0;
-      const total = subtotal + delivery_fee;
-      
-      // Create order
-      const orderResult = await client.query(
-        `INSERT INTO whatsapp_orders (order_id, user_id, order_type, delivery_address, 
-         contact_phone, payment_method, subtotal, delivery_fee, total, status, estimated_completion)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-         RETURNING *`,
-        [
-          order_id,
-          user_id,
-          order_type,
-          delivery_address,
-          contact_phone,
-          payment_method,
-          subtotal,
-          delivery_fee,
-          total,
-          'pending',
-          new Date(Date.now() + 30 * 60 * 1000) // 30 minutes from now
-        ]
-      );
-      
-      // Create order items
-      for (const item of items) {
-        await client.query(
-          `INSERT INTO whatsapp_order_items (order_id, product_id, product_name, quantity, price, special_instructions)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [
-            order_id,
-            item.product_id,
-            item.product_name,
-            item.quantity,
-            item.price,
-            item.special_instructions || null
-          ]
-        );
-      }
-      
-      await client.query('COMMIT');
-      
-      return NextResponse.json({
-        success: true,
-        data: orderResult.rows[0]
-      });
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw error;
-    } finally {
-      client.release();
-    }
-  } catch (error) {
+    const result = await createWhatsAppOrder(body);
+    
+    return NextResponse.json(result);
+  } catch (error: any) {
     console.error('Error creating WhatsApp order:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to create order' },
-      { status: 500 }
+      { success: false, error: error.message || 'Failed to create order' },
+      { status: 400 }
     );
   }
 }

@@ -1028,59 +1028,55 @@ export class WhatsAppChatbot {
     const total = subtotal + delivery_fee;
     
     try {
-      // Use the shared order API
+      // Import the order service
+      const { createWhatsAppOrder } = await import('./orderService');
+      
+      // Prepare order data
       const orderData = {
-        customerName: session.contact_phone || 'WhatsApp Customer',
-        customerPhone: session.contact_phone || 'N/A',
-        deliveryAddress: session.delivery_address || 'Pickup at store',
-        deliveryType: session.order_type!,
+        user_id: session.user_id,
+        order_type: session.order_type!,
+        delivery_address: session.delivery_address || null,
+        contact_phone: session.contact_phone || session.user_id,
+        payment_method: session.payment_method || 'Cash on Delivery',
         items: session.cart.map(item => ({
-          product: {
-            id: item.menu_item.id,
-            name: item.menu_item.name,
-            price: item.menu_item.price
-          },
-          quantity: item.quantity
-        })),
-        total,
-        source: 'whatsapp',
-        whatsapp_user_id: session.user_id
+          product_id: item.menu_item.id,
+          product_name: item.menu_item.name,
+          price: item.menu_item.price,
+          quantity: item.quantity,
+          special_instructions: item.special_instructions || null
+        }))
       };
       
-      console.log('Sending order data:', JSON.stringify(orderData, null, 2));
+      console.log('Creating WhatsApp order:', JSON.stringify(orderData, null, 2));
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData)
-      });
+      // Create order directly using the service
+      const result = await createWhatsAppOrder(orderData);
       
-      const result = await response.json();
+      console.log('WhatsApp order created successfully:', result);
       
-      console.log('Order creation response:', response.status, result);
-      
-      if (response.ok && result.id) {
+      if (result.success && result.data) {
+        const order = result.data;
         // Clear cart
         session.cart = [];
         session.session_data.cart = [];
         session.state = 'MAIN_MENU';
         await this.updateSession(session.user_id, session);
         
-        const response = `✅ Order confirmed! Your order #${result.id} has been placed.\n\nTotal: ₹${total.toFixed(0)}\nEstimated delivery: ${new Date(result.estimated_delivery).toLocaleTimeString()}\n\nThank you for choosing ${this.restaurant_name}!`;
+        const responseText = `✅ Order confirmed! Your order #${order.order_id} has been placed.\n\nTotal: ₹${total.toFixed(0)}\nEstimated completion: ${order.estimated_completion ? new Date(order.estimated_completion).toLocaleTimeString() : '30 minutes'}\n\nThank you for choosing ${this.restaurant_name}!`;
         const buttons = [
           { type: "reply", reply: { id: "place_order", title: " Place Another Order" } },
           { type: "reply", reply: { id: "track_order", title: " Track My Order" } },
           { type: "reply", reply: { id: "view_menu", title: " View Menu" } }
         ];
         
-        return { response, buttons };
+        return { response: responseText, buttons };
       } else {
         throw new Error('Failed to create order');
       }
-    } catch (error) {
-      console.error('Error creating order:', error);
+    } catch (error: any) {
+      console.error('Error creating WhatsApp order:', error);
+      console.error('Error details:', error.message);
+      console.error('Error stack:', error.stack);
       const response = "Sorry, there was an error processing your order. Please try again.";
       const buttons = [
         { type: "reply", reply: { id: "place_order", title: " Try Again" } },

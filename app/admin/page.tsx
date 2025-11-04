@@ -2,19 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse } from 'lucide-react'
 import ProductManagement from '@/components/ProductManagement'
 import RecipeManagement from '@/components/RecipeManagement'
 import OrderManagement from '@/components/OrderManagement'
 import WhatsAppOrderManagement from '@/components/WhatsAppOrderManagement'
 import AdminDashboard from '@/components/AdminDashboard'
+import InventoryManagement from '@/components/InventoryManagement'
 
-type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp'
+type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp' | 'inventory'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [newOrdersCount, setNewOrdersCount] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -46,6 +48,33 @@ export default function AdminPage() {
     checkAuth()
   }, [router])
 
+  // Fetch new orders count periodically
+  useEffect(() => {
+    const fetchNewOrdersCount = async () => {
+      try {
+        const response = await fetch('/api/orders/new/count')
+        const data = await response.json()
+        setNewOrdersCount(data.count || 0)
+      } catch (error) {
+        console.error('Error fetching new orders count:', error)
+      }
+    }
+
+    // Fetch immediately
+    fetchNewOrdersCount()
+
+    // Poll every 10 seconds for new orders
+    const interval = setInterval(fetchNewOrdersCount, 10000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Reset count when Orders tab is clicked
+  const handleOrdersTabClick = () => {
+    setActiveTab('orders')
+    setNewOrdersCount(0)
+  }
+
   const handleLogout = async () => {
     try {
       // Call logout API to clear cookie
@@ -64,8 +93,17 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <span className="text-2xl font-black text-white">K2</span>
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative inline-block">
+              <img 
+                src="/logo.svg" 
+                alt="Chicken Vicken" 
+                className="h-20 w-auto mb-2"
+              />
+              <div className="text-base font-semibold text-[#FF6B35]" style={{ marginLeft: '63px' }}>
+                K2 Chicken
+              </div>
+            </div>
           </div>
           <div className="animate-spin rounded-full h-8 w-8 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
           <p className="text-gray-600 font-semibold">Loading Admin Dashboard...</p>
@@ -84,6 +122,7 @@ export default function AdminPage() {
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'whatsapp', label: 'WhatsApp Orders', icon: MessageCircle },
+    { id: 'inventory', label: 'Inventory', icon: Warehouse },
   ]
 
   return (
@@ -93,11 +132,18 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="text-2xl font-black text-white">K2</span>
+              <div className="relative inline-block">
+                <img 
+                  src="/logo.svg" 
+                  alt="Chicken Vicken" 
+                  className="h-14 w-auto"
+                />
+                <div className="text-sm font-semibold text-[#FF6B35] mt-1" style={{ marginLeft: '44px' }}>
+                  K2 Chicken
+                </div>
               </div>
               <div>
-                <h1 className="text-3xl font-black bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                   Admin Dashboard
                 </h1>
                 <p className="text-sm text-gray-600 font-medium">K2 Chicken Management System</p>
@@ -132,11 +178,14 @@ export default function AdminPage() {
             <nav className="flex space-x-2 px-4">
               {tabs.map((tab) => {
                 const Icon = tab.icon
+                const isOrdersTab = tab.id === 'orders'
+                const showBadge = isOrdersTab && newOrdersCount > 0 && activeTab !== 'orders'
+                
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as TabType)}
-                    className={`flex items-center space-x-3 py-4 px-6 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                    onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
+                    className={`relative flex items-center space-x-3 py-4 px-6 rounded-2xl font-semibold text-sm transition-all duration-300 ${
                       activeTab === tab.id
                         ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg scale-105'
                         : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50 hover:scale-105'
@@ -144,6 +193,11 @@ export default function AdminPage() {
                   >
                     <Icon size={20} />
                     <span>{tab.label}</span>
+                    {showBadge && (
+                      <span className="order-badge-flash absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[24px] h-6 px-1.5 flex items-center justify-center border-2 border-white z-10">
+                        {newOrdersCount > 99 ? '99+' : newOrdersCount}
+                      </span>
+                    )}
                   </button>
                 )
               })}
@@ -158,6 +212,7 @@ export default function AdminPage() {
           {activeTab === 'recipes' && <RecipeManagement />}
           {activeTab === 'orders' && <OrderManagement />}
           {activeTab === 'whatsapp' && <WhatsAppOrderManagement />}
+          {activeTab === 'inventory' && <InventoryManagement />}
         </div>
       </div>
     </div>

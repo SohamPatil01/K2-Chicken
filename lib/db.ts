@@ -132,6 +132,34 @@ export async function initializeDatabase() {
       )
     `);
 
+    // Create inventory table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS inventory (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE UNIQUE,
+        quantity INTEGER NOT NULL DEFAULT 0,
+        reserved_quantity INTEGER NOT NULL DEFAULT 0,
+        minimum_stock_level INTEGER DEFAULT 10,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Create inventory history table for tracking changes
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS inventory_history (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+        change_type VARCHAR(50) NOT NULL CHECK (change_type IN ('adjustment', 'delivery_deduction', 'reserved', 'released')),
+        quantity_change INTEGER NOT NULL,
+        previous_quantity INTEGER NOT NULL,
+        new_quantity INTEGER NOT NULL,
+        order_id INTEGER,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Insert sample products
     const productCount = await client.query('SELECT COUNT(*) FROM products');
     if (parseInt(productCount.rows[0].count) === 0) {

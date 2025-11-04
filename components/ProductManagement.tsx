@@ -26,7 +26,7 @@ export default function ProductManagement() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/products')
+      const response = await fetch('/api/products?all=true')
       const data = await response.json()
       setProducts(data)
     } catch (error) {
@@ -116,7 +116,7 @@ export default function ProductManagement() {
       price: product.price.toString(),
       image_url: product.image_url || '',
       category: product.category,
-      is_available: true,
+      is_available: product.is_available ?? true,
     })
   }
 
@@ -328,6 +328,18 @@ export default function ProductManagement() {
               />
             </div>
 
+            <div className="md:col-span-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.is_available}
+                  onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })}
+                  className="w-4 h-4 text-chicken-red border-gray-300 rounded focus:ring-chicken-red"
+                />
+                <span className="text-sm font-medium text-gray-700">Product is available</span>
+              </label>
+            </div>
+
             <div className="md:col-span-2 flex justify-end space-x-4">
               <button
                 type="button"
@@ -394,7 +406,7 @@ export default function ProductManagement() {
                                 description: product.description,
                                 image_url: product.image_url,
                                 category: product.category,
-                                is_available: true
+                                is_available: product.is_available ?? true
                               }),
                             });
                             await fetchProducts();

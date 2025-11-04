@@ -9,6 +9,7 @@ export interface Product {
   price: number
   image_url: string
   category: string
+  is_available?: boolean
 }
 
 export interface CartItem {
