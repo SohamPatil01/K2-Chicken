@@ -68,9 +68,12 @@ export default function RecipesPage() {
             Back to Home
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Chicken Recipe Cookbook</h1>
-          <p className="text-lg text-gray-600 mt-2">
+          <p className="text-lg text-gray-600 mt-2 mb-4">
             Master the art of cooking delicious chicken dishes at home
           </p>
+          <div className="inline-flex items-center space-x-2 bg-green-50 border-2 border-green-200 rounded-full px-6 py-3">
+            <span className="text-green-700 font-semibold">🌾 Made with Baramati Agro Products</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

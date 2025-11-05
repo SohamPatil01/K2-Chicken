@@ -1153,7 +1153,7 @@ export class WhatsAppChatbot {
   }
 
   private async handleTalkToHuman(session: UserSession): Promise<{ response: string; buttons: any[] }> {
-    const response = "Your message has been forwarded to our team. They will get back to you shortly. In the meantime, you can place an order or browse our menu.";
+    const response = `📞 *Contact Us Directly*\n\nWe're here to help! You can reach us at:\n\n📱 *Phone:* ${this.restaurant_phone}\n📍 *Address:* ${this.restaurant_address}\n\nOur team is available during our operating hours:\n${Object.entries(this.operating_hours).map(([day, hours]) => `${day}: ${hours}`).join('\n')}\n\nFeel free to call us anytime for:\n• Order inquiries\n• Special requests\n• Feedback & suggestions\n• Any questions!\n\nWe look forward to serving you! 🍗`;
     const buttons = [
       { type: "reply", reply: { id: "place_order", title: " Place an Order" } },
       { type: "reply", reply: { id: "view_menu", title: " View Menu" } },

@@ -14,7 +14,7 @@ export default function ChatbotBanner() {
         <div className="flex items-center">
           <MessageCircle className="h-5 w-5 mr-2" />
           <span className="text-sm font-medium">
-            🎉 New! Order directly through WhatsApp chat - Click the chat button to get started!
+            📱 Order via WhatsApp! Click the green button to place your order directly.
           </span>
         </div>
         <button

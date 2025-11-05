@@ -2,21 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings } from 'lucide-react'
 import ProductManagement from '@/components/ProductManagement'
 import RecipeManagement from '@/components/RecipeManagement'
 import OrderManagement from '@/components/OrderManagement'
 import WhatsAppOrderManagement from '@/components/WhatsAppOrderManagement'
 import AdminDashboard from '@/components/AdminDashboard'
 import InventoryManagement from '@/components/InventoryManagement'
+import SettingsManagement from '@/components/SettingsManagement'
 
-type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp' | 'inventory'
+type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp' | 'inventory' | 'settings'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [newOrdersCount, setNewOrdersCount] = useState(0)
+  const [previousOrdersCount, setPreviousOrdersCount] = useState(0)
+  const [showOrderNotification, setShowOrderNotification] = useState(false)
+  const [newOrderCount, setNewOrderCount] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -54,7 +58,17 @@ export default function AdminPage() {
       try {
         const response = await fetch('/api/orders/new/count')
         const data = await response.json()
-        setNewOrdersCount(data.count || 0)
+        const count = data.count || 0
+        
+        // Check if new orders arrived
+        if (count > previousOrdersCount && previousOrdersCount > 0) {
+          const newOrders = count - previousOrdersCount
+          setNewOrderCount(newOrders)
+          triggerOrderAlarm(newOrders)
+        }
+        
+        setNewOrdersCount(count)
+        setPreviousOrdersCount(count)
       } catch (error) {
         console.error('Error fetching new orders count:', error)
       }
@@ -67,12 +81,77 @@ export default function AdminPage() {
     const interval = setInterval(fetchNewOrdersCount, 10000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [previousOrdersCount])
+
+  // Function to trigger alarm/buzzer when new orders arrive
+  const triggerOrderAlarm = (orderCount: number) => {
+    // Play alarm sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    
+    // Create a buzzer-like sound (beep pattern)
+    const beepPattern = [200, 150, 200, 150, 200] // Frequency pattern in Hz
+    let currentBeep = 0
+    
+    const playBeep = () => {
+      if (currentBeep >= beepPattern.length) {
+        audioContext.close()
+        return
+      }
+      
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      
+      oscillator.frequency.value = beepPattern[currentBeep]
+      oscillator.type = 'sine'
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
+      
+      oscillator.start(audioContext.currentTime)
+      oscillator.stop(audioContext.currentTime + 0.2)
+      
+      currentBeep++
+      setTimeout(playBeep, 250)
+    }
+    
+    playBeep()
+    
+    // Show visual notification
+    setShowOrderNotification(true)
+    setTimeout(() => {
+      setShowOrderNotification(false)
+    }, 5000)
+    
+    // Also try to request browser notification permission and show notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(`New Order Alert! 🍗`, {
+        body: `${orderCount} new order${orderCount > 1 ? 's' : ''} has arrived!`,
+        icon: '/logo.svg',
+        badge: '/logo.svg',
+        tag: 'new-order',
+        requireInteraction: false,
+      })
+    } else if ('Notification' in window && Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          new Notification(`New Order Alert! 🍗`, {
+            body: `${orderCount} new order${orderCount > 1 ? 's' : ''} has arrived!`,
+            icon: '/logo.svg',
+            badge: '/logo.svg',
+          })
+        }
+      })
+    }
+  }
 
   // Reset count when Orders tab is clicked
   const handleOrdersTabClick = () => {
     setActiveTab('orders')
     setNewOrdersCount(0)
+    setPreviousOrdersCount(0)
   }
 
   const handleLogout = async () => {
@@ -123,10 +202,32 @@ export default function AdminPage() {
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'whatsapp', label: 'WhatsApp Orders', icon: MessageCircle },
     { id: 'inventory', label: 'Inventory', icon: Warehouse },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20">
+      {/* Order Notification Alert */}
+      {showOrderNotification && (
+        <div className="fixed top-20 right-4 z-50 animate-bounce">
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl border-2 border-white flex items-center space-x-3 min-w-[300px]">
+            <div className="text-3xl animate-pulse">🔔</div>
+            <div>
+              <div className="font-bold text-lg">New Order Alert!</div>
+              <div className="text-sm opacity-90">
+                {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} has arrived!
+              </div>
+            </div>
+            <button
+              onClick={() => setShowOrderNotification(false)}
+              className="ml-auto text-white hover:text-gray-200"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Admin Header */}
       <div className="bg-white/80 backdrop-blur-xl shadow-2xl border-b border-orange-200/30 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -206,13 +307,14 @@ export default function AdminPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden p-6">
           {activeTab === 'dashboard' && <AdminDashboard />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'recipes' && <RecipeManagement />}
           {activeTab === 'orders' && <OrderManagement />}
           {activeTab === 'whatsapp' && <WhatsAppOrderManagement />}
           {activeTab === 'inventory' && <InventoryManagement />}
+          {activeTab === 'settings' && <SettingsManagement />}
         </div>
       </div>
     </div>

@@ -160,6 +160,29 @@ export async function initializeDatabase() {
       )
     `);
 
+    // Create settings table for delivery configuration
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        id SERIAL PRIMARY KEY,
+        key VARCHAR(100) UNIQUE NOT NULL,
+        value TEXT NOT NULL,
+        description TEXT,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Initialize default delivery settings if they don't exist
+    const settingsCount = await client.query('SELECT COUNT(*) FROM settings WHERE key = $1', ['delivery_radius_km']);
+    if (parseInt(settingsCount.rows[0].count) === 0) {
+      await client.query(`
+        INSERT INTO settings (key, value, description) VALUES
+        ('delivery_radius_km', '5', 'Free delivery radius in kilometers'),
+        ('charge_per_km', '5', 'Delivery charge per kilometer beyond the free radius'),
+        ('base_delivery_fee', '0', 'Base delivery fee (usually 0)')
+      `);
+    }
+
     // Insert sample products
     const productCount = await client.query('SELECT COUNT(*) FROM products');
     if (parseInt(productCount.rows[0].count) === 0) {

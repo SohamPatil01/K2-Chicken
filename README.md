@@ -5,22 +5,26 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 ## ✨ Features
 
 ### 🛒 E-commerce Functionality
+
 - **Product Catalog**: Real-time product fetching from PostgreSQL database
 - **Shopping Cart**: Add/remove items, adjust quantities, persistent cart state
 - **Order Management**: Complete order form with customer details and delivery address
 - **Order Confirmation**: Detailed order summary with estimated delivery time
 
 ### 👨‍🍳 Recipe Cookbook
+
 - **Recipe Database**: Store and display chicken recipes with ingredients and instructions
 - **Cooking Details**: Prep time, cook time, servings, and step-by-step instructions
 - **Recipe Management**: Admin can add, edit, and delete recipes
 
 ### 🔧 Admin Panel
+
 - **Product Management**: Add, edit, delete products and update prices remotely
 - **Recipe Management**: Manage the recipe cookbook
 - **Order Management**: View and update order status (pending, preparing, ready, delivered)
 
 ### 🎨 Design & Branding
+
 - **Chicken Vicken Branding**: Catchy tagline "Finger Lickin' Good!" throughout
 - **Vibrant Design**: Chicken-themed colors (red, yellow, orange accents)
 - **Responsive Layout**: Optimized for both desktop and mobile ordering
@@ -38,37 +42,51 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 ## 📦 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd K2chicken
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up PostgreSQL database**
+
    - Install PostgreSQL on your system
    - Create a database named `chicken_vicken`
    - Update the database connection details in your environment variables
 
 4. **Environment Variables**
    Create a `.env.local` file with the following variables:
+
    ```env
+   # Database
    POSTGRES_USER=postgres
    POSTGRES_HOST=localhost
    POSTGRES_DB=chicken_vicken
    POSTGRES_PASSWORD=your_password
    POSTGRES_PORT=5432
+
+   # Google Maps API (for accurate delivery distance calculation)
+   # Get your API key from: https://console.cloud.google.com/google/maps-apis
+   # Required APIs: Geocoding API, Distance Matrix API, Maps JavaScript API
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+   # Optional: Server-side API key (more secure)
+   GOOGLE_MAPS_API_KEY=your_google_maps_api_key
    ```
 
 5. **Initialize the database**
+
    ```bash
    node scripts/init-db.js
    ```
 
 6. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -79,6 +97,7 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 ## 🗄️ Database Schema
 
 ### Products Table
+
 - `id`: Primary key
 - `name`: Product name
 - `description`: Product description
@@ -89,6 +108,7 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 - `created_at`, `updated_at`: Timestamps
 
 ### Orders Table
+
 - `id`: Primary key
 - `customer_name`: Customer's full name
 - `customer_phone`: Customer's phone number
@@ -99,6 +119,7 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 - `created_at`: Order creation timestamp
 
 ### Order Items Table
+
 - `id`: Primary key
 - `order_id`: Foreign key to orders table
 - `product_id`: Foreign key to products table
@@ -107,6 +128,7 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 - `created_at`: Creation timestamp
 
 ### Recipes Table
+
 - `id`: Primary key
 - `title`: Recipe title
 - `description`: Recipe description
@@ -121,18 +143,21 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 ## 🛠️ API Endpoints
 
 ### Products
+
 - `GET /api/products` - Fetch all products
 - `POST /api/products` - Create new product
 - `PUT /api/products/[id]` - Update product
 - `DELETE /api/products/[id]` - Delete product
 
 ### Orders
+
 - `GET /api/orders` - Fetch all orders
 - `POST /api/orders` - Create new order
 - `GET /api/orders/[id]` - Fetch specific order
 - `PUT /api/orders/[id]` - Update order status
 
 ### Recipes
+
 - `GET /api/recipes` - Fetch all recipes
 - `POST /api/recipes` - Create new recipe
 - `GET /api/recipes/[id]` - Fetch specific recipe
@@ -153,13 +178,16 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 ## 🎨 Customization
 
 ### Colors
+
 The website uses a custom color palette defined in `tailwind.config.js`:
+
 - `chicken-red`: #DC2626
 - `chicken-yellow`: #F59E0B
 - `chicken-orange`: #EA580C
 - `chicken-gold`: #FCD34D
 
 ### Branding
+
 - Company name: "Chicken Vicken"
 - Tagline: "Finger Lickin' Good!"
 - Logo: 🐔 emoji with gradient background
@@ -167,11 +195,13 @@ The website uses a custom color palette defined in `tailwind.config.js`:
 ## 🚀 Deployment
 
 1. **Build the application**
+
    ```bash
    npm run build
    ```
 
 2. **Start the production server**
+
    ```bash
    npm start
    ```

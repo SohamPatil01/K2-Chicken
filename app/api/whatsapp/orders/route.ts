@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createWhatsAppOrder } from '@/lib/whatsapp/orderService';
+import pool from '@/lib/db';
 
 // Get all WhatsApp orders
 export async function GET(request: NextRequest) {

@@ -1,13 +1,31 @@
 'use client'
 
 import { useCart } from '@/context/CartContext'
-import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingBag, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
 export default function CartPage() {
   const { state, dispatch } = useCart()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const WHATSAPP_NUMBER = '8484978622'
+
+  const handleWhatsAppOrder = () => {
+    const orderItems = state.items.map(item => 
+      `${item.product.name} x${item.quantity} - ₹${(Number(item.product.price) * item.quantity).toFixed(0)}`
+    ).join('\n')
+    
+    const total = state.total.toFixed(0)
+    const message = encodeURIComponent(
+      `🍗 *Order from K2 Chicken*\n\n` +
+      `*Order Details:*\n${orderItems}\n\n` +
+      `*Total: ₹${total}*\n\n` +
+      `Please confirm your order and provide delivery address.`
+    )
+    
+    const whatsappUrl = `https://wa.me/91${WHATSAPP_NUMBER}?text=${message}`
+    window.open(whatsappUrl, '_blank')
+  }
 
   const updateQuantity = (productId: number, quantity: number) => {
     if (quantity <= 0) {
@@ -143,13 +161,23 @@ export default function CartPage() {
                 </div>
               </div>
               
-              <Link
-                href="/checkout"
-                className="w-full btn-primary mt-6 flex items-center justify-center space-x-2"
-              >
-                <span>Proceed to Checkout</span>
-                <span>→</span>
-              </Link>
+              <div className="space-y-3 mt-6">
+                <Link
+                  href="/checkout"
+                  className="w-full btn-primary flex items-center justify-center space-x-2"
+                >
+                  <span>Proceed to Checkout</span>
+                  <span>→</span>
+                </Link>
+                
+                <button
+                  onClick={handleWhatsAppOrder}
+                  className="w-full flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Order via WhatsApp
+                </button>
+              </div>
             </div>
           </div>
         </div>

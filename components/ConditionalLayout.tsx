@@ -10,13 +10,16 @@ import MobileBottomNav from './MobileBottomNav'
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   
-  // Pages that should have their own full-screen layout
-  const fullScreenPages = ['/whatsapp-test']
+  // Pages that should have their own full-screen layout (no Header/Footer)
+  const fullScreenPages: string[] = []
   
-  const isFullScreenPage = fullScreenPages.includes(pathname)
+  // Pages that should not have Header/Footer (admin pages have their own navigation)
+  const isAdminPage = pathname?.startsWith('/admin')
   
-  if (isFullScreenPage) {
-    // For full-screen pages like WhatsApp bot, don't render the main layout components
+  const isFullScreenPage = fullScreenPages.includes(pathname || '')
+  
+  if (isFullScreenPage || isAdminPage) {
+    // For full-screen pages like WhatsApp bot or admin pages, don't render the main layout components
     return <>{children}</>
   }
   
