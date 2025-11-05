@@ -53,15 +53,6 @@ export default function Header() {
             >
               Recipes
             </Link>
-            <Link 
-              href="/whatsapp-test" 
-              className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"></path>
-              </svg>
-              WhatsApp Bot
-            </Link>
           </nav>
 
           {/* Cart and Mobile Menu */}

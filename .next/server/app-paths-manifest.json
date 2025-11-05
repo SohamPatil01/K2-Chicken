@@ -1,14 +1,8 @@
 {
-  "/order-confirmation/[id]/page": "app/order-confirmation/[id]/page.js",
-  "/admin/page": "app/admin/page.js",
+  "/not-found": "app/not-found.js",
   "/checkout/page": "app/checkout/page.js",
   "/page": "app/page.js",
-  "/recipes/page": "app/recipes/page.js",
+  "/admin/page": "app/admin/page.js",
   "/api/orders/new/count/route": "app/api/orders/new/count/route.js",
-  "/api/orders/route": "app/api/orders/route.js",
-  "/api/orders/[id]/route": "app/api/orders/[id]/route.js",
-  "/api/products/route": "app/api/products/route.js",
-  "/api/whatsapp/orders/route": "app/api/whatsapp/orders/route.js",
-  "/api/inventory/history/route": "app/api/inventory/history/route.js",
-  "/api/recipes/route": "app/api/recipes/route.js"
+  "/order-confirmation/[id]/page": "app/order-confirmation/[id]/page.js"
 }

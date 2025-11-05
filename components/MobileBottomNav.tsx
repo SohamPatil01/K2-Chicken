@@ -16,7 +16,6 @@ export default function MobileBottomNav() {
     { href: '/', icon: Home, label: 'Home' },
     { href: '/#products', icon: Menu, label: 'Menu' },
     { href: '/cart', icon: ShoppingCart, label: 'Cart' },
-    { href: '/whatsapp-test', icon: MessageCircle, label: 'Support' },
   ]
 
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0)
