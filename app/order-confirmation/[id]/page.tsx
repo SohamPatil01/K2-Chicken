@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Clock, MapPin, Phone, Printer } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 
 interface Order {
   id: number
@@ -13,6 +14,7 @@ interface Order {
   delivery_type: string
   subtotal?: number
   delivery_charge?: number
+  discount_amount?: number
   total_amount: number
   status: string
   estimated_delivery: string
@@ -131,21 +133,39 @@ export default function OrderConfirmationPage() {
     window.print()
   }
 
+  // Generate UPI payment link
+  const generateUPILink = (amount: number | string | undefined) => {
+    const upiId = process.env.NEXT_PUBLIC_UPI_ID || '8484978622@paytm' // Default to phone number format
+    const merchantName = 'K2 Chicken'
+    // Ensure amount is a number and round to whole rupees (no paise)
+    const numericAmount = typeof amount === 'number' ? amount : typeof amount === 'string' ? parseFloat(amount) : 0
+    const roundedAmount = Math.round(numericAmount) // Round to nearest whole rupee
+    // UPI payment format: upi://pay?pa=UPI_ID&pn=MERCHANT_NAME&am=AMOUNT&cu=INR&tn=TRANSACTION_NOTE
+    // Using toFixed(0) to match the displayed amount (whole rupees only)
+    return `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${roundedAmount.toFixed(0)}&cu=INR&tn=${encodeURIComponent(`Order ${order.id} - K2 Chicken`)}`
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 no-print">
           <CheckCircle size={64} className="mx-auto text-green-500 mb-4" />
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Confirmed!</h1>
           <p className="text-lg text-gray-600">
             Thank you for choosing Chicken Vicken! Your order has been placed successfully.
           </p>
+          {order.discount_amount && order.discount_amount > 0 && (
+            <div className="mt-4 inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-full shadow-lg">
+              <span className="text-2xl">🎉</span>
+              <span className="font-bold">You saved ₹{Number(order.discount_amount).toFixed(0)}!</span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Details */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-lg shadow-lg p-6 no-print">
             <h2 className="text-xl font-semibold mb-6">Order Details</h2>
             
             <div className="space-y-4">
@@ -201,8 +221,8 @@ export default function OrderConfirmationPage() {
           </div>
 
           {/* Order Bill */}
-          <div className="bg-white rounded-lg shadow-lg p-6 print:shadow-none">
-            <div className="flex justify-between items-start mb-4 print:hidden">
+          <div className="bg-white rounded-lg shadow-lg p-6 print-bill">
+            <div className="flex justify-between items-start mb-4 no-print">
               <h2 className="text-xl font-semibold">Order Bill</h2>
               <button
                 onClick={handlePrint}
@@ -254,8 +274,16 @@ export default function OrderConfirmationPage() {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal:</span>
-                <span className="font-medium">₹{Number(order.subtotal || order.total_amount - (order.delivery_charge || 0)).toFixed(0)}</span>
+                <span className="font-medium">₹{Number(order.subtotal || order.total_amount - (order.delivery_charge || 0) + (order.discount_amount || 0)).toFixed(0)}</span>
               </div>
+              {(order.discount_amount || 0) > 0 && (
+                <div className="flex justify-between items-center p-2 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-green-700 font-semibold">🎉 Discount Applied:</span>
+                  </div>
+                  <span className="text-green-700 font-bold text-base">-₹{Number(order.discount_amount || 0).toFixed(0)}</span>
+                </div>
+              )}
               {order.delivery_type === 'delivery' && (order.delivery_charge || 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Delivery Charge:</span>
@@ -277,6 +305,32 @@ export default function OrderConfirmationPage() {
               </div>
             </div>
 
+            {/* Payment QR Code - Only for Delivery Orders */}
+            {order.delivery_type === 'delivery' && (
+              <div className="mt-6 pt-4 border-t-2 border-gray-300">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Payment QR Code</h3>
+                  <p className="text-sm text-gray-600 mb-4">Scan to pay ₹{Number(order.total_amount).toFixed(0)}</p>
+                  <div className="flex justify-center mb-3">
+                    <div className="bg-white p-4 rounded-lg border-2 border-gray-200 inline-block">
+                      <QRCodeSVG
+                        value={generateUPILink(Number(order.total_amount))}
+                        size={200}
+                        level="H"
+                        includeMargin={true}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Scan with any UPI app (PhonePe, Google Pay, Paytm, etc.)
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Order #{order.id}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="mt-6 pt-4 border-t border-gray-200 text-center">
               <p className="text-sm text-gray-600">Thank you for your order!</p>
               <p className="text-xs text-gray-500 mt-2">We'll contact you shortly to confirm your order.</p>
@@ -285,7 +339,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         {/* Next Steps */}
-        <div className="mt-12 bg-chicken-yellow bg-opacity-20 rounded-lg p-6">
+        <div className="mt-12 bg-chicken-yellow bg-opacity-20 rounded-lg p-6 no-print">
           <h3 className="text-lg font-semibold mb-4">What's Next?</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="text-center">
@@ -358,7 +412,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center no-print">
           <Link href="/" className="btn-primary">
             Order More Chicken 🍗
           </Link>

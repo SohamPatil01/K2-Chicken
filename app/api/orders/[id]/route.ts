@@ -13,6 +13,7 @@ export async function GET(
         SELECT o.*, 
                COALESCE(o.subtotal, o.total_amount) as subtotal,
                COALESCE(o.delivery_charge, 0) as delivery_charge,
+               COALESCE(o.discount_amount, 0) as discount_amount,
                COALESCE(o.delivery_type, CASE WHEN o.delivery_address = 'Pickup at store' THEN 'pickup' ELSE 'delivery' END) as delivery_type,
                array_agg(
                  json_build_object(
@@ -43,6 +44,7 @@ export async function GET(
         delivery_type: order.delivery_type || (order.delivery_address === 'Pickup at store' ? 'pickup' : 'delivery'),
         subtotal: order.subtotal,
         delivery_charge: order.delivery_charge,
+        discount_amount: order.discount_amount || 0,
         total_amount: order.total_amount,
         status: order.status,
         estimated_delivery: order.estimated_delivery,
@@ -65,15 +67,15 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status } = await request.json()
+    const { status, discountAmount } = await request.json()
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
       
-      // Get current order status and items
+      // Get current order details
       const orderResult = await client.query(`
-        SELECT status, id FROM orders WHERE id = $1
+        SELECT status, id, subtotal, delivery_charge, discount_amount, total_amount FROM orders WHERE id = $1
       `, [params.id])
       
       if (orderResult.rows.length === 0) {
@@ -83,14 +85,39 @@ export async function PUT(
       
       const oldStatus = orderResult.rows[0].status
       const orderId = orderResult.rows[0].id
+      const currentDeliveryCharge = parseFloat(orderResult.rows[0].delivery_charge || 0)
+      const currentDiscount = parseFloat(orderResult.rows[0].discount_amount || 0)
+      // Calculate subtotal: total_amount - delivery_charge + current_discount
+      const currentSubtotal = parseFloat(orderResult.rows[0].subtotal || (parseFloat(orderResult.rows[0].total_amount) - currentDeliveryCharge + currentDiscount))
       
-      // Update order status
-      const result = await client.query(`
-        UPDATE orders 
-        SET status = $1
-        WHERE id = $2
-        RETURNING *
-      `, [status, params.id])
+      // If discount is being updated, recalculate total
+      let updateQuery = ''
+      let updateParams: any[] = []
+      
+      if (discountAmount !== undefined) {
+        const newDiscount = Math.max(0, parseFloat(discountAmount) || 0)
+        const newTotal = Math.max(0, currentSubtotal - newDiscount + currentDeliveryCharge)
+        
+        updateQuery = `
+          UPDATE orders 
+          SET status = COALESCE($1, status),
+              discount_amount = $2,
+              total_amount = $3
+          WHERE id = $4
+          RETURNING *
+        `
+        updateParams = [status || null, newDiscount, newTotal, params.id]
+      } else {
+        updateQuery = `
+          UPDATE orders 
+          SET status = $1
+          WHERE id = $2
+          RETURNING *
+        `
+        updateParams = [status, params.id]
+      }
+      
+      const result = await client.query(updateQuery, updateParams)
       
       // If order is being marked as delivered, deduct inventory
       if (status === 'delivered' && oldStatus !== 'delivered') {

@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, LogOut, User, Warehouse, Settings } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings, Tag } from 'lucide-react'
 import ProductManagement from '@/components/ProductManagement'
 import RecipeManagement from '@/components/RecipeManagement'
 import OrderManagement from '@/components/OrderManagement'
 import AdminDashboard from '@/components/AdminDashboard'
 import InventoryManagement from '@/components/InventoryManagement'
 import SettingsManagement from '@/components/SettingsManagement'
+import PromotionManagement from '@/components/PromotionManagement'
 
-type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'inventory' | 'settings'
+type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp' | 'inventory' | 'settings' | 'promotions'
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
@@ -200,6 +201,7 @@ export default function AdminPage() {
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'inventory', label: 'Inventory', icon: Warehouse },
+    { id: 'promotions', label: 'Promotions', icon: Tag },
     { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
@@ -311,6 +313,7 @@ export default function AdminPage() {
           {activeTab === 'recipes' && <RecipeManagement />}
           {activeTab === 'orders' && <OrderManagement />}
           {activeTab === 'inventory' && <InventoryManagement />}
+          {activeTab === 'promotions' && <PromotionManagement />}
           {activeTab === 'settings' && <SettingsManagement />}
         </div>
       </div>

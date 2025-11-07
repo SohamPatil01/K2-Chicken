@@ -172,6 +172,25 @@ export async function initializeDatabase() {
       )
     `);
 
+    // Create promotions table for offer flyers
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS promotions (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        discount_type VARCHAR(50) CHECK (discount_type IN ('percentage', 'fixed', 'buy_x_get_y', 'free_delivery')),
+        discount_value DECIMAL(10,2),
+        promo_code VARCHAR(50),
+        image_url VARCHAR(500),
+        start_date DATE,
+        end_date DATE,
+        is_active BOOLEAN DEFAULT true,
+        display_order INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Initialize default delivery settings if they don't exist
     const settingsCount = await client.query('SELECT COUNT(*) FROM settings WHERE key = $1', ['delivery_radius_km']);
     if (parseInt(settingsCount.rows[0].count) === 0) {

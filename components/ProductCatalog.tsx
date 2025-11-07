@@ -2,9 +2,164 @@
 
 import { useEffect, useState } from 'react'
 import { useCart } from '@/context/CartContext'
-import { Product } from '@/context/CartContext'
-import { Plus, Minus, Search, Filter, Star } from 'lucide-react'
-// import { motion, AnimatePresence } from 'framer-motion'
+import { Product, WeightOption } from '@/context/CartContext'
+import { Plus, Minus, Search, Filter, Star, ArrowUpDown, CheckCircle, AlertCircle, XCircle } from 'lucide-react'
+
+type SortOption = 'default' | 'price-low' | 'price-high' | 'name-asc' | 'name-desc' | 'newest'
+
+interface ProductCardProps {
+  product: Product
+  isBestseller: boolean
+  cartQuantity: number
+  onAddToCart: (product: Product, weight?: WeightOption) => void
+  onUpdateQuantity: (productId: number, quantity: number) => void
+  getStockStatus: (product: Product) => { status: string; label: string; color: string; icon: any }
+}
+
+function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdateQuantity, getStockStatus }: ProductCardProps) {
+  const stockStatus = getStockStatus(product)
+  const StockIcon = stockStatus.icon
+  const defaultWeight = product.weightOptions?.find(w => w.is_default) || product.weightOptions?.[0]
+  const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>(defaultWeight)
+
+  return (
+    <div className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-orange-300 transition-all duration-300">
+      {/* Bestseller Badge */}
+      {isBestseller && (
+        <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg">
+          <Star className="h-3 w-3 fill-current" />
+          <span>Bestseller</span>
+        </div>
+      )}
+
+      {/* Stock Badge */}
+      <div className={`absolute top-4 right-4 z-10 ${stockStatus.color} px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 border shadow-sm`}>
+        <StockIcon className="h-3 w-3" />
+        <span>{stockStatus.label}</span>
+      </div>
+
+      {/* Product Image */}
+      <div className="relative h-56 bg-gray-100 overflow-hidden">
+        {product.image_url ? (
+          <img 
+            src={product.image_url} 
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+        ) : null}
+        <div className={`w-full h-full ${product.image_url ? 'hidden' : 'flex'} bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}>
+          <span className="text-6xl">🍗</span>
+        </div>
+      </div>
+      
+      {/* Product Info */}
+      <div className="p-6 space-y-4">
+        <div>
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+              {product.name}
+            </h3>
+            <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded-md font-medium ml-2">
+              {product.category}
+            </span>
+          </div>
+          <p className="text-gray-600 text-sm line-clamp-2">
+            {product.description}
+          </p>
+        </div>
+
+        {/* Weight Options Selector */}
+        {product.weightOptions && product.weightOptions.length > 1 && (
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-gray-700">Select Weight:</label>
+            <div className="flex flex-wrap gap-2">
+              {product.weightOptions.map((weight) => (
+                <button
+                  key={weight.id || weight.weight}
+                  onClick={() => setSelectedWeight(weight)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedWeight?.weight === weight.weight
+                      ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {weight.weight}{weight.weight_unit}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Price Display */}
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-bold text-gray-900">
+              ₹{Number(selectedWeight?.price || product.price).toFixed(0)}
+            </span>
+            {selectedWeight && (
+              <span className="text-xs text-gray-500">
+                / {selectedWeight.weight}{selectedWeight.weight_unit}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Cart Controls */}
+        <div className="pt-2">
+          {stockStatus.status === 'out' ? (
+            <button
+              disabled
+              className="w-full bg-gray-300 text-gray-500 font-semibold py-3 px-4 rounded-xl cursor-not-allowed"
+            >
+              Out of Stock
+            </button>
+          ) : cartQuantity === 0 ? (
+            <button
+              onClick={() => onAddToCart(product, selectedWeight)}
+              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <Plus size={18} />
+              <span>Add to Cart</span>
+            </button>
+          ) : (
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onUpdateQuantity(product.id, cartQuantity - 1)}
+                  className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <Minus size={16} className="text-gray-700" />
+                </button>
+                <div className="w-10 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
+                  <span className="font-bold text-gray-900">
+                    {cartQuantity}
+                  </span>
+                </div>
+                <button
+                  onClick={() => onUpdateQuantity(product.id, cartQuantity + 1)}
+                  disabled={stockStatus.status === 'out'}
+                  className="w-9 h-9 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold text-gray-900">
+                  ₹{(Number(selectedWeight?.price || product.price) * cartQuantity).toFixed(0)}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function ProductCatalog() {
   const [products, setProducts] = useState<Product[]>([])
@@ -12,6 +167,7 @@ export default function ProductCatalog() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [sortOption, setSortOption] = useState<SortOption>('default')
   const { state, dispatch } = useCart()
 
   // Bestseller products (you can make this dynamic based on order data)
@@ -22,10 +178,20 @@ export default function ProductCatalog() {
   }, [])
 
   useEffect(() => {
-    filterProducts()
-  }, [products, searchTerm, selectedCategory])
+    filterAndSortProducts()
+  }, [products, searchTerm, selectedCategory, sortOption])
 
-  const filterProducts = () => {
+  const getStockStatus = (product: Product) => {
+    if (!product.in_stock || (product.stock_quantity ?? 0) === 0) {
+      return { status: 'out', label: 'Out of Stock', color: 'bg-red-100 text-red-700 border-red-200', icon: XCircle }
+    }
+    if ((product.stock_quantity ?? 100) <= (product.low_stock_threshold ?? 10)) {
+      return { status: 'low', label: 'Low Stock', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: AlertCircle }
+    }
+    return { status: 'in', label: 'In Stock', color: 'bg-green-100 text-green-700 border-green-200', icon: CheckCircle }
+  }
+
+  const filterAndSortProducts = () => {
     let filtered = products
 
     // Filter by search term
@@ -40,6 +206,24 @@ export default function ProductCatalog() {
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(product => product.category === selectedCategory)
     }
+
+    // Sort products
+    filtered = [...filtered].sort((a, b) => {
+      switch (sortOption) {
+        case 'price-low':
+          return Number(a.price) - Number(b.price)
+        case 'price-high':
+          return Number(b.price) - Number(a.price)
+        case 'name-asc':
+          return a.name.localeCompare(b.name)
+        case 'name-desc':
+          return b.name.localeCompare(a.name)
+        case 'newest':
+          return (b.id || 0) - (a.id || 0)
+        default:
+          return 0
+      }
+    })
 
     setFilteredProducts(filtered)
   }
@@ -62,8 +246,19 @@ export default function ProductCatalog() {
     }
   }
 
-  const addToCart = (product: Product) => {
-    dispatch({ type: 'ADD_ITEM', payload: { product, quantity: 1 } })
+  const addToCart = (product: Product, selectedWeight?: WeightOption) => {
+    const productToAdd = selectedWeight 
+      ? { ...product, price: selectedWeight.price }
+      : product
+    
+    dispatch({ 
+      type: 'ADD_ITEM', 
+      payload: { 
+        product: productToAdd, 
+        quantity: 1,
+        selectedWeight: selectedWeight || product.weightOptions?.find(w => w.is_default) || undefined
+      } 
+    })
     
     // Add haptic feedback for mobile
     if (navigator.vibrate) {
@@ -82,20 +277,22 @@ export default function ProductCatalog() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Delicious Products</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="card animate-pulse">
-                  <div className="bg-gray-300 h-48 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-gray-300 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mb-4 w-3/4"></div>
-                  <div className="h-8 bg-gray-300 rounded"></div>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Products</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden animate-pulse">
+                <div className="bg-gray-200 h-56"></div>
+                <div className="p-6 space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-10 bg-gray-200 rounded"></div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -103,35 +300,34 @@ export default function ProductCatalog() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 via-white to-orange-50/30">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+            <span>🍗</span>
             <span>Fresh Daily</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-            Our <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Delicious</span> Products
+          <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
+            Our <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Products</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Handcrafted with premium ingredients and our secret family recipes. 
-            Every bite is a journey of flavor and satisfaction.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Handcrafted with premium ingredients and our secret family recipes
           </p>
         </div>
 
-        {/* Search and Filter Bar */}
-        <div className="mb-12 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
-          <div className="flex flex-col lg:flex-row gap-6">
+        {/* Search, Filter and Sort Bar */}
+        <div className="mb-12 bg-gray-50 border border-gray-200 rounded-2xl p-6">
+          <div className="flex flex-col lg:flex-row gap-4">
             {/* Search Bar */}
-            <div className="flex-1 relative group">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-orange-500 transition-colors" />
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search for your favorite chicken..."
+                placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
               />
             </div>
             
@@ -141,7 +337,7 @@ export default function ProductCatalog() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 bg-white/50 backdrop-blur-sm font-medium"
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium min-w-[180px]"
               >
                 {getCategories().map(category => (
                   <option key={category} value={category}>
@@ -150,134 +346,56 @@ export default function ProductCatalog() {
                 ))}
               </select>
             </div>
+
+            {/* Sort Option */}
+            <div className="flex items-center gap-3">
+              <ArrowUpDown className="text-gray-400 h-5 w-5" />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium min-w-[180px]"
+              >
+                <option value="default">Default</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+                <option value="newest">Newest First</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product, index) => {
-            const cartQuantity = getCartQuantity(product.id)
-            const isBestseller = bestsellerIds.includes(product.id)
-            
-            return (
-              <div 
-                key={product.id}
-                className="group bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden relative border border-white/20 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 hover:border-orange-200"
-              >
-                {/* Bestseller Badge */}
-                {isBestseller && (
-                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg animate-pulse">
-                    <Star className="h-4 w-4 fill-current" />
-                    🔥 Bestseller
-                  </div>
-                )}
-
-                {/* Product Image */}
-                <div className="relative h-64 overflow-hidden">
-                  {product.image_url ? (
-                    <img 
-                      src={product.image_url} 
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div className={`w-full h-full ${product.image_url ? 'hidden' : 'flex'} bg-gradient-to-br from-orange-100 to-red-100 items-center justify-center`}>
-                    <span className="text-8xl group-hover:scale-110 transition-transform duration-300">🍗</span>
-                  </div>
-                  
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                
-                {/* Product Info */}
-                <div className="p-6 space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
-                        {product.description}
-                      </p>
-                    </div>
-                    <span className="text-xs text-gray-500 capitalize bg-gray-100 px-3 py-1 rounded-full font-medium">
-                      {product.category}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                        ₹{Number(product.price).toFixed(0)}
-                      </span>
-                      <span className="text-sm text-gray-500">per piece</span>
-                    </div>
-                  </div>
-
-                  {/* Cart Controls */}
-                  <div className="pt-4 border-t border-gray-100">
-                    {cartQuantity === 0 ? (
-                      <button
-                        onClick={() => addToCart(product)}
-                        className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group"
-                      >
-                        <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-                        <span>Add to Cart</span>
-                      </button>
-                    ) : (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => updateQuantity(product.id, cartQuantity - 1)}
-                            className="w-10 h-10 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
-                          >
-                            <Minus size={16} />
-                          </button>
-                          <div className="w-12 h-10 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl flex items-center justify-center">
-                            <span className="font-bold text-lg text-gray-800">
-                              {cartQuantity}
-                            </span>
-                          </div>
-                          <button
-                            onClick={() => updateQuantity(product.id, cartQuantity + 1)}
-                            className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110"
-                          >
-                            <Plus size={16} />
-                          </button>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                            ₹{(Number(product.price) * cartQuantity).toFixed(0)}
-                          </div>
-                          <div className="text-xs text-gray-500">Total</div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              isBestseller={bestsellerIds.includes(product.id)}
+              cartQuantity={getCartQuantity(product.id)}
+              onAddToCart={addToCart}
+              onUpdateQuantity={updateQuantity}
+              getStockStatus={getStockStatus}
+            />
+          ))}
         </div>
 
         {/* No Results Message */}
         {filteredProducts.length === 0 && !loading && (
-          <div className="text-center py-20">
-            <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-12 max-w-md mx-auto border border-white/20 shadow-xl">
-              <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="h-10 w-10 text-orange-500" />
+          <div className="text-center py-16">
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md mx-auto">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="h-8 w-8 text-orange-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">No products found</h3>
-              <p className="text-gray-600 mb-6">We couldn't find any products matching your search criteria.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
+              <p className="text-gray-600 mb-6 text-sm">We couldn't find any products matching your search.</p>
               <button 
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedCategory('all');
+                  setSortOption('default');
                 }}
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 Clear Filters
               </button>

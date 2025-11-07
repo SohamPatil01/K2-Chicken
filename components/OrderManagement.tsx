@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Eye, Phone, MapPin, Clock, CheckCircle } from 'lucide-react'
+import { Eye, Phone, MapPin, Clock, CheckCircle, Tag, Percent } from 'lucide-react'
 
 interface Order {
   id: number
@@ -11,6 +11,7 @@ interface Order {
   delivery_type: string
   subtotal?: number
   delivery_charge?: number
+  discount_amount?: number
   total_amount: number
   status: string
   estimated_delivery: string
@@ -27,6 +28,9 @@ export default function OrderManagement() {
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending')
+  const [showDiscountModal, setShowDiscountModal] = useState(false)
+  const [discountInput, setDiscountInput] = useState('')
+  const [discountType, setDiscountType] = useState<'fixed' | 'percentage'>('fixed')
 
   useEffect(() => {
     fetchOrders()
@@ -68,11 +72,80 @@ export default function OrderManagement() {
       if (response.ok) {
         await fetchOrders()
         if (selectedOrder && selectedOrder.id === orderId) {
-          setSelectedOrder({ ...selectedOrder, status })
+          const updatedOrder = await response.json()
+          setSelectedOrder({ ...selectedOrder, status, ...updatedOrder })
         }
       }
     } catch (error) {
       console.error('Error updating order status:', error)
+    }
+  }
+
+  const applyDiscount = async () => {
+    if (!selectedOrder) return
+
+    const discountValue = parseFloat(discountInput)
+    if (isNaN(discountValue) || discountValue < 0) {
+      alert('Please enter a valid discount amount')
+      return
+    }
+
+    let discountAmount = 0
+    const subtotal = selectedOrder.subtotal || (selectedOrder.total_amount - (selectedOrder.delivery_charge || 0) + (selectedOrder.discount_amount || 0))
+
+    if (discountType === 'percentage') {
+      discountAmount = (subtotal * discountValue) / 100
+      if (discountAmount > subtotal) {
+        discountAmount = subtotal
+      }
+    } else {
+      discountAmount = Math.min(discountValue, subtotal)
+    }
+
+    try {
+      const response = await fetch(`/api/orders/${selectedOrder.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discountAmount: Math.round(discountAmount * 100) / 100 }),
+      })
+
+      if (response.ok) {
+        await fetchOrders()
+        const updatedOrder = await response.json()
+        setSelectedOrder(updatedOrder)
+        setShowDiscountModal(false)
+        setDiscountInput('')
+        alert('Discount applied successfully!')
+      } else {
+        alert('Failed to apply discount')
+      }
+    } catch (error) {
+      console.error('Error applying discount:', error)
+      alert('Failed to apply discount')
+    }
+  }
+
+  const removeDiscount = async () => {
+    if (!selectedOrder) return
+
+    try {
+      const response = await fetch(`/api/orders/${selectedOrder.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discountAmount: 0 }),
+      })
+
+      if (response.ok) {
+        await fetchOrders()
+        const updatedOrder = await response.json()
+        setSelectedOrder(updatedOrder)
+        alert('Discount removed successfully!')
+      } else {
+        alert('Failed to remove discount')
+      }
+    } catch (error) {
+      console.error('Error removing discount:', error)
+      alert('Failed to remove discount')
     }
   }
 
@@ -232,8 +305,14 @@ export default function OrderManagement() {
                 <div className="border-t border-gray-300 pt-2 mt-2 space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal:</span>
-                    <span>₹{Number(selectedOrder.subtotal || selectedOrder.total_amount - (selectedOrder.delivery_charge || 0)).toFixed(0)}</span>
+                    <span>₹{Number(selectedOrder.subtotal || selectedOrder.total_amount - (selectedOrder.delivery_charge || 0) + (selectedOrder.discount_amount || 0)).toFixed(0)}</span>
                   </div>
+                  {(selectedOrder.discount_amount || 0) > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Discount:</span>
+                      <span className="font-semibold">-₹{Number(selectedOrder.discount_amount || 0).toFixed(0)}</span>
+                    </div>
+                  )}
                   {selectedOrder.delivery_type === 'delivery' && (selectedOrder.delivery_charge || 0) > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Delivery Charge:</span>
@@ -251,6 +330,38 @@ export default function OrderManagement() {
                     <span>₹{Number(selectedOrder.total_amount).toFixed(0)}</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Discount Management */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-2 flex items-center space-x-2">
+                  <Tag className="h-4 w-4" />
+                  <span>Discount Management</span>
+                </h4>
+                {(selectedOrder.discount_amount || 0) > 0 ? (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-sm font-semibold text-green-800">Discount Applied</p>
+                        <p className="text-lg font-bold text-green-600">-₹{Number(selectedOrder.discount_amount || 0).toFixed(0)}</p>
+                      </div>
+                      <button
+                        onClick={removeDiscount}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowDiscountModal(true)}
+                    className="w-full px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-sm flex items-center justify-center space-x-2"
+                  >
+                    <Percent className="h-4 w-4" />
+                    <span>Apply Discount</span>
+                  </button>
+                )}
               </div>
 
               {/* Order Status */}
@@ -310,6 +421,79 @@ export default function OrderManagement() {
           )}
         </div>
       </div>
+
+      {/* Discount Modal */}
+      {showDiscountModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-bold mb-4">Apply Discount</h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Discount Type</label>
+              <div className="flex space-x-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="fixed"
+                    checked={discountType === 'fixed'}
+                    onChange={(e) => setDiscountType(e.target.value as 'fixed' | 'percentage')}
+                    className="mr-2"
+                  />
+                  <span>Fixed Amount (₹)</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="percentage"
+                    checked={discountType === 'percentage'}
+                    onChange={(e) => setDiscountType(e.target.value as 'fixed' | 'percentage')}
+                    className="mr-2"
+                  />
+                  <span>Percentage (%)</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Discount {discountType === 'percentage' ? 'Percentage' : 'Amount'}
+              </label>
+              <input
+                type="number"
+                value={discountInput}
+                onChange={(e) => setDiscountInput(e.target.value)}
+                placeholder={discountType === 'percentage' ? 'Enter percentage (e.g., 10)' : 'Enter amount (e.g., 50)'}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                min="0"
+                step={discountType === 'percentage' ? '0.1' : '1'}
+              />
+              {discountType === 'percentage' && discountInput && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Discount: ₹{((Number(selectedOrder.subtotal || selectedOrder.total_amount - (selectedOrder.delivery_charge || 0) + (selectedOrder.discount_amount || 0)) * parseFloat(discountInput || '0')) / 100).toFixed(0)}
+                </p>
+              )}
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => {
+                  setShowDiscountModal(false)
+                  setDiscountInput('')
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={applyDiscount}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold"
+              >
+                Apply Discount
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

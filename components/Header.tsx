@@ -11,59 +11,55 @@ export default function Header() {
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <header className="bg-white/90 backdrop-blur-xl shadow-2xl sticky top-0 z-50 border-b border-orange-200/30">
+    <header className="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/" className="group">
-            <div className="relative inline-block group-hover:scale-110 transition-transform duration-300">
-              <img 
-                src="/logo.svg" 
-                alt="Chicken Vicken" 
-                className="h-12 w-auto"
-              />
-              <div className="text-sm font-semibold text-[#FF6B35] hidden sm:block mt-1" style={{ marginLeft: '38px' }}>
+          <Link href="/" className="group flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <span className="text-white font-bold text-xl">K2</span>
+              </div>
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-lg font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 K2 Chicken
               </div>
+              <div className="text-xs text-gray-500 -mt-1">Fresh & Delicious</div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center space-x-2">
             <Link 
               href="/" 
-              className="px-4 py-2 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300"
+              className="px-5 py-2.5 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
             >
               Home
             </Link>
-            <button 
-              onClick={() => {
-                const productsSection = document.getElementById('products');
-                if (productsSection) {
-                  productsSection.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="px-4 py-2 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300"
+            <Link 
+              href="/#products"
+              className="px-5 py-2.5 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
             >
               Products
-            </button>
+            </Link>
             <Link 
               href="/recipes" 
-              className="px-4 py-2 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300"
+              className="px-5 py-2.5 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
             >
               Recipes
             </Link>
           </nav>
 
           {/* Cart and Mobile Menu */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
             <Link 
               href="/cart" 
-              className="relative p-3 text-gray-700 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50 group"
+              className="relative p-2.5 text-gray-700 hover:text-orange-600 transition-all duration-200 rounded-lg hover:bg-orange-50 group"
             >
-              <ShoppingCart size={24} className="group-hover:scale-110 transition-transform duration-300" />
+              <ShoppingCart size={22} className="group-hover:scale-110 transition-transform duration-200" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold shadow-lg animate-pulse">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-md">
                   {totalItems}
                 </span>
               )}
@@ -71,40 +67,35 @@ export default function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-3 text-gray-700 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50"
+              className="md:hidden p-2.5 text-gray-700 hover:text-orange-600 transition-all duration-200 rounded-lg hover:bg-orange-50"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-6 border-t border-orange-200/30 bg-white/50 backdrop-blur-sm">
-            <nav className="flex flex-col space-y-2">
+          <div className="md:hidden py-4 border-t border-gray-100 bg-white">
+            <nav className="flex flex-col space-y-1">
               <Link 
                 href="/" 
-                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300"
+                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <button 
-                onClick={() => {
-                  const productsSection = document.getElementById('products');
-                  if (productsSection) {
-                    productsSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                  setIsMenuOpen(false);
-                }}
-                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300 text-left"
+              <Link 
+                href="/#products"
+                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Products
-              </button>
+              </Link>
               <Link 
                 href="/recipes" 
-                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-semibold rounded-xl hover:bg-orange-50 transition-all duration-300"
+                className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Recipes

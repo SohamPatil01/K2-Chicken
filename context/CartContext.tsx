@@ -2,6 +2,14 @@
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
 
+export interface WeightOption {
+  id: number | null
+  weight: number
+  weight_unit: string
+  price: number
+  is_default: boolean
+}
+
 export interface Product {
   id: number
   name: string
@@ -10,11 +18,16 @@ export interface Product {
   image_url: string
   category: string
   is_available?: boolean
+  stock_quantity?: number
+  low_stock_threshold?: number
+  in_stock?: boolean
+  weightOptions?: WeightOption[]
 }
 
 export interface CartItem {
   product: Product
   quantity: number
+  selectedWeight?: WeightOption
 }
 
 interface CartState {
@@ -23,7 +36,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: 'ADD_ITEM'; payload: { product: Product; quantity: number } }
+  | { type: 'ADD_ITEM'; payload: { product: Product; quantity: number; selectedWeight?: WeightOption } }
   | { type: 'REMOVE_ITEM'; payload: { productId: number } }
   | { type: 'UPDATE_QUANTITY'; payload: { productId: number; quantity: number } }
   | { type: 'CLEAR_CART' }
@@ -36,25 +49,42 @@ const CartContext = createContext<{
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case 'ADD_ITEM': {
+      const productPrice = action.payload.selectedWeight?.price || action.payload.product.price
+      const productToAdd = action.payload.selectedWeight 
+        ? { ...action.payload.product, price: productPrice }
+        : action.payload.product
+      
       const existingItem = state.items.find(
-        item => item.product.id === action.payload.product.id
+        item => item.product.id === action.payload.product.id && 
+                item.selectedWeight?.weight === action.payload.selectedWeight?.weight
       )
       
       if (existingItem) {
         const updatedItems = state.items.map(item =>
-          item.product.id === action.payload.product.id
+          item.product.id === action.payload.product.id && 
+          item.selectedWeight?.weight === action.payload.selectedWeight?.weight
             ? { ...item, quantity: item.quantity + action.payload.quantity }
             : item
         )
         return {
           items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0)
+          total: updatedItems.reduce((sum, item) => {
+            const itemPrice = item.selectedWeight?.price || item.product.price
+            return sum + (Number(itemPrice) * item.quantity)
+          }, 0)
         }
       } else {
-        const newItems = [...state.items, action.payload]
+        const newItems = [...state.items, { 
+          product: productToAdd, 
+          quantity: action.payload.quantity,
+          selectedWeight: action.payload.selectedWeight
+        }]
         return {
           items: newItems,
-          total: newItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0)
+          total: newItems.reduce((sum, item) => {
+            const itemPrice = item.selectedWeight?.price || item.product.price
+            return sum + (Number(itemPrice) * item.quantity)
+          }, 0)
         }
       }
     }
@@ -65,7 +95,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       )
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0)
+        total: updatedItems.reduce((sum, item) => {
+          const itemPrice = item.selectedWeight?.price || item.product.price
+          return sum + (Number(itemPrice) * item.quantity)
+        }, 0)
       }
     }
     
@@ -81,7 +114,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       )
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0)
+        total: updatedItems.reduce((sum, item) => {
+          const itemPrice = item.selectedWeight?.price || item.product.price
+          return sum + (Number(itemPrice) * item.quantity)
+        }, 0)
       }
     }
     

@@ -10,17 +10,45 @@ export async function GET(request: NextRequest) {
     
     try {
       const query = all 
-        ? `SELECT id, name, description, price, image_url, category, is_available
+        ? `SELECT id, name, description, price, image_url, category, is_available,
+                  COALESCE(stock_quantity, 100) as stock_quantity,
+                  COALESCE(low_stock_threshold, 10) as low_stock_threshold,
+                  COALESCE(in_stock, true) as in_stock
            FROM products 
            ORDER BY category, name`
-        : `SELECT id, name, description, price, image_url, category, is_available
+        : `SELECT id, name, description, price, image_url, category, is_available,
+                  COALESCE(stock_quantity, 100) as stock_quantity,
+                  COALESCE(low_stock_threshold, 10) as low_stock_threshold,
+                  COALESCE(in_stock, true) as in_stock
            FROM products 
            WHERE is_available = true 
            ORDER BY category, name`
       
       const result = await client.query(query)
       
-      return NextResponse.json(result.rows)
+      // Fetch weight options for each product
+      const productsWithWeights = await Promise.all(
+        result.rows.map(async (product) => {
+          const weightOptions = await client.query(
+            `SELECT id, weight, weight_unit, price, is_default 
+             FROM product_weight_options 
+             WHERE product_id = $1 
+             ORDER BY weight ASC`,
+            [product.id]
+          )
+          
+          return {
+            ...product,
+            weightOptions: weightOptions.rows.length > 0 
+              ? weightOptions.rows 
+              : [
+                  { id: null, weight: 500, weight_unit: 'g', price: product.price, is_default: true }
+                ]
+          }
+        })
+      )
+      
+      return NextResponse.json(productsWithWeights)
     } finally {
       client.release()
     }

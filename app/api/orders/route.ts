@@ -1,9 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 
+import jwt from 'jsonwebtoken'
+
+function getUserIdFromToken(request: NextRequest): number | null {
+  try {
+    const token = request.cookies.get('auth-token')?.value
+    if (!token) return null
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any
+    return decoded.userId
+  } catch {
+    return null
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { customerName, customerPhone, deliveryAddress, deliveryType, items, subtotal, deliveryCharge, total } = await request.json()
+    const { 
+      customerName, 
+      customerPhone, 
+      deliveryAddress, 
+      deliveryType, 
+      items, 
+      subtotal, 
+      deliveryCharge, 
+      total, 
+      discountAmount, 
+      promoCode,
+      deliveryTimeSlotId,
+      preferredDeliveryDate,
+      preferredDeliveryTime
+    } = await request.json()
+    
+    const userId = getUserIdFromToken(request)
     
     const client = await pool.connect()
     
@@ -13,8 +43,23 @@ export async function POST(request: NextRequest) {
       
       // Insert order
       const orderResult = await client.query(`
-        INSERT INTO orders (customer_name, customer_phone, delivery_address, delivery_type, subtotal, delivery_charge, total_amount, status, estimated_delivery)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO orders (
+          customer_name, 
+          customer_phone, 
+          delivery_address, 
+          delivery_type, 
+          subtotal, 
+          delivery_charge, 
+          total_amount, 
+          discount_amount,
+          status, 
+          estimated_delivery,
+          user_id,
+          delivery_time_slot_id,
+          preferred_delivery_date,
+          preferred_delivery_time
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *
       `, [
         customerName,
@@ -24,18 +69,35 @@ export async function POST(request: NextRequest) {
         subtotal || total,
         deliveryCharge || 0,
         total,
+        discountAmount || 0,
         'pending',
-        new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000)
+        new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000),
+        userId,
+        deliveryTimeSlotId || null,
+        preferredDeliveryDate || null,
+        preferredDeliveryTime || null
       ])
+      
+      // Store promo code info if available (we'll add a promo_code column to orders table if needed)
+      // For now, we can add it as a note or extend the schema
       
       const order = orderResult.rows[0]
       
       // Insert order items
       for (const item of items) {
+        const itemPrice = item.selectedWeight?.price || item.product.price
         await client.query(`
-          INSERT INTO order_items (order_id, product_id, quantity, price)
-          VALUES ($1, $2, $3, $4)
-        `, [order.id, item.product.id, item.quantity, item.product.price])
+          INSERT INTO order_items (order_id, product_id, quantity, price, weight_option_id, selected_weight, weight_unit)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `, [
+          order.id, 
+          item.product.id, 
+          item.quantity, 
+          itemPrice,
+          item.selectedWeight?.id || null,
+          item.selectedWeight?.weight || null,
+          item.selectedWeight?.weight_unit || null
+        ])
       }
       
       // Commit transaction
@@ -77,6 +139,7 @@ export async function GET() {
         SELECT o.*, 
                COALESCE(o.subtotal, o.total_amount) as subtotal,
                COALESCE(o.delivery_charge, 0) as delivery_charge,
+               COALESCE(o.discount_amount, 0) as discount_amount,
                COALESCE(o.delivery_type, 'delivery') as delivery_type,
                array_agg(
                  json_build_object(

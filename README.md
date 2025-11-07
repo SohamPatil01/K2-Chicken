@@ -77,15 +77,38 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
    # Optional: Server-side API key (more secure)
    GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+   # Admin Authentication (SECURE - Required for production)
+   # Generate password hash using: node scripts/setup-admin-credentials.js
+   ADMIN_USERNAME=your_admin_username
+   ADMIN_PASSWORD_HASH=your_bcrypt_hashed_password
+   JWT_SECRET=your_secure_jwt_secret_key_minimum_32_characters
+
+   # UPI Payment (for QR code payments on delivery orders)
+   # Format: phone@paytm, phone@ybl, or your UPI ID
+   NEXT_PUBLIC_UPI_ID=8484978622@paytm
    ```
 
-5. **Initialize the database**
+5. **Set up Admin Credentials (IMPORTANT)**
+
+   For secure admin access, you must set up admin credentials:
+   
+   ```bash
+   node scripts/setup-admin-credentials.js
+   ```
+   
+   This will prompt you for a username and password, then generate a secure password hash.
+   Add the output to your `.env.local` file as shown above.
+   
+   ⚠️ **Security Note**: Never commit `.env.local` to version control. Keep your admin credentials secure.
+
+6. **Initialize the database**
 
    ```bash
    node scripts/init-db.js
    ```
 
-6. **Start the development server**
+7. **Start the development server**
 
    ```bash
    npm run dev

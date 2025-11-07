@@ -6,15 +6,25 @@
   body * {
     visibility: hidden;
   }
-  .print\\:shadow-none,
-  .print\\:shadow-none * {
+  .print-bill,
+  .print-bill * {
     visibility: visible;
   }
-  .print\\:shadow-none {
+  .print-bill {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
+    background: white;
+    padding: 20px;
+    margin: 0;
+  }
+  .no-print {
+    display: none !important;
+  }
+  @page {
+    margin: 0.5cm;
+    size: A4;
   }
 }
 
@@ -26,20 +36,79 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-chicken-red hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply bg-chicken-yellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-white border-2 border-gray-200 hover:border-orange-300 text-gray-700 hover:text-orange-600 font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-lg p-6 border border-gray-200;
+    @apply bg-white rounded-2xl shadow-md p-6 border border-gray-200;
   }
 
   .chicken-gradient {
-    @apply bg-gradient-to-r from-chicken-red via-chicken-orange to-chicken-yellow;
+    @apply bg-gradient-to-r from-orange-600 via-red-600 to-orange-500;
   }
+}
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  66% {
+    transform: translateY(10px) translateX(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
 }
 
 @keyframes flash {
