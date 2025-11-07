@@ -135,11 +135,12 @@ export default function CheckoutPage() {
         dispatch({ type: 'CLEAR_CART' })
         router.push(`/order-confirmation/${order.id}`)
       } else {
-        throw new Error('Failed to place order')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.details || errorData.error || 'Failed to place order')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error placing order:', error)
-      alert('Failed to place order. Please try again.')
+      alert(error.message || 'Failed to place order. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

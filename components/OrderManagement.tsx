@@ -35,22 +35,27 @@ export default function OrderManagement() {
   const fetchOrders = async () => {
     try {
       const response = await fetch('/api/orders')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
-      setOrders(data)
+      // Ensure data is an array
+      setOrders(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error fetching orders:', error)
+      setOrders([])
     } finally {
       setLoading(false)
     }
   }
 
-  const pendingOrders = orders.filter(order => 
+  const pendingOrders = Array.isArray(orders) ? orders.filter(order => 
     order.status !== 'delivered' && order.status !== 'cancelled'
-  )
+  ) : []
   
-  const completedOrders = orders.filter(order => 
+  const completedOrders = Array.isArray(orders) ? orders.filter(order => 
     order.status === 'delivered' || order.status === 'cancelled'
-  )
+  ) : []
 
   const updateOrderStatus = async (orderId: number, status: string) => {
     try {

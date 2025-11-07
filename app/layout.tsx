@@ -1,11 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import ChatbotBanner from '@/components/ChatbotBanner'
-import FloatingWhatsApp from '@/components/FloatingWhatsApp'
-import MobileBottomNav from '@/components/MobileBottomNav'
 import { CartProvider } from '@/context/CartContext'
 import ConditionalLayout from '@/components/ConditionalLayout'
 
