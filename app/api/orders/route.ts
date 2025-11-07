@@ -3,7 +3,7 @@ import pool from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
-    const { customerName, customerPhone, deliveryAddress, deliveryType, items, total } = await request.json()
+    const { customerName, customerPhone, deliveryAddress, deliveryType, items, subtotal, deliveryCharge, total } = await request.json()
     
     const client = await pool.connect()
     
@@ -13,13 +13,16 @@ export async function POST(request: NextRequest) {
       
       // Insert order
       const orderResult = await client.query(`
-        INSERT INTO orders (customer_name, customer_phone, delivery_address, total_amount, status, estimated_delivery)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO orders (customer_name, customer_phone, delivery_address, delivery_type, subtotal, delivery_charge, total_amount, status, estimated_delivery)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
       `, [
         customerName,
         customerPhone,
         deliveryType === 'delivery' ? deliveryAddress : 'Pickup at store',
+        deliveryType || 'delivery',
+        subtotal || total,
+        deliveryCharge || 0,
         total,
         'pending',
         new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000)
@@ -69,6 +72,9 @@ export async function GET() {
     try {
       const result = await client.query(`
         SELECT o.*, 
+               COALESCE(o.subtotal, o.total_amount) as subtotal,
+               COALESCE(o.delivery_charge, 0) as delivery_charge,
+               COALESCE(o.delivery_type, 'delivery') as delivery_type,
                array_agg(
                  json_build_object(
                    'id', oi.id,
@@ -76,7 +82,7 @@ export async function GET() {
                    'quantity', oi.quantity,
                    'price', oi.price
                  )
-               ) as items
+               ) FILTER (WHERE oi.id IS NOT NULL) as items
         FROM orders o
         LEFT JOIN order_items oi ON o.id = oi.order_id
         LEFT JOIN products p ON oi.product_id = p.id

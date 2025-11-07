@@ -283,17 +283,19 @@ export default function CheckoutPage() {
                     </button>
                   </div>
                   {calculatingDelivery && (
-                    <p className="text-sm text-gray-500 mt-2">Calculating delivery charge using Google Maps...</p>
+                    <p className="text-sm text-gray-500 mt-2">Calculating delivery charge...</p>
                   )}
-                  {distance !== null && !calculatingDelivery && (
+                  {!calculatingDelivery && deliveryCharge > 0 && (
                     <div className="mt-2 p-3 bg-blue-50 rounded-lg">
                       <p className="text-sm text-gray-700">
-                        <strong>Distance:</strong> {distance} km from shop (road distance)
-                        {distance <= freeDeliveryRadius ? (
-                          <span className="text-green-600 ml-2">✓ Free delivery!</span>
-                        ) : (
-                          <span className="text-orange-600 ml-2">Delivery charge: ₹{deliveryCharge}</span>
-                        )}
+                        <span className="text-orange-600 font-medium">Delivery charge: ₹{deliveryCharge}</span>
+                      </p>
+                    </div>
+                  )}
+                  {!calculatingDelivery && deliveryCharge === 0 && distance !== null && (
+                    <div className="mt-2 p-3 bg-green-50 rounded-lg">
+                      <p className="text-sm text-green-700 font-medium">
+                        ✓ Free delivery within service area!
                       </p>
                     </div>
                   )}

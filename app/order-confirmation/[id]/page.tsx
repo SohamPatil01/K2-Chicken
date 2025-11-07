@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle, Clock, MapPin, Phone } from 'lucide-react'
+import { CheckCircle, Clock, MapPin, Phone, Printer } from 'lucide-react'
 
 interface Order {
   id: number
@@ -11,6 +11,8 @@ interface Order {
   customer_phone: string
   delivery_address: string
   delivery_type: string
+  subtotal?: number
+  delivery_charge?: number
   total_amount: number
   status: string
   estimated_delivery: string
@@ -125,6 +127,10 @@ export default function OrderConfirmationPage() {
     return new Date(dateString).toLocaleString()
   }
 
+  const handlePrint = () => {
+    window.print()
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -194,29 +200,86 @@ export default function OrderConfirmationPage() {
             </div>
           </div>
 
-          {/* Order Items */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-6">Order Items</h2>
-            
-            <div className="space-y-4 mb-6">
-              {order.items.map((item, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{item.product_name}</p>
-                    <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+          {/* Order Bill */}
+          <div className="bg-white rounded-lg shadow-lg p-6 print:shadow-none">
+            <div className="flex justify-between items-start mb-4 print:hidden">
+              <h2 className="text-xl font-semibold">Order Bill</h2>
+              <button
+                onClick={handlePrint}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                <Printer size={18} />
+                <span>Print Bill</span>
+              </button>
+            </div>
+            <div className="text-center mb-6 pb-4 border-b-2 border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-900">K2 CHICKEN</h2>
+              <p className="text-sm text-gray-600 mt-1">Shop No. 4, 24K Avenue, New DP Rd</p>
+              <p className="text-sm text-gray-600">Vishal Nagar, Pimple Nilakh, Pune - 411027</p>
+              <p className="text-sm text-gray-600 mt-2">Phone: 8484978622</p>
+            </div>
+
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Order #:</span>
+                <span className="font-semibold">{order.id}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Date:</span>
+                <span>{formatDate(order.created_at)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Customer:</span>
+                <span className="font-medium">{order.customer_name}</span>
+              </div>
+            </div>
+
+            <div className="border-t border-b border-gray-200 py-4 my-4">
+              <h3 className="font-semibold text-gray-900 mb-3">Items</h3>
+              <div className="space-y-3">
+                {order.items && order.items.map((item, index) => (
+                  <div key={index} className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{item.product_name}</p>
+                      <p className="text-sm text-gray-600">Qty: {item.quantity} × ₹{Number(item.price).toFixed(0)}</p>
+                    </div>
+                    <p className="font-semibold text-gray-900 ml-4">
+                      ₹{(Number(item.price) * item.quantity).toFixed(0)}
+                    </p>
                   </div>
-                  <p className="font-semibold text-chicken-red">
-                    ₹{(Number(item.price) * item.quantity).toFixed(0)}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             
-            <div className="border-t border-gray-200 pt-4">
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+            <div className="space-y-2 mb-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Subtotal:</span>
+                <span className="font-medium">₹{Number(order.subtotal || order.total_amount - (order.delivery_charge || 0)).toFixed(0)}</span>
+              </div>
+              {order.delivery_type === 'delivery' && (order.delivery_charge || 0) > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Delivery Charge:</span>
+                  <span className="font-medium">₹{Number(order.delivery_charge || 0).toFixed(0)}</span>
+                </div>
+              )}
+              {order.delivery_type === 'delivery' && (order.delivery_charge || 0) === 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Delivery Charge:</span>
+                  <span className="font-medium text-green-600">FREE</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="border-t-2 border-gray-300 pt-4">
+              <div className="flex justify-between text-xl font-bold">
+                <span>Total Amount:</span>
                 <span className="text-chicken-red">₹{Number(order.total_amount).toFixed(0)}</span>
               </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-gray-200 text-center">
+              <p className="text-sm text-gray-600">Thank you for your order!</p>
+              <p className="text-xs text-gray-500 mt-2">We'll contact you shortly to confirm your order.</p>
             </div>
           </div>
         </div>
@@ -298,9 +361,6 @@ export default function OrderConfirmationPage() {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/" className="btn-primary">
             Order More Chicken 🍗
-          </Link>
-          <Link href="/whatsapp-test" className="btn-secondary">
-            Chat with WhatsApp Bot 💬
           </Link>
           <Link href="/recipes" className="btn-secondary">
             View Recipes 👨‍🍳

@@ -11,13 +11,16 @@ export async function GET(
     try {
       const result = await client.query(`
         SELECT o.*, 
+               COALESCE(o.subtotal, o.total_amount) as subtotal,
+               COALESCE(o.delivery_charge, 0) as delivery_charge,
+               COALESCE(o.delivery_type, CASE WHEN o.delivery_address = 'Pickup at store' THEN 'pickup' ELSE 'delivery' END) as delivery_type,
                array_agg(
                  json_build_object(
                    'product_name', p.name,
                    'quantity', oi.quantity,
                    'price', oi.price
                  )
-               ) as items
+               ) FILTER (WHERE oi.id IS NOT NULL) as items
         FROM orders o
         LEFT JOIN order_items oi ON o.id = oi.order_id
         LEFT JOIN products p ON oi.product_id = p.id
@@ -37,7 +40,9 @@ export async function GET(
         customer_name: order.customer_name,
         customer_phone: order.customer_phone,
         delivery_address: order.delivery_address,
-        delivery_type: order.delivery_address === 'Pickup at store' ? 'pickup' : 'delivery',
+        delivery_type: order.delivery_type || (order.delivery_address === 'Pickup at store' ? 'pickup' : 'delivery'),
+        subtotal: order.subtotal,
+        delivery_charge: order.delivery_charge,
         total_amount: order.total_amount,
         status: order.status,
         estimated_delivery: order.estimated_delivery,

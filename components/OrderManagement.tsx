@@ -9,6 +9,8 @@ interface Order {
   customer_phone: string
   delivery_address: string
   delivery_type: string
+  subtotal?: number
+  delivery_charge?: number
   total_amount: number
   status: string
   estimated_delivery: string
@@ -24,6 +26,7 @@ export default function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
+  const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending')
 
   useEffect(() => {
     fetchOrders()
@@ -40,6 +43,14 @@ export default function OrderManagement() {
       setLoading(false)
     }
   }
+
+  const pendingOrders = orders.filter(order => 
+    order.status !== 'delivered' && order.status !== 'cancelled'
+  )
+  
+  const completedOrders = orders.filter(order => 
+    order.status === 'delivered' || order.status === 'cancelled'
+  )
 
   const updateOrderStatus = async (orderId: number, status: string) => {
     try {
@@ -94,16 +105,48 @@ export default function OrderManagement() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Order Management</h2>
         <div className="text-sm text-gray-600">
-          {orders.length} total orders
+          {pendingOrders.length} pending • {completedOrders.length} completed
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="mb-6 flex space-x-4 border-b border-gray-200">
+        <button
+          onClick={() => {
+            setActiveTab('pending')
+            setSelectedOrder(null)
+          }}
+          className={`pb-3 px-4 font-semibold transition-colors ${
+            activeTab === 'pending'
+              ? 'text-chicken-red border-b-2 border-chicken-red'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Pending Orders ({pendingOrders.length})
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('completed')
+            setSelectedOrder(null)
+          }}
+          className={`pb-3 px-4 font-semibold transition-colors ${
+            activeTab === 'completed'
+              ? 'text-chicken-red border-b-2 border-chicken-red'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Completed Orders ({completedOrders.length})
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Orders List */}
         <div>
-          <h3 className="text-lg font-medium mb-4">Recent Orders</h3>
+          <h3 className="text-lg font-medium mb-4">
+            {activeTab === 'pending' ? 'Pending Orders' : 'Completed Orders'}
+          </h3>
           <div className="space-y-4 max-h-96 overflow-y-auto">
-            {orders.map((order) => (
+            {(activeTab === 'pending' ? pendingOrders : completedOrders).map((order) => (
               <div
                 key={order.id}
                 className={`p-4 border rounded-lg cursor-pointer transition-colors ${
@@ -174,16 +217,32 @@ export default function OrderManagement() {
               <div className="mb-6">
                 <h4 className="font-semibold mb-2">Order Items</h4>
                 <div className="space-y-2">
-                  {selectedOrder.items.map((item, index) => (
+                  {selectedOrder.items && selectedOrder.items.map((item, index) => (
                     <div key={index} className="flex justify-between text-sm">
                       <span>{item.product_name} x {item.quantity}</span>
                       <span>₹{(Number(item.price) * item.quantity).toFixed(0)}</span>
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-gray-300 pt-2 mt-2">
-                  <div className="flex justify-between font-semibold">
-                    <span>Total</span>
+                <div className="border-t border-gray-300 pt-2 mt-2 space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Subtotal:</span>
+                    <span>₹{Number(selectedOrder.subtotal || selectedOrder.total_amount - (selectedOrder.delivery_charge || 0)).toFixed(0)}</span>
+                  </div>
+                  {selectedOrder.delivery_type === 'delivery' && (selectedOrder.delivery_charge || 0) > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Delivery Charge:</span>
+                      <span>₹{Number(selectedOrder.delivery_charge || 0).toFixed(0)}</span>
+                    </div>
+                  )}
+                  {selectedOrder.delivery_type === 'delivery' && (selectedOrder.delivery_charge || 0) === 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Delivery Charge:</span>
+                      <span className="text-green-600">FREE</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-semibold pt-1">
+                    <span>Total:</span>
                     <span>₹{Number(selectedOrder.total_amount).toFixed(0)}</span>
                   </div>
                 </div>

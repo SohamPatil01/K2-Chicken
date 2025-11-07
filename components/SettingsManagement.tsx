@@ -99,6 +99,8 @@ export default function SettingsManagement() {
 
       if (response.ok && data.success) {
         setMessage({ type: 'success', text: 'Settings saved successfully!' })
+        // Refresh settings from server to ensure we have the latest values
+        await fetchSettings()
         setTimeout(() => setMessage(null), 3000)
       } else {
         setMessage({ type: 'error', text: data.error || 'Failed to save settings' })
