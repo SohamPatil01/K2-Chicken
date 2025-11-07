@@ -1,15 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Package, ChefHat, ShoppingCart, DollarSign, MessageCircle } from 'lucide-react'
+import { Package, ChefHat, ShoppingCart, DollarSign } from 'lucide-react'
 
 interface DashboardStats {
   totalProducts: number
   totalRecipes: number
   totalOrders: number
   totalRevenue: number
-  whatsappOrders: number
-  whatsappRevenue: number
 }
 
 export default function AdminDashboard() {
@@ -17,9 +15,7 @@ export default function AdminDashboard() {
     totalProducts: 0,
     totalRecipes: 0,
     totalOrders: 0,
-    totalRevenue: 0,
-    whatsappOrders: 0,
-    whatsappRevenue: 0
+    totalRevenue: 0
   })
   const [loading, setLoading] = useState(true)
 
@@ -29,32 +25,25 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [productsRes, recipesRes, ordersRes, whatsappOrdersRes] = await Promise.all([
+      const [productsRes, recipesRes, ordersRes] = await Promise.all([
         fetch('/api/products'),
         fetch('/api/recipes'),
-        fetch('/api/orders'),
-        fetch('/api/whatsapp/orders')
+        fetch('/api/orders')
       ])
       
       const products = await productsRes.json()
       const recipes = await recipesRes.json()
       const orders = await ordersRes.json()
-      const whatsappOrders = await whatsappOrdersRes.json()
       
       const totalRevenue = orders.reduce((sum: number, order: any) => 
         sum + Number(order.total_amount), 0
       )
       
-      const whatsappRevenue = whatsappOrders.success ? 
-        whatsappOrders.data.reduce((sum: number, order: any) => sum + Number(order.total), 0) : 0
-      
       setStats({
         totalProducts: products.length,
         totalRecipes: recipes.length,
         totalOrders: orders.length,
-        totalRevenue,
-        whatsappOrders: whatsappOrders.success ? whatsappOrders.data.length : 0,
-        whatsappRevenue
+        totalRevenue
       })
     } catch (error) {
       console.error('Error fetching stats:', error)
@@ -82,7 +71,7 @@ export default function AdminDashboard() {
     <div className="p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
           <div className="flex items-center">
             <div className="p-3 bg-chicken-red bg-opacity-20 rounded-lg">
@@ -127,30 +116,6 @@ export default function AdminDashboard() {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Revenue</p>
               <p className="text-2xl font-bold text-gray-900">₹{stats.totalRevenue.toFixed(0)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <MessageCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">WhatsApp Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.whatsappOrders}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <DollarSign className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">WhatsApp Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">₹{stats.whatsappRevenue.toFixed(0)}</p>
             </div>
           </div>
         </div>
