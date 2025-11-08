@@ -26,19 +26,31 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies in the request
         body: JSON.stringify(credentials),
       })
 
-      const data = await response.json()
+      let data
+      try {
+        data = await response.json()
+      } catch (jsonError) {
+        console.error('Failed to parse response:', jsonError)
+        setError('Server error: Invalid response format')
+        return
+      }
 
       if (response.ok && data.success) {
         // Token is now stored in HTTP-only cookie automatically
-        // Redirect to admin dashboard
-        router.push('/admin')
+        // Small delay to ensure cookie is set
+        setTimeout(() => {
+          router.push('/admin')
+          router.refresh() // Refresh to ensure the page updates
+        }, 100)
       } else {
-        setError(data.error || 'Invalid credentials')
+        setError(data.error || 'Invalid username or password')
       }
     } catch (error) {
+      console.error('Login error:', error)
       setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
