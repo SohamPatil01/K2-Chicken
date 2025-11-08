@@ -41,11 +41,9 @@ export default function AdminLoginPage() {
 
       if (response.ok && data.success) {
         // Token is now stored in HTTP-only cookie automatically
-        // Small delay to ensure cookie is set
-        setTimeout(() => {
-          router.push('/admin')
-          router.refresh() // Refresh to ensure the page updates
-        }, 100)
+        // Use window.location for a hard redirect to ensure cookie is sent
+        // This ensures a full page reload and proper cookie handling
+        window.location.href = '/admin'
       } else {
         setError(data.error || 'Invalid username or password')
       }

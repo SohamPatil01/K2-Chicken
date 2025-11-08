@@ -34,23 +34,28 @@ export default function AdminPage() {
         
         if (response.ok) {
           const userData = await response.json()
-          setUser(userData.user)
+          if (userData.success && userData.user) {
+            setUser(userData.user)
+            setIsLoading(false)
+          } else {
+            // Invalid response, redirect to login
+            window.location.href = '/admin/login'
+            return
+          }
         } else {
           // If not authenticated, redirect to login
-          router.push('/admin/login')
+          window.location.href = '/admin/login'
           return
         }
       } catch (error) {
         console.error('Auth check error:', error)
-        router.push('/admin/login')
+        window.location.href = '/admin/login'
         return
       }
-      
-      setIsLoading(false)
     }
 
     checkAuth()
-  }, [router])
+  }, [])
 
   // Fetch new orders count periodically
   useEffect(() => {
