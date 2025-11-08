@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -53,23 +54,23 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-red-600 rounded-full flex items-center justify-center">
-            <Lock className="h-8 w-8 text-white" />
+          <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 bg-red-600 rounded-full flex items-center justify-center">
+            <Lock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-white">
+          <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-extrabold text-white">
             Admin Login
           </h2>
-          <p className="mt-2 text-sm text-gray-300">
+          <p className="mt-2 text-xs sm:text-sm text-gray-300">
             K2 Chicken Management System
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-xl shadow-2xl p-8">
+        <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
@@ -94,7 +95,7 @@ export default function AdminLoginPage() {
                   required
                   value={credentials.username}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                  className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
                   placeholder="Enter your username"
                 />
               </div>
@@ -116,7 +117,7 @@ export default function AdminLoginPage() {
                   required
                   value={credentials.password}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                  className="block w-full pl-10 pr-12 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
                   placeholder="Enter your password"
                 />
                 <button
@@ -137,7 +138,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex justify-center py-3 sm:py-3.5 px-4 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[44px]"
             >
               {isLoading ? (
                 <div className="flex items-center">

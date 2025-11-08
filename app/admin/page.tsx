@@ -170,22 +170,22 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-4 sm:mb-6">
             <div className="relative inline-block">
               <img 
                 src="/logo.svg" 
-                alt="Chicken Vicken" 
-                className="h-20 w-auto mb-2"
+                alt="K2 Chicken" 
+                className="h-16 sm:h-20 w-auto mb-2"
               />
-              <div className="text-base font-semibold text-[#FF6B35]" style={{ marginLeft: '63px' }}>
+              <div className="text-sm sm:text-base font-semibold text-[#FF6B35]" style={{ marginLeft: '50px' }}>
                 K2 Chicken
               </div>
             </div>
           </div>
           <div className="animate-spin rounded-full h-8 w-8 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-semibold">Loading Admin Dashboard...</p>
+          <p className="text-gray-600 font-semibold text-sm sm:text-base">Loading Admin Dashboard...</p>
         </div>
       </div>
     )
@@ -209,18 +209,18 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20">
       {/* Order Notification Alert */}
       {showOrderNotification && (
-        <div className="fixed top-20 right-4 z-50 animate-bounce">
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl border-2 border-white flex items-center space-x-3 min-w-[300px]">
-            <div className="text-3xl animate-pulse">🔔</div>
-            <div>
-              <div className="font-bold text-lg">New Order Alert!</div>
-              <div className="text-sm opacity-90">
+        <div className="fixed top-16 sm:top-20 right-2 sm:right-4 left-2 sm:left-auto z-50 animate-bounce">
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-2xl border-2 border-white flex items-center space-x-2 sm:space-x-3 max-w-[300px] sm:min-w-[300px] mx-auto sm:mx-0">
+            <div className="text-2xl sm:text-3xl animate-pulse flex-shrink-0">🔔</div>
+            <div className="flex-grow min-w-0">
+              <div className="font-bold text-base sm:text-lg">New Order Alert!</div>
+              <div className="text-xs sm:text-sm opacity-90">
                 {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} has arrived!
               </div>
             </div>
             <button
               onClick={() => setShowOrderNotification(false)}
-              className="ml-auto text-white hover:text-gray-200"
+              className="ml-auto text-white hover:text-gray-200 flex-shrink-0 text-lg sm:text-xl min-h-[44px] min-w-[44px] items-center justify-center"
             >
               ✕
             </button>
@@ -231,52 +231,52 @@ export default function AdminPage() {
       {/* Admin Header */}
       <div className="bg-white/80 backdrop-blur-xl shadow-2xl border-b border-orange-200/30 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="relative inline-block">
                 <img 
                   src="/logo.svg" 
-                  alt="Chicken Vicken" 
-                  className="h-14 w-auto"
+                  alt="K2 Chicken" 
+                  className="h-10 sm:h-14 w-auto"
                 />
-                <div className="text-sm font-semibold text-[#FF6B35] mt-1" style={{ marginLeft: '44px' }}>
+                <div className="text-xs sm:text-sm font-semibold text-[#FF6B35] mt-0.5 sm:mt-1" style={{ marginLeft: '32px' }}>
                   K2 Chicken
                 </div>
               </div>
               <div>
-                <h1 className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                   Admin Dashboard
                 </h1>
-                <p className="text-sm text-gray-600 font-medium">K2 Chicken Management System</p>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium hidden sm:block">K2 Chicken Management System</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl border border-orange-200">
-                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
+            <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
+              <div className="flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl sm:rounded-2xl border border-orange-200">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">Welcome back!</p>
+                <div className="hidden sm:block">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-800">Welcome back!</p>
                   <p className="text-xs text-gray-600">{user.username}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold"
+                className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl sm:rounded-2xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold text-xs sm:text-sm min-h-[44px]"
               >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Tab Navigation */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 p-2">
-            <nav className="flex space-x-2 px-4">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 mb-4 sm:mb-8 overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 p-1 sm:p-2">
+            <nav className="flex space-x-1 sm:space-x-2 px-2 sm:px-4 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 const isOrdersTab = tab.id === 'orders'
@@ -286,16 +286,16 @@ export default function AdminPage() {
                   <button
                     key={tab.id}
                     onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
-                    className={`relative flex items-center space-x-3 py-4 px-6 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                    className={`relative flex items-center space-x-1 sm:space-x-2 md:space-x-3 py-2 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl sm:rounded-2xl font-semibold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap min-h-[44px] ${
                       activeTab === tab.id
                         ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg scale-105'
                         : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50 hover:scale-105'
                     }`}
                   >
-                    <Icon size={20} />
-                    <span>{tab.label}</span>
+                    <Icon size={16} className="sm:w-5 sm:h-5" />
+                    <span className="hidden sm:inline">{tab.label}</span>
                     {showBadge && (
-                      <span className="order-badge-flash absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[24px] h-6 px-1.5 flex items-center justify-center border-2 border-white z-10">
+                      <span className="order-badge-flash absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[20px] sm:min-w-[24px] h-5 sm:h-6 px-1 sm:px-1.5 flex items-center justify-center border-2 border-white z-10">
                         {newOrdersCount > 99 ? '99+' : newOrdersCount}
                       </span>
                     )}
@@ -307,7 +307,7 @@ export default function AdminPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden p-6">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 overflow-hidden p-4 sm:p-6">
           {activeTab === 'dashboard' && <AdminDashboard />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'recipes' && <RecipeManagement />}
