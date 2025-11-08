@@ -60,19 +60,19 @@ export default function RecipeSection() {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-12 sm:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Chicken Recipe Cookbook</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Chicken Recipe Cookbook</h2>
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-4 sm:mb-6 px-4">
             Learn to cook delicious chicken dishes at home with our expert recipes and cooking tips
           </p>
-          <div className="inline-flex items-center space-x-2 bg-green-50 border-2 border-green-200 rounded-full px-6 py-3 mb-6">
-            <span className="text-green-700 font-semibold">🌾 Made with Baramati Agro Products</span>
+          <div className="inline-flex items-center space-x-2 bg-green-50 border-2 border-green-200 rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6">
+            <span className="text-green-700 font-semibold text-xs sm:text-sm">🌾 Made with Baramati Agro Products</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {recipes.map((recipe) => (
             <div key={recipe.id} className="card hover:shadow-xl transition-shadow duration-300">
               <div className="aspect-w-16 aspect-h-9 mb-4">

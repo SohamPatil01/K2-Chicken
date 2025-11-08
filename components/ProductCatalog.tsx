@@ -303,41 +303,41 @@ export default function ProductCatalog() {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+        <div className="text-center mb-8 sm:mb-12 px-4">
+          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6">
             <span>🍗</span>
             <span>Fresh Daily</span>
           </div>
-          <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-3 sm:mb-4">
             Our <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Products</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             Handcrafted with premium ingredients and our secret family recipes
           </p>
         </div>
 
         {/* Search, Filter and Sort Bar */}
-        <div className="mb-12 bg-gray-50 border border-gray-200 rounded-2xl p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
+        <div className="mb-8 sm:mb-12 bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-6 mx-4 sm:mx-0">
+          <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
             {/* Search Bar */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
+                className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white text-sm sm:text-base"
               />
             </div>
             
             {/* Category Filter */}
-            <div className="flex items-center gap-3">
-              <Filter className="text-gray-400 h-5 w-5" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Filter className="text-gray-400 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium min-w-[180px]"
+                className="flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium sm:min-w-[180px] text-sm sm:text-base"
               >
                 {getCategories().map(category => (
                   <option key={category} value={category}>
@@ -348,12 +348,12 @@ export default function ProductCatalog() {
             </div>
 
             {/* Sort Option */}
-            <div className="flex items-center gap-3">
-              <ArrowUpDown className="text-gray-400 h-5 w-5" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <ArrowUpDown className="text-gray-400 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value as SortOption)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium min-w-[180px]"
+                className="flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium sm:min-w-[180px] text-sm sm:text-base"
               >
                 <option value="default">Default</option>
                 <option value="price-low">Price: Low to High</option>
@@ -366,7 +366,7 @@ export default function ProductCatalog() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}

@@ -373,34 +373,34 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">
             Checkout <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Details</span>
           </h1>
-          <p className="text-gray-600 text-lg">Complete your order in just a few steps</p>
+          <p className="text-gray-600 text-base sm:text-lg">Complete your order in just a few steps</p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Order Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
               {/* Form Header */}
-              <div className="bg-gradient-to-r from-orange-600 to-red-600 p-6 text-white">
-                <h2 className="text-2xl font-bold mb-1">Order Information</h2>
-                <p className="text-orange-100 text-sm">Fill in your details to complete the order</p>
+              <div className="bg-gradient-to-r from-orange-600 to-red-600 p-4 sm:p-6 text-white">
+                <h2 className="text-xl sm:text-2xl font-bold mb-1">Order Information</h2>
+                <p className="text-orange-100 text-xs sm:text-sm">Fill in your details to complete the order</p>
               </div>
               
-              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {/* Delivery Type Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     Order Type *
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <label className={`relative flex flex-col items-center justify-center p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <label className={`relative flex flex-col items-center justify-center p-4 sm:p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
                       deliveryType === 'delivery' 
                         ? 'border-orange-500 bg-orange-50 shadow-lg scale-105' 
                         : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50/50'
@@ -412,9 +412,9 @@ export default function CheckoutPage() {
                         onChange={(e) => setDeliveryType(e.target.value as 'delivery' | 'pickup')}
                         className="sr-only"
                       />
-                      <Truck className={`h-8 w-8 mb-3 ${deliveryType === 'delivery' ? 'text-orange-600' : 'text-gray-400'}`} />
-                      <div className={`font-bold ${deliveryType === 'delivery' ? 'text-orange-600' : 'text-gray-700'}`}>Delivery</div>
-                      <div className="text-xs text-gray-600 mt-1">We'll bring it to you</div>
+                      <Truck className={`h-6 w-6 sm:h-8 sm:w-8 mb-2 sm:mb-3 ${deliveryType === 'delivery' ? 'text-orange-600' : 'text-gray-400'}`} />
+                      <div className={`font-bold text-sm sm:text-base ${deliveryType === 'delivery' ? 'text-orange-600' : 'text-gray-700'}`}>Delivery</div>
+                      <div className="text-xs text-gray-600 mt-1 text-center">We'll bring it to you</div>
                     </label>
                     
                     <label className={`relative flex flex-col items-center justify-center p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
@@ -429,9 +429,9 @@ export default function CheckoutPage() {
                         onChange={(e) => setDeliveryType(e.target.value as 'delivery' | 'pickup')}
                         className="sr-only"
                       />
-                      <Store className={`h-8 w-8 mb-3 ${deliveryType === 'pickup' ? 'text-orange-600' : 'text-gray-400'}`} />
-                      <div className={`font-bold ${deliveryType === 'pickup' ? 'text-orange-600' : 'text-gray-700'}`}>Pickup</div>
-                      <div className="text-xs text-gray-600 mt-1">Come get it yourself</div>
+                      <Store className={`h-6 w-6 sm:h-8 sm:w-8 mb-2 sm:mb-3 ${deliveryType === 'pickup' ? 'text-orange-600' : 'text-gray-400'}`} />
+                      <div className={`font-bold text-sm sm:text-base ${deliveryType === 'pickup' ? 'text-orange-600' : 'text-gray-700'}`}>Pickup</div>
+                      <div className="text-xs text-gray-600 mt-1 text-center">Come get it yourself</div>
                     </label>
                   </div>
                 </div>
@@ -448,7 +448,7 @@ export default function CheckoutPage() {
                     name="customerName"
                     value={formData.customerName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                    className="w-full px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-base"
                     placeholder="Enter your full name"
                     required
                   />

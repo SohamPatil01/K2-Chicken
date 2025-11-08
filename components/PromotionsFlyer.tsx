@@ -137,63 +137,63 @@ export default function PromotionsFlyer() {
         ))}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 md:py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
           {/* Left side - Animated Discount Badge */}
-          <div className="flex items-center space-x-4 flex-shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0 w-full md:w-auto justify-center md:justify-start">
             <div className="relative">
               <div className="absolute inset-0 bg-white/30 rounded-full blur-xl animate-pulse"></div>
-              <div className="relative bg-white/25 backdrop-blur-md rounded-full p-4 border-2 border-white/40 shadow-2xl transform hover:scale-110 transition-transform duration-300">
-                <Tag className="h-7 w-7 animate-bounce" style={{ animationDuration: '2s' }} />
+              <div className="relative bg-white/25 backdrop-blur-md rounded-full p-3 sm:p-4 border-2 border-white/40 shadow-2xl transform hover:scale-110 transition-transform duration-300">
+                <Tag className="h-5 w-5 sm:h-7 sm:w-7 animate-bounce" style={{ animationDuration: '2s' }} />
               </div>
             </div>
             <div className="transform transition-all duration-500">
-              <div className="text-xs md:text-sm font-bold uppercase tracking-wider opacity-90 mb-1 animate-fade-in">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider opacity-90 mb-1 animate-fade-in">
                 Special Offer
               </div>
-              <div className={`text-3xl md:text-5xl font-black transform transition-all duration-500 ${
+              <div className={`text-2xl sm:text-3xl md:text-5xl font-black transform transition-all duration-500 ${
                 isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
               }`}>
                 <span className="bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent animate-shimmer">
                   {formatDiscount(currentPromo)}
                 </span>
                 {currentPromo.discount_type === 'percentage' && (
-                  <span className="text-2xl md:text-4xl ml-1">OFF</span>
+                  <span className="text-lg sm:text-xl md:text-4xl ml-1">OFF</span>
                 )}
                 {currentPromo.discount_type === 'fixed' && (
-                  <span className="text-2xl md:text-4xl ml-1">OFF</span>
+                  <span className="text-lg sm:text-xl md:text-4xl ml-1">OFF</span>
                 )}
                 {currentPromo.discount_type === 'free_delivery' && (
-                  <span className="text-2xl md:text-4xl ml-1">DELIVERY</span>
+                  <span className="text-lg sm:text-xl md:text-4xl ml-1">DELIVERY</span>
                 )}
               </div>
             </div>
           </div>
 
           {/* Center - Promotion Details with slide animation */}
-          <div className={`flex-1 text-center transform transition-all duration-500 ${
+          <div className={`flex-1 text-center transform transition-all duration-500 px-2 ${
             isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
           }`}>
             <div className="inline-flex items-center space-x-2 mb-2">
-              <Sparkles className="h-4 w-4 animate-spin" style={{ animationDuration: '3s' }} />
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ animationDuration: '3s' }} />
               <span className="text-xs font-semibold uppercase tracking-widest opacity-80">Limited Time</span>
-              <Sparkles className="h-4 w-4 animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }} />
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }} />
             </div>
-            <h3 className="text-2xl md:text-4xl font-black mb-2 bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
+            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-black mb-2 bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-2xl px-2">
               {currentPromo.title}
             </h3>
             {currentPromo.description && (
-              <p className="text-sm md:text-lg opacity-95 mb-3 font-medium max-w-2xl mx-auto">
+              <p className="text-xs sm:text-sm md:text-lg opacity-95 mb-3 font-medium max-w-2xl mx-auto px-2">
                 {currentPromo.description}
               </p>
             )}
             {currentPromo.promo_code && (
-              <div className="mt-3 inline-flex items-center space-x-3 bg-white/25 backdrop-blur-md px-6 py-3 rounded-full border-2 border-white/40 shadow-xl transform hover:scale-105 transition-all duration-300 group">
-                <span className="text-sm font-semibold opacity-90">Use Code:</span>
-                <span className="text-xl md:text-2xl font-black tracking-widest bg-gradient-to-r from-yellow-200 to-yellow-100 bg-clip-text text-transparent">
+              <div className="mt-3 inline-flex items-center space-x-2 sm:space-x-3 bg-white/25 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 border-white/40 shadow-xl transform hover:scale-105 transition-all duration-300 group">
+                <span className="text-xs sm:text-sm font-semibold opacity-90">Use Code:</span>
+                <span className="text-base sm:text-xl md:text-2xl font-black tracking-widest bg-gradient-to-r from-yellow-200 to-yellow-100 bg-clip-text text-transparent">
                   {currentPromo.promo_code}
                 </span>
-                <ArrowRight className="h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
               </div>
             )}
             {(currentPromo.start_date || currentPromo.end_date) && (

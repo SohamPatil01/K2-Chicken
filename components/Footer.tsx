@@ -5,8 +5,8 @@ import Link from 'next/link'
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -18,11 +18,11 @@ export default function Footer() {
                 <div className="text-xs text-gray-400">Fresh & Delicious</div>
               </div>
             </div>
-            <p className="text-gray-400 mb-4 leading-relaxed max-w-md">
+            <p className="text-gray-400 mb-4 leading-relaxed max-w-md text-sm sm:text-base">
               The best chicken in town! We serve crispy, juicy, and absolutely delicious chicken 
               that will make your taste buds dance with joy.
             </p>
-            <p className="text-orange-400 font-semibold text-lg">
+            <p className="text-orange-400 font-semibold text-base sm:text-lg">
               "Finger Lickin' Good!"
             </p>
           </div>
@@ -69,8 +69,8 @@ export default function Footer() {
                 <span>📧</span>
                 <span>hello@k2chicken.com</span>
               </p>
-              <p className="flex items-start gap-2 text-sm leading-relaxed">
-                <span>📍</span>
+              <p className="flex items-start gap-2 text-xs sm:text-sm leading-relaxed">
+                <span className="flex-shrink-0 mt-0.5">📍</span>
                 <span>Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027</span>
               </p>
             </div>

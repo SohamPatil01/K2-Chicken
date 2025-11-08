@@ -79,22 +79,22 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">
                 Shopping <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Cart</span>
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-base sm:text-lg">
                 {state.items.length} {state.items.length === 1 ? 'item' : 'items'} in your cart
               </p>
             </div>
             <button
               onClick={clearCart}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 font-medium text-sm"
+              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 font-medium text-sm"
             >
               <Trash2 size={18} />
               <span>Clear All</span>
@@ -102,7 +102,7 @@ export default function CartPage() {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {state.items.map((item, index) => {
@@ -115,11 +115,11 @@ export default function CartPage() {
                   className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className="p-6">
+                  <div className="p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Product Image */}
                       <div className="relative flex-shrink-0">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden border-2 border-gray-100 group-hover:border-orange-300 transition-colors shadow-sm">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden border-2 border-gray-100 group-hover:border-orange-300 transition-colors shadow-sm">
                           {item.product.image_url ? (
                             <img 
                               src={item.product.image_url} 
