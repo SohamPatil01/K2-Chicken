@@ -64,17 +64,26 @@ export async function POST(request: NextRequest) {
     const adminUsername = process.env.ADMIN_USERNAME
     const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH
 
+    console.log('Login attempt:', { 
+      providedUsername: username, 
+      envUsername: adminUsername ? 'SET' : 'NOT SET',
+      passwordHashSet: adminPasswordHash ? 'SET' : 'NOT SET'
+    })
+
     // Check if credentials are configured
     if (!adminUsername || !adminPasswordHash) {
       console.error('Admin credentials not configured in environment variables')
+      console.error('ADMIN_USERNAME:', adminUsername ? 'SET' : 'MISSING')
+      console.error('ADMIN_PASSWORD_HASH:', adminPasswordHash ? 'SET' : 'MISSING')
       return NextResponse.json(
-        { success: false, error: 'Invalid username or password' },
-        { status: 401 }
+        { success: false, error: 'Server configuration error. Please contact administrator.' },
+        { status: 500 }
       )
     }
 
     // Validate username
     if (username !== adminUsername) {
+      console.log('Username mismatch:', { provided: username, expected: adminUsername })
       recordFailedAttempt(clientId)
       // Generic error message to prevent username enumeration
       return NextResponse.json(
@@ -84,9 +93,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate password using bcrypt
+    console.log('Validating password...')
     const isPasswordValid = await bcrypt.compare(password, adminPasswordHash)
+    console.log('Password validation result:', isPasswordValid)
     
     if (!isPasswordValid) {
+      console.log('Password mismatch')
       recordFailedAttempt(clientId)
       // Generic error message
       return NextResponse.json(
@@ -94,6 +106,8 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
+
+    console.log('Credentials validated successfully!')
 
     // Clear failed attempts on successful login
     clearAttempts(clientId)

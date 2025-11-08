@@ -21,6 +21,8 @@ export default function AdminLoginPage() {
     setError('')
 
     try {
+      console.log('Attempting login with:', { username: credentials.username, password: '***' })
+      
       const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: {
@@ -30,26 +32,33 @@ export default function AdminLoginPage() {
         body: JSON.stringify(credentials),
       })
 
+      console.log('Response status:', response.status, response.statusText)
+
       let data
       try {
         data = await response.json()
+        console.log('Response data:', { success: data.success, error: data.error })
       } catch (jsonError) {
         console.error('Failed to parse response:', jsonError)
+        const text = await response.text()
+        console.error('Response text:', text)
         setError('Server error: Invalid response format')
         return
       }
 
       if (response.ok && data.success) {
+        console.log('Login successful! Redirecting...')
         // Token is now stored in HTTP-only cookie automatically
         // Use window.location for a hard redirect to ensure cookie is sent
         // This ensures a full page reload and proper cookie handling
         window.location.href = '/admin'
       } else {
+        console.error('Login failed:', data.error)
         setError(data.error || 'Invalid username or password')
       }
     } catch (error) {
       console.error('Login error:', error)
-      setError('An error occurred. Please try again.')
+      setError(`An error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
