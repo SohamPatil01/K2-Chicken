@@ -104,9 +104,43 @@ A comprehensive e-commerce website for "Chicken Vicken" featuring dynamic produc
 
 6. **Initialize the database**
 
+   Run the comprehensive setup script that creates all tables and adds demo data:
+   
    ```bash
-   node scripts/init-db.js
+   node scripts/setup-database.js
    ```
+   
+   This script will:
+   - Create all database tables (products, orders, recipes, promotions, users, etc.)
+   - Add stock and weight options support
+   - Create demo promotions (so they show on the homepage)
+   - Add default delivery time slots
+   - Set up default settings
+   
+   ⚠️ **Important**: If promotions and photos don't show after cloning, make sure you run this script!
+
+## 🔧 Troubleshooting
+
+### Promotions Not Showing
+If promotions don't appear on the homepage after cloning:
+1. Make sure you've run `node scripts/setup-database.js`
+2. Check that the `promotions` table exists in your database
+3. Verify that promotions are active and within their date range
+4. Check browser console for any API errors
+
+### Product Images Not Loading
+If product images don't display:
+1. Ensure image files exist in `public/images/` directory
+2. Check that image paths in the database match actual file names
+3. Update product images from the admin panel if needed
+4. Verify the `public/images/` folder is committed to git
+
+### Database Connection Issues
+If you get database connection errors:
+1. Verify PostgreSQL is running: `pg_isready` or check service status
+2. Confirm database credentials in `.env.local` are correct
+3. Ensure the database `chicken_vicken` exists
+4. Check PostgreSQL is listening on the correct port (default: 5432)
 
 7. **Start the development server**
 
