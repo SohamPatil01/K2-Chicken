@@ -164,7 +164,7 @@ export async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS inventory_history (
         id SERIAL PRIMARY KEY,
         product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
-        change_type VARCHAR(50) NOT NULL CHECK (change_type IN ('adjustment', 'delivery_deduction', 'reserved', 'released')),
+        change_type VARCHAR(50) NOT NULL CHECK (change_type IN ('adjustment', 'delivery_deduction', 'reserved', 'released', 'stock_delivery')),
         quantity_change INTEGER NOT NULL,
         previous_quantity INTEGER NOT NULL,
         new_quantity INTEGER NOT NULL,
@@ -203,6 +203,89 @@ export async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Create users table for authentication
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        phone VARCHAR(20) UNIQUE NOT NULL,
+        email VARCHAR(255),
+        name VARCHAR(255),
+        password_hash VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Create user_addresses table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS user_addresses (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        address TEXT NOT NULL,
+        latitude DECIMAL(10,8),
+        longitude DECIMAL(11,8),
+        label VARCHAR(50) DEFAULT 'Home',
+        is_default BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Create delivery_time_slots table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS delivery_time_slots (
+        id SERIAL PRIMARY KEY,
+        date DATE NOT NULL,
+        start_time TIME NOT NULL,
+        end_time TIME NOT NULL,
+        available_slots INTEGER DEFAULT 10,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Add user_id and delivery fields to orders table if they don't exist
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='user_id') THEN
+          ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='delivery_type') THEN
+          ALTER TABLE orders ADD COLUMN delivery_type VARCHAR(20) DEFAULT 'delivery';
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='subtotal') THEN
+          ALTER TABLE orders ADD COLUMN subtotal DECIMAL(10,2);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='delivery_charge') THEN
+          ALTER TABLE orders ADD COLUMN delivery_charge DECIMAL(10,2) DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='discount_amount') THEN
+          ALTER TABLE orders ADD COLUMN discount_amount DECIMAL(10,2) DEFAULT 0;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='payment_method') THEN
+          ALTER TABLE orders ADD COLUMN payment_method VARCHAR(50) DEFAULT 'cash';
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='delivery_time_slot_id') THEN
+          ALTER TABLE orders ADD COLUMN delivery_time_slot_id INTEGER REFERENCES delivery_time_slots(id);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='preferred_delivery_date') THEN
+          ALTER TABLE orders ADD COLUMN preferred_delivery_date DATE;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='orders' AND column_name='preferred_delivery_time') THEN
+          ALTER TABLE orders ADD COLUMN preferred_delivery_time TIME;
+        END IF;
+      END $$;
     `);
 
     // Initialize default delivery settings if they don't exist
