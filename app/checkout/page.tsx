@@ -184,6 +184,15 @@ export default function CheckoutPage() {
     }))
   }
 
+  // Reset delivery charge when switching to pickup
+  useEffect(() => {
+    if (deliveryType === 'pickup') {
+      setDeliveryCharge(0)
+      setDistance(null)
+      setCalculatingDelivery(false)
+    }
+  }, [deliveryType])
+
   // Calculate delivery charge when delivery address or coordinates change
   useEffect(() => {
     if (deliveryType === 'delivery' && (formData.deliveryAddress.trim().length > 10 || selectedCoordinates)) {
@@ -200,7 +209,9 @@ export default function CheckoutPage() {
           })
           const data = await response.json()
           if (data.success) {
-            setDeliveryCharge(data.deliveryCharge)
+            // Round the delivery charge to ensure consistency
+            const roundedCharge = Math.round(data.deliveryCharge || 0)
+            setDeliveryCharge(roundedCharge)
             setDistance(data.distance)
             if (data.freeDeliveryRadius) {
               setFreeDeliveryRadius(data.freeDeliveryRadius)
@@ -222,7 +233,8 @@ export default function CheckoutPage() {
         }
       }, 1000) // Debounce for 1 second
       return () => clearTimeout(timer)
-    } else {
+    } else if (deliveryType === 'pickup') {
+      // Ensure delivery charge is 0 for pickup
       setDeliveryCharge(0)
       setDistance(null)
     }
@@ -277,10 +289,11 @@ export default function CheckoutPage() {
   const totalDiscountAmount = discountAmount + loyaltyDiscountAmount
   const totalWithDiscount = subtotal - totalDiscountAmount
   // If free delivery promo is applied, delivery charge is 0
+  // Also ensure delivery charge is 0 for pickup
   const finalDeliveryCharge = deliveryType === 'delivery' 
-    ? (appliedPromo?.discount_type === 'free_delivery' ? 0 : deliveryCharge)
+    ? (appliedPromo?.discount_type === 'free_delivery' ? 0 : Math.round(deliveryCharge || 0))
     : 0
-  const totalWithDelivery = Math.max(0, totalWithDiscount + finalDeliveryCharge)
+  const totalWithDelivery = Math.max(0, Math.round(totalWithDiscount + finalDeliveryCharge))
 
   const handleApplyPromoCode = async () => {
     if (!promoCode.trim()) {
@@ -403,9 +416,7 @@ export default function CheckoutPage() {
           discountAmount: totalDiscountAmount,
           loyaltyDiscount: loyaltyDiscountAmount,
           promoCode: appliedPromo?.promo_code || null,
-          deliveryCharge: deliveryType === 'delivery' 
-            ? (appliedPromo?.discount_type === 'free_delivery' ? 0 : deliveryCharge)
-            : 0,
+          deliveryCharge: finalDeliveryCharge,
           total: totalWithDelivery,
           paymentMethod: paymentMethod,
           deliveryTimeSlotId: selectedSlotId,
