@@ -4,6 +4,7 @@ import './globals.css'
 import { CartProvider } from '@/context/CartContext'
 import { AuthProvider } from '@/context/AuthContext'
 import ConditionalLayout from '@/components/ConditionalLayout'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             </div>
           </CartProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   )
