@@ -6,6 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const productId = searchParams.get('product_id')
+    const changeType = searchParams.get('change_type')
+    const date = searchParams.get('date') // Filter by date (YYYY-MM-DD)
     const limit = parseInt(searchParams.get('limit') || '50')
     
     const client = await pool.connect()
@@ -19,10 +21,25 @@ export async function GET(request: NextRequest) {
         INNER JOIN products p ON ih.product_id = p.id
       `
       const params: any[] = []
+      const conditions: string[] = []
       
       if (productId) {
-        query += ' WHERE ih.product_id = $1'
+        conditions.push(`ih.product_id = $${params.length + 1}`)
         params.push(productId)
+      }
+      
+      if (changeType) {
+        conditions.push(`ih.change_type = $${params.length + 1}`)
+        params.push(changeType)
+      }
+      
+      if (date) {
+        conditions.push(`DATE(ih.created_at) = $${params.length + 1}`)
+        params.push(date)
+      }
+      
+      if (conditions.length > 0) {
+        query += ' WHERE ' + conditions.join(' AND ')
       }
       
       query += ' ORDER BY ih.created_at DESC LIMIT $' + (params.length + 1)

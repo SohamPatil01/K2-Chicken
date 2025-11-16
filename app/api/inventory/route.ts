@@ -79,12 +79,16 @@ export async function PUT(request: NextRequest) {
       
       const result = await client.query(updateQuery, updateParams)
       
+      // Determine change type based on notes - check for "Stock delivery" or "delivery to store" in notes
+      const notesLower = notes ? notes.toLowerCase() : ''
+      const changeType = (notesLower.includes('stock delivery') || notesLower.includes('delivery to store')) ? 'stock_delivery' : 'adjustment'
+      
       // Log to history
       await client.query(
         `INSERT INTO inventory_history 
          (product_id, change_type, quantity_change, previous_quantity, new_quantity, notes)
          VALUES ($1, $2, $3, $4, $5, $6)`,
-        [product_id, 'adjustment', quantityChange, previousQuantity, quantity, notes || null]
+        [product_id, changeType, quantityChange, previousQuantity, quantity, notes || null]
       )
       
       await client.query('COMMIT')

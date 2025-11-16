@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Package, AlertTriangle, CheckCircle, TrendingDown, Edit2, Save, X, History, Plus, Trash2 } from 'lucide-react'
+import { Package, AlertTriangle, CheckCircle, TrendingDown, Edit2, Save, X, History, Plus, Trash2, Truck, Calendar } from 'lucide-react'
 
 interface InventoryItem {
   id: number
@@ -60,6 +60,16 @@ export default function InventoryManagement() {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
   const [showImagePreview, setShowImagePreview] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [showStockDelivery, setShowStockDelivery] = useState(false)
+  const [stockDeliveryForm, setStockDeliveryForm] = useState({
+    product_id: 0,
+    quantity: 0,
+    delivery_date: new Date().toISOString().split('T')[0],
+    notes: ''
+  })
+  const [deliveryHistory, setDeliveryHistory] = useState<InventoryHistory[]>([])
+  const [showDeliveryHistory, setShowDeliveryHistory] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
 
   useEffect(() => {
     fetchInventory()
@@ -124,6 +134,68 @@ export default function InventoryManagement() {
     } catch (error) {
       console.error('Error updating inventory:', error)
       alert('Failed to update inventory')
+    }
+  }
+
+  const handleStockDelivery = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!stockDeliveryForm.product_id || stockDeliveryForm.quantity <= 0) {
+      alert('Please select a product and enter a valid quantity')
+      return
+    }
+
+    try {
+      const item = inventory.find(i => i.product_id === stockDeliveryForm.product_id)
+      if (!item) return
+
+      const newQuantity = item.quantity + stockDeliveryForm.quantity
+      // Make sure the notes clearly indicate this is a stock delivery
+      const notes = `Stock delivery to store - ${stockDeliveryForm.delivery_date}${stockDeliveryForm.notes ? ': ' + stockDeliveryForm.notes : ''}`
+
+      const response = await fetch('/api/inventory', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_id: stockDeliveryForm.product_id,
+          quantity: newQuantity,
+          minimum_stock_level: item.minimum_stock_level,
+          notes: notes
+        })
+      })
+
+      if (response.ok) {
+        await fetchInventory()
+        setShowStockDelivery(false)
+        setStockDeliveryForm({
+          product_id: 0,
+          quantity: 0,
+          delivery_date: new Date().toISOString().split('T')[0],
+          notes: ''
+        })
+        // Refresh delivery history if it's open
+        if (showDeliveryHistory) {
+          fetchDeliveryHistory(selectedDate)
+        }
+        alert(`Successfully recorded ${stockDeliveryForm.quantity} units delivered for ${item.product_name}`)
+      } else {
+        const error = await response.json()
+        alert('Failed to record stock delivery: ' + (error.error || 'Unknown error'))
+      }
+    } catch (error) {
+      console.error('Error recording stock delivery:', error)
+      alert('Failed to record stock delivery')
+    }
+  }
+
+  const fetchDeliveryHistory = async (date?: string) => {
+    try {
+      const dateToFetch = date || selectedDate
+      const response = await fetch(`/api/inventory/history?change_type=stock_delivery&date=${dateToFetch}&limit=100`)
+      const data = await response.json()
+      setDeliveryHistory(data)
+    } catch (error) {
+      console.error('Error fetching delivery history:', error)
     }
   }
 
@@ -398,25 +470,244 @@ export default function InventoryManagement() {
   const mediumStockItems = inventory.filter(item => item.stock_status === 'medium')
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Inventory Management</h2>
-        <div className="flex space-x-2">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+        <div>
+          <h2 className="text-base font-semibold text-gray-900">Inventory</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Stock levels and deliveries</p>
+        </div>
+        <div className="flex items-center space-x-2">
           <button
-            onClick={handleAddProduct}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+            onClick={() => {
+              setShowDeliveryHistory(true)
+              fetchDeliveryHistory()
+            }}
+            className="flex items-center space-x-1 px-2.5 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-xs font-medium"
           >
-            <Plus size={20} />
-            <span>Add Product</span>
+            <History size={14} />
+            <span>Deliveries</span>
           </button>
           <button
-            onClick={fetchInventory}
-            className="px-4 py-2 bg-chicken-red text-white rounded-lg hover:bg-red-700 transition-colors"
+            onClick={() => setShowStockDelivery(true)}
+            className="flex items-center space-x-1 px-2.5 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs font-medium"
           >
-            Refresh
+            <Truck size={14} />
+            <span>Record</span>
+          </button>
+          <button
+            onClick={handleAddProduct}
+            className="flex items-center space-x-1 px-2.5 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-xs font-medium"
+          >
+            <Plus size={14} />
+            <span>Add</span>
           </button>
         </div>
       </div>
+
+      {/* Stock Delivery Form */}
+      {showStockDelivery && (
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">Record Delivery</h3>
+            <button
+              onClick={() => {
+                setShowStockDelivery(false)
+                setStockDeliveryForm({
+                  product_id: 0,
+                  quantity: 0,
+                  delivery_date: new Date().toISOString().split('T')[0],
+                  notes: ''
+                })
+              }}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <form onSubmit={handleStockDelivery} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                Product *
+              </label>
+              <select
+                value={stockDeliveryForm.product_id}
+                onChange={(e) => setStockDeliveryForm({ ...stockDeliveryForm, product_id: parseInt(e.target.value) })}
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm"
+                required
+              >
+                <option value="0">Select Product</option>
+                {inventory.map(item => (
+                  <option key={item.product_id} value={item.product_id}>
+                    {item.product_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                Quantity *
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={stockDeliveryForm.quantity}
+                onChange={(e) => setStockDeliveryForm({ ...stockDeliveryForm, quantity: parseInt(e.target.value) || 0 })}
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                Date *
+              </label>
+              <div className="relative">
+                <Calendar className="absolute left-2.5 top-2 h-3.5 w-3.5 text-gray-400" />
+                <input
+                  type="date"
+                  value={stockDeliveryForm.delivery_date}
+                  onChange={(e) => setStockDeliveryForm({ ...stockDeliveryForm, delivery_date: e.target.value })}
+                  className="w-full pl-9 pr-2 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                Notes
+              </label>
+              <input
+                type="text"
+                value={stockDeliveryForm.notes}
+                onChange={(e) => setStockDeliveryForm({ ...stockDeliveryForm, notes: e.target.value })}
+                placeholder="Supplier, batch, etc."
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm"
+              />
+            </div>
+            <div className="md:col-span-2 flex justify-end space-x-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowStockDelivery(false)
+                  setStockDeliveryForm({
+                    product_id: 0,
+                    quantity: 0,
+                    delivery_date: new Date().toISOString().split('T')[0],
+                    notes: ''
+                  })
+                }}
+                className="px-3 py-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium flex items-center space-x-1.5"
+              >
+                <Save size={14} />
+                <span>Record</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Delivery History View */}
+      {showDeliveryHistory && (
+        <div className="bg-purple-50 border border-purple-200 rounded-md p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">Daily Deliveries</h3>
+            <button
+              onClick={() => setShowDeliveryHistory(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          
+          {/* Date Filter */}
+          <div className="mb-3">
+            <div className="flex items-center space-x-2">
+              <div className="relative flex-1">
+                <Calendar className="absolute left-2.5 top-2 h-3.5 w-3.5 text-gray-400" />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => {
+                    setSelectedDate(e.target.value)
+                    fetchDeliveryHistory(e.target.value)
+                  }}
+                  className="w-full pl-9 pr-2 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-transparent text-sm"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  const today = new Date().toISOString().split('T')[0]
+                  setSelectedDate(today)
+                  fetchDeliveryHistory(today)
+                }}
+                className="px-2.5 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-xs font-medium"
+              >
+                Today
+              </button>
+            </div>
+          </div>
+
+          {/* Delivery List */}
+          <div className="space-y-1.5 max-h-64 overflow-y-auto">
+            {deliveryHistory.length === 0 ? (
+              <div className="text-center py-6 text-gray-500">
+                <Truck className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                <p className="text-xs">No deliveries for this date</p>
+              </div>
+            ) : (
+              deliveryHistory.map((delivery) => (
+                <div
+                  key={delivery.id}
+                  className="bg-white border border-gray-200 rounded-md p-2.5 hover:border-purple-300 transition-colors"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-1.5 mb-1">
+                        <span className="font-medium text-gray-900 text-sm truncate">{delivery.product_name}</span>
+                      </div>
+                      {delivery.notes && (
+                        <p className="text-xs text-gray-600 truncate">{delivery.notes}</p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {new Date(delivery.created_at).toLocaleTimeString('en-IN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-right ml-3 flex-shrink-0">
+                      <div className="text-sm font-semibold text-green-600">
+                        +{delivery.quantity_change}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {delivery.previous_quantity}→{delivery.new_quantity}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Summary */}
+          {deliveryHistory.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-purple-200">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-gray-600">Total:</span>
+                <span className="font-semibold text-purple-700">{deliveryHistory.length} deliveries</span>
+                <span className="font-semibold text-green-700">
+                  +{deliveryHistory.reduce((sum, d) => sum + d.quantity_change, 0)} units
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Add/Edit Product Form */}
       {(isAddingProduct || editingProduct) && (
@@ -591,23 +882,23 @@ export default function InventoryManagement() {
 
       {/* Stock Alerts */}
       {(lowStockItems.length > 0 || mediumStockItems.length > 0) && (
-        <div className="mb-6 space-y-2">
+        <div className="mb-4 space-y-1.5">
           {lowStockItems.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-red-50 border border-red-200 rounded-md p-2.5">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="text-red-600" size={20} />
-                <span className="font-semibold text-red-800">
-                  {lowStockItems.length} product(s) are low on stock
+                <AlertTriangle className="text-red-600" size={16} />
+                <span className="text-sm font-medium text-red-800">
+                  {lowStockItems.length} low stock
                 </span>
               </div>
             </div>
           )}
           {mediumStockItems.length > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-2.5">
               <div className="flex items-center space-x-2">
-                <TrendingDown className="text-yellow-600" size={20} />
-                <span className="font-semibold text-yellow-800">
-                  {mediumStockItems.length} product(s) are running low
+                <TrendingDown className="text-yellow-600" size={16} />
+                <span className="text-sm font-medium text-yellow-800">
+                  {mediumStockItems.length} running low
                 </span>
               </div>
             </div>
@@ -616,14 +907,14 @@ export default function InventoryManagement() {
       )}
 
       {/* Inventory List */}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {inventory.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-md hover:border-gray-300 transition-colors"
           >
-            <div className="flex items-center space-x-4 flex-1">
-              <div className="w-16 h-16 rounded-lg overflow-hidden border">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-200 flex-shrink-0 bg-white">
                 {item.product_image_url ? (
                   <img
                     src={item.product_image_url}
@@ -635,124 +926,115 @@ export default function InventoryManagement() {
                     }}
                   />
                 ) : null}
-                <div className={`w-full h-full ${item.product_image_url ? 'hidden' : 'flex'} bg-chicken-yellow items-center justify-center`}>
-                  <span className="text-2xl">🍗</span>
+                <div className={`w-full h-full ${item.product_image_url ? 'hidden' : 'flex'} bg-orange-50 items-center justify-center`}>
+                  <span className="text-lg">🍗</span>
                 </div>
               </div>
-              <div className="flex-grow">
-                <h3 className="font-semibold text-gray-900">{item.product_name}</h3>
-                <p className="text-sm text-gray-600 capitalize">{item.product_category}</p>
-                <div className="flex items-center space-x-4 mt-2">
-                  <div className="flex items-center space-x-2">
+              <div className="flex-grow min-w-0">
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-medium text-gray-900 text-sm truncate">{item.product_name}</h3>
+                  <div className="flex items-center space-x-1">
                     {getStockStatusIcon(item.stock_status)}
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusColor(item.stock_status)}`}>
-                      {item.stock_status.toUpperCase()} STOCK
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${getStockStatusColor(item.stock_status)}`}>
+                      {item.stock_status}
                     </span>
                   </div>
                 </div>
+                <p className="text-xs text-gray-500 capitalize mt-0.5">{item.product_category}</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 ml-3">
               {/* Inventory Details */}
-              <div className="text-right">
+              <div className="text-right text-xs">
                 {editingInventoryItem === item.id ? (
-                  <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
                     <div>
-                      <label className="text-xs text-gray-600">Quantity</label>
                       <input
                         type="number"
                         value={editInventoryValues?.quantity || 0}
                         onChange={(e) => setEditInventoryValues({ ...editInventoryValues!, quantity: parseInt(e.target.value) || 0 })}
-                        className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-chicken-red focus:border-transparent"
+                        className="w-16 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-transparent"
                         min="0"
+                        placeholder="Qty"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-gray-600">Min Level</label>
                       <input
                         type="number"
                         value={editInventoryValues?.minimum_stock_level || 0}
                         onChange={(e) => setEditInventoryValues({ ...editInventoryValues!, minimum_stock_level: parseInt(e.target.value) || 0 })}
-                        className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-chicken-red focus:border-transparent"
+                        className="w-14 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-transparent"
                         min="0"
+                        placeholder="Min"
                       />
                     </div>
+                    <button
+                      onClick={() => handleSaveInventory(item)}
+                      className="p-1 text-green-600 hover:bg-green-50 rounded"
+                      title="Save"
+                    >
+                      <Save size={14} />
+                    </button>
+                    <button
+                      onClick={handleCancelInventory}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      title="Cancel"
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
                 ) : (
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     <div>
-                      <span className="text-xs text-gray-600">Total: </span>
-                      <span className="font-semibold">{item.quantity}</span>
+                      <span className="text-gray-500">Total: </span>
+                      <span className="font-semibold text-gray-900">{item.quantity}</span>
                     </div>
                     <div>
-                      <span className="text-xs text-gray-600">Available: </span>
+                      <span className="text-gray-500">Avail: </span>
                       <span className={`font-semibold ${
                         item.available_quantity <= item.minimum_stock_level ? 'text-red-600' : 'text-gray-900'
                       }`}>
                         {item.available_quantity}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-xs text-gray-600">Min Level: </span>
-                      <span className="font-semibold">{item.minimum_stock_level}</span>
-                    </div>
                   </div>
                 )}
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center space-x-2">
-                {editingInventoryItem === item.id ? (
-                  <>
-                    <button
-                      onClick={() => handleSaveInventory(item)}
-                      className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
-                      title="Save Inventory"
-                    >
-                      <Save size={20} />
-                    </button>
-                    <button
-                      onClick={handleCancelInventory}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
-                      title="Cancel"
-                    >
-                      <X size={20} />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleEditInventory(item)}
-                      className="p-2 text-chicken-yellow hover:bg-yellow-100 rounded-lg transition-colors"
-                      title="Edit Inventory Quantity"
-                    >
-                      <TrendingDown size={20} />
-                    </button>
-                    <button
-                      onClick={() => handleEditProduct(item)}
-                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
-                      title="Edit Product Details"
-                    >
-                      <Edit2 size={20} />
-                    </button>
-                    <button
-                      onClick={() => fetchHistory(item.product_id)}
-                      className="p-2 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors"
-                      title="View History"
-                    >
-                      <History size={20} />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteProduct(item.product_id, item.product_name)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
-                      title="Delete Product"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </>
-                )}
-              </div>
+              {editingInventoryItem !== item.id && (
+                <div className="flex items-center space-x-0.5">
+                  <button
+                    onClick={() => handleEditInventory(item)}
+                    className="p-1.5 text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                    title="Edit Stock"
+                  >
+                    <TrendingDown size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleEditProduct(item)}
+                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                    title="Edit"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => fetchHistory(item.product_id)}
+                    className="p-1.5 text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                    title="History"
+                  >
+                    <History size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(item.product_id, item.product_name)}
+                    className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -795,7 +1077,8 @@ export default function InventoryManagement() {
                       <div>
                         <div className="font-semibold">{entry.product_name}</div>
                         <div className="text-sm text-gray-600 mt-1">
-                          {entry.change_type === 'delivery_deduction' ? '📦 Delivery' :
+                          {entry.change_type === 'stock_delivery' ? '🚚 Stock Delivery' :
+                           entry.change_type === 'delivery_deduction' ? '📦 Order Delivery' :
                            entry.change_type === 'adjustment' ? '✏️ Adjustment' :
                            entry.change_type}
                         </div>

@@ -23,10 +23,10 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
   const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>(defaultWeight)
 
   return (
-    <div className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-orange-300 transition-all duration-300">
+    <div className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-orange-300 transition-all duration-300 transform hover:scale-[1.02]">
       {/* Bestseller Badge */}
       {isBestseller && (
-        <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg">
+        <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg transform transition-all duration-300 group-hover:scale-110">
           <Star className="h-3 w-3 fill-current" />
           <span>Bestseller</span>
         </div>
@@ -44,7 +44,7 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
           <img 
             src={product.image_url} 
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
               const fallback = e.currentTarget.nextElementSibling as HTMLElement;
@@ -53,7 +53,7 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
           />
         ) : null}
         <div className={`w-full h-full ${product.image_url ? 'hidden' : 'flex'} bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}>
-          <span className="text-6xl">🍗</span>
+          <span className="text-6xl transform transition-transform duration-300 group-hover:scale-110">🍗</span>
         </div>
       </div>
       
@@ -121,9 +121,9 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
           ) : cartQuantity === 0 ? (
             <button
               onClick={() => onAddToCart(product, selectedWeight)}
-              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus size={18} />
+              <Plus size={18} className="transform transition-transform duration-300 group-hover:rotate-90" />
               <span>Add to Cart</span>
             </button>
           ) : (
@@ -300,24 +300,24 @@ export default function ProductCatalog() {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-b from-white via-orange-50/20 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-8 sm:mb-12 px-4">
-          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6">
+        <div className="text-center mb-8 sm:mb-12 px-4 animate-slide-down">
+          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-700 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 transform transition-all duration-300 hover:scale-105 hover:shadow-md">
             <span>🍗</span>
             <span>Fresh Daily</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-3 sm:mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-3 sm:mb-4 animate-slide-up stagger-1">
             Our <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Products</span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto animate-slide-up stagger-2">
             Handcrafted with premium ingredients and our secret family recipes
           </p>
         </div>
 
         {/* Search, Filter and Sort Bar */}
-        <div className="mb-8 sm:mb-12 bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-6 mx-4 sm:mx-0">
+        <div className="mb-8 sm:mb-12 bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mx-4 sm:mx-0 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up stagger-3">
           <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
             {/* Search Bar */}
             <div className="flex-1 relative">
@@ -367,24 +367,29 @@ export default function ProductCatalog() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
-          {filteredProducts.map((product) => (
-            <ProductCard
+          {filteredProducts.map((product, index) => (
+            <div 
               key={product.id}
-              product={product}
-              isBestseller={bestsellerIds.includes(product.id)}
-              cartQuantity={getCartQuantity(product.id)}
-              onAddToCart={addToCart}
-              onUpdateQuantity={updateQuantity}
-              getStockStatus={getStockStatus}
-            />
+              className="animate-slide-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <ProductCard
+                product={product}
+                isBestseller={bestsellerIds.includes(product.id)}
+                cartQuantity={getCartQuantity(product.id)}
+                onAddToCart={addToCart}
+                onUpdateQuantity={updateQuantity}
+                getStockStatus={getStockStatus}
+              />
+            </div>
           ))}
         </div>
 
         {/* No Results Message */}
         {filteredProducts.length === 0 && !loading && (
-          <div className="text-center py-16">
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-12 max-w-md mx-auto">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-16 animate-bounce-in">
+            <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-transform duration-300 hover:scale-110">
                 <Search className="h-8 w-8 text-orange-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
@@ -395,7 +400,7 @@ export default function ProductCatalog() {
                   setSelectedCategory('all');
                   setSortOption('default');
                 }}
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg"
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
               >
                 Clear Filters
               </button>

@@ -26,15 +26,20 @@ export async function POST(request: NextRequest) {
 
       const user = result.rows[0]
 
-      // If password is provided, verify it
-      if (password && user.password_hash) {
-        const isValid = await bcrypt.compare(password, user.password_hash)
-        if (!isValid) {
-          return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-        }
-      } else if (password && !user.password_hash) {
-        // User exists but no password set - allow OTP login
-        // In production, verify OTP here
+      // Password is required
+      if (!password || !password.trim()) {
+        return NextResponse.json({ error: 'Password is required' }, { status: 400 })
+      }
+
+      // Check if user has a password set
+      if (!user.password_hash) {
+        return NextResponse.json({ error: 'Password not set for this account. Please register with a password.' }, { status: 401 })
+      }
+
+      // Verify password
+      const isValid = await bcrypt.compare(password.trim(), user.password_hash)
+      if (!isValid) {
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
       }
 
       // Generate JWT token

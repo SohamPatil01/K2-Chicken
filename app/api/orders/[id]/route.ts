@@ -184,3 +184,57 @@ export async function PUT(
     return NextResponse.json({ error: 'Failed to update order' }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const client = await pool.connect()
+    
+    try {
+      await client.query('BEGIN')
+      
+      // Check if order exists
+      const orderResult = await client.query(
+        'SELECT id, status FROM orders WHERE id = $1',
+        [params.id]
+      )
+      
+      if (orderResult.rows.length === 0) {
+        await client.query('ROLLBACK')
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+      
+      const orderStatus = orderResult.rows[0].status
+      
+      // Only allow cancellation if order is still pending or received
+      if (orderStatus !== 'pending' && orderStatus !== 'received') {
+        await client.query('ROLLBACK')
+        return NextResponse.json({ 
+          error: 'Order cannot be cancelled. It has already been processed.' 
+        }, { status: 400 })
+      }
+      
+      // Delete order items first (due to foreign key constraint)
+      await client.query('DELETE FROM order_items WHERE order_id = $1', [params.id])
+      
+      // Delete the order
+      await client.query('DELETE FROM orders WHERE id = $1', [params.id])
+      
+      await client.query('COMMIT')
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Order cancelled successfully' 
+      })
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
+    }
+  } catch (error) {
+    console.error('Error cancelling order:', error)
+    return NextResponse.json({ error: 'Failed to cancel order' }, { status: 500 })
+  }
+}

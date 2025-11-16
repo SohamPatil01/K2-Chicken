@@ -1,14 +1,24 @@
 'use client'
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { ShoppingCart, Menu, X, User, LogOut, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { state } = useCart()
+  const { user, isAuthenticated, logout, loading: authLoading } = useAuth()
+  const router = useRouter()
   const totalItems = state.items.reduce((sum, item) => sum + item.quantity, 0)
+
+  const handleLogout = async () => {
+    await logout()
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <header className="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
@@ -51,8 +61,42 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Cart and Mobile Menu */}
+          {/* Auth, Cart and Mobile Menu */}
           <div className="flex items-center space-x-2">
+            {/* User Account / Login */}
+            {!authLoading && (
+              <>
+                {isAuthenticated ? (
+                  <div className="hidden md:flex items-center space-x-2">
+                    <Link
+                      href="/orders"
+                      className="px-4 py-2 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2"
+                      title="My Orders"
+                    >
+                      <User size={18} />
+                      <span>{user?.name || user?.phone}</span>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2"
+                      title="Logout"
+                    >
+                      <LogOut size={18} />
+                      <span className="hidden lg:inline">Logout</span>
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="hidden md:block px-4 py-2 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2"
+                  >
+                    <LogIn size={18} />
+                    <span>Login</span>
+                  </Link>
+                )}
+              </>
+            )}
+
             <Link 
               href="/cart" 
               className="relative p-2.5 text-gray-700 hover:text-orange-600 transition-all duration-200 rounded-lg hover:bg-orange-50 group"
@@ -100,6 +144,41 @@ export default function Header() {
               >
                 Recipes
               </Link>
+              {!authLoading && (
+                <>
+                  {isAuthenticated ? (
+                    <>
+                      <Link 
+                        href="/orders" 
+                        className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <User size={18} />
+                        <span>My Orders</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false)
+                          handleLogout()
+                        }}
+                        className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2 w-full text-left"
+                      >
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    <Link 
+                      href="/login" 
+                      className="px-4 py-3 text-gray-700 hover:text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-all duration-200 flex items-center gap-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <LogIn size={18} />
+                      <span>Login</span>
+                    </Link>
+                  )}
+                </>
+              )}
             </nav>
           </div>
         )}

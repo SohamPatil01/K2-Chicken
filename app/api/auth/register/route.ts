@@ -10,6 +10,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 })
     }
 
+    if (!password || !password.trim()) {
+      return NextResponse.json({ error: 'Password is required' }, { status: 400 })
+    }
+
     const client = await pool.connect()
 
     try {
@@ -23,11 +27,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'User already exists' }, { status: 400 })
       }
 
-      // Hash password if provided
-      let passwordHash = null
-      if (password) {
-        passwordHash = await bcrypt.hash(password, 10)
-      }
+      // Hash password (required)
+      const passwordHash = await bcrypt.hash(password, 10)
 
       // Create user
       const result = await client.query(

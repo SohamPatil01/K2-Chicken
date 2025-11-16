@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT } from 'jose'
-import bcrypt from 'bcryptjs'
 
 // Rate limiting - simple in-memory store (use Redis in production)
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
@@ -61,29 +60,31 @@ export async function POST(request: NextRequest) {
     const { username, password } = await request.json()
 
     // Get credentials from environment variables
-    const adminUsername = process.env.ADMIN_USERNAME
-    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH
+    const adminUsername = process.env.ADMIN_USERNAME?.trim()
+    const adminPassword = process.env.ADMIN_PASSWORD?.trim()
 
     console.log('Login attempt:', { 
       providedUsername: username, 
       envUsername: adminUsername ? 'SET' : 'NOT SET',
-      passwordHashSet: adminPasswordHash ? 'SET' : 'NOT SET'
+      passwordSet: adminPassword ? 'SET' : 'NOT SET'
     })
 
     // Check if credentials are configured
-    if (!adminUsername || !adminPasswordHash) {
+    if (!adminUsername || !adminPassword) {
       console.error('Admin credentials not configured in environment variables')
       console.error('ADMIN_USERNAME:', adminUsername ? 'SET' : 'MISSING')
-      console.error('ADMIN_PASSWORD_HASH:', adminPasswordHash ? 'SET' : 'MISSING')
+      console.error('ADMIN_PASSWORD:', adminPassword ? 'SET' : 'MISSING')
       return NextResponse.json(
         { success: false, error: 'Server configuration error. Please contact administrator.' },
         { status: 500 }
       )
     }
 
-    // Validate username
-    if (username !== adminUsername) {
-      console.log('Username mismatch:', { provided: username, expected: adminUsername })
+    // Validate username (trim whitespace)
+    const trimmedUsername = username?.trim()
+    const trimmedAdminUsername = adminUsername?.trim()
+    if (trimmedUsername !== trimmedAdminUsername) {
+      console.log('Username mismatch')
       recordFailedAttempt(clientId)
       // Generic error message to prevent username enumeration
       return NextResponse.json(
@@ -92,9 +93,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate password using bcrypt
+    // Validate password (plain text comparison)
     console.log('Validating password...')
-    const isPasswordValid = await bcrypt.compare(password, adminPasswordHash)
+    const trimmedPassword = password?.trim()
+    const isPasswordValid = trimmedPassword === adminPassword
     console.log('Password validation result:', isPasswordValid)
     
     if (!isPasswordValid) {
@@ -137,8 +139,11 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 24 * 60 * 60, // 24 hours
-      path: '/'
+      path: '/',
+      // Ensure cookie is accessible across the entire site
     })
+    
+    console.log('Admin token cookie set successfully')
 
     return response
 

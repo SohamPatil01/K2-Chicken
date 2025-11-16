@@ -49,9 +49,12 @@ export default function AdminLoginPage() {
       if (response.ok && data.success) {
         console.log('Login successful! Redirecting...')
         // Token is now stored in HTTP-only cookie automatically
-        // Use window.location for a hard redirect to ensure cookie is sent
-        // This ensures a full page reload and proper cookie handling
-        window.location.href = '/admin'
+        // Small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+          // Use window.location for a hard redirect to ensure cookie is sent
+          // This ensures a full page reload and proper cookie handling
+          window.location.href = '/admin'
+        }, 100)
       } else {
         console.error('Login failed:', data.error)
         setError(data.error || 'Invalid username or password')

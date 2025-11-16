@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       total, 
       discountAmount, 
       promoCode,
+      paymentMethod,
       deliveryTimeSlotId,
       preferredDeliveryDate,
       preferredDeliveryTime
@@ -41,6 +42,18 @@ export async function POST(request: NextRequest) {
       // Start transaction
       await client.query('BEGIN')
       
+      // Check if payment_method column exists, if not add it
+      await client.query(`
+        ALTER TABLE orders 
+        ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20) DEFAULT 'cash'
+      `).catch(() => {}) // Ignore error if column already exists
+
+      // Ensure we use the exact total sent from client to avoid any calculation discrepancies
+      const finalTotal = parseFloat(total) || 0
+      const finalSubtotal = parseFloat(subtotal) || finalTotal
+      const finalDeliveryCharge = parseFloat(deliveryCharge) || 0
+      const finalDiscountAmount = parseFloat(discountAmount) || 0
+      
       // Insert order
       const orderResult = await client.query(`
         INSERT INTO orders (
@@ -52,6 +65,7 @@ export async function POST(request: NextRequest) {
           delivery_charge, 
           total_amount, 
           discount_amount,
+          payment_method,
           status, 
           estimated_delivery,
           user_id,
@@ -59,17 +73,18 @@ export async function POST(request: NextRequest) {
           preferred_delivery_date,
           preferred_delivery_time
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING *
       `, [
         customerName,
         customerPhone,
         deliveryType === 'delivery' ? deliveryAddress : 'Pickup at store',
         deliveryType || 'delivery',
-        subtotal || total,
-        deliveryCharge || 0,
-        total,
-        discountAmount || 0,
+        finalSubtotal,
+        finalDeliveryCharge,
+        finalTotal,
+        finalDiscountAmount,
+        paymentMethod || 'cash',
         'pending',
         new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000),
         userId,

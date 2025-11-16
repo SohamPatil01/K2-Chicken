@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle, Clock, MapPin, Phone, Printer } from 'lucide-react'
-import { QRCodeSVG } from 'qrcode.react'
+import { CheckCircle, Clock, MapPin, Phone, Printer, Package, Truck, Store, Calendar, Receipt, CreditCard, Wallet, ArrowRight, Sparkles, ChefHat, ShoppingBag, Home } from 'lucide-react'
 
 interface Order {
   id: number
@@ -16,6 +15,7 @@ interface Order {
   delivery_charge?: number
   discount_amount?: number
   total_amount: number
+  payment_method?: string
   status: string
   estimated_delivery: string
   created_at: string
@@ -96,11 +96,11 @@ export default function OrderConfirmationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-chicken-red mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading order details...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto"></div>
+            <p className="mt-6 text-lg text-gray-600 font-medium">Loading order details...</p>
           </div>
         </div>
       </div>
@@ -109,15 +109,22 @@ export default function OrderConfirmationPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Not Found</h1>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16 flex items-center">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-white rounded-2xl shadow-xl p-12">
+            <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Package className="h-10 w-10 text-red-500" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Order Not Found</h1>
             <p className="text-lg text-gray-600 mb-8">
               The order you're looking for doesn't exist or has been removed.
             </p>
-            <Link href="/" className="btn-primary">
-              Back to Home
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Home className="h-5 w-5" />
+              <span>Back to Home</span>
             </Link>
           </div>
         </div>
@@ -133,291 +140,413 @@ export default function OrderConfirmationPage() {
     window.print()
   }
 
-  // Generate UPI payment link
-  const generateUPILink = (amount: number | string | undefined) => {
-    const upiId = process.env.NEXT_PUBLIC_UPI_ID || '8484978622@paytm' // Default to phone number format
-    const merchantName = 'K2 Chicken'
-    // Ensure amount is a number and round to whole rupees (no paise)
-    const numericAmount = typeof amount === 'number' ? amount : typeof amount === 'string' ? parseFloat(amount) : 0
-    const roundedAmount = Math.round(numericAmount) // Round to nearest whole rupee
-    // UPI payment format: upi://pay?pa=UPI_ID&pn=MERCHANT_NAME&am=AMOUNT&cu=INR&tn=TRANSACTION_NOTE
-    // Using toFixed(0) to match the displayed amount (whole rupees only)
-    return `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${roundedAmount.toFixed(0)}&cu=INR&tn=${encodeURIComponent(`Order ${order.id} - K2 Chicken`)}`
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'delivered':
+        return 'from-green-500 to-emerald-500'
+      case 'cancelled':
+        return 'from-red-500 to-rose-500'
+      case 'preparing':
+        return 'from-orange-500 to-amber-500'
+      case 'ready':
+      case 'ready_for_pickup':
+        return 'from-blue-500 to-cyan-500'
+      default:
+        return 'from-gray-400 to-gray-500'
+    }
   }
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'delivered':
+        return 'Delivered'
+      case 'cancelled':
+        return 'Cancelled'
+      case 'preparing':
+        return 'Preparing'
+      case 'ready':
+        return 'Ready'
+      case 'ready_for_pickup':
+        return 'Ready for Pickup'
+      case 'pending':
+        return 'Pending'
+      case 'received':
+        return 'Received'
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1)
+    }
+  }
+
+  const currentStatusDisplay = currentStatus || order.status
+
   return (
-    <div className="min-h-screen bg-gray-50 py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-8 sm:py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header */}
-        <div className="text-center mb-12 no-print">
-          <CheckCircle size={64} className="mx-auto text-green-500 mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Confirmed!</h1>
-          <p className="text-lg text-gray-600">
-            Thank you for choosing Chicken Vicken! Your order has been placed successfully.
+        <div className="text-center mb-8 sm:mb-10 no-print animate-slide-down">
+          <div className="relative inline-block mb-5">
+            <div className="absolute inset-0 bg-green-400 rounded-full blur-2xl opacity-30"></div>
+            <div className="relative inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full border-2 border-green-100 animate-bounce-in">
+              <CheckCircle size={40} className="text-green-500" />
+            </div>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 animate-slide-up stagger-1">
+            Order Confirmed
+          </h1>
+          <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 animate-slide-up stagger-2">
+            Thank you for choosing K2 Chicken! Your order is being prepared with care.
           </p>
           {order.discount_amount && order.discount_amount > 0 && (
-            <div className="mt-4 inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-full shadow-lg">
-              <span className="text-2xl">🎉</span>
-              <span className="font-bold">You saved ₹{Number(order.discount_amount).toFixed(0)}!</span>
+            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-lg border border-green-200 animate-scale-in stagger-3 shadow-md">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-sm font-medium">You saved ₹{Number(order.discount_amount).toFixed(0)}!</span>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Order Details */}
-          <div className="bg-white rounded-lg shadow-lg p-6 no-print">
-            <h2 className="text-xl font-semibold mb-6">Order Details</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+          {/* Order Info Card */}
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print animate-slide-up stagger-1">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="p-2 bg-orange-50 rounded-lg">
+                <Receipt className="h-5 w-5 text-orange-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800">Order Info</h2>
+            </div>
             
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <CheckCircle size={20} className="text-green-500" />
-                <div>
-                  <p className="font-medium">Order #{order.id}</p>
-                  <p className="text-sm text-gray-600">Placed on {formatDate(order.created_at)}</p>
-                </div>
+            <div className="space-y-3">
+              <div className="p-3 bg-orange-50/50 rounded-lg border border-orange-100">
+                <p className="text-xs font-medium text-gray-500 mb-1">Order Number</p>
+                <p className="text-xl font-semibold text-gray-900">#{order.id}</p>
               </div>
               
-              <div className="flex items-center space-x-3">
-                <Clock size={20} className="text-chicken-yellow" />
-                <div>
-                  <p className="font-medium">Estimated {order.delivery_type === 'pickup' ? 'Pickup' : 'Delivery'}</p>
-                  <p className="text-sm text-gray-600">{formatDate(order.estimated_delivery)}</p>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Calendar className="h-4 w-4 text-gray-400" />
+                  <p className="text-xs font-medium text-gray-500">Order Date</p>
                 </div>
+                <p className="text-sm text-gray-700">{formatDate(order.created_at)}</p>
               </div>
               
-              <div className="flex items-center space-x-3">
-                <Phone size={20} className="text-chicken-red" />
-                <div>
-                  <p className="font-medium">Contact</p>
-                  <p className="text-sm text-gray-600">{order.customer_phone}</p>
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Clock className="h-4 w-4 text-orange-500" />
+                  <p className="text-xs font-medium text-gray-500">Estimated {order.delivery_type === 'pickup' ? 'Pickup' : 'Delivery'}</p>
                 </div>
+                <p className="text-sm text-gray-700">{formatDate(order.estimated_delivery)}</p>
               </div>
-              
-              <div className="flex items-center space-x-3">
-                <MapPin size={20} className="text-chicken-orange" />
-                <div>
-                  <p className="font-medium">{order.delivery_type === 'pickup' ? 'Pickup Location' : 'Delivery Address'}</p>
-                  <p className="text-sm text-gray-600">
-                    {order.delivery_type === 'pickup' 
-                      ? 'Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027' 
-                      : order.delivery_address
-                    }
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 flex items-center justify-center">
-                  {order.delivery_type === 'pickup' ? '🏪' : '🚚'}
-                </div>
-                <div>
-                  <p className="font-medium">Order Type</p>
-                  <p className="text-sm text-gray-600">
-                    {order.delivery_type === 'pickup' ? 'Pickup Order' : 'Delivery Order'}
-                  </p>
-                </div>
+
+              <div className={`p-3 rounded-lg border ${
+                currentStatusDisplay === 'delivered' ? 'bg-green-50 border-green-200' :
+                currentStatusDisplay === 'preparing' ? 'bg-orange-50 border-orange-200' :
+                currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? 'bg-blue-50 border-blue-200' :
+                'bg-gray-50 border-gray-200'
+              }`}>
+                <p className="text-xs font-medium text-gray-500 mb-1">Current Status</p>
+                <p className={`text-sm font-semibold ${
+                  currentStatusDisplay === 'delivered' ? 'text-green-700' :
+                  currentStatusDisplay === 'preparing' ? 'text-orange-700' :
+                  currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? 'text-blue-700' :
+                  'text-gray-700'
+                }`}>{getStatusText(currentStatusDisplay)}</p>
               </div>
             </div>
           </div>
 
-          {/* Order Bill */}
-          <div className="bg-white rounded-lg shadow-lg p-6 print-bill">
-            <div className="flex justify-between items-start mb-4 no-print">
-              <h2 className="text-xl font-semibold">Order Bill</h2>
+          {/* Delivery Info Card */}
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print animate-slide-up stagger-2">
+            <div className="flex items-center gap-2 mb-5">
+              <div className={`p-2 rounded-lg ${
+                order.delivery_type === 'pickup' ? 'bg-blue-50' : 'bg-purple-50'
+              }`}>
+                {order.delivery_type === 'pickup' ? (
+                  <Store className="h-5 w-5 text-blue-600" />
+                ) : (
+                  <Truck className="h-5 w-5 text-purple-600" />
+                )}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800">{order.delivery_type === 'pickup' ? 'Pickup' : 'Delivery'} Info</h2>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <p className="text-xs font-medium text-gray-500">Contact Number</p>
+                </div>
+                <p className="text-sm text-gray-700">{order.customer_phone}</p>
+              </div>
+              
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <p className="text-xs font-medium text-gray-500">{order.delivery_type === 'pickup' ? 'Pickup Location' : 'Delivery Address'}</p>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {order.delivery_type === 'pickup' 
+                    ? 'Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027' 
+                    : order.delivery_address
+                  }
+                </p>
+              </div>
+              
+              {order.payment_method && (
+                <div className={`p-3 rounded-lg border ${
+                  order.payment_method === 'upi' ? 'bg-indigo-50 border-indigo-200' :
+                  order.payment_method === 'card' ? 'bg-blue-50 border-blue-200' :
+                  'bg-green-50 border-green-200'
+                }`}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    {order.payment_method === 'upi' ? (
+                      <CreditCard className="h-4 w-4 text-indigo-600" />
+                    ) : order.payment_method === 'card' ? (
+                      <CreditCard className="h-4 w-4 text-blue-600" />
+                    ) : (
+                      <Wallet className="h-4 w-4 text-green-600" />
+                    )}
+                    <p className="text-xs font-medium text-gray-500">Payment Method</p>
+                  </div>
+                  <p className={`text-sm font-semibold capitalize ${
+                    order.payment_method === 'upi' ? 'text-indigo-700' :
+                    order.payment_method === 'card' ? 'text-blue-700' :
+                    'text-green-700'
+                  }`}>
+                    {order.payment_method === 'upi' ? 'UPI Payment' : order.payment_method === 'card' ? 'Card Payment' : 'Cash on Delivery'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Order Summary Card */}
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] animate-slide-up stagger-3">
+            <div className="flex items-center justify-between mb-5 no-print">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-green-50 rounded-lg">
+                  <Package className="h-5 w-5 text-green-600" />
+                </div>
+                <h2 className="text-lg font-semibold text-gray-800">Order Summary</h2>
+              </div>
               <button
                 onClick={handlePrint}
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 transform hover:scale-110"
+                title="Print Bill"
               >
-                <Printer size={18} />
-                <span>Print Bill</span>
+                <Printer className="h-4 w-4 text-gray-600" />
               </button>
             </div>
-            <div className="text-center mb-6 pb-4 border-b-2 border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">K2 CHICKEN</h2>
-              <p className="text-sm text-gray-600 mt-1">Shop No. 4, 24K Avenue, New DP Rd</p>
-              <p className="text-sm text-gray-600">Vishal Nagar, Pimple Nilakh, Pune - 411027</p>
-              <p className="text-sm text-gray-600 mt-2">Phone: 8484978622</p>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Order #:</span>
-                <span className="font-semibold">{order.id}</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Date:</span>
-                <span>{formatDate(order.created_at)}</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Customer:</span>
-                <span className="font-medium">{order.customer_name}</span>
-              </div>
-            </div>
-
-            <div className="border-t border-b border-gray-200 py-4 my-4">
-              <h3 className="font-semibold text-gray-900 mb-3">Items</h3>
-              <div className="space-y-3">
+            
+            <div className="space-y-3">
+              <div className="space-y-2">
                 {order.items && order.items.map((item, index) => (
-                  <div key={index} className="flex justify-between items-start">
+                  <div key={index} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{item.product_name}</p>
-                      <p className="text-sm text-gray-600">Qty: {item.quantity} × ₹{Number(item.price).toFixed(0)}</p>
+                      <p className="font-medium text-gray-900 text-sm">{item.product_name}</p>
+                      <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{Number(item.price).toFixed(0)}</p>
                     </div>
-                    <p className="font-semibold text-gray-900 ml-4">
+                    <p className="font-semibold text-gray-900 text-sm">
                       ₹{(Number(item.price) * item.quantity).toFixed(0)}
                     </p>
                   </div>
                 ))}
               </div>
-            </div>
-            
-            <div className="space-y-2 mb-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal:</span>
-                <span className="font-medium">₹{Number(order.subtotal || order.total_amount - (order.delivery_charge || 0) + (order.discount_amount || 0)).toFixed(0)}</span>
-              </div>
-              {(order.discount_amount || 0) > 0 && (
-                <div className="flex justify-between items-center p-2 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-700 font-semibold">🎉 Discount Applied:</span>
+              
+              <div className="border-t border-gray-200 pt-3 space-y-2">
+                {order.subtotal && order.subtotal !== order.total_amount && (
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Subtotal</span>
+                    <span className="font-medium">₹{Number(order.subtotal || order.total_amount - (order.delivery_charge || 0) + (order.discount_amount || 0)).toFixed(0)}</span>
                   </div>
-                  <span className="text-green-700 font-bold text-base">-₹{Number(order.discount_amount || 0).toFixed(0)}</span>
-                </div>
-              )}
-              {order.delivery_type === 'delivery' && (order.delivery_charge || 0) > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delivery Charge:</span>
-                  <span className="font-medium">₹{Number(order.delivery_charge || 0).toFixed(0)}</span>
-                </div>
-              )}
-              {order.delivery_type === 'delivery' && (order.delivery_charge || 0) === 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delivery Charge:</span>
-                  <span className="font-medium text-green-600">FREE</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="border-t-2 border-gray-300 pt-4">
-              <div className="flex justify-between text-xl font-bold">
-                <span>Total Amount:</span>
-                <span className="text-chicken-red">₹{Number(order.total_amount).toFixed(0)}</span>
-              </div>
-            </div>
-
-            {/* Payment QR Code - Only for Delivery Orders */}
-            {order.delivery_type === 'delivery' && (
-              <div className="mt-6 pt-4 border-t-2 border-gray-300">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Payment QR Code</h3>
-                  <p className="text-sm text-gray-600 mb-4">Scan to pay ₹{Number(order.total_amount).toFixed(0)}</p>
-                  <div className="flex justify-center mb-3">
-                    <div className="bg-white p-4 rounded-lg border-2 border-gray-200 inline-block">
-                      <QRCodeSVG
-                        value={generateUPILink(Number(order.total_amount))}
-                        size={200}
-                        level="H"
-                        includeMargin={true}
-                      />
-                    </div>
+                )}
+                {order.delivery_type === 'delivery' && (order.delivery_charge || 0) > 0 && (
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Delivery Charge</span>
+                    <span className="font-medium">₹{Number(order.delivery_charge || 0).toFixed(0)}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Scan with any UPI app (PhonePe, Google Pay, Paytm, etc.)
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Order #{order.id}
-                  </p>
+                )}
+                {order.delivery_type === 'delivery' && (order.delivery_charge || 0) === 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Delivery Charge</span>
+                    <span className="font-medium text-green-600">FREE</span>
+                  </div>
+                )}
+                {(order.discount_amount || 0) > 0 && (
+                  <div className="flex justify-between items-center p-2.5 bg-green-50 rounded-lg border border-green-200">
+                    <span className="text-green-700 font-medium flex items-center gap-1.5 text-sm">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Discount
+                    </span>
+                    <span className="text-green-700 font-semibold">-₹{Number(order.discount_amount || 0).toFixed(0)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-3 border-t border-gray-300">
+                  <span className="text-base font-semibold text-gray-900">Total Amount</span>
+                  <span className="text-2xl font-bold text-orange-600">
+                    ₹{Number(order.total_amount).toFixed(0)}
+                  </span>
                 </div>
               </div>
-            )}
-
-            <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-              <p className="text-sm text-gray-600">Thank you for your order!</p>
-              <p className="text-xs text-gray-500 mt-2">We'll contact you shortly to confirm your order.</p>
             </div>
           </div>
         </div>
 
-        {/* Next Steps */}
-        <div className="mt-12 bg-chicken-yellow bg-opacity-20 rounded-lg p-6 no-print">
-          <h3 className="text-lg font-semibold mb-4">What's Next?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="text-center">
-              <div className={`w-8 h-8 text-white rounded-full flex items-center justify-center mx-auto mb-2 ${
-                (currentStatus || order.status) === 'pending' || (currentStatus || order.status) === 'received' 
-                  ? 'bg-chicken-red' 
-                  : 'bg-gray-400'
-              }`}>1</div>
-              <p className="font-medium">Order Confirmed</p>
-              <p className="text-gray-600">We've received your order</p>
+
+        {/* Order Progress Timeline */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6 no-print hover:shadow-md transition-all duration-300 animate-slide-up stagger-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <ChefHat className="h-5 w-5 text-orange-500" />
+            Order Progress
+          </h3>
+          
+          <div className="relative">
+            {/* Progress Line */}
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200">
+              <div 
+                className={`absolute top-0 left-0 w-full transition-all duration-500 ${
+                  currentStatusDisplay === 'delivered' ? 'bg-green-400 h-full' :
+                  currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? 'bg-blue-400 h-3/4' :
+                  currentStatusDisplay === 'preparing' ? 'bg-orange-400 h-1/2' :
+                  'bg-gray-300 h-1/4'
+                }`}
+                style={{ height: 
+                  currentStatusDisplay === 'delivered' ? '100%' :
+                  currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? '75%' :
+                  currentStatusDisplay === 'preparing' ? '50%' :
+                  '25%'
+                }}
+              ></div>
             </div>
-            <div className="text-center">
-              <div className={`w-8 h-8 text-white rounded-full flex items-center justify-center mx-auto mb-2 ${
-                (currentStatus || order.status) === 'preparing' 
-                  ? 'bg-chicken-red' 
-                  : (currentStatus || order.status) === 'ready_for_pickup' || (currentStatus || order.status) === 'delivered'
-                  ? 'bg-green-500'
-                  : 'bg-gray-400'
-              }`}>2</div>
-              <p className="font-medium">Preparing</p>
-              <p className="text-gray-600">Our chefs are cooking your chicken</p>
-            </div>
-            <div className="text-center">
-              <div className={`w-8 h-8 text-white rounded-full flex items-center justify-center mx-auto mb-2 ${
-                (currentStatus || order.status) === 'ready' || (currentStatus || order.status) === 'ready_for_pickup' || (currentStatus || order.status) === 'delivered'
-                  ? 'bg-chicken-red' 
-                  : 'bg-gray-400'
-              }`}>3</div>
-              <p className="font-medium">
-                {order.delivery_type === 'pickup' ? 'Ready for Pickup' : 'Ready for Delivery'}
-              </p>
-              <p className="text-gray-600">
-                {order.delivery_type === 'pickup' 
-                  ? "We'll call you when it's ready!" 
-                  : "We'll call you when it's ready for delivery!"
-                }
-              </p>
+
+            <div className="space-y-6">
+              {/* Step 1: Order Confirmed */}
+              <div className="flex items-start gap-4 animate-slide-up stagger-1">
+                <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 transform hover:scale-110 ${
+                  currentStatusDisplay === 'pending' || currentStatusDisplay === 'received' || 
+                  currentStatusDisplay === 'preparing' || currentStatusDisplay === 'ready' || 
+                  currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                    ? 'bg-green-50 border-green-300' 
+                    : 'bg-gray-100 border-gray-300'
+                }`}>
+                  <CheckCircle className={`h-6 w-6 transition-all duration-300 ${
+                    currentStatusDisplay === 'pending' || currentStatusDisplay === 'received' || 
+                    currentStatusDisplay === 'preparing' || currentStatusDisplay === 'ready' || 
+                    currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                      ? 'text-green-600' 
+                      : 'text-gray-400'
+                  }`} />
+                </div>
+                <div className="flex-1 pt-1">
+                  <h4 className="text-base font-semibold text-gray-900 mb-1">Order Confirmed</h4>
+                  <p className="text-sm text-gray-600">We've received your order and it's being processed</p>
+                </div>
+              </div>
+
+              {/* Step 2: Preparing */}
+              <div className="flex items-start gap-4">
+                <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center border-2 ${
+                  currentStatusDisplay === 'preparing' || currentStatusDisplay === 'ready' || 
+                  currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                    ? 'bg-orange-50 border-orange-300' 
+                    : 'bg-gray-100 border-gray-300'
+                }`}>
+                  <ChefHat className={`h-6 w-6 ${
+                    currentStatusDisplay === 'preparing' || currentStatusDisplay === 'ready' || 
+                    currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                      ? 'text-orange-600' 
+                      : 'text-gray-400'
+                  }`} />
+                </div>
+                <div className="flex-1 pt-1">
+                  <h4 className="text-base font-semibold text-gray-900 mb-1">Preparing Your Order</h4>
+                  <p className="text-sm text-gray-600">Our chefs are cooking your delicious chicken with care</p>
+                </div>
+              </div>
+
+              {/* Step 3: Ready */}
+              <div className="flex items-start gap-4">
+                <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center border-2 ${
+                  currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                    ? 'bg-blue-50 border-blue-300' 
+                    : 'bg-gray-100 border-gray-300'
+                }`}>
+                  {order.delivery_type === 'pickup' ? (
+                    <Store className={`h-6 w-6 ${
+                      currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                        ? 'text-blue-600' 
+                        : 'text-gray-400'
+                    }`} />
+                  ) : (
+                    <Truck className={`h-6 w-6 ${
+                      currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' || currentStatusDisplay === 'delivered'
+                        ? 'text-blue-600' 
+                        : 'text-gray-400'
+                    }`} />
+                  )}
+                </div>
+                <div className="flex-1 pt-1">
+                  <h4 className="text-base font-semibold text-gray-900 mb-1">
+                    {order.delivery_type === 'pickup' ? 'Ready for Pickup' : 'Ready for Delivery'}
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    {order.delivery_type === 'pickup' 
+                      ? "Your order is ready! We'll call you when you can pick it up." 
+                      : "Your order is ready! We'll call you when it's out for delivery."
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4: Delivered (if delivered) */}
+              {currentStatusDisplay === 'delivered' && (
+                <div className="flex items-start gap-4">
+                  <div className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center border-2 bg-green-50 border-green-300">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h4 className="text-base font-semibold text-gray-900 mb-1">Delivered</h4>
+                    <p className="text-sm text-gray-600">Enjoy your delicious meal! We hope you loved it 🍗</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-          
-          {/* Status Indicator */}
-          <div className="mt-4 text-center">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white shadow-sm">
-              <div className={`w-3 h-3 rounded-full mr-2 ${
-                (currentStatus || order.status) === 'pending' || (currentStatus || order.status) === 'received'
-                  ? 'bg-chicken-red'
-                  : (currentStatus || order.status) === 'preparing'
-                  ? 'bg-chicken-yellow'
-                  : (currentStatus || order.status) === 'ready' || (currentStatus || order.status) === 'ready_for_pickup' || (currentStatus || order.status) === 'delivered'
-                  ? 'bg-green-500'
-                  : 'bg-gray-400'
-              }`}></div>
-              <span className="text-sm font-medium">
-                Current Status: {
-                  (currentStatus || order.status) === 'pending' || (currentStatus || order.status) === 'received'
-                    ? 'Order Confirmed'
-                    : (currentStatus || order.status) === 'preparing'
-                    ? 'Preparing'
-                    : (currentStatus || order.status) === 'ready'
-                    ? (order.delivery_type === 'pickup' ? 'Ready for Pickup' : 'Ready for Delivery')
-                    : (currentStatus || order.status) === 'ready_for_pickup'
-                    ? 'Ready for Pickup'
-                    : (currentStatus || order.status) === 'delivered'
-                    ? 'Delivered'
-                    : 'Unknown'
-                }
-              </span>
+
+          {/* Current Status Badge */}
+          <div className="mt-6 pt-5 border-t border-gray-200">
+            <div className="flex items-center justify-center">
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${
+                currentStatusDisplay === 'delivered' ? 'bg-green-50 border-green-200 text-green-700' :
+                currentStatusDisplay === 'preparing' ? 'bg-orange-50 border-orange-200 text-orange-700' :
+                currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                'bg-gray-50 border-gray-200 text-gray-700'
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  currentStatusDisplay === 'delivered' ? 'bg-green-500' :
+                  currentStatusDisplay === 'preparing' ? 'bg-orange-500' :
+                  currentStatusDisplay === 'ready' || currentStatusDisplay === 'ready_for_pickup' ? 'bg-blue-500' :
+                  'bg-gray-400'
+                }`}></div>
+                <span className="text-sm font-medium">Status: {getStatusText(currentStatusDisplay)}</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center no-print">
-          <Link href="/" className="btn-primary">
-            Order More Chicken 🍗
+        <div className="flex flex-col sm:flex-row gap-3 justify-center no-print animate-slide-up stagger-5">
+          <Link 
+            href="/" 
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            <span>Order More</span>
           </Link>
-          <Link href="/recipes" className="btn-secondary">
-            View Recipes 👨‍🍳
+          <Link 
+            href="/orders" 
+            className="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
+          >
+            <Receipt className="h-4 w-4" />
+            <span>View All Orders</span>
           </Link>
         </div>
       </div>

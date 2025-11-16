@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings, Tag } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings, Tag, X } from 'lucide-react'
 import ProductManagement from '@/components/ProductManagement'
 import RecipeManagement from '@/components/RecipeManagement'
 import OrderManagement from '@/components/OrderManagement'
@@ -32,18 +32,15 @@ export default function AdminPage() {
           credentials: 'include'
         })
         
-        if (response.ok) {
-          const userData = await response.json()
-          if (userData.success && userData.user) {
-            setUser(userData.user)
-            setIsLoading(false)
-          } else {
-            // Invalid response, redirect to login
-            window.location.href = '/admin/login'
-            return
-          }
+        const userData = await response.json()
+        console.log('Admin auth check response:', { status: response.status, data: userData })
+        
+        if (response.ok && userData.success && userData.user) {
+          setUser(userData.user)
+          setIsLoading(false)
         } else {
-          // If not authenticated, redirect to login
+          // Invalid response, redirect to login
+          console.log('Auth check failed, redirecting to login')
           window.location.href = '/admin/login'
           return
         }
@@ -211,65 +208,64 @@ export default function AdminPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50">
       {/* Order Notification Alert */}
       {showOrderNotification && (
-        <div className="fixed top-16 sm:top-20 right-2 sm:right-4 left-2 sm:left-auto z-50 animate-bounce">
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-2xl border-2 border-white flex items-center space-x-2 sm:space-x-3 max-w-[300px] sm:min-w-[300px] mx-auto sm:mx-0">
-            <div className="text-2xl sm:text-3xl animate-pulse flex-shrink-0">🔔</div>
-            <div className="flex-grow min-w-0">
-              <div className="font-bold text-base sm:text-lg">New Order Alert!</div>
-              <div className="text-xs sm:text-sm opacity-90">
-                {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} has arrived!
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 fade-in duration-300">
+          <div className="bg-white rounded-xl shadow-lg border-l-4 border-orange-500 px-4 py-3 flex items-center space-x-3 min-w-[280px] animate-pulse">
+            <div className="text-2xl">🔔</div>
+            <div className="flex-grow">
+              <div className="font-semibold text-gray-900 text-sm">New Order!</div>
+              <div className="text-xs text-gray-600">
+                {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} arrived
               </div>
             </div>
             <button
               onClick={() => setShowOrderNotification(false)}
-              className="ml-auto text-white hover:text-gray-200 flex-shrink-0 text-lg sm:text-xl min-h-[44px] min-w-[44px] items-center justify-center"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              ✕
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
       )}
 
       {/* Admin Header */}
-      <div className="bg-white/80 backdrop-blur-xl shadow-2xl border-b border-orange-200/30 sticky top-0 z-50">
+      <div className="bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative inline-block">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-3 sm:py-4 gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
                 <img 
                   src="/logo.svg" 
                   alt="K2 Chicken" 
-                  className="h-10 sm:h-14 w-auto"
+                  className="h-8 sm:h-10 w-auto"
                 />
-                <div className="text-xs sm:text-sm font-semibold text-[#FF6B35] mt-0.5 sm:mt-1" style={{ marginLeft: '32px' }}>
+                <div className="text-xs font-medium text-orange-600 mt-0.5" style={{ marginLeft: '28px' }}>
                   K2 Chicken
                 </div>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl md:text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                  Admin Dashboard
+                <h1 className="text-base sm:text-lg font-semibold text-gray-900">
+                  Admin Console
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-600 font-medium hidden sm:block">K2 Chicken Management System</p>
+                <p className="text-xs text-gray-500 hidden sm:block">Management Dashboard</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto">
-              <div className="flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl sm:rounded-2xl border border-orange-200">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="w-7 h-7 bg-orange-100 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-orange-600" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs sm:text-sm font-semibold text-gray-800">Welcome back!</p>
-                  <p className="text-xs text-gray-600">{user.username}</p>
+                  <p className="text-xs font-medium text-gray-700">{user.username}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl sm:rounded-2xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-semibold text-xs sm:text-sm min-h-[44px]"
+                className="flex items-center space-x-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm font-medium"
               >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
@@ -277,49 +273,49 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Tab Navigation */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 mb-4 sm:mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 p-1 sm:p-2">
-            <nav className="flex space-x-1 sm:space-x-2 px-2 sm:px-4 overflow-x-auto scrollbar-hide">
-              {tabs.map((tab) => {
-                const Icon = tab.icon
-                const isOrdersTab = tab.id === 'orders'
-                const showBadge = isOrdersTab && newOrdersCount > 0 && activeTab !== 'orders'
-                
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
-                    className={`relative flex items-center space-x-1 sm:space-x-2 md:space-x-3 py-2 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-xl sm:rounded-2xl font-semibold text-xs sm:text-sm transition-all duration-300 whitespace-nowrap min-h-[44px] ${
-                      activeTab === tab.id
-                        ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg scale-105'
-                        : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50 hover:scale-105'
-                    }`}
-                  >
-                    <Icon size={16} className="sm:w-5 sm:h-5" />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                    {showBadge && (
-                      <span className="order-badge-flash absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[20px] sm:min-w-[24px] h-5 sm:h-6 px-1 sm:px-1.5 flex items-center justify-center border-2 border-white z-10">
-                        {newOrdersCount > 99 ? '99+' : newOrdersCount}
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
+        <div className="bg-white rounded-lg border border-gray-200 mb-5 overflow-hidden">
+          <nav className="flex space-x-0.5 p-1 overflow-x-auto scrollbar-hide">
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              const isOrdersTab = tab.id === 'orders'
+              const showBadge = isOrdersTab && newOrdersCount > 0 && activeTab !== 'orders'
+              
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
+                  className={`relative flex items-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'bg-orange-50 text-orange-700'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon size={16} className={activeTab === tab.id ? 'text-orange-600' : 'text-gray-400'} />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  {showBadge && (
+                    <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
+                      {newOrdersCount > 99 ? '99+' : newOrdersCount}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </nav>
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 overflow-hidden p-4 sm:p-6">
-          {activeTab === 'dashboard' && <AdminDashboard />}
-          {activeTab === 'products' && <ProductManagement />}
-          {activeTab === 'recipes' && <RecipeManagement />}
-          {activeTab === 'orders' && <OrderManagement />}
-          {activeTab === 'inventory' && <InventoryManagement />}
-          {activeTab === 'promotions' && <PromotionManagement />}
-          {activeTab === 'settings' && <SettingsManagement />}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="p-5">
+            {activeTab === 'dashboard' && <AdminDashboard />}
+            {activeTab === 'products' && <ProductManagement />}
+            {activeTab === 'recipes' && <RecipeManagement />}
+            {activeTab === 'orders' && <OrderManagement />}
+            {activeTab === 'inventory' && <InventoryManagement />}
+            {activeTab === 'promotions' && <PromotionManagement />}
+            {activeTab === 'settings' && <SettingsManagement />}
+          </div>
         </div>
       </div>
     </div>
