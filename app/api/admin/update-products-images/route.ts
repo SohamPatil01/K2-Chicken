@@ -29,47 +29,39 @@ export async function GET(request: NextRequest) {
     try {
       console.log('Updating products with correct image URLs...');
       
-      // Product image mappings - matching actual files in /public/images/
+      // Product image mappings - using only existing images from /public/images/
       const productUpdates = [
         {
           name: 'Chicken Breast Boneless',
-          image_url: '/images/upload/Chicken-Breast-Boneless.-2 copy.jpg',
-          fallback: '/images/Chicken-Curry-Cut.jpg'
+          image_url: '/images/Chicken-Curry-Cut.jpg'
         },
         {
           name: 'Chicken Curry Cut',
-          image_url: '/images/Chicken-Curry-Cut.jpg',
-          fallback: '/images/Chicken-Curry-Cut.jpg'
+          image_url: '/images/Chicken-Curry-Cut.jpg'
         },
         {
           name: 'Chicken Drumstick',
-          image_url: '/images/upload/Chicken-Drumstick-3 copy.jpg',
-          fallback: '/images/Chicken-Legs.jpg'
+          image_url: '/images/Chicken-Legs.jpg'
         },
         {
           name: 'Chicken Kheema',
-          image_url: '/images/Chicken-Kheema.jpg',
-          fallback: '/images/Chicken-Kheema.jpg'
+          image_url: '/images/Chicken-Kheema.jpg'
         },
         {
           name: 'Chicken Legs',
-          image_url: '/images/Chicken-Legs.jpg',
-          fallback: '/images/Chicken-Legs.jpg'
+          image_url: '/images/Chicken-Legs.jpg'
         },
         {
           name: 'Chicken Liver',
-          image_url: '/images/Chicken-Liver.jpg',
-          fallback: '/images/Chicken-Liver.jpg'
+          image_url: '/images/Chicken-Liver.jpg'
         },
         {
           name: 'Chicken Wings',
-          image_url: '/images/Chicken-Wings.jpg',
-          fallback: '/images/Chicken-Wings.jpg'
+          image_url: '/images/Chicken-Wings.jpg'
         },
         {
           name: 'Whole Chicken',
-          image_url: '/images/Whole-Chicken-5.jpg',
-          fallback: '/images/Whole-Chicken-5.jpg'
+          image_url: '/images/Whole-Chicken-5.jpg'
         }
       ];
 

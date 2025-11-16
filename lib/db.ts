@@ -353,14 +353,14 @@ export async function initializeDatabase() {
       `);
     }
 
-    // Insert sample products with actual images
+    // Insert sample products with actual images (original 8 products)
     const productCount = await client.query('SELECT COUNT(*) FROM products');
     if (parseInt(productCount.rows[0].count) === 0) {
       await client.query(`
         INSERT INTO products (name, description, price, image_url, category, stock_quantity, in_stock) VALUES
-        ('Chicken Breast Boneless', 'Fresh, tender boneless chicken breast - perfect for grilling or frying', 299, '/images/upload/Chicken-Breast-Boneless.-2 copy.jpg', 'main', 100, true),
+        ('Chicken Breast Boneless', 'Fresh, tender boneless chicken breast - perfect for grilling or frying', 299, '/images/Chicken-Curry-Cut.jpg', 'main', 100, true),
         ('Chicken Curry Cut', 'Traditional curry cut chicken pieces with bone - ideal for curries and stews', 249, '/images/Chicken-Curry-Cut.jpg', 'main', 100, true),
-        ('Chicken Drumstick', 'Juicy chicken drumsticks - great for roasting or grilling', 219, '/images/upload/Chicken-Drumstick-3 copy.jpg', 'main', 100, true),
+        ('Chicken Drumstick', 'Juicy chicken drumsticks - great for roasting or grilling', 219, '/images/Chicken-Legs.jpg', 'main', 100, true),
         ('Chicken Kheema', 'Finely minced chicken meat - perfect for kebabs and biryanis', 279, '/images/Chicken-Kheema.jpg', 'main', 100, true),
         ('Chicken Legs', 'Whole chicken legs with thigh and drumstick - excellent for roasting', 299, '/images/Chicken-Legs.jpg', 'main', 100, true),
         ('Chicken Liver', 'Fresh chicken liver - rich in iron and perfect for stir-fries', 199, '/images/Chicken-Liver.jpg', 'main', 100, true),
