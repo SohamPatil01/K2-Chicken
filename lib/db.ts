@@ -1,12 +1,26 @@
 import { Pool } from 'pg';
 
-const pool = new Pool({
-  user: process.env.POSTGRES_USER || 'postgres',
-  host: process.env.POSTGRES_HOST || 'localhost',
-  database: process.env.POSTGRES_DB || 'chicken_vicken',
-  password: process.env.POSTGRES_PASSWORD || 'password',
-  port: parseInt(process.env.POSTGRES_PORT || '5432'),
-});
+// Support both connection string (for cloud databases) and individual config (for local)
+let poolConfig: any;
+
+if (process.env.DATABASE_URL) {
+  // Use connection string (preferred for cloud databases like Neon, Supabase, Railway)
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined,
+  };
+} else {
+  // Fallback to individual config (for local development)
+  poolConfig = {
+    user: process.env.POSTGRES_USER || 'postgres',
+    host: process.env.POSTGRES_HOST || 'localhost',
+    database: process.env.POSTGRES_DB || 'chicken_vicken',
+    password: process.env.POSTGRES_PASSWORD || 'password',
+    port: parseInt(process.env.POSTGRES_PORT || '5432'),
+  };
+}
+
+const pool = new Pool(poolConfig);
 
 export default pool;
 
