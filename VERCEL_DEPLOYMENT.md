@@ -78,24 +78,46 @@ NEXT_PUBLIC_UPI_ID=your_upi_id@paytm
 
 ## Initialize Database
 
-After deploying, you need to initialize your database schema:
+After deploying, you need to initialize your database schema. **The easiest way is using the API endpoint:**
 
-1. **Option A: Use Vercel CLI**
+### Option 1: Use the API Endpoint (Easiest) ✅
+
+1. **Add a security token** (optional but recommended):
+   - In Vercel → Environment Variables
+   - Add: `DB_INIT_TOKEN` = `your-secret-token-here`
+
+2. **Call the initialization endpoint:**
+   ```bash
+   # With token (recommended):
+   curl -H "x-init-token: your-secret-token-here" https://your-app.vercel.app/api/admin/init-db
+   
+   # Or visit in browser (if no token set):
+   https://your-app.vercel.app/api/admin/init-db
+   ```
+
+3. **You should see:**
+   ```json
+   {
+     "success": true,
+     "message": "Database initialized successfully! All tables created and sample data inserted."
+   }
+   ```
+
+4. **⚠️ IMPORTANT**: After initialization, either:
+   - Delete the `/app/api/admin/init-db/route.ts` file, OR
+   - Keep the `DB_INIT_TOKEN` secret and never share it
+
+### Option 2: Use Vercel CLI
    ```bash
    vercel env pull .env.local
    # Then run locally:
    node scripts/setup-database.js
    ```
 
-2. **Option B: Connect directly to your cloud database**
+### Option 3: Connect directly to your cloud database
    - Use a database client (like pgAdmin, DBeaver, or TablePlus)
    - Connect using your connection string
    - Run the SQL from `scripts/setup-database.js` manually
-
-3. **Option C: Create an API endpoint** (temporary)
-   - Create `/api/admin/init-db/route.ts` that calls `initializeDatabase()`
-   - Call it once: `https://your-app.vercel.app/api/admin/init-db`
-   - **IMPORTANT**: Remove this endpoint after initialization for security
 
 ## Troubleshooting
 
