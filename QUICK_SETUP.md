@@ -75,7 +75,7 @@ Follow these steps to get your app live on Vercel:
    ```
    Name: DB_INIT_TOKEN
    Value: [generate a random secret token]
-   Example:     
+   Example:
    Environment: Production, Preview, Development
    ```
 
