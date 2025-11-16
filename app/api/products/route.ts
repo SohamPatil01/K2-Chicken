@@ -9,38 +9,66 @@ export async function GET(request: NextRequest) {
     const client = await pool.connect()
     
     try {
+      // Check if additional columns exist
+      const columnCheck = await client.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'products' 
+        AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock')
+      `)
+      const hasStockColumns = columnCheck.rows.length > 0
+      
       const query = all 
         ? `SELECT id, name, description, price, image_url, category, is_available,
-                  COALESCE(stock_quantity, 100) as stock_quantity,
-                  COALESCE(low_stock_threshold, 10) as low_stock_threshold,
-                  COALESCE(in_stock, true) as in_stock
+                  ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
+                  ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
+                  ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
            FROM products 
            ORDER BY category, name`
         : `SELECT id, name, description, price, image_url, category, is_available,
-                  COALESCE(stock_quantity, 100) as stock_quantity,
-                  COALESCE(low_stock_threshold, 10) as low_stock_threshold,
-                  COALESCE(in_stock, true) as in_stock
+                  ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
+                  ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
+                  ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
            FROM products 
            WHERE is_available = true 
            ORDER BY category, name`
       
       const result = await client.query(query)
       
-      // Fetch weight options for each product
+      // Check if product_weight_options table exists
+      const tableCheck = await client.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_name = 'product_weight_options'
+        )
+      `)
+      const hasWeightOptionsTable = tableCheck.rows[0].exists
+      
+      // Fetch weight options for each product (if table exists)
       const productsWithWeights = await Promise.all(
         result.rows.map(async (product) => {
-          const weightOptions = await client.query(
-            `SELECT id, weight, weight_unit, price, is_default 
-             FROM product_weight_options 
-             WHERE product_id = $1 
-             ORDER BY weight ASC`,
-            [product.id]
-          )
+          let weightOptions = []
+          
+          if (hasWeightOptionsTable) {
+            try {
+              const weightResult = await client.query(
+                `SELECT id, weight, weight_unit, price, is_default 
+                 FROM product_weight_options 
+                 WHERE product_id = $1 
+                 ORDER BY weight ASC`,
+                [product.id]
+              )
+              weightOptions = weightResult.rows
+            } catch (error) {
+              // Table might not exist yet, use default
+              console.log('Weight options table not accessible, using default')
+            }
+          }
           
           return {
             ...product,
-            weightOptions: weightOptions.rows.length > 0 
-              ? weightOptions.rows 
+            weightOptions: weightOptions.length > 0 
+              ? weightOptions 
               : [
                   { id: null, weight: 500, weight_unit: 'g', price: product.price, is_default: true }
                 ]
