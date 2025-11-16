@@ -1,8 +1,6 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Clock, Users, ChefHat, ArrowLeft } from 'lucide-react'
+import pool from '@/lib/db'
 
 interface Recipe {
   id: number
@@ -16,28 +14,29 @@ interface Recipe {
   servings: number
 }
 
-export default function RecipesPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchRecipes()
-  }, [])
-
-  const fetchRecipes = async () => {
+async function getRecipes(): Promise<Recipe[]> {
+  try {
+    const client = await pool.connect()
     try {
-      const response = await fetch('/api/recipes')
-      const data = await response.json()
-      setRecipes(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Error fetching recipes:', error)
-      setRecipes([])
+      const result = await client.query(`
+        SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
+        FROM recipes 
+        ORDER BY created_at DESC
+      `)
+      return result.rows
     } finally {
-      setLoading(false)
+      client.release()
     }
+  } catch (error) {
+    console.error('Error fetching recipes:', error)
+    return []
   }
+}
 
-  if (loading) {
+export default async function RecipesPage() {
+  const recipes = await getRecipes()
+
+  if (recipes.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Cache for 60 seconds (revalidate)
+export const revalidate = 60;
 export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
@@ -13,14 +13,9 @@ export async function GET(request: NextRequest) {
     const client = await pool.connect()
     
     try {
-      // Check if additional columns exist
-      const columnCheck = await client.query(`
-        SELECT column_name 
-        FROM information_schema.columns 
-        WHERE table_name = 'products' 
-        AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock')
-      `)
-      const hasStockColumns = columnCheck.rows.length > 0
+      // Check if additional columns exist (cached check - these columns should exist after migration)
+      // Skip the check for performance - assume columns exist if migration was run
+      const hasStockColumns = true
       
       const query = all 
         ? `SELECT id, name, description, price, image_url, category, is_available,

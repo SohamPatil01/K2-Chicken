@@ -1,9 +1,7 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from 'lucide-react'
+import pool from '@/lib/db'
+import { notFound } from 'next/navigation'
 
 interface Recipe {
   id: number
@@ -17,67 +15,30 @@ interface Recipe {
   servings: number
 }
 
-export default function RecipeDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [recipe, setRecipe] = useState<Recipe | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (params?.id) {
-      fetchRecipe(params.id as string)
-    }
-  }, [params?.id])
-
-  const fetchRecipe = async (id: string) => {
+async function getRecipe(id: string): Promise<Recipe | null> {
+  try {
+    const client = await pool.connect()
     try {
-      const response = await fetch(`/api/recipes/${id}`)
-      if (!response.ok) {
-        throw new Error('Recipe not found')
-      }
-      const data = await response.json()
-      setRecipe(data)
-    } catch (error: any) {
-      console.error('Error fetching recipe:', error)
-      setError(error.message || 'Failed to load recipe')
+      const result = await client.query(`
+        SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
+        FROM recipes 
+        WHERE id = $1
+      `, [id])
+      return result.rows[0] || null
     } finally {
-      setLoading(false)
+      client.release()
     }
+  } catch (error) {
+    console.error('Error fetching recipe:', error)
+    return null
   }
+}
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded mb-6 w-1/3"></div>
-            <div className="h-64 bg-gray-300 rounded-lg mb-6"></div>
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-300 rounded"></div>
-              <div className="h-4 bg-gray-300 rounded w-5/6"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+export default async function RecipeDetailPage({ params }: { params: { id: string } }) {
+  const recipe = await getRecipe(params.id)
 
-  if (error || !recipe) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Recipe Not Found</h1>
-            <p className="text-gray-600 mb-8">{error || 'The recipe you are looking for does not exist.'}</p>
-            <Link href="/recipes" className="btn-primary inline-flex items-center">
-              <ArrowLeft size={20} className="mr-2" />
-              Back to Recipes
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
+  if (!recipe) {
+    notFound()
   }
 
   return (

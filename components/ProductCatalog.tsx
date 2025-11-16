@@ -163,10 +163,14 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
   )
 }
 
-export default function ProductCatalog() {
-  const [products, setProducts] = useState<Product[]>([])
+interface ProductCatalogProps {
+  initialProducts?: Product[]
+}
+
+export default function ProductCatalog({ initialProducts }: ProductCatalogProps = {}) {
+  const [products, setProducts] = useState<Product[]>(initialProducts || [])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialProducts)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortOption, setSortOption] = useState<SortOption>('default')
@@ -176,8 +180,12 @@ export default function ProductCatalog() {
   const bestsellerIds = [1, 2, 3] // Chicken Breast, Chicken Curry Cut, Chicken Wings
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    if (!initialProducts) {
+      fetchProducts()
+    } else {
+      setLoading(false)
+    }
+  }, [initialProducts])
 
   useEffect(() => {
     filterAndSortProducts()

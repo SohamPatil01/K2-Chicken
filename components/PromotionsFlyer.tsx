@@ -17,16 +17,24 @@ interface Promotion {
   display_order: number
 }
 
-export default function PromotionsFlyer() {
-  const [promotions, setPromotions] = useState<Promotion[]>([])
-  const [loading, setLoading] = useState(true)
+interface PromotionsFlyerProps {
+  initialPromotions?: Promotion[]
+}
+
+export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerProps = {}) {
+  const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions || [])
+  const [loading, setLoading] = useState(!initialPromotions)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
-    fetchPromotions()
-  }, [])
+    if (!initialPromotions) {
+      fetchPromotions()
+    } else {
+      setLoading(false)
+    }
+  }, [initialPromotions])
 
   useEffect(() => {
     if (promotions.length > 1 && !isPaused) {

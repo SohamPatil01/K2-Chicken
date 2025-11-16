@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 
+// Cache for 60 seconds
+export const revalidate = 60;
+
 // GET - Fetch all promotions
 export async function GET(request: NextRequest) {
   try {

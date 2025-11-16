@@ -16,13 +16,21 @@ interface Recipe {
   servings: number
 }
 
-export default function RecipeSection() {
-  const [recipes, setRecipes] = useState<Recipe[]>([])
-  const [loading, setLoading] = useState(true)
+interface RecipeSectionProps {
+  initialRecipes?: Recipe[]
+}
+
+export default function RecipeSection({ initialRecipes }: RecipeSectionProps = {}) {
+  const [recipes, setRecipes] = useState<Recipe[]>(initialRecipes || [])
+  const [loading, setLoading] = useState(!initialRecipes)
 
   useEffect(() => {
-    fetchRecipes()
-  }, [])
+    if (!initialRecipes) {
+      fetchRecipes()
+    } else {
+      setLoading(false)
+    }
+  }, [initialRecipes])
 
   const fetchRecipes = async () => {
     try {
