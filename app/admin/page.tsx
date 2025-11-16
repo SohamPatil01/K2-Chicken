@@ -10,6 +10,7 @@ import AdminDashboard from '@/components/AdminDashboard'
 import InventoryManagement from '@/components/InventoryManagement'
 import SettingsManagement from '@/components/SettingsManagement'
 import PromotionManagement from '@/components/PromotionManagement'
+import WhatsAppOrderManagement from '@/components/WhatsAppOrderManagement'
 
 type TabType = 'dashboard' | 'products' | 'recipes' | 'orders' | 'whatsapp' | 'inventory' | 'settings' | 'promotions'
 
@@ -202,6 +203,7 @@ export default function AdminPage() {
     { id: 'products', label: 'Products', icon: Package },
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
+    { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle },
     { id: 'inventory', label: 'Inventory', icon: Warehouse },
     { id: 'promotions', label: 'Promotions', icon: Tag },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -312,6 +314,7 @@ export default function AdminPage() {
             {activeTab === 'products' && <ProductManagement />}
             {activeTab === 'recipes' && <RecipeManagement />}
             {activeTab === 'orders' && <OrderManagement />}
+            {activeTab === 'whatsapp' && <WhatsAppOrderManagement />}
             {activeTab === 'inventory' && <InventoryManagement />}
             {activeTab === 'promotions' && <PromotionManagement />}
             {activeTab === 'settings' && <SettingsManagement />}
