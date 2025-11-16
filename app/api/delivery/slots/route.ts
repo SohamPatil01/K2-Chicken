@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
     const client = await pool.connect()
 
     try {
-      let query
-      let params
+      let query: string
+      let params: string[]
 
       if (date) {
         // Get slots for specific date

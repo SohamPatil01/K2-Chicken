@@ -61,7 +61,8 @@ export default function ProductManagement() {
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Failed to upload image: ' + error.message)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      alert('Failed to upload image: ' + errorMessage)
     } finally {
       setUploadingImage(false)
     }
@@ -328,7 +329,10 @@ export default function ProductManagement() {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
-                          e.currentTarget.nextElementSibling.style.display = 'flex';
+                          const nextSibling = e.currentTarget.nextElementSibling as HTMLElement | null;
+                          if (nextSibling) {
+                            nextSibling.style.display = 'flex';
+                          }
                         }}
                       />
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs hidden">

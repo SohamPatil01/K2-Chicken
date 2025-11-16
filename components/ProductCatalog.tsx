@@ -229,7 +229,7 @@ export default function ProductCatalog() {
   }
 
   const getCategories = () => {
-    const categories = ['all', ...new Set(products.map(p => p.category))]
+    const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))]
     return categories
   }
 

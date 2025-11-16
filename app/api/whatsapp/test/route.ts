@@ -35,8 +35,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error processing test message:', error);
-    console.error('Error details:', error.message);
-    console.error('Error stack:', error.stack);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('Error details:', errorMessage);
+    if (errorStack) {
+      console.error('Error stack:', errorStack);
+    }
     
     // Return a user-friendly error response
     return NextResponse.json({

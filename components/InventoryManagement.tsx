@@ -922,7 +922,10 @@ export default function InventoryManagement() {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
-                      e.currentTarget.nextElementSibling.style.display = 'flex'
+                      const nextSibling = e.currentTarget.nextElementSibling as HTMLElement | null
+                      if (nextSibling) {
+                        nextSibling.style.display = 'flex'
+                      }
                     }}
                   />
                 ) : null}
