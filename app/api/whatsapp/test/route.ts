@@ -35,24 +35,16 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error processing test message:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorStack = error instanceof Error ? error.stack : undefined;
-    console.error('Error details:', errorMessage);
-    if (errorStack) {
-      console.error('Error stack:', errorStack);
+    if (error instanceof Error) {
+      console.error('Error details:', error.message);
+      console.error('Error stack:', error.stack);
+    } else {
+      console.error('Unknown error:', JSON.stringify(error));
     }
     
-    // Return a user-friendly error response
-    return NextResponse.json({
-      success: true,
-      response: {
-        response: "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.",
-        buttons: [
-          { type: "reply", reply: { id: "hi", title: "Start Over" } },
-          { type: "reply", reply: { id: "view_menu", title: "View Menu" } },
-          { type: "reply", reply: { id: "talk_human", title: "Talk to Human" } }
-        ]
-      }
-    });
+    return NextResponse.json(
+      { error: "Failed to process message. Try again later." },
+      { status: 500 }
+    );
   }
 }
