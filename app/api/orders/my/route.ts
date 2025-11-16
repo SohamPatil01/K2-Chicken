@@ -62,29 +62,60 @@ export async function GET(request: NextRequest) {
     
     try {
       // Query orders by user_id, or by phone number if user_id is null (for backward compatibility)
-      const result = await client.query(`
-        SELECT o.*, 
-               COALESCE(o.subtotal, o.total_amount) as subtotal,
-               COALESCE(o.delivery_charge, 0) as delivery_charge,
-               COALESCE(o.discount_amount, 0) as discount_amount,
-               COALESCE(o.delivery_type, 'delivery') as delivery_type,
-               o.preferred_delivery_date,
-               o.preferred_delivery_time,
-               array_agg(
-                 json_build_object(
-                   'id', oi.id,
-                   'product_name', p.name,
-                   'quantity', oi.quantity,
-                   'price', oi.price
-                 )
-               ) FILTER (WHERE oi.id IS NOT NULL) as items
-        FROM orders o
-        LEFT JOIN order_items oi ON o.id = oi.order_id
-        LEFT JOIN products p ON oi.product_id = p.id
-        WHERE o.user_id = $1 ${userPhone ? `OR (o.user_id IS NULL AND o.customer_phone = $2)` : ''}
-        GROUP BY o.id
-        ORDER BY o.created_at DESC
-      `, userPhone ? [userId, userPhone] : [userId])
+      let result
+      if (userPhone) {
+        // Query with both user_id and phone number fallback
+        result = await client.query(`
+          SELECT o.*, 
+                 COALESCE(o.subtotal, o.total_amount) as subtotal,
+                 COALESCE(o.delivery_charge, 0) as delivery_charge,
+                 COALESCE(o.discount_amount, 0) as discount_amount,
+                 COALESCE(o.delivery_type, 'delivery') as delivery_type,
+                 o.preferred_delivery_date,
+                 o.preferred_delivery_time,
+                 array_agg(
+                   json_build_object(
+                     'id', oi.id,
+                     'product_name', p.name,
+                     'quantity', oi.quantity,
+                     'price', oi.price
+                   )
+                 ) FILTER (WHERE oi.id IS NOT NULL) as items
+          FROM orders o
+          LEFT JOIN order_items oi ON o.id = oi.order_id
+          LEFT JOIN products p ON oi.product_id = p.id
+          WHERE o.user_id = $1 OR (o.user_id IS NULL AND o.customer_phone = $2)
+          GROUP BY o.id
+          ORDER BY o.created_at DESC
+        `, [userId, userPhone])
+      } else {
+        // Query only by user_id
+        result = await client.query(`
+          SELECT o.*, 
+                 COALESCE(o.subtotal, o.total_amount) as subtotal,
+                 COALESCE(o.delivery_charge, 0) as delivery_charge,
+                 COALESCE(o.discount_amount, 0) as discount_amount,
+                 COALESCE(o.delivery_type, 'delivery') as delivery_type,
+                 o.preferred_delivery_date,
+                 o.preferred_delivery_time,
+                 array_agg(
+                   json_build_object(
+                     'id', oi.id,
+                     'product_name', p.name,
+                     'quantity', oi.quantity,
+                     'price', oi.price
+                   )
+                 ) FILTER (WHERE oi.id IS NOT NULL) as items
+          FROM orders o
+          LEFT JOIN order_items oi ON o.id = oi.order_id
+          LEFT JOIN products p ON oi.product_id = p.id
+          WHERE o.user_id = $1
+          GROUP BY o.id
+          ORDER BY o.created_at DESC
+        `, [userId])
+      }
+      
+      console.log(`Found ${result.rows.length} orders for user ${userId}`)
       
       return NextResponse.json(result.rows)
     } finally {

@@ -44,13 +44,21 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('/api/orders/my')
+      const response = await fetch('/api/orders/my', {
+        credentials: 'include' // Include cookies for authentication
+      })
       if (response.ok) {
         const data = await response.json()
-        setOrders(data)
+        console.log('Orders fetched:', data)
+        setOrders(Array.isArray(data) ? data : [])
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Error fetching orders:', response.status, errorData)
+        setOrders([])
       }
     } catch (error) {
       console.error('Error fetching orders:', error)
+      setOrders([])
     } finally {
       setLoading(false)
     }
