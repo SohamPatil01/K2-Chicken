@@ -119,12 +119,18 @@ export async function POST(request: NextRequest) {
       
       const order = orderResult.rows[0]
       
+      // Check if product_name column exists in order_items, if not add it
+      await client.query(`
+        ALTER TABLE order_items 
+        ADD COLUMN IF NOT EXISTS product_name VARCHAR(255)
+      `).catch(() => {}) // Ignore error if column already exists
+
       // Insert order items
       for (const item of items) {
         const itemPrice = item.selectedWeight?.price || item.product.price
         await client.query(`
-          INSERT INTO order_items (order_id, product_id, quantity, price, weight_option_id, selected_weight, weight_unit)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          INSERT INTO order_items (order_id, product_id, quantity, price, weight_option_id, selected_weight, weight_unit, product_name)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `, [
           order.id, 
           item.product.id, 
@@ -132,7 +138,8 @@ export async function POST(request: NextRequest) {
           itemPrice,
           item.selectedWeight?.id || null,
           item.selectedWeight?.weight || null,
-          item.selectedWeight?.weight_unit || null
+          item.selectedWeight?.weight_unit || null,
+          item.product.name || 'Unknown Product' // Store product name for historical records
         ])
       }
       

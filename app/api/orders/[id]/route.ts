@@ -17,7 +17,7 @@ export async function GET(
                COALESCE(o.delivery_type, CASE WHEN o.delivery_address = 'Pickup at store' THEN 'pickup' ELSE 'delivery' END) as delivery_type,
                array_agg(
                  json_build_object(
-                   'product_name', p.name,
+                   'product_name', COALESCE(oi.product_name, p.name, 'Product (Unavailable)'),
                    'quantity', oi.quantity,
                    'price', oi.price
                  )
