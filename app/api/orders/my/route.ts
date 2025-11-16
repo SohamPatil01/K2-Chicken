@@ -20,7 +20,30 @@ function getUserIdFromToken(request: NextRequest): number | null {
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserIdFromToken(request)
+    let userId = getUserIdFromToken(request)
+    
+    // If userId is not found from token, try to find user by phone from query params as fallback
+    if (!userId) {
+      const { searchParams } = new URL(request.url)
+      const phone = searchParams.get('phone')
+      if (phone) {
+        const clientForUserLookup = await pool.connect()
+        try {
+          const userResult = await clientForUserLookup.query(
+            'SELECT id FROM users WHERE phone = $1',
+            [phone]
+          )
+          if (userResult.rows.length > 0) {
+            userId = userResult.rows[0].id
+            console.log(`Found user by phone number for order history: ${userId}`)
+          }
+        } catch (error) {
+          console.error('Error looking up user by phone:', error)
+        } finally {
+          clientForUserLookup.release()
+        }
+      }
+    }
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -28,7 +51,17 @@ export async function GET(request: NextRequest) {
 
     const client = await pool.connect()
 
+    // Get user's phone number for fallback matching
+    let userPhone: string | null = null
+    if (userId) {
+      const userResult = await client.query('SELECT phone FROM users WHERE id = $1', [userId])
+      if (userResult.rows.length > 0) {
+        userPhone = userResult.rows[0].phone
+      }
+    }
+    
     try {
+      // Query orders by user_id, or by phone number if user_id is null (for backward compatibility)
       const result = await client.query(`
         SELECT o.*, 
                COALESCE(o.subtotal, o.total_amount) as subtotal,
@@ -48,10 +81,10 @@ export async function GET(request: NextRequest) {
         FROM orders o
         LEFT JOIN order_items oi ON o.id = oi.order_id
         LEFT JOIN products p ON oi.product_id = p.id
-        WHERE o.user_id = $1
+        WHERE o.user_id = $1 ${userPhone ? `OR (o.user_id IS NULL AND o.customer_phone = $2)` : ''}
         GROUP BY o.id
         ORDER BY o.created_at DESC
-      `, [userId])
+      `, userPhone ? [userId, userPhone] : [userId])
       
       return NextResponse.json(result.rows)
     } finally {

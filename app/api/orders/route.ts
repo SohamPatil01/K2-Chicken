@@ -34,7 +34,28 @@ export async function POST(request: NextRequest) {
       preferredDeliveryTime
     } = await request.json()
     
-    const userId = getUserIdFromToken(request)
+    let userId = getUserIdFromToken(request)
+    
+    // If userId is not found from token, try to find user by phone number as fallback
+    if (!userId && customerPhone) {
+      const clientForUserLookup = await pool.connect()
+      try {
+        const userResult = await clientForUserLookup.query(
+          'SELECT id FROM users WHERE phone = $1',
+          [customerPhone]
+        )
+        if (userResult.rows.length > 0) {
+          userId = userResult.rows[0].id
+          console.log(`Found user by phone number: ${userId}`)
+        }
+      } catch (error) {
+        console.error('Error looking up user by phone:', error)
+      } finally {
+        clientForUserLookup.release()
+      }
+    }
+    
+    console.log(`Creating order for userId: ${userId}, phone: ${customerPhone}`)
     
     const client = await pool.connect()
     

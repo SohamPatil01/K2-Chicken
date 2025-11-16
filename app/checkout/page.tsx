@@ -408,6 +408,7 @@ export default function CheckoutPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           ...formData,
           deliveryType: deliveryType,
