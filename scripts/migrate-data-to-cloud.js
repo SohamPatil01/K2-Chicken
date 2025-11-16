@@ -1,5 +1,26 @@
 const { Pool } = require('pg');
-require('dotenv').config({ path: '.env.local' });
+const fs = require('fs');
+const path = require('path');
+
+// Load .env.local manually
+function loadEnvFile() {
+  const envPath = path.join(__dirname, '..', '.env.local');
+  if (fs.existsSync(envPath)) {
+    const envFile = fs.readFileSync(envPath, 'utf8');
+    envFile.split('\n').forEach(line => {
+      const match = line.match(/^([^=:#]+)=(.*)$/);
+      if (match) {
+        const key = match[1].trim();
+        const value = match[2].trim().replace(/^["']|["']$/g, '');
+        if (!process.env[key]) {
+          process.env[key] = value;
+        }
+      }
+    });
+  }
+}
+
+loadEnvFile();
 
 // Local database connection (from .env.local)
 const localPool = new Pool({
@@ -75,13 +96,25 @@ async function migrateData() {
 
         console.log(`📦 Migrating ${tableName} (${rows.length} rows)...`);
 
-        // Get column names
-        const columns = Object.keys(rows[0]);
+        // Get available columns in cloud database
+        const cloudColumnsResult = await cloudClient.query(`
+          SELECT column_name 
+          FROM information_schema.columns 
+          WHERE table_name = $1
+        `, [tableName]);
+        const availableCloudColumns = new Set(cloudColumnsResult.rows.map(r => r.column_name));
+
+        // Get column names from local data, but filter to only those that exist in cloud
+        const allColumns = Object.keys(rows[0]);
+        const columns = allColumns.filter(col => availableCloudColumns.has(col));
+        
+        if (columns.length === 0) {
+          console.log(`   ⚠️  No matching columns found, skipping ${tableName}`);
+          continue;
+        }
+
         const columnNames = columns.join(', ');
         const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
-
-        // Clear existing data in cloud (optional - comment out if you want to keep existing data)
-        // await cloudClient.query(`TRUNCATE TABLE ${tableName} CASCADE`);
 
         // Insert data into cloud database
         let inserted = 0;
@@ -102,8 +135,14 @@ async function migrateData() {
             // If it's a conflict error, skip it
             if (error.code === '23505') { // unique_violation
               skipped++;
+            } else if (error.code === '23503') { // foreign_key_violation
+              // Skip if foreign key constraint fails (parent record might not exist)
+              skipped++;
             } else {
-              console.error(`   ⚠️  Error inserting row into ${tableName}:`, error.message);
+              // Only log non-foreign-key errors (to reduce noise)
+              if (!error.message.includes('foreign key')) {
+                console.error(`   ⚠️  Error inserting row into ${tableName}:`, error.message);
+              }
               skipped++;
             }
           }
