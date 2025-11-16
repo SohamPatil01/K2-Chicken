@@ -89,10 +89,10 @@ After deploying, you need to initialize your database schema. **The easiest way 
 2. **Call the initialization endpoint:**
    ```bash
    # With token (recommended):
-   curl -H "x-init-token: your-secret-token-here" https://your-app.vercel.app/api/admin/init-db
+   curl "https://your-app.vercel.app/api/admin/init-db?token=your-secret-token-here"
    
-   # Or visit in browser (if no token set):
-   https://your-app.vercel.app/api/admin/init-db
+   # Or visit in browser:
+   https://your-app.vercel.app/api/admin/init-db?token=your-secret-token-here
    ```
 
 3. **You should see:**

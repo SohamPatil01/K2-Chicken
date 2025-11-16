@@ -75,7 +75,7 @@ Follow these steps to get your app live on Vercel:
    ```
    Name: DB_INIT_TOKEN
    Value: [generate a random secret token]
-   Example: init-db-secret-token-2024
+   Example:     
    Environment: Production, Preview, Development
    ```
 
@@ -97,16 +97,22 @@ After deployment completes:
 1. **Get your app URL** from Vercel dashboard (e.g., `https://k2-chicken.vercel.app`)
 
 2. **Call the initialization endpoint:**
-   
+
    **Option A: Using curl (Terminal)**
+
    ```bash
-   curl -H "x-init-token: your-db-init-token" https://your-app.vercel.app/api/admin/init-db
+   curl "https://your-app.vercel.app/api/admin/init-db?token=your-db-init-token"
    ```
-   
+
    **Option B: Using Browser**
-   - If you didn't set `DB_INIT_TOKEN`, just visit:
+
+   - Visit with token:
      ```
-     https://your-app.vercel.app/api/admin/init-db
+     https://your-app.vercel.app/api/admin/init-db?token=your-db-init-token
+     ```
+   - If you didn't set `DB_INIT_TOKEN`, use the default:
+     ```
+     https://your-app.vercel.app/api/admin/init-db?token=change-this-token
      ```
    - You should see a success message
 
@@ -119,6 +125,7 @@ After deployment completes:
 After initialization:
 
 1. **Option A: Delete the init endpoint** (Recommended)
+
    - Delete `/app/api/admin/init-db/route.ts` from your repo
    - Commit and push
 
@@ -133,19 +140,21 @@ Your app should now be live and working! Visit your Vercel URL to see it.
 ## Troubleshooting
 
 ### "ECONNREFUSED" Error
+
 - ✅ Make sure `DATABASE_URL` is set in Vercel
 - ✅ Check that your connection string is correct
 - ✅ Ensure your database allows connections from Vercel IPs
 
 ### "Database not initialized"
+
 - ✅ Call `/api/admin/init-db` endpoint
 - ✅ Check Vercel function logs for errors
 
 ### "Unauthorized" when calling init-db
+
 - ✅ Make sure `DB_INIT_TOKEN` matches in your request header
 - ✅ Or remove the token check temporarily
 
 ## Need Help?
 
 Check the full guide: `VERCEL_DEPLOYMENT.md`
-
