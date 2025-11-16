@@ -58,6 +58,19 @@ export async function initializeDatabase() {
       )
     `);
 
+    // Create product_weight_options table (needed before order_items)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS product_weight_options (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+        weight DECIMAL(10,2) NOT NULL,
+        weight_unit VARCHAR(10) DEFAULT 'g',
+        price DECIMAL(10,2) NOT NULL,
+        is_default BOOLEAN DEFAULT false,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Create order_items table
     await client.query(`
       CREATE TABLE IF NOT EXISTS order_items (
@@ -66,8 +79,30 @@ export async function initializeDatabase() {
         product_id INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL,
         price DECIMAL(10,2) NOT NULL,
+        weight_option_id INTEGER REFERENCES product_weight_options(id),
+        selected_weight DECIMAL(10,2),
+        weight_unit VARCHAR(10) DEFAULT 'g',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Add weight columns to order_items if they don't exist (for existing tables)
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='order_items' AND column_name='weight_option_id') THEN
+          ALTER TABLE order_items ADD COLUMN weight_option_id INTEGER REFERENCES product_weight_options(id);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='order_items' AND column_name='selected_weight') THEN
+          ALTER TABLE order_items ADD COLUMN selected_weight DECIMAL(10,2);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='order_items' AND column_name='weight_unit') THEN
+          ALTER TABLE order_items ADD COLUMN weight_unit VARCHAR(10) DEFAULT 'g';
+        END IF;
+      END $$;
     `);
 
     // Create recipes table
@@ -243,6 +278,25 @@ export async function initializeDatabase() {
         is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Add stock columns to products table if they don't exist
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='products' AND column_name='stock_quantity') THEN
+          ALTER TABLE products ADD COLUMN stock_quantity INTEGER DEFAULT 100;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='products' AND column_name='low_stock_threshold') THEN
+          ALTER TABLE products ADD COLUMN low_stock_threshold INTEGER DEFAULT 10;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='products' AND column_name='in_stock') THEN
+          ALTER TABLE products ADD COLUMN in_stock BOOLEAN DEFAULT true;
+        END IF;
+      END $$;
     `);
 
     // Add user_id and delivery fields to orders table if they don't exist
