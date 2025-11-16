@@ -30,8 +30,8 @@ export default function Hero() {
           </div>
           
           {/* Main Heading */}
-          <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] px-2 animate-slide-up stagger-1">
+          <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto px-4 sm:px-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.15] animate-slide-up stagger-1 overflow-visible">
               <span 
                 className="block bg-gradient-to-r from-orange-600 via-red-600 to-orange-500 bg-clip-text text-transparent"
                 style={{ 
@@ -43,7 +43,7 @@ export default function Hero() {
               >
                 Finger Lickin'
               </span>
-              <span className="block text-gray-900 mt-1 sm:mt-2">
+              <span className="block text-gray-900 mt-1 sm:mt-2 overflow-visible">
                 Good Chicken
               </span>
             </h1>
