@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Get inventory history
 export async function GET(request: NextRequest) {
   try {

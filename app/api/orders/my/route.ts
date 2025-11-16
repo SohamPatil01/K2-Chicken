@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 import jwt from 'jsonwebtoken'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 function getUserIdFromToken(request: NextRequest): number | null {
   try {
     const token = request.cookies.get('auth-token')?.value
