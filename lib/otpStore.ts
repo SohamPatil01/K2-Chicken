@@ -25,7 +25,7 @@ export const otpStore = getOTPStore()
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
     const now = Date.now()
-    for (const [phone, data] of otpStore.entries()) {
+    for (const [phone, data] of Array.from(otpStore.entries())) {
       if (data.expiresAt < now) {
         otpStore.delete(phone)
       }

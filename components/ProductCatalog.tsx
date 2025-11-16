@@ -47,8 +47,10 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
-              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-              if (fallback) fallback.style.display = 'flex';
+              const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+              if (fallback) {
+                fallback.style.display = 'flex';
+              }
             }}
           />
         ) : null}

@@ -161,12 +161,14 @@ export async function DELETE(
         success: true,
         message: 'Product deleted successfully' 
       })
-    } catch (error: any) {
+    } catch (error) {
       await client.query('ROLLBACK')
       console.error('Error deleting product:', error)
-      console.error('Error details:', error.message, error.code)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorCode = (error as any)?.code
+      console.error('Error details:', errorMessage, errorCode)
       return NextResponse.json({ 
-        error: error.message || 'Failed to delete product. It may be referenced by existing orders.' 
+        error: errorMessage || 'Failed to delete product. It may be referenced by existing orders.' 
       }, { status: 500 })
     } finally {
       client.release()
