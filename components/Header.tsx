@@ -43,14 +43,24 @@ export default function Header() {
   const [hash, setHash] = useState<string>("");
 
   useEffect(() => {
-    // Check hash on mount and when it changes
+    // Check hash on mount and when pathname changes
     const checkHash = () => {
-      setHash(window.location.hash);
+      if (typeof window !== "undefined") {
+        setHash(window.location.hash);
+      }
     };
     checkHash();
+    
+    // Listen for hash changes
     window.addEventListener("hashchange", checkHash);
-    return () => window.removeEventListener("hashchange", checkHash);
-  }, []);
+    // Also check hash when pathname changes (for Next.js routing)
+    const interval = setInterval(checkHash, 100);
+    
+    return () => {
+      window.removeEventListener("hashchange", checkHash);
+      clearInterval(interval);
+    };
+  }, [pathname]);
 
   const isActive = (path: string) => {
     if (path === "/") {
