@@ -70,7 +70,7 @@ export default function Hero() {
                 <span className="relative">Finger Lickin'</span>
               </span>
               <span className="block text-gray-900 mt-2 sm:mt-3 overflow-visible relative">
-                <span className="relative z-10">Good!</span>
+                <span className="relative z-10">Good Chicken</span>
               </span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-normal px-4 animate-slide-up stagger-2">
