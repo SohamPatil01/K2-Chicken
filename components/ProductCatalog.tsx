@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { Product, WeightOption } from "@/context/CartContext";
 import {
@@ -35,6 +36,7 @@ interface ProductCardProps {
     color: string;
     icon: any;
   };
+  index?: number;
 }
 
 function ProductCard({
@@ -44,6 +46,7 @@ function ProductCard({
   onAddToCart,
   onUpdateQuantity,
   getStockStatus,
+  index = 0,
 }: ProductCardProps) {
   const stockStatus = getStockStatus(product);
   const StockIcon = stockStatus.icon;
@@ -78,24 +81,33 @@ function ProductCard({
       </div>
 
       {/* Product Image Container */}
-      <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <div className="relative h-52 sm:h-56 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-              const fallback = e.currentTarget
-                .nextElementSibling as HTMLElement | null;
-              if (fallback) {
-                fallback.style.display = "flex";
-              }
-            }}
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              quality={95}
+              priority={index < 6}
+              style={{
+                objectFit: 'cover',
+              }}
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.style.display = "none";
+                const fallback = target.parentElement?.nextElementSibling as HTMLElement | null;
+                if (fallback) {
+                  fallback.style.display = "flex";
+                }
+              }}
+            />
+          </div>
         ) : null}
         <div
-          className={`w-full h-full ${
+          className={`absolute inset-0 w-full h-full ${
             product.image_url ? "hidden" : "flex"
           } bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}
         >
@@ -518,6 +530,7 @@ export default function ProductCatalog({
                 onAddToCart={addToCart}
                 onUpdateQuantity={updateQuantity}
                 getStockStatus={getStockStatus}
+                index={index}
               />
             </div>
           ))}
