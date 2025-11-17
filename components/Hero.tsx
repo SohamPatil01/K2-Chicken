@@ -33,10 +33,16 @@ export default function Hero() {
           style={{ animationDelay: "1s" }}
         ></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-50/40 rounded-full blur-3xl opacity-25 animate-pulse-slow"></div>
-        
+
         {/* Floating accent circles */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-orange-200/20 rounded-full blur-2xl animate-float" style={{ animationDelay: "0.5s" }}></div>
-        <div className="absolute bottom-32 right-32 w-40 h-40 bg-red-200/20 rounded-full blur-2xl animate-float" style={{ animationDelay: "1.5s" }}></div>
+        <div
+          className="absolute top-20 left-20 w-32 h-32 bg-orange-200/20 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "0.5s" }}
+        ></div>
+        <div
+          className="absolute bottom-32 right-32 w-40 h-40 bg-red-200/20 rounded-full blur-2xl animate-float"
+          style={{ animationDelay: "1.5s" }}
+        ></div>
       </div>
 
       {/* Main Content */}
@@ -67,7 +73,7 @@ export default function Hero() {
                 <span className="relative z-10">Good Chicken</span>
               </span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed font-medium px-4 animate-slide-up stagger-2">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-normal px-4 animate-slide-up stagger-2">
               Experience the juiciest, crispiest, and most delicious chicken in
               town. Made fresh daily with our secret family recipes.
             </p>
