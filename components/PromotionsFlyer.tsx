@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Tag, Calendar, Percent, Sparkles, ArrowRight } from 'lucide-react'
+import { Tag, Calendar, Percent, Sparkles, ArrowRight, ChevronLeft, ChevronRight, Zap, Gift } from 'lucide-react'
 
 interface Promotion {
   id: number
@@ -111,139 +111,209 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
 
   const currentPromo = promotions[currentIndex]
 
+  const goToPrevious = () => {
+    if (promotions.length > 1) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev - 1 + promotions.length) % promotions.length)
+        setIsTransitioning(false)
+      }, 300)
+    }
+  }
+
+  const goToNext = () => {
+    if (promotions.length > 1) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % promotions.length)
+        setIsTransitioning(false)
+      }, 300)
+    }
+  }
+
   return (
     <section 
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-gradient-to-br from-orange-500 via-red-500 to-pink-500"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 via-pink-500 to-orange-600 animate-gradient-x"></div>
+      {/* Animated gradient background with movement */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-red-400 via-pink-400 to-orange-500 animate-gradient-x"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent animate-pulse"></div>
+      </div>
       
-      {/* Animated overlay pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 animate-pulse" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.4) 1px, transparent 0)`,
-          backgroundSize: '40px 40px',
-          animation: 'float 20s ease-in-out infinite'
-        }}></div>
+      {/* Animated mesh gradient overlay */}
+      <div className="absolute inset-0 opacity-30">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                             radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                             radial-gradient(circle at 40% 20%, rgba(255,255,255,0.25) 0%, transparent 50%)`,
+            animation: 'float 15s ease-in-out infinite'
+          }}
+        ></div>
       </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
+      {/* Floating animated particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-white/30 rounded-full animate-float"
+            className="absolute w-3 h-3 bg-white/40 rounded-full blur-sm"
             style={{
-              left: `${15 + i * 15}%`,
-              top: `${20 + (i % 3) * 30}%`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${3 + (i % 3)}s`
+              left: `${10 + i * 12}%`,
+              top: `${15 + (i % 4) * 25}%`,
+              animation: `float ${4 + (i % 3)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.3}s`
             }}
           />
         ))}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 md:py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-          {/* Left side - Animated Discount Badge */}
-          <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0 w-full md:w-auto justify-center md:justify-start">
-            <div className="relative">
-              <div className="absolute inset-0 bg-white/30 rounded-full blur-xl animate-pulse"></div>
-              <div className="relative bg-white/25 backdrop-blur-md rounded-full p-3 sm:p-4 border-2 border-white/40 shadow-2xl transform hover:scale-110 transition-transform duration-300">
-                <Tag className="h-5 w-5 sm:h-7 sm:w-7 animate-bounce" style={{ animationDuration: '2s' }} />
-              </div>
-            </div>
-            <div className="transform transition-all duration-500">
-              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider opacity-90 mb-1 animate-fade-in">
-                Special Offer
-              </div>
-              <div className={`text-2xl sm:text-3xl md:text-5xl font-black transform transition-all duration-500 ${
-                isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-              }`}>
-                <span className="bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent animate-shimmer">
-                  {formatDiscount(currentPromo)}
-                </span>
-                {currentPromo.discount_type === 'percentage' && (
-                  <span className="text-lg sm:text-xl md:text-4xl ml-1">OFF</span>
-                )}
-                {currentPromo.discount_type === 'fixed' && (
-                  <span className="text-lg sm:text-xl md:text-4xl ml-1">OFF</span>
-                )}
-                {currentPromo.discount_type === 'free_delivery' && (
-                  <span className="text-lg sm:text-xl md:text-4xl ml-1">DELIVERY</span>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Shimmer effect overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer-slide pointer-events-none"></div>
 
-          {/* Center - Promotion Details with slide animation */}
-          <div className={`flex-1 text-center transform transition-all duration-500 px-2 ${
-            isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-          }`}>
-            <div className="inline-flex items-center space-x-2 mb-2">
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ animationDuration: '3s' }} />
-              <span className="text-xs font-semibold uppercase tracking-widest opacity-80">Limited Time</span>
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" style={{ animationDuration: '3s', animationDirection: 'reverse' }} />
-            </div>
-            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-black mb-2 bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-2xl px-2">
-              {currentPromo.title}
-            </h3>
-            {currentPromo.description && (
-              <p className="text-xs sm:text-sm md:text-lg opacity-95 mb-3 font-medium max-w-2xl mx-auto px-2">
-                {currentPromo.description}
-              </p>
-            )}
-            {currentPromo.promo_code && (
-              <div className="mt-3 inline-flex items-center space-x-2 sm:space-x-3 bg-white/25 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-full border-2 border-white/40 shadow-xl transform hover:scale-105 transition-all duration-300 group">
-                <span className="text-xs sm:text-sm font-semibold opacity-90">Use Code:</span>
-                <span className="text-base sm:text-xl md:text-2xl font-black tracking-widest bg-gradient-to-r from-yellow-200 to-yellow-100 bg-clip-text text-transparent">
-                  {currentPromo.promo_code}
-                </span>
-                <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
-              </div>
-            )}
-            {(currentPromo.start_date || currentPromo.end_date) && (
-              <div className="mt-3 flex items-center justify-center space-x-2 text-sm opacity-90">
-                <Calendar className="h-4 w-4 animate-pulse" />
-                <span className="font-medium">
-                  {currentPromo.start_date && new Date(currentPromo.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  {currentPromo.start_date && currentPromo.end_date && ' - '}
-                  {currentPromo.end_date && new Date(currentPromo.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Right side - Navigation Dots with animation */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="relative">
+          {/* Navigation Arrows */}
           {promotions.length > 1 && (
-            <div className="flex flex-col items-center space-y-2 flex-shrink-0">
-              {promotions.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`relative transition-all duration-300 ${
-                    index === currentIndex
-                      ? 'w-3 h-8' 
-                      : 'w-2 h-2'
-                  } rounded-full ${
-                    index === currentIndex
-                      ? 'bg-white shadow-lg shadow-white/50'
-                      : 'bg-white/50 hover:bg-white/75'
-                  }`}
-                  aria-label={`Go to promotion ${index + 1}`}
-                >
-                  {index === currentIndex && (
-                    <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-75"></div>
-                  )}
-                </button>
-              ))}
-            </div>
+            <>
+              <button
+                onClick={goToPrevious}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 z-20 p-2 md:p-3 bg-white/20 backdrop-blur-md rounded-full border-2 border-white/40 hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+                aria-label="Previous promotion"
+              >
+                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:translate-x-[-2px] transition-transform" />
+              </button>
+              <button
+                onClick={goToNext}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 z-20 p-2 md:p-3 bg-white/20 backdrop-blur-md rounded-full border-2 border-white/40 hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+                aria-label="Next promotion"
+              >
+                <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-white group-hover:translate-x-[2px] transition-transform" />
+              </button>
+            </>
           )}
+
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+            {/* Left side - Animated Discount Badge */}
+            <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 animate-slide-in-from-left">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-white/40 rounded-2xl blur-2xl animate-pulse-slow"></div>
+                <div className="relative bg-white/30 backdrop-blur-lg rounded-2xl p-4 sm:p-5 border-2 border-white/50 shadow-2xl transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                  <div className="relative">
+                    <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-white animate-bounce-slow" />
+                    <Zap className="absolute -top-1 -right-1 h-4 w-4 text-yellow-300 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+              <div className="transform transition-all duration-700">
+                <div className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/90 mb-1.5 animate-fade-in">
+                  Special Offer
+                </div>
+                <div className={`text-3xl sm:text-4xl md:text-6xl font-black transform transition-all duration-700 ${
+                  isTransitioning ? 'opacity-0 scale-90 rotate-3' : 'opacity-100 scale-100 rotate-0'
+                }`}>
+                  <span className="relative inline-block">
+                    <span className="absolute inset-0 bg-white/50 blur-xl"></span>
+                    <span className="relative bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent animate-shimmer-bg">
+                      {formatDiscount(currentPromo)}
+                    </span>
+                  </span>
+                  {(currentPromo.discount_type === 'percentage' || currentPromo.discount_type === 'fixed') && (
+                    <span className="text-xl sm:text-2xl md:text-4xl ml-2 text-white/90">OFF</span>
+                  )}
+                  {currentPromo.discount_type === 'free_delivery' && (
+                    <span className="text-xl sm:text-2xl md:text-4xl ml-2 text-white/90">DELIVERY</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Center - Promotion Details with enhanced slide animation */}
+            <div className={`flex-1 text-center transform transition-all duration-700 px-4 ${
+              isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
+            }`}>
+              <div className="inline-flex items-center space-x-2 mb-3 animate-scale-in">
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-300 animate-spin-slow" />
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-white/95 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/30">
+                  Limited Time
+                </span>
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-300 animate-spin-slow" style={{ animationDirection: 'reverse' }} />
+              </div>
+              
+              <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-tight">
+                <span className="relative inline-block">
+                  <span className="absolute inset-0 bg-white/30 blur-2xl"></span>
+                  <span className="relative bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
+                    {currentPromo.title}
+                  </span>
+                </span>
+              </h3>
+              
+              {currentPromo.description && (
+                <p className="text-sm sm:text-base md:text-lg text-white/95 mb-4 font-medium max-w-2xl mx-auto leading-relaxed">
+                  {currentPromo.description}
+                </p>
+              )}
+              
+              {currentPromo.promo_code && (
+                <div className="mt-4 inline-flex items-center space-x-3 bg-white/25 backdrop-blur-lg px-5 sm:px-7 py-3 sm:py-4 rounded-2xl border-2 border-white/50 shadow-2xl transform hover:scale-105 hover:shadow-white/20 transition-all duration-500 group cursor-pointer">
+                  <span className="text-xs sm:text-sm font-bold text-white/90 uppercase tracking-wide">Use Code:</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-widest">
+                    <span className="bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200 bg-clip-text text-transparent animate-shimmer-bg">
+                      {currentPromo.promo_code}
+                    </span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-white/80 group-hover:translate-x-2 transition-transform duration-300" />
+                </div>
+              )}
+              
+              {(currentPromo.start_date || currentPromo.end_date) && (
+                <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-white/90">
+                  <Calendar className="h-4 w-4 animate-pulse-slow" />
+                  <span className="font-semibold">
+                    {currentPromo.start_date && new Date(currentPromo.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    {currentPromo.start_date && currentPromo.end_date && ' - '}
+                    {currentPromo.end_date && new Date(currentPromo.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Right side - Enhanced Navigation Dots */}
+            {promotions.length > 1 && (
+              <div className="flex flex-row lg:flex-col items-center justify-center space-x-2 lg:space-x-0 lg:space-y-3 flex-shrink-0 animate-slide-in-from-right">
+                {promotions.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`relative transition-all duration-500 group ${
+                      index === currentIndex
+                        ? 'w-3 h-10 lg:h-12' 
+                        : 'w-2 h-2 lg:w-2.5 lg:h-2.5'
+                    } rounded-full ${
+                      index === currentIndex
+                        ? 'bg-white shadow-xl shadow-white/60'
+                        : 'bg-white/50 hover:bg-white/75'
+                    }`}
+                    aria-label={`Go to promotion ${index + 1}`}
+                  >
+                    {index === currentIndex && (
+                      <>
+                        <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-50"></div>
+                        <div className="absolute inset-0 bg-gradient-to-b from-white to-white/80 rounded-full"></div>
+                      </>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
     </section>
   )
 }
