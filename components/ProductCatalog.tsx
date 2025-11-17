@@ -78,7 +78,7 @@ function ProductCard({
       </div>
 
       {/* Product Image Container */}
-      <div className="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -115,7 +115,7 @@ function ProductCard({
       {/* Product Info - Sliding Panel */}
       <div className="relative overflow-hidden">
         {/* Basic Info (Always Visible) */}
-        <div className="p-4 pb-3">
+        <div className="p-3 pb-2.5">
           <div className="flex items-start justify-between mb-1.5">
             <h3 className="text-lg font-semibold text-gray-800 group-hover:text-orange-600 transition-colors duration-300">
               {product.name}
