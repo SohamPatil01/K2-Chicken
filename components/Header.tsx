@@ -49,16 +49,22 @@ export default function Header() {
         setHash(window.location.hash);
       }
     };
+    
+    // Initial check
     checkHash();
     
     // Listen for hash changes
     window.addEventListener("hashchange", checkHash);
-    // Also check hash when pathname changes (for Next.js routing)
-    const interval = setInterval(checkHash, 100);
+    // Listen for popstate (browser back/forward)
+    window.addEventListener("popstate", checkHash);
+    
+    // Check hash after a short delay when pathname changes (for Next.js routing)
+    const timeout = setTimeout(checkHash, 50);
     
     return () => {
       window.removeEventListener("hashchange", checkHash);
-      clearInterval(interval);
+      window.removeEventListener("popstate", checkHash);
+      clearTimeout(timeout);
     };
   }, [pathname]);
 
