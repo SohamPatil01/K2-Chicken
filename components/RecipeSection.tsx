@@ -68,72 +68,116 @@ export default function RecipeSection({ initialRecipes }: RecipeSectionProps = {
   }
 
   return (
-    <section className="py-12 sm:py-16 bg-gradient-to-b from-white via-orange-50/20 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-12 animate-slide-down">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 animate-slide-up stagger-1">Chicken Recipe Cookbook</h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-4 sm:mb-6 px-4 animate-slide-up stagger-2">
+    <section className="py-12 sm:py-16 bg-gradient-to-b from-white via-orange-50/10 to-white relative overflow-hidden">
+      {/* Subtle background decoration */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, #ea580c 1px, transparent 0)`,
+          backgroundSize: '50px 50px'
+        }}></div>
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-10 sm:mb-14 animate-slide-down">
+          <div className="inline-flex items-center gap-2 bg-orange-50/80 backdrop-blur-sm border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium text-orange-700 mb-4 sm:mb-5 shadow-sm transform transition-all duration-300 hover:scale-105 hover:shadow-md">
+            <ChefHat className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500" />
+            <span>Recipes</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-3 sm:mb-4 animate-slide-up stagger-1">
+            Chicken Recipe Cookbook
+          </h2>
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-5 sm:mb-6 px-4 animate-slide-up stagger-2 leading-relaxed">
             Learn to cook delicious chicken dishes at home with our expert recipes and cooking tips
           </p>
-          <div className="inline-flex items-center space-x-2 bg-green-50 border-2 border-green-200 rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-scale-in stagger-3">
-            <span className="text-green-700 font-semibold text-xs sm:text-sm">🌾 Made with Baramati Agro Products</span>
+          <div className="inline-flex items-center space-x-2 bg-green-50/80 backdrop-blur-sm border border-green-200 rounded-full px-4 sm:px-5 py-2 sm:py-2.5 transform transition-all duration-300 hover:scale-105 hover:shadow-sm animate-scale-in stagger-3">
+            <span className="text-green-700 font-medium text-xs sm:text-sm">🌾 Made with Baramati Agro Products</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-7">
           {recipes.map((recipe, index) => (
             <div 
               key={recipe.id} 
-              className="card hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:border-orange-200 animate-slide-up"
+              className="group relative bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-orange-200 hover:shadow-lg transition-all duration-500 transform hover:-translate-y-1 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="aspect-w-16 aspect-h-9 mb-4 overflow-hidden rounded-lg group/image">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center transform transition-transform duration-500 group-hover/image:scale-110">
-                  <ChefHat size={48} className="text-white transform transition-transform duration-300 group-hover/image:rotate-12" />
+              {/* Image Container */}
+              <div className="relative h-44 sm:h-48 overflow-hidden bg-gradient-to-br from-orange-50 to-red-50">
+                <div className="w-full h-full flex items-center justify-center transform transition-all duration-700 ease-out group-hover:scale-110">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-200/30 to-red-200/30 rounded-full blur-2xl group-hover:opacity-50 transition-opacity duration-500"></div>
+                    <ChefHat size={56} className="text-orange-400 relative z-10 transform transition-all duration-500 group-hover:rotate-12 group-hover:scale-110" />
+                  </div>
                 </div>
+                
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </div>
               
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">{recipe.title}</h3>
-              <p className="text-gray-600 mb-4 line-clamp-2">{recipe.description}</p>
-              
-              <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
-                <div className="flex items-center space-x-1">
-                  <Clock size={16} />
-                  <span>{recipe.prep_time + recipe.cook_time} min</span>
+              {/* Content */}
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
+                  {recipe.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                  {recipe.description}
+                </p>
+                
+                {/* Recipe Info */}
+                <div className="flex items-center gap-4 mb-4 text-xs sm:text-sm text-gray-500">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-7 h-7 bg-orange-50 rounded-lg flex items-center justify-center group-hover:bg-orange-100 transition-colors duration-300">
+                      <Clock size={14} className="text-orange-600" />
+                    </div>
+                    <span className="font-medium">{recipe.prep_time + recipe.cook_time} min</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-7 h-7 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors duration-300">
+                      <Users size={14} className="text-green-600" />
+                    </div>
+                    <span className="font-medium">{recipe.servings} servings</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <Users size={16} />
-                  <span>{recipe.servings} servings</span>
+
+                {/* Key Ingredients */}
+                <div className="mb-5 pb-4 border-b border-gray-100">
+                  <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2.5">Key Ingredients</h4>
+                  <ul className="text-xs sm:text-sm text-gray-600 space-y-1.5">
+                    {recipe.ingredients.slice(0, 3).map((ingredient, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <span className="w-1 h-1 bg-orange-400 rounded-full"></span>
+                        <span className="flex-1">{ingredient}</span>
+                      </li>
+                    ))}
+                    {recipe.ingredients.length > 3 && (
+                      <li className="text-orange-600 font-medium text-xs mt-2">
+                        + {recipe.ingredients.length - 3} more ingredients
+                      </li>
+                    )}
+                  </ul>
                 </div>
-              </div>
 
-              <div className="mb-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Key Ingredients:</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  {recipe.ingredients.slice(0, 3).map((ingredient, index) => (
-                    <li key={index}>• {ingredient}</li>
-                  ))}
-                  {recipe.ingredients.length > 3 && (
-                    <li className="text-chicken-red">+ {recipe.ingredients.length - 3} more ingredients</li>
-                  )}
-                </ul>
+                {/* View Recipe Button */}
+                <Link
+                  href={`/recipes/${recipe.id}`}
+                  className="w-full bg-gradient-to-r from-orange-50 to-red-50 hover:from-orange-100 hover:to-red-100 border border-orange-200 text-orange-700 font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm transition-all duration-300 hover:shadow-md transform hover:scale-[1.02] active:scale-100 group/btn"
+                >
+                  <ChefHat size={16} className="transform transition-transform duration-300 group-hover/btn:rotate-12" />
+                  <span>View Recipe</span>
+                </Link>
               </div>
-
-              <Link
-                href={`/recipes/${recipe.id}`}
-                className="w-full btn-secondary flex items-center justify-center space-x-2 transform transition-all duration-300 hover:scale-105 active:scale-95"
-              >
-                <ChefHat size={20} className="transform transition-transform duration-300 group-hover:rotate-12" />
-                <span>View Recipe</span>
-              </Link>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-12 animate-slide-up stagger-4">
-          <Link href="/recipes" className="btn-primary transform transition-all duration-300 hover:scale-105 active:scale-95 inline-flex items-center gap-2">
+        {/* View All Recipes Button */}
+        <div className="text-center mt-10 sm:mt-12 animate-slide-up stagger-4">
+          <Link 
+            href="/recipes" 
+            className="inline-flex items-center gap-2 bg-white border-2 border-orange-200 hover:border-orange-300 text-orange-700 font-semibold px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 active:scale-95 group"
+          >
             <span>View All Recipes</span>
-            <span className="transform transition-transform duration-300 group-hover:translate-x-1">👨‍🍳</span>
+            <span className="transform transition-transform duration-300 group-hover:translate-x-1 text-lg">👨‍🍳</span>
           </Link>
         </div>
       </div>
