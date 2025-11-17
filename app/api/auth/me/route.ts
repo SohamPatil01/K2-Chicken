@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     const userId = getUserIdFromToken(request)
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      // Return 200 with null user instead of 401 to allow graceful handling
+      return NextResponse.json({ user: null })
     }
 
     const client = await pool.connect()
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
       )
 
       if (result.rows.length === 0) {
-        return NextResponse.json({ error: 'User not found' }, { status: 404 })
+        return NextResponse.json({ user: null })
       }
 
       return NextResponse.json({ user: result.rows[0] })
@@ -44,7 +45,8 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error fetching user:', error)
-    return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 })
+    // Return null user instead of error to prevent breaking the UI
+    return NextResponse.json({ user: null })
   }
 }
 
