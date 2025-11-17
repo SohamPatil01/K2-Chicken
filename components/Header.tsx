@@ -40,11 +40,26 @@ export default function Header() {
     router.refresh();
   };
 
+  const [hash, setHash] = useState<string>("");
+
+  useEffect(() => {
+    // Check hash on mount and when it changes
+    const checkHash = () => {
+      setHash(window.location.hash);
+    };
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, []);
+
   const isActive = (path: string) => {
-    if (path === "/") return pathname === "/";
+    if (path === "/") {
+      // Home is active only if we're on home page and not on products section
+      return pathname === "/" && hash !== "#products";
+    }
     if (path === "/#products") {
-      // Check if we're on home page (products section is on home page)
-      return pathname === "/";
+      // Products is active if we're on home page and hash is #products
+      return pathname === "/" && hash === "#products";
     }
     return pathname?.startsWith(path);
   };

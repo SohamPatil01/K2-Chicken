@@ -115,13 +115,6 @@ export async function GET(request: NextRequest) {
         `, [userId])
       }
       
-      console.log(`Found ${result.rows.length} orders for user ${userId}`)
-      
-      // Debug: Log first order's items to check product names
-      if (result.rows.length > 0 && result.rows[0].items) {
-        console.log('Sample order items:', JSON.stringify(result.rows[0].items, null, 2))
-      }
-      
       return NextResponse.json(result.rows)
     } finally {
       client.release()
