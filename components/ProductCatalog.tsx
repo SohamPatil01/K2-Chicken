@@ -21,30 +21,35 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
   const StockIcon = stockStatus.icon
   const defaultWeight = product.weightOptions?.find(w => w.is_default) || product.weightOptions?.[0]
   const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>(defaultWeight)
+  const [showInfo, setShowInfo] = useState(false)
 
   return (
-    <div className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-orange-300 transition-all duration-300 transform hover:scale-[1.02]">
+    <div 
+      className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden hover:border-gray-200 transition-all duration-500 hover:shadow-lg"
+      onMouseEnter={() => setShowInfo(true)}
+      onMouseLeave={() => setShowInfo(false)}
+    >
       {/* Bestseller Badge */}
       {isBestseller && (
-        <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg transform transition-all duration-300 group-hover:scale-110">
-          <Star className="h-3 w-3 fill-current" />
+        <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm text-orange-600 px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm border border-orange-100">
+          <Star className="h-3 w-3 fill-orange-500" />
           <span>Bestseller</span>
         </div>
       )}
 
       {/* Stock Badge */}
-      <div className={`absolute top-4 right-4 z-10 ${stockStatus.color} px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 border shadow-sm`}>
+      <div className={`absolute top-3 right-3 z-10 ${stockStatus.color} px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 border shadow-sm backdrop-blur-sm bg-white/90`}>
         <StockIcon className="h-3 w-3" />
-        <span>{stockStatus.label}</span>
+        <span className="hidden sm:inline">{stockStatus.label}</span>
       </div>
 
-      {/* Product Image */}
-      <div className="relative h-56 bg-gray-100 overflow-hidden">
+      {/* Product Image Container */}
+      <div className="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {product.image_url ? (
           <img 
             src={product.image_url} 
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
               const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
@@ -55,109 +60,133 @@ function ProductCard({ product, isBestseller, cartQuantity, onAddToCart, onUpdat
           />
         ) : null}
         <div className={`w-full h-full ${product.image_url ? 'hidden' : 'flex'} bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}>
-          <span className="text-6xl transform transition-transform duration-300 group-hover:scale-110">🍗</span>
+          <span className="text-6xl transform transition-transform duration-500 group-hover:scale-110">🍗</span>
         </div>
+        
+        {/* Gradient Overlay for Info Panel */}
+        <div className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent transition-opacity duration-500 ${showInfo ? 'opacity-0' : 'opacity-100'}`}></div>
       </div>
       
-      {/* Product Info */}
-      <div className="p-6 space-y-4">
-        <div>
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+      {/* Product Info - Sliding Panel */}
+      <div className="relative overflow-hidden">
+        {/* Basic Info (Always Visible) */}
+        <div className="p-4 pb-3">
+          <div className="flex items-start justify-between mb-1.5">
+            <h3 className="text-lg font-semibold text-gray-800 group-hover:text-orange-600 transition-colors duration-300">
               {product.name}
             </h3>
-            <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded-md font-medium ml-2">
+            <span className="text-xs text-gray-400 capitalize bg-gray-50 px-2 py-0.5 rounded-md font-medium ml-2 whitespace-nowrap">
               {product.category}
             </span>
           </div>
-          <p className="text-gray-600 text-sm line-clamp-2">
-            {product.description}
-          </p>
-        </div>
-
-        {/* Weight Options Selector */}
-        {product.weightOptions && product.weightOptions.length > 1 && (
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-gray-700">Select Weight:</label>
-            <div className="flex flex-wrap gap-2">
-              {product.weightOptions.map((weight) => (
-                <button
-                  key={weight.id || weight.weight}
-                  onClick={() => setSelectedWeight(weight)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    selectedWeight?.weight === weight.weight
-                      ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {weight.weight}{weight.weight_unit}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {/* Price Display */}
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-gray-900">
+          <div className="flex items-baseline gap-1.5 mb-3">
+            <span className="text-xl font-semibold text-gray-900">
               ₹{Number(selectedWeight?.price || product.price).toFixed(0)}
             </span>
             {selectedWeight && (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-400 font-normal">
                 / {selectedWeight.weight}{selectedWeight.weight_unit}
               </span>
             )}
           </div>
         </div>
 
-        {/* Cart Controls */}
-        <div className="pt-2">
-          {stockStatus.status === 'out' ? (
-            <button
-              disabled
-              className="w-full bg-gray-300 text-gray-500 font-semibold py-3 px-4 rounded-xl cursor-not-allowed"
-            >
-              Out of Stock
-            </button>
-          ) : cartQuantity === 0 ? (
+        {/* Sliding Info Panel */}
+        <div 
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            showInfo ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
+            {/* Description */}
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {product.description || 'Fresh and delicious premium quality chicken.'}
+            </p>
+
+            {/* Weight Options Selector */}
+            {product.weightOptions && product.weightOptions.length > 1 && (
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-gray-500">Select Weight:</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.weightOptions.map((weight) => (
+                    <button
+                      key={weight.id || weight.weight}
+                      onClick={() => setSelectedWeight(weight)}
+                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 ${
+                        selectedWeight?.weight === weight.weight
+                          ? 'bg-orange-100 text-orange-700 border border-orange-200'
+                          : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100'
+                      }`}
+                    >
+                      {weight.weight}{weight.weight_unit}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cart Controls */}
+            <div className="pt-2">
+              {stockStatus.status === 'out' ? (
+                <button
+                  disabled
+                  className="w-full bg-gray-100 text-gray-400 font-medium py-2.5 px-4 rounded-lg cursor-not-allowed text-sm"
+                >
+                  Out of Stock
+                </button>
+              ) : cartQuantity === 0 ? (
+                <button
+                  onClick={() => onAddToCart(product, selectedWeight)}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+                >
+                  <Plus size={16} className="transform transition-transform duration-300" />
+                  <span>Add to Cart</span>
+                </button>
+              ) : (
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => onUpdateQuantity(product.id, cartQuantity - 1)}
+                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                    >
+                      <Minus size={14} className="text-gray-700" />
+                    </button>
+                    <div className="w-9 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
+                      <span className="font-semibold text-gray-900 text-sm">
+                        {cartQuantity}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => onUpdateQuantity(product.id, cartQuantity + 1)}
+                      disabled={stockStatus.status === 'out'}
+                      className="w-8 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-base font-semibold text-gray-900">
+                      ₹{(Number(selectedWeight?.price || product.price) * cartQuantity).toFixed(0)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Add Button (Visible when info is hidden) */}
+        {!showInfo && cartQuantity === 0 && stockStatus.status !== 'out' && (
+          <div className="px-4 pb-4">
             <button
               onClick={() => onAddToCart(product, selectedWeight)}
-              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-gray-50 hover:bg-orange-50 text-gray-700 hover:text-orange-600 font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-sm border border-gray-100 hover:border-orange-200"
             >
-              <Plus size={18} className="transform transition-transform duration-300 group-hover:rotate-90" />
-              <span>Add to Cart</span>
+              <Plus size={16} />
+              <span>Quick Add</span>
             </button>
-          ) : (
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => onUpdateQuantity(product.id, cartQuantity - 1)}
-                  className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
-                >
-                  <Minus size={16} className="text-gray-700" />
-                </button>
-                <div className="w-10 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <span className="font-bold text-gray-900">
-                    {cartQuantity}
-                  </span>
-                </div>
-                <button
-                  onClick={() => onUpdateQuantity(product.id, cartQuantity + 1)}
-                  disabled={stockStatus.status === 'out'}
-                  className="w-9 h-9 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold text-gray-900">
-                  ₹{(Number(selectedWeight?.price || product.price) * cartQuantity).toFixed(0)}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -310,7 +339,7 @@ export default function ProductCatalog({ initialProducts }: ProductCatalogProps 
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white via-orange-50/20 to-white">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-12 px-4 animate-slide-down">
