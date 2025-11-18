@@ -70,7 +70,9 @@ export async function POST(request: NextRequest) {
     console.log('Login attempt:', { 
       providedUsername: username, 
       envUsername: adminUsername ? 'SET' : 'NOT SET',
-      passwordHashSet: adminPasswordHash ? 'SET' : 'NOT SET'
+      passwordHashSet: adminPasswordHash ? 'SET' : 'NOT SET',
+      hashLength: adminPasswordHash?.length || 0,
+      hashPrefix: adminPasswordHash?.substring(0, 10) || 'N/A'
     })
 
     // Check if credentials are configured
