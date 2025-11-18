@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       const productUpdates = [
         {
           name: 'Chicken Breast Boneless',
-          image_url: '/images/Chicken-Curry-Cut.jpg'
+          image_url: '/images/upload/1761282105435-Chicken-Breast-Boneless.-2 copy.jpg'
         },
         {
           name: 'Chicken Curry Cut',
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         },
         {
           name: 'Chicken Drumstick',
-          image_url: '/images/Chicken-Legs.jpg'
+          image_url: '/images/upload/1761282158358-Chicken-Drumstick-3 copy.jpg'
         },
         {
           name: 'Chicken Kheema',

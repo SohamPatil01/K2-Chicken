@@ -14,6 +14,8 @@ import {
   CheckCircle,
   AlertCircle,
   XCircle,
+  Sparkles,
+  ShoppingBag,
 } from "lucide-react";
 
 type SortOption =
@@ -58,30 +60,48 @@ function ProductCard({
   >(defaultWeight);
   const [showInfo, setShowInfo] = useState(false);
 
+  // Calculate discount if original_price exists
+  const currentPrice = Number(selectedWeight?.price || product.price);
+  const originalPrice = Number(
+    (product as any).original_price || product.price
+  );
+  const hasDiscount = originalPrice > currentPrice;
+  const discountPercent = hasDiscount
+    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+    : 0;
+
   return (
     <div
-      className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden hover:border-gray-200 transition-all duration-500 hover:shadow-lg"
+      className="group relative bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-100/50 transform hover:-translate-y-1"
       onMouseEnter={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
+      {/* Discount Badge */}
+      {hasDiscount && (
+        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg animate-pulse">
+          <Sparkles className="h-3 w-3" />
+          <span>{discountPercent}% OFF</span>
+        </div>
+      )}
+
       {/* Bestseller Badge */}
-      {isBestseller && (
-        <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm text-orange-600 px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm border border-orange-100">
-          <Star className="h-3 w-3 fill-orange-500" />
+      {isBestseller && !hasDiscount && (
+        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+          <Star className="h-3 w-3 fill-white" />
           <span>Bestseller</span>
         </div>
       )}
 
-      {/* Stock Badge */}
-      <div
-        className={`absolute top-3 right-3 z-10 ${stockStatus.color} px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 border shadow-sm backdrop-blur-sm bg-white/90`}
-      >
-        <StockIcon className="h-3 w-3" />
-        <span className="hidden sm:inline">{stockStatus.label}</span>
-      </div>
+      {/* Stock Badge - Only show if out of stock */}
+      {stockStatus.status === "out" && (
+        <div className="absolute top-3 right-3 z-10 bg-red-100 text-red-700 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border border-red-200 shadow-sm backdrop-blur-sm bg-white/90">
+          <XCircle className="h-3 w-3" />
+          <span>Out of Stock</span>
+        </div>
+      )}
 
       {/* Product Image Container */}
-      <div className="relative h-52 sm:h-56 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <div className="relative h-48 sm:h-52 bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 overflow-hidden">
         {product.image_url ? (
           <div className="relative w-full h-full">
             <Image
@@ -93,12 +113,13 @@ function ProductCard({
               quality={95}
               priority={index < 6}
               style={{
-                objectFit: 'cover',
+                objectFit: "cover",
               }}
               onError={(e) => {
                 const target = e.currentTarget;
                 target.style.display = "none";
-                const fallback = target.parentElement?.nextElementSibling as HTMLElement | null;
+                const fallback = target.parentElement
+                  ?.nextElementSibling as HTMLElement | null;
                 if (fallback) {
                   fallback.style.display = "flex";
                 }
@@ -111,40 +132,62 @@ function ProductCard({
             product.image_url ? "hidden" : "flex"
           } bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}
         >
-          <span className="text-6xl transform transition-transform duration-500 group-hover:scale-110">
+          <span className="text-5xl transform transition-transform duration-500 group-hover:scale-110">
             🍗
           </span>
         </div>
 
         {/* Gradient Overlay for Info Panel */}
         <div
-          className={`absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent transition-opacity duration-500 ${
+          className={`absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent transition-opacity duration-500 ${
             showInfo ? "opacity-0" : "opacity-100"
           }`}
         ></div>
       </div>
 
       {/* Product Info - Sliding Panel */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
         {/* Basic Info (Always Visible) */}
-        <div className="p-3 pb-2.5">
-          <div className="flex items-start justify-between mb-1.5">
-            <h3 className="text-lg font-semibold text-gray-800 group-hover:text-orange-600 transition-colors duration-300">
+        <div className="p-4 pb-3">
+          <div className="mb-2">
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-1">
               {product.name}
             </h3>
-            <span className="text-xs text-gray-400 capitalize bg-gray-50 px-2 py-0.5 rounded-md font-medium ml-2 whitespace-nowrap">
+            <span className="inline-block text-xs text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded-full font-medium">
               {product.category}
             </span>
           </div>
-          <div className="flex items-baseline gap-1.5 mb-3">
-            <span className="text-xl font-semibold text-gray-900">
-              ₹{Number(selectedWeight?.price || product.price).toFixed(0)}
-            </span>
-            {selectedWeight && (
-              <span className="text-xs text-gray-400 font-normal">
-                / {selectedWeight.weight}
-                {selectedWeight.weight_unit}
-              </span>
+
+          {/* Price Section with Discount */}
+          <div className="flex flex-col gap-1 mb-3">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              {hasDiscount ? (
+                <>
+                  <span className="text-2xl font-extrabold text-orange-600">
+                    ₹{currentPrice.toFixed(0)}
+                  </span>
+                  <span className="text-base text-gray-400 line-through font-medium">
+                    ₹{originalPrice.toFixed(0)}
+                  </span>
+                </>
+              ) : (
+                <span className="text-2xl font-extrabold text-gray-900">
+                  ₹{currentPrice.toFixed(0)}
+                </span>
+              )}
+              {selectedWeight && (
+                <span className="text-xs text-gray-500 font-medium">
+                  / {selectedWeight.weight}
+                  {selectedWeight.weight_unit}
+                </span>
+              )}
+            </div>
+            {hasDiscount && (
+              <div className="flex items-center gap-1">
+                <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                  Save ₹{(originalPrice - currentPrice).toFixed(0)}
+                </span>
+              </div>
             )}
           </div>
         </div>
@@ -152,19 +195,24 @@ function ProductCard({
         {/* Sliding Info Panel */}
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            showInfo ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            showInfo ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
+          <div className="px-3 pb-3 space-y-2.5 border-t border-gray-100 pt-2.5">
             {/* Description */}
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {product.description ||
-                "Fresh and delicious premium quality chicken."}
-            </p>
+            <div>
+              <p className="text-xs font-medium text-gray-500 mb-1">
+                Description
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {product.description ||
+                  "Fresh and delicious premium quality chicken."}
+              </p>
+            </div>
 
             {/* Weight Options Selector */}
             {product.weightOptions && product.weightOptions.length > 1 && (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs font-medium text-gray-500">
                   Select Weight:
                 </label>
@@ -173,7 +221,7 @@ function ProductCard({
                     <button
                       key={weight.id || weight.weight}
                       onClick={() => setSelectedWeight(weight)}
-                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 ${
+                      className={`px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 ${
                         selectedWeight?.weight === weight.weight
                           ? "bg-orange-100 text-orange-700 border border-orange-200"
                           : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
@@ -192,34 +240,34 @@ function ProductCard({
               {stockStatus.status === "out" ? (
                 <button
                   disabled
-                  className="w-full bg-gray-100 text-gray-400 font-medium py-2.5 px-4 rounded-lg cursor-not-allowed text-sm"
+                  className="w-full bg-gray-100 text-gray-400 font-medium py-3 px-4 rounded-xl cursor-not-allowed text-sm"
                 >
                   Out of Stock
                 </button>
               ) : cartQuantity === 0 ? (
                 <button
                   onClick={() => onAddToCart(product, selectedWeight)}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm"
                 >
-                  <Plus
-                    size={16}
-                    className="transform transition-transform duration-300"
+                  <ShoppingBag
+                    size={18}
+                    className="transform transition-transform duration-300 group-hover:rotate-12"
                   />
                   <span>Add to Cart</span>
                 </button>
               ) : (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={() =>
                         onUpdateQuantity(product.id, cartQuantity - 1)
                       }
-                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                      className="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
                     >
-                      <Minus size={14} className="text-gray-700" />
+                      <Minus size={12} className="text-gray-700" />
                     </button>
-                    <div className="w-9 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                      <span className="font-semibold text-gray-900 text-sm">
+                    <div className="w-8 h-7 bg-orange-50 rounded-lg flex items-center justify-center">
+                      <span className="font-semibold text-gray-900 text-xs">
                         {cartQuantity}
                       </span>
                     </div>
@@ -228,13 +276,13 @@ function ProductCard({
                         onUpdateQuantity(product.id, cartQuantity + 1)
                       }
                       disabled={stockStatus.status === "out"}
-                      className="w-8 h-8 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-7 h-7 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Plus size={14} />
+                      <Plus size={12} />
                     </button>
                   </div>
                   <div className="text-right">
-                    <div className="text-base font-semibold text-gray-900">
+                    <div className="text-sm font-semibold text-gray-900">
                       ₹
                       {(
                         Number(selectedWeight?.price || product.price) *
@@ -253,10 +301,13 @@ function ProductCard({
           <div className="px-4 pb-4">
             <button
               onClick={() => onAddToCart(product, selectedWeight)}
-              className="w-full bg-gray-50 hover:bg-orange-50 text-gray-700 hover:text-orange-600 font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-sm border border-gray-100 hover:border-orange-200"
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 text-sm"
             >
-              <Plus size={16} />
-              <span>Quick Add</span>
+              <ShoppingBag
+                size={18}
+                className="transform transition-transform duration-300"
+              />
+              <span>Add to Cart</span>
             </button>
           </div>
         )}
@@ -273,7 +324,9 @@ export default function ProductCatalog({
   initialProducts,
 }: ProductCatalogProps = {}) {
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(
+    initialProducts || []
+  );
   const [loading, setLoading] = useState(!initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -284,10 +337,14 @@ export default function ProductCatalog({
   const bestsellerIds = [1, 2, 3]; // Chicken Breast, Chicken Curry Cut, Chicken Wings
 
   useEffect(() => {
-    if (!initialProducts) {
+    if (!initialProducts || initialProducts.length === 0) {
+      console.log("No initialProducts provided, fetching from API...");
       fetchProducts();
     } else {
+      console.log("Using initialProducts:", initialProducts.length, "products");
       setLoading(false);
+      // Initialize filteredProducts with initialProducts
+      setFilteredProducts(initialProducts);
     }
   }, [initialProducts]);
 
@@ -373,7 +430,14 @@ export default function ProductCatalog({
   const fetchProducts = async () => {
     try {
       const response = await fetch("/api/products");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error fetching products:", errorData);
+        setProducts([]);
+        return;
+      }
       const data = await response.json();
+      console.log("Products fetched:", data.length, "products");
       setProducts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching products:", error);

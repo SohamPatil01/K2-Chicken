@@ -13,13 +13,14 @@ export default function ProductManagement() {
     name: '',
     description: '',
     price: '',
+    original_price: '',
     image_url: '',
     category: '',
     is_available: true,
   })
   const [showImagePreview, setShowImagePreview] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
-  const [quickPriceUpdate, setQuickPriceUpdate] = useState<{ [key: number]: string }>({})
+  const [quickPriceUpdate, setQuickPriceUpdate] = useState<{ [key: number]: { price: string; original_price: string } }>({})
   const [updatingPrices, setUpdatingPrices] = useState<number[]>([])
 
   useEffect(() => {
@@ -30,9 +31,10 @@ export default function ProductManagement() {
     try {
       const response = await fetch('/api/products?all=true')
       const data = await response.json()
-      setProducts(data)
+      setProducts(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error fetching products:', error)
+      setProducts([])
     } finally {
       setLoading(false)
     }
@@ -79,46 +81,83 @@ export default function ProductManagement() {
     e.preventDefault()
     
     try {
+      const price = parseFloat(formData.price)
+      const originalPrice = formData.original_price && formData.original_price.trim() !== ''
+        ? parseFloat(formData.original_price)
+        : null
+
+      // Validation
+      if (isNaN(price) || price <= 0) {
+        alert('Please enter a valid current price (greater than 0)')
+        return
+      }
+
+      if (originalPrice !== null) {
+        if (isNaN(originalPrice) || originalPrice <= 0) {
+          alert('Please enter a valid original price (greater than 0) or leave it empty')
+          return
+        }
+        if (originalPrice <= price) {
+          alert('Original price must be greater than current price to show a discount')
+          return
+        }
+      }
+
+      const productData = {
+        ...formData,
+        price: price,
+        original_price: originalPrice,
+      }
+      
       if (editingProduct) {
         // Update existing product
         const response = await fetch(`/api/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(productData),
         })
         
         if (response.ok) {
           await fetchProducts()
           setEditingProduct(null)
           resetForm()
+        } else {
+          const error = await response.json()
+          alert(error.error || 'Failed to update product')
         }
       } else {
         // Create new product
         const response = await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(productData),
         })
         
         if (response.ok) {
           await fetchProducts()
           setIsAdding(false)
           resetForm()
+        } else {
+          const error = await response.json()
+          alert(error.error || 'Failed to create product')
         }
       }
     } catch (error) {
       console.error('Error saving product:', error)
+      alert('An error occurred. Please try again.')
     }
   }
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product)
+    const originalPrice = (product as any).original_price || product.price
     setFormData({
       name: product.name,
-      description: product.description,
+      description: product.description || '',
       price: product.price.toString(),
+      original_price: originalPrice.toString(),
       image_url: product.image_url || '',
-      category: product.category,
+      category: product.category || '',
       is_available: product.is_available ?? true,
     })
   }
@@ -144,10 +183,12 @@ export default function ProductManagement() {
       name: '',
       description: '',
       price: '',
+      original_price: '',
       image_url: '',
       category: '',
       is_available: true,
     })
+    setShowImagePreview(false)
     setEditingProduct(null)
     setIsAdding(false)
   }
@@ -167,9 +208,28 @@ export default function ProductManagement() {
     )
   }
 
-  const handleQuickPriceUpdate = async (productId: number, newPrice: string) => {
-    const price = parseFloat(newPrice)
-    if (isNaN(price) || price <= 0) return
+  const handleQuickPriceUpdate = async (productId: number, prices: { price: string; original_price: string }) => {
+    const price = parseFloat(prices.price)
+    const originalPrice = prices.original_price && prices.original_price.trim() !== '' 
+      ? parseFloat(prices.original_price) 
+      : null
+    
+    // Validation
+    if (isNaN(price) || price <= 0) {
+      alert('Please enter a valid current price (greater than 0)')
+      return
+    }
+    
+    if (originalPrice !== null) {
+      if (isNaN(originalPrice) || originalPrice <= 0) {
+        alert('Please enter a valid original price (greater than 0) or leave it empty')
+        return
+      }
+      if (originalPrice <= price) {
+        alert('Original price must be greater than current price to show a discount')
+        return
+      }
+    }
 
     setUpdatingPrices(prev => [...prev, productId])
     try {
@@ -182,6 +242,7 @@ export default function ProductManagement() {
         body: JSON.stringify({ 
           ...product, 
           price: price,
+          original_price: originalPrice,
           name: product.name,
           description: product.description,
           image_url: product.image_url,
@@ -197,9 +258,13 @@ export default function ProductManagement() {
           delete updated[productId]
           return updated
         })
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to update prices')
       }
     } catch (error) {
       console.error('Error updating price:', error)
+      alert('Failed to update prices. Please try again.')
     } finally {
       setUpdatingPrices(prev => prev.filter(id => id !== productId))
     }
@@ -270,7 +335,7 @@ export default function ProductManagement() {
 
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                Price *
+                Current Price (Selling Price) *
               </label>
               <input
                 type="number"
@@ -279,7 +344,45 @@ export default function ProductManagement() {
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
                 required
+                placeholder="e.g., 249"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                Original Price (Strikethrough Price)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.original_price}
+                onChange={(e) => {
+                  const value = e.target.value
+                  const currentPrice = parseFloat(formData.price) || 0
+                  const originalPrice = parseFloat(value) || 0
+                  
+                  // Warn if original price is less than or equal to current price
+                  if (value && originalPrice > 0 && originalPrice <= currentPrice) {
+                    // Still allow typing, but will validate on submit
+                  }
+                  
+                  setFormData({ ...formData, original_price: value })
+                }}
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                placeholder="e.g., 299 (for discount)"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Leave empty if no discount. Original price must be greater than current price.
+              </p>
+              {formData.original_price && formData.price && 
+               parseFloat(formData.original_price) > 0 && 
+               parseFloat(formData.price) > 0 &&
+               parseFloat(formData.original_price) <= parseFloat(formData.price) && (
+                <p className="text-xs text-red-600 mt-1">
+                  ⚠️ Original price must be greater than current price
+                </p>
+              )}
             </div>
 
             <div>
@@ -392,7 +495,7 @@ export default function ProductManagement() {
 
       {/* Products List */}
       <div className="space-y-2">
-        {products.map((product) => (
+        {products && products.length > 0 ? products.map((product) => (
           <div 
             key={product.id} 
             className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-md hover:border-gray-300 transition-colors"
@@ -431,50 +534,125 @@ export default function ProductManagement() {
             
             {/* Quick Price Update */}
             <div className="flex items-center space-x-2 ml-3">
-              <div className="flex items-center space-x-1.5 bg-white rounded-md px-2.5 py-1.5 border border-gray-200">
+              <div className="flex flex-col space-y-1.5 bg-white rounded-md px-3 py-2 border border-gray-200 min-w-[180px]">
                 {quickPriceUpdate[product.id] !== undefined ? (
-                  <div className="flex items-center space-x-1">
-                    <input
-                      type="number"
-                      step="1"
-                      value={quickPriceUpdate[product.id]}
-                      onChange={(e) => setQuickPriceUpdate(prev => ({ ...prev, [product.id]: e.target.value }))}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleQuickPriceUpdate(product.id, quickPriceUpdate[product.id])
-                        } else if (e.key === 'Escape') {
-                          setQuickPriceUpdate(prev => {
-                            const updated = { ...prev }
-                            delete updated[product.id]
-                            return updated
-                          })
-                        }
-                      }}
-                      className="w-16 px-1.5 py-0.5 text-sm border border-orange-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
-                      autoFocus
-                    />
-                    {updatingPrices.includes(product.id) ? (
-                      <RefreshCw className="h-3.5 w-3.5 text-orange-600 animate-spin" />
-                    ) : (
-                      <button
-                        onClick={() => handleQuickPriceUpdate(product.id, quickPriceUpdate[product.id])}
-                        className="p-0.5 text-green-600 hover:bg-green-50 rounded"
-                        title="Save"
-                      >
-                        <Save size={12} />
-                      </button>
-                    )}
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex items-center space-x-1">
+                      <label className="text-xs text-gray-500 w-14">Current:</label>
+                      <input
+                        type="number"
+                        step="1"
+                        min="1"
+                        value={quickPriceUpdate[product.id].price}
+                        onChange={(e) => setQuickPriceUpdate(prev => ({ 
+                          ...prev, 
+                          [product.id]: { ...prev[product.id], price: e.target.value }
+                        }))}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleQuickPriceUpdate(product.id, quickPriceUpdate[product.id])
+                          } else if (e.key === 'Escape') {
+                            setQuickPriceUpdate(prev => {
+                              const updated = { ...prev }
+                              delete updated[product.id]
+                              return updated
+                            })
+                          }
+                        }}
+                        className="w-20 px-1.5 py-0.5 text-xs border border-orange-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+                        placeholder="Price"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <label className="text-xs text-gray-500 w-14">Original:</label>
+                      <input
+                        type="number"
+                        step="1"
+                        min="1"
+                        value={quickPriceUpdate[product.id].original_price}
+                        onChange={(e) => setQuickPriceUpdate(prev => ({ 
+                          ...prev, 
+                          [product.id]: { ...prev[product.id], original_price: e.target.value }
+                        }))}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleQuickPriceUpdate(product.id, quickPriceUpdate[product.id])
+                          } else if (e.key === 'Escape') {
+                            setQuickPriceUpdate(prev => {
+                              const updated = { ...prev }
+                              delete updated[product.id]
+                              return updated
+                            })
+                          }
+                        }}
+                        className="w-20 px-1.5 py-0.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+                        placeholder="Original"
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      Press Enter to save, Esc to cancel
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {updatingPrices.includes(product.id) ? (
+                        <RefreshCw className="h-3 w-3 text-orange-600 animate-spin" />
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleQuickPriceUpdate(product.id, quickPriceUpdate[product.id])}
+                            className="p-0.5 text-green-600 hover:bg-green-50 rounded"
+                            title="Save"
+                          >
+                            <Save size={11} />
+                          </button>
+                          <button
+                            onClick={() => setQuickPriceUpdate(prev => {
+                              const updated = { ...prev }
+                              delete updated[product.id]
+                              return updated
+                            })}
+                            className="p-0.5 text-gray-400 hover:bg-gray-50 rounded"
+                            title="Cancel"
+                          >
+                            <X size={11} />
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-1.5">
-                    <span className="text-sm font-semibold text-gray-900">₹{Number(product.price).toFixed(0)}</span>
-                    <button
-                      onClick={() => setQuickPriceUpdate(prev => ({ ...prev, [product.id]: Number(product.price).toFixed(0) }))}
-                      className="p-0.5 text-orange-600 hover:bg-orange-50 rounded"
-                      title="Edit Price"
-                    >
-                      <Edit size={12} />
-                    </button>
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex items-center space-x-1.5 flex-wrap">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-sm font-semibold text-gray-900">₹{Number(product.price).toFixed(0)}</span>
+                        {(product as any).original_price && Number((product as any).original_price) > Number(product.price) && (
+                          <span className="text-xs text-gray-400 line-through">₹{Number((product as any).original_price).toFixed(0)}</span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          const originalPrice = (product as any).original_price || product.price
+                          setQuickPriceUpdate(prev => ({ 
+                            ...prev, 
+                            [product.id]: { 
+                              price: Number(product.price).toFixed(0),
+                              original_price: Number(originalPrice).toFixed(0)
+                            }
+                          }))
+                        }}
+                        className="p-0.5 text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                        title="Edit Prices"
+                      >
+                        <Edit size={12} />
+                      </button>
+                    </div>
+                    {(product as any).original_price && Number((product as any).original_price) > Number(product.price) && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded">
+                          {Math.round(((Number((product as any).original_price) - Number(product.price)) / Number((product as any).original_price)) * 100)}% OFF
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -497,7 +675,11 @@ export default function ProductManagement() {
               </div>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="text-center py-8 text-gray-500 text-sm">
+            No products found. Click "Add" to create your first product.
+          </div>
+        )}
       </div>
     </div>
   )

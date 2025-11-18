@@ -3,6 +3,7 @@ import ProductCatalog from '@/components/ProductCatalog'
 import RecipeSection from '@/components/RecipeSection'
 import WhyChooseUs from '@/components/WhyChooseUs'
 import PromotionsFlyer from '@/components/PromotionsFlyer'
+import ReviewsSection from '@/components/ReviewsSection'
 import pool from '@/lib/db'
 
 // Fetch data directly from database for better performance
@@ -10,16 +11,26 @@ async function getHomePageData() {
   const client = await pool.connect()
   try {
     // Fetch all data in parallel
-    const [productsResult, recipesResult, promotionsResult] = await Promise.all([
-      client.query(`
-        SELECT id, name, description, price, image_url, category, is_available,
-               COALESCE(stock_quantity, 100) as stock_quantity,
-               COALESCE(low_stock_threshold, 10) as low_stock_threshold,
-               COALESCE(in_stock, true) as in_stock
-        FROM products 
-        WHERE is_available = true 
-        ORDER BY category, name
-      `),
+    const [productsResult, recipesResult, promotionsResult, reviewsResult] = await Promise.all([
+      (async () => {
+        // Check if original_price column exists
+        const columnCheck = await client.query(`
+          SELECT column_name 
+          FROM information_schema.columns 
+          WHERE table_name = 'products' AND column_name = 'original_price'
+        `)
+        const hasOriginalPrice = columnCheck.rows.length > 0
+        
+        return client.query(`
+          SELECT id, name, description, price, ${hasOriginalPrice ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+                 COALESCE(stock_quantity, 100) as stock_quantity,
+                 COALESCE(low_stock_threshold, 10) as low_stock_threshold,
+                 COALESCE(in_stock, true) as in_stock
+          FROM products 
+          WHERE is_available = true 
+          ORDER BY category, name
+        `)
+      })(),
       client.query(`
         SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
         FROM recipes 
@@ -30,6 +41,13 @@ async function getHomePageData() {
         SELECT * FROM promotions
         WHERE is_active = true AND (end_date IS NULL OR end_date >= CURRENT_DATE)
         ORDER BY display_order ASC, created_at DESC
+      `),
+      client.query(`
+        SELECT id, user_name, rating, comment, created_at
+        FROM reviews
+        WHERE is_approved = true
+        ORDER BY is_featured DESC, display_order ASC, created_at DESC
+        LIMIT 12
       `)
     ])
 
@@ -54,11 +72,15 @@ async function getHomePageData() {
     return {
       products,
       recipes: recipesResult.rows,
-      promotions: promotionsResult.rows
+      promotions: promotionsResult.rows,
+      reviews: reviewsResult.rows
     }
   } catch (error) {
     console.error('Error fetching homepage data:', error)
-    return { products: [], recipes: [], promotions: [] }
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error details:', errorMessage)
+    // Log the error but don't crash the page
+    return { products: [], recipes: [], promotions: [], reviews: [] }
   } finally {
     client.release()
   }
@@ -66,7 +88,13 @@ async function getHomePageData() {
 
 export default async function Home() {
   // Fetch data server-side
-  const { products, recipes, promotions } = await getHomePageData()
+  const { products, recipes, promotions, reviews } = await getHomePageData()
+  
+  // Debug logging
+  console.log('Home page - Products count:', products.length)
+  if (products.length === 0) {
+    console.warn('⚠️ No products found! Check database connection and product availability.')
+  }
 
   return (
     <div>
@@ -76,6 +104,7 @@ export default async function Home() {
         <ProductCatalog initialProducts={products} />
       </div>
       <RecipeSection initialRecipes={recipes} />
+      <ReviewsSection initialReviews={reviews} />
       <WhyChooseUs />
     </div>
   )

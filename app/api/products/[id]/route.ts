@@ -10,7 +10,7 @@ export async function GET(
     
     try {
       const result = await client.query(`
-        SELECT id, name, description, price, image_url, category, is_available
+        SELECT id, name, description, price, COALESCE(original_price, price) as original_price, image_url, category, is_available
         FROM products 
         WHERE id = $1
       `, [params.id])
@@ -34,17 +34,28 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { name, description, price, image_url, category, is_available } = await request.json()
+    const { name, description, price, original_price, image_url, category, is_available } = await request.json()
     
     const client = await pool.connect()
     
     try {
+      // Ensure original_price column exists
+      await client.query(`
+        DO $$ 
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                         WHERE table_name='products' AND column_name='original_price') THEN
+            ALTER TABLE products ADD COLUMN original_price DECIMAL(10,2);
+          END IF;
+        END $$;
+      `)
+
       const result = await client.query(`
         UPDATE products 
-        SET name = $1, description = $2, price = $3, image_url = $4, category = $5, is_available = $6, updated_at = CURRENT_TIMESTAMP
-        WHERE id = $7
+        SET name = $1, description = $2, price = $3, original_price = $4, image_url = $5, category = $6, is_available = $7, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $8
         RETURNING *
-      `, [name, description, price, image_url, category, is_available, params.id])
+      `, [name, description, price, original_price || null, image_url, category, is_available, params.id])
       
       if (result.rows.length === 0) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })

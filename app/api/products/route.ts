@@ -15,28 +15,32 @@ export async function GET(request: NextRequest) {
     try {
       // Check if additional columns exist in the database
       let hasStockColumns = false
+      let hasOriginalPriceColumn = false
       try {
         const columnCheck = await client.query(`
           SELECT column_name 
           FROM information_schema.columns 
           WHERE table_name = 'products' 
-          AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock')
+          AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock', 'original_price')
         `)
-        hasStockColumns = columnCheck.rows.length === 3
+        hasStockColumns = columnCheck.rows.some(row => ['stock_quantity', 'low_stock_threshold', 'in_stock'].includes(row.column_name)) && 
+                         columnCheck.rows.filter(row => ['stock_quantity', 'low_stock_threshold', 'in_stock'].includes(row.column_name)).length === 3
+        hasOriginalPriceColumn = columnCheck.rows.some(row => row.column_name === 'original_price')
       } catch (error) {
         // If check fails, assume columns don't exist
-        console.log('Column check failed, assuming stock columns do not exist:', error)
+        console.log('Column check failed, assuming columns do not exist:', error)
         hasStockColumns = false
+        hasOriginalPriceColumn = false
       }
       
       const query = all 
-        ? `SELECT id, name, description, price, image_url, category, is_available,
+        ? `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
                   ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
                   ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
                   ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
            FROM products 
            ORDER BY category, name`
-        : `SELECT id, name, description, price, image_url, category, is_available,
+        : `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
                   ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
                   ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
                   ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
@@ -93,25 +97,43 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error fetching products:', error)
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorDetails = error instanceof Error ? error.stack : String(error)
+    console.error('Error details:', errorDetails)
+    return NextResponse.json({ 
+      error: 'Failed to fetch products',
+      message: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? errorDetails : undefined
+    }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, description, price, image_url, category } = await request.json()
+    const { name, description, price, original_price, image_url, category, is_available } = await request.json()
     
     const client = await pool.connect()
     
     try {
       await client.query('BEGIN')
       
+      // Ensure original_price column exists
+      await client.query(`
+        DO $$ 
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                         WHERE table_name='products' AND column_name='original_price') THEN
+            ALTER TABLE products ADD COLUMN original_price DECIMAL(10,2);
+          END IF;
+        END $$;
+      `)
+      
       // Create product
       const result = await client.query(`
-        INSERT INTO products (name, description, price, image_url, category)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO products (name, description, price, original_price, image_url, category, is_available)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
-      `, [name, description, price, image_url, category])
+      `, [name, description, price, original_price || null, image_url, category, is_available ?? true])
       
       const newProduct = result.rows[0]
       

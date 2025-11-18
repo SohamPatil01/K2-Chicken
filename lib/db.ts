@@ -36,12 +36,24 @@ export async function initializeDatabase() {
         name VARCHAR(255) NOT NULL,
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
+        original_price DECIMAL(10,2),
         image_url VARCHAR(500),
         category VARCHAR(100),
         is_available BOOLEAN DEFAULT true,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Add original_price column if it doesn't exist
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                       WHERE table_name='products' AND column_name='original_price') THEN
+          ALTER TABLE products ADD COLUMN original_price DECIMAL(10,2);
+        END IF;
+      END $$;
     `);
 
     // Create orders table
@@ -280,6 +292,22 @@ export async function initializeDatabase() {
       )
     `);
 
+    // Create reviews table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        id SERIAL PRIMARY KEY,
+        user_name VARCHAR(255) NOT NULL,
+        user_phone VARCHAR(20),
+        rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+        comment TEXT,
+        is_approved BOOLEAN DEFAULT true,
+        is_featured BOOLEAN DEFAULT false,
+        display_order INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Add stock columns to products table if they don't exist
     await client.query(`
       DO $$ 
@@ -358,9 +386,9 @@ export async function initializeDatabase() {
     if (parseInt(productCount.rows[0].count) === 0) {
       await client.query(`
         INSERT INTO products (name, description, price, image_url, category, stock_quantity, in_stock) VALUES
-        ('Chicken Breast Boneless', 'Fresh, tender boneless chicken breast - perfect for grilling or frying', 299, '/images/Chicken-Curry-Cut.jpg', 'main', 100, true),
+        ('Chicken Breast Boneless', 'Fresh, tender boneless chicken breast - perfect for grilling or frying', 299, '/images/upload/1761282105435-Chicken-Breast-Boneless.-2 copy.jpg', 'main', 100, true),
         ('Chicken Curry Cut', 'Traditional curry cut chicken pieces with bone - ideal for curries and stews', 249, '/images/Chicken-Curry-Cut.jpg', 'main', 100, true),
-        ('Chicken Drumstick', 'Juicy chicken drumsticks - great for roasting or grilling', 219, '/images/Chicken-Legs.jpg', 'main', 100, true),
+        ('Chicken Drumstick', 'Juicy chicken drumsticks - great for roasting or grilling', 219, '/images/upload/1761282158358-Chicken-Drumstick-3 copy.jpg', 'main', 100, true),
         ('Chicken Kheema', 'Finely minced chicken meat - perfect for kebabs and biryanis', 279, '/images/Chicken-Kheema.jpg', 'main', 100, true),
         ('Chicken Legs', 'Whole chicken legs with thigh and drumstick - excellent for roasting', 299, '/images/Chicken-Legs.jpg', 'main', 100, true),
         ('Chicken Liver', 'Fresh chicken liver - rich in iron and perfect for stir-fries', 199, '/images/Chicken-Liver.jpg', 'main', 100, true),
@@ -382,6 +410,20 @@ export async function initializeDatabase() {
          ARRAY['4 chicken breasts', '1/4 cup honey', '3 cloves garlic', '2 tbsp soy sauce', '1 tbsp olive oil', 'Salt and pepper to taste'],
          ARRAY['Season chicken with salt and pepper', 'Heat oil in pan and cook chicken 6-7 minutes per side', 'Mix honey, garlic, and soy sauce', 'Add sauce to pan and cook 2-3 minutes until glazed', 'Serve with rice or vegetables'],
          10, 20, 4)
+      `);
+    }
+
+    // Insert sample reviews
+    const reviewCount = await client.query('SELECT COUNT(*) FROM reviews');
+    if (parseInt(reviewCount.rows[0].count) === 0) {
+      await client.query(`
+        INSERT INTO reviews (user_name, rating, comment, is_approved, is_featured, display_order) VALUES
+        ('Rajesh Kumar', 5, 'Best quality chicken in town! Fresh, tender, and always delivered on time. Highly recommend K2 Chicken to everyone!', true, true, 1),
+        ('Priya Sharma', 5, 'Amazing service and premium quality products. The chicken curry cut was perfect for my recipe. Will definitely order again!', true, true, 2),
+        ('Amit Patel', 5, 'Excellent quality and great customer service. The whole chicken was fresh and well-packaged. Very satisfied!', true, true, 3),
+        ('Sneha Desai', 4, 'Good quality chicken, delivery was quick. The prices are reasonable too. Happy with my purchase!', true, true, 4),
+        ('Vikram Singh', 5, 'Top-notch quality! The chicken breast boneless was so tender. Best place to buy fresh chicken online.', true, true, 5),
+        ('Anjali Mehta', 5, 'Love the variety of cuts available. The chicken wings were perfect for our party. Great service!', true, true, 6)
       `);
     }
 
