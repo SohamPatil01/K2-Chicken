@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT } from 'jose'
+import bcrypt from 'bcryptjs'
 
 // Rate limiting - simple in-memory store (use Redis in production)
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
@@ -61,19 +62,19 @@ export async function POST(request: NextRequest) {
 
     // Get credentials from environment variables
     const adminUsername = process.env.ADMIN_USERNAME?.trim()
-    const adminPassword = process.env.ADMIN_PASSWORD?.trim()
+    const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH?.trim()
 
     console.log('Login attempt:', { 
       providedUsername: username, 
       envUsername: adminUsername ? 'SET' : 'NOT SET',
-      passwordSet: adminPassword ? 'SET' : 'NOT SET'
+      passwordHashSet: adminPasswordHash ? 'SET' : 'NOT SET'
     })
 
     // Check if credentials are configured
-    if (!adminUsername || !adminPassword) {
+    if (!adminUsername || !adminPasswordHash) {
       console.error('Admin credentials not configured in environment variables')
       console.error('ADMIN_USERNAME:', adminUsername ? 'SET' : 'MISSING')
-      console.error('ADMIN_PASSWORD:', adminPassword ? 'SET' : 'MISSING')
+      console.error('ADMIN_PASSWORD_HASH:', adminPasswordHash ? 'SET' : 'MISSING')
       return NextResponse.json(
         { success: false, error: 'Server configuration error. Please contact administrator.' },
         { status: 500 }
@@ -93,11 +94,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate password (plain text comparison)
-    console.log('Validating password...')
+    // Validate password using bcrypt
+    console.log('Validating password with bcrypt...')
     const trimmedPassword = password?.trim()
-    const isPasswordValid = trimmedPassword === adminPassword
-    console.log('Password validation result:', isPasswordValid)
+    
+    if (!trimmedPassword) {
+      console.log('Password is empty')
+      recordFailedAttempt(clientId)
+      return NextResponse.json(
+        { success: false, error: 'Invalid username or password' },
+        { status: 401 }
+      )
+    }
+
+    let isPasswordValid = false
+    try {
+      isPasswordValid = await bcrypt.compare(trimmedPassword, adminPasswordHash)
+      console.log('Password validation result:', isPasswordValid)
+    } catch (error) {
+      console.error('Error comparing password:', error)
+      recordFailedAttempt(clientId)
+      return NextResponse.json(
+        { success: false, error: 'Invalid username or password' },
+        { status: 401 }
+      )
+    }
     
     if (!isPasswordValid) {
       console.log('Password mismatch')

@@ -13,9 +13,21 @@ export async function GET(request: NextRequest) {
     const client = await pool.connect()
     
     try {
-      // Check if additional columns exist (cached check - these columns should exist after migration)
-      // Skip the check for performance - assume columns exist if migration was run
-      const hasStockColumns = true
+      // Check if additional columns exist in the database
+      let hasStockColumns = false
+      try {
+        const columnCheck = await client.query(`
+          SELECT column_name 
+          FROM information_schema.columns 
+          WHERE table_name = 'products' 
+          AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock')
+        `)
+        hasStockColumns = columnCheck.rows.length === 3
+      } catch (error) {
+        // If check fails, assume columns don't exist
+        console.log('Column check failed, assuming stock columns do not exist:', error)
+        hasStockColumns = false
+      }
       
       const query = all 
         ? `SELECT id, name, description, price, image_url, category, is_available,
