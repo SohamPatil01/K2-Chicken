@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT } from 'jose'
 import bcrypt from 'bcryptjs'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // Rate limiting - simple in-memory store (use Redis in production)
 const loginAttempts = new Map<string, { count: number; lastAttempt: number }>()
 
