@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         FROM reviews
         WHERE is_approved = true
         ORDER BY is_featured DESC, display_order ASC, created_at DESC
-        LIMIT 12
+        LIMIT 6
       `);
 
       return NextResponse.json(result.rows);

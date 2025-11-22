@@ -3,6 +3,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { MapPin, X } from 'lucide-react'
 
+// Global flag to prevent duplicate script loading
+declare global {
+  interface Window {
+    googleMapsScriptLoading?: boolean
+    googleMapsScriptLoaded?: boolean
+  }
+}
+
 interface AddressMapPickerProps {
   onAddressSelect: (address: string, coordinates: { lat: number; lng: number }) => void
   onClose: () => void
@@ -48,57 +56,133 @@ export default function AddressMapPicker({ onAddressSelect, onClose, initialAddr
       geocoderInstance = new window.google.maps.Geocoder()
       setGeocoder(geocoderInstance)
 
-      // Create marker for shop location
-      new window.google.maps.Marker({
-        position: shopLocation,
-        map: mapInstance,
-        title: 'K2 Chicken',
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: '#FF6B35',
-          fillOpacity: 1,
-          strokeColor: '#FFFFFF',
-          strokeWeight: 2,
-        },
-        label: {
-          text: '🏪',
-          fontSize: '20px',
-        },
-      })
+      // Check if AdvancedMarkerElement is available, otherwise fallback to Marker
+      const useAdvancedMarker = window.google.maps.marker && window.google.maps.marker.AdvancedMarkerElement
 
-      // Create draggable marker for delivery location
-      markerInstance = new window.google.maps.Marker({
-        position: mapInstance.getCenter()!,
-        map: mapInstance,
-        draggable: true,
-        title: 'Delivery Location',
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#10B981',
-          fillOpacity: 1,
-          strokeColor: '#FFFFFF',
-          strokeWeight: 2,
-        },
-      })
+      if (useAdvancedMarker) {
+        // Use AdvancedMarkerElement (new API)
+        // Create marker for shop location
+        const shopMarkerContent = document.createElement('div')
+        shopMarkerContent.innerHTML = '🏪'
+        shopMarkerContent.style.fontSize = '24px'
+        shopMarkerContent.style.textAlign = 'center'
+        shopMarkerContent.style.cursor = 'pointer'
+        
+        new window.google.maps.marker.AdvancedMarkerElement({
+          position: shopLocation,
+          map: mapInstance,
+          title: 'K2 Chicken',
+          content: shopMarkerContent,
+        })
+
+        // Create draggable marker for delivery location
+        const deliveryMarkerContent = document.createElement('div')
+        deliveryMarkerContent.style.width = '20px'
+        deliveryMarkerContent.style.height = '20px'
+        deliveryMarkerContent.style.borderRadius = '50%'
+        deliveryMarkerContent.style.backgroundColor = '#10B981'
+        deliveryMarkerContent.style.border = '3px solid white'
+        deliveryMarkerContent.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'
+        deliveryMarkerContent.style.cursor = 'grab'
+        deliveryMarkerContent.title = 'Delivery Location'
+        
+        markerInstance = new window.google.maps.marker.AdvancedMarkerElement({
+          position: mapInstance.getCenter()!,
+          map: mapInstance,
+          content: deliveryMarkerContent,
+          gmpDraggable: true,
+          title: 'Delivery Location',
+        })
+      } else {
+        // Fallback to legacy Marker API
+        console.warn('AdvancedMarkerElement not available, using legacy Marker API')
+        
+        // Create marker for shop location
+        new window.google.maps.Marker({
+          position: shopLocation,
+          map: mapInstance,
+          title: 'K2 Chicken',
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#FF6B35',
+            fillOpacity: 1,
+            strokeColor: '#FFFFFF',
+            strokeWeight: 2,
+          },
+          label: {
+            text: '🏪',
+            fontSize: '20px',
+          },
+        })
+
+        // Create draggable marker for delivery location
+        markerInstance = new window.google.maps.Marker({
+          position: mapInstance.getCenter()!,
+          map: mapInstance,
+          draggable: true,
+          title: 'Delivery Location',
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: '#10B981',
+            fillOpacity: 1,
+            strokeColor: '#FFFFFF',
+            strokeWeight: 2,
+          },
+        })
+      }
 
       setMarker(markerInstance)
       setMap(mapInstance)
 
       // Update address when marker is dragged
-      markerInstance.addListener('dragend', () => {
-        const position = markerInstance.getPosition()
-        if (position && geocoderInstance) {
-          reverseGeocode(position.lat(), position.lng(), geocoderInstance)
-        }
-      })
+      if (useAdvancedMarker) {
+        // AdvancedMarkerElement uses addEventListener
+        markerInstance.addEventListener('dragend', (e: any) => {
+          const position = markerInstance.position
+          if (position && geocoderInstance) {
+            // Handle both LatLng object and LatLngLiteral
+            let lat: number, lng: number
+            if (typeof position === 'object') {
+              if ('lat' in position && typeof position.lat === 'function') {
+                // It's a LatLng object
+                lat = position.lat()
+                lng = position.lng()
+              } else if ('lat' in position && typeof position.lat === 'number') {
+                // It's a LatLngLiteral
+                lat = position.lat
+                lng = position.lng
+              } else {
+                return
+              }
+            } else {
+              return
+            }
+            reverseGeocode(lat, lng, geocoderInstance)
+          }
+        })
+      } else {
+        // Legacy Marker uses addListener
+        markerInstance.addListener('dragend', () => {
+          const position = markerInstance.getPosition()
+          if (position && geocoderInstance) {
+            reverseGeocode(position.lat(), position.lng(), geocoderInstance)
+          }
+        })
+      }
 
       // Update marker position when map is clicked
       mapInstance.addListener('click', (e: any) => {
         if (e.latLng && geocoderInstance) {
-          markerInstance.setPosition(e.latLng)
-          reverseGeocode(e.latLng.lat(), e.latLng.lng(), geocoderInstance)
+          const lat = e.latLng.lat()
+          const lng = e.latLng.lng()
+          if (useAdvancedMarker) {
+            markerInstance.position = { lat, lng }
+          } else {
+            markerInstance.setPosition({ lat, lng })
+          }
+          reverseGeocode(lat, lng, geocoderInstance)
         }
       })
 
@@ -116,7 +200,12 @@ export default function AddressMapPicker({ onAddressSelect, onClose, initialAddr
               const lng = location.lng()
               mapInstance.setCenter({ lat, lng })
               mapInstance.setZoom(15)
-              markerInstance.setPosition({ lat, lng })
+              const useAdvancedMarker = window.google.maps.marker && window.google.maps.marker.AdvancedMarkerElement
+              if (useAdvancedMarker) {
+                markerInstance.position = { lat, lng }
+              } else {
+                markerInstance.setPosition({ lat, lng })
+              }
               setSelectedAddress(results[0].formatted_address)
               setCoordinates({ lat, lng })
             }
@@ -140,26 +229,76 @@ export default function AddressMapPicker({ onAddressSelect, onClose, initialAddr
     }
 
     // Load Google Maps script if not already loaded
-    if (!window.google) {
+    // Check if script is already in the DOM or being loaded to prevent duplicate loading
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]') as HTMLScriptElement
+    
+    if (!window.google && !existingScript && !window.googleMapsScriptLoading) {
+      // Set global flag to prevent other instances from loading
+      window.googleMapsScriptLoading = true
+      
       const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
+      // Add marker library for AdvancedMarkerElement
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker&loading=async`
       script.async = true
       script.defer = true
+      script.id = 'google-maps-script' // Add ID to identify the script
+      
+      let scriptLoaded = false
       script.onload = () => {
-        setMapLoaded(true)
-        initializeMap()
+        if (scriptLoaded) return // Prevent multiple calls
+        scriptLoaded = true
+        window.googleMapsScriptLoading = false
+        window.googleMapsScriptLoaded = true
+        // Wait a bit for the marker library to be fully available
+        setTimeout(() => {
+          if (window.google && window.google.maps) {
+            setMapLoaded(true)
+            initializeMap()
+          }
+        }, 300)
+      }
+      script.onerror = () => {
+        console.error('Failed to load Google Maps script')
+        window.googleMapsScriptLoading = false
+        setIsLoading(false)
       }
       document.head.appendChild(script)
-    } else {
-      setMapLoaded(true)
-      initializeMap()
+    } else if (window.google && window.google.maps) {
+      // Google Maps is already loaded, just initialize
+      window.googleMapsScriptLoaded = true
+      setTimeout(() => {
+        setMapLoaded(true)
+        initializeMap()
+      }, 100)
+    } else if (existingScript || window.googleMapsScriptLoading) {
+      // Script is loading, wait for it
+      const checkGoogle = setInterval(() => {
+        if (window.google && window.google.maps) {
+          clearInterval(checkGoogle)
+          window.googleMapsScriptLoaded = true
+          setTimeout(() => {
+            setMapLoaded(true)
+            initializeMap()
+          }, 100)
+        }
+      }, 100)
+      
+      // Cleanup interval after 10 seconds
+      setTimeout(() => {
+        clearInterval(checkGoogle)
+        if (!window.google) {
+          console.error('Google Maps failed to load after 10 seconds')
+          setIsLoading(false)
+        }
+      }, 10000)
     }
 
     return () => {
-      // Cleanup
-      if (mapInstance) {
-        // Google Maps doesn't require explicit cleanup
-      }
+      // Cleanup - don't remove the script as it might be used by other components
+      // Just clear the map instance references
+      mapInstance = null
+      markerInstance = null
+      geocoderInstance = null
     }
   }, [])
 
@@ -187,7 +326,12 @@ export default function AddressMapPicker({ onAddressSelect, onClose, initialAddr
           if (map && marker) {
             map.setCenter({ lat, lng })
             map.setZoom(15)
-            marker.setPosition({ lat, lng })
+            const useAdvancedMarker = window.google.maps.marker && window.google.maps.marker.AdvancedMarkerElement
+            if (useAdvancedMarker) {
+              marker.position = { lat, lng }
+            } else {
+              marker.setPosition({ lat, lng })
+            }
           }
         } else {
           alert('Address not found. Please try a more specific address.')
@@ -208,7 +352,12 @@ export default function AddressMapPicker({ onAddressSelect, onClose, initialAddr
             const lng = location.lng()
             map.setCenter({ lat, lng })
             map.setZoom(15)
-            marker.setPosition({ lat, lng })
+            const useAdvancedMarker = window.google.maps.marker && window.google.maps.marker.AdvancedMarkerElement
+            if (useAdvancedMarker) {
+              marker.position = { lat, lng }
+            } else {
+              marker.setPosition({ lat, lng })
+            }
             setSelectedAddress(results[0].formatted_address)
             setCoordinates({ lat, lng })
           }

@@ -337,14 +337,12 @@ export default function ProductCatalog({
   const bestsellerIds = [1, 2, 3]; // Chicken Breast, Chicken Curry Cut, Chicken Wings
 
   useEffect(() => {
-    if (!initialProducts || initialProducts.length === 0) {
-      console.log("No initialProducts provided, fetching from API...");
-      fetchProducts();
-    } else {
-      console.log("Using initialProducts:", initialProducts.length, "products");
-      setLoading(false);
-      // Initialize filteredProducts with initialProducts
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
       setFilteredProducts(initialProducts);
+      setLoading(false);
+    } else if (!initialProducts) {
+      fetchProducts();
     }
   }, [initialProducts]);
 
@@ -429,19 +427,21 @@ export default function ProductCatalog({
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products");
+      const response = await fetch("/api/products", {
+        next: { revalidate: 60 }, // Cache for 60 seconds
+      });
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error fetching products:", errorData);
         setProducts([]);
+        setFilteredProducts([]);
         return;
       }
       const data = await response.json();
-      console.log("Products fetched:", data.length, "products");
       setProducts(Array.isArray(data) ? data : []);
+      setFilteredProducts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
+      setFilteredProducts([]);
     } finally {
       setLoading(false);
     }

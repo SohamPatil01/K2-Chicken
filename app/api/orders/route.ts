@@ -34,6 +34,27 @@ export async function POST(request: NextRequest) {
       preferredDeliveryTime
     } = await request.json()
     
+    // Validate required fields
+    if (!customerName || !customerName.trim()) {
+      return NextResponse.json({ error: 'Customer name is required' }, { status: 400 })
+    }
+    
+    if (!customerPhone || !customerPhone.trim()) {
+      return NextResponse.json({ error: 'Customer phone is required' }, { status: 400 })
+    }
+    
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: 'Order must contain at least one item' }, { status: 400 })
+    }
+    
+    if (deliveryType === 'delivery' && (!deliveryAddress || !deliveryAddress.trim())) {
+      return NextResponse.json({ error: 'Delivery address is required for delivery orders' }, { status: 400 })
+    }
+    
+    if (!total || parseFloat(total) <= 0) {
+      return NextResponse.json({ error: 'Invalid order total' }, { status: 400 })
+    }
+    
     let userId = getUserIdFromToken(request)
     
     // If userId is not found from token, try to find user by phone number as fallback
@@ -55,13 +76,29 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    console.log(`Creating order for userId: ${userId}, phone: ${customerPhone}`)
-    
     const client = await pool.connect()
     
     try {
       // Start transaction
       await client.query('BEGIN')
+      
+      // Validate userId exists in users table if provided, otherwise set to NULL
+      let finalUserId: number | null = null
+      if (userId) {
+        const userCheckResult = await client.query(
+          'SELECT id FROM users WHERE id = $1',
+          [userId]
+        )
+        if (userCheckResult.rows.length > 0) {
+          finalUserId = userCheckResult.rows[0].id
+          console.log(`Validated userId: ${finalUserId}`)
+        } else {
+          console.warn(`UserId ${userId} not found in users table. Setting to NULL for guest order.`)
+          finalUserId = null
+        }
+      }
+      
+      console.log(`Creating order for userId: ${finalUserId}, phone: ${customerPhone}`)
       
       // Check if payment_method column exists, if not add it
       await client.query(`
@@ -108,7 +145,7 @@ export async function POST(request: NextRequest) {
         paymentMethod || 'cash',
         'pending',
         new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000),
-        userId,
+        finalUserId, // Use validated userId (can be NULL for guest orders)
         deliveryTimeSlotId || null,
         preferredDeliveryDate || null,
         preferredDeliveryTime || null
@@ -127,7 +164,20 @@ export async function POST(request: NextRequest) {
 
       // Insert order items
       for (const item of items) {
+        // Validate item structure
+        if (!item.product || !item.product.id) {
+          throw new Error('Invalid item structure: missing product information')
+        }
+        
+        if (!item.quantity || item.quantity <= 0) {
+          throw new Error(`Invalid quantity for product ${item.product.name || item.product.id}`)
+        }
+        
         const itemPrice = item.selectedWeight?.price || item.product.price
+        if (!itemPrice || parseFloat(String(itemPrice)) <= 0) {
+          throw new Error(`Invalid price for product ${item.product.name || item.product.id}`)
+        }
+        
         await client.query(`
           INSERT INTO order_items (order_id, product_id, quantity, price, weight_option_id, selected_weight, weight_unit, product_name)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -135,7 +185,7 @@ export async function POST(request: NextRequest) {
           order.id, 
           item.product.id, 
           item.quantity, 
-          itemPrice,
+          parseFloat(String(itemPrice)),
           item.selectedWeight?.id || null,
           item.selectedWeight?.weight || null,
           item.selectedWeight?.weight_unit || null,

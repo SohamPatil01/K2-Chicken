@@ -153,14 +153,28 @@ export default function SettingsManagement() {
             Free Delivery Radius (km)
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             id="delivery_radius_km"
-            min="0"
-            step="0.1"
             value={settings.delivery_radius_km.value}
-            onChange={(e) => handleChange('delivery_radius_km', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value
+              // Allow numbers, decimal point, and empty string
+              if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                handleChange('delivery_radius_km', value)
+              }
+            }}
+            onBlur={(e) => {
+              // Validate and format on blur
+              const value = parseFloat(e.target.value)
+              if (isNaN(value) || value < 0) {
+                handleChange('delivery_radius_km', '5')
+              } else {
+                handleChange('delivery_radius_km', value.toString())
+              }
+            }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-chicken-red focus:border-transparent"
-            placeholder="Enter radius in kilometers"
+            placeholder="Enter radius in kilometers (e.g., 5 or 5.5)"
           />
           <p className="text-sm text-gray-500 mt-1">{settings.delivery_radius_km.description}</p>
           <p className="text-xs text-gray-400 mt-1">
@@ -174,14 +188,28 @@ export default function SettingsManagement() {
             Charge Per Kilometer (₹)
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             id="charge_per_km"
-            min="0"
-            step="0.1"
             value={settings.charge_per_km.value}
-            onChange={(e) => handleChange('charge_per_km', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value
+              // Allow numbers, decimal point, and empty string
+              if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                handleChange('charge_per_km', value)
+              }
+            }}
+            onBlur={(e) => {
+              // Validate and format on blur
+              const value = parseFloat(e.target.value)
+              if (isNaN(value) || value < 0) {
+                handleChange('charge_per_km', '5')
+              } else {
+                handleChange('charge_per_km', value.toString())
+              }
+            }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-chicken-red focus:border-transparent"
-            placeholder="Enter charge per kilometer"
+            placeholder="Enter charge per kilometer (e.g., 5 or 5.5)"
           />
           <p className="text-sm text-gray-500 mt-1">{settings.charge_per_km.description}</p>
           <p className="text-xs text-gray-400 mt-1">
@@ -195,14 +223,28 @@ export default function SettingsManagement() {
             Base Delivery Fee (₹)
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             id="base_delivery_fee"
-            min="0"
-            step="0.1"
             value={settings.base_delivery_fee.value}
-            onChange={(e) => handleChange('base_delivery_fee', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value
+              // Allow numbers, decimal point, and empty string
+              if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                handleChange('base_delivery_fee', value)
+              }
+            }}
+            onBlur={(e) => {
+              // Validate and format on blur
+              const value = parseFloat(e.target.value)
+              if (isNaN(value) || value < 0) {
+                handleChange('base_delivery_fee', '0')
+              } else {
+                handleChange('base_delivery_fee', value.toString())
+              }
+            }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-chicken-red focus:border-transparent"
-            placeholder="Enter base delivery fee"
+            placeholder="Enter base delivery fee (e.g., 0 or 10)"
           />
           <p className="text-sm text-gray-500 mt-1">{settings.base_delivery_fee.description}</p>
           <p className="text-xs text-gray-400 mt-1">
@@ -214,13 +256,17 @@ export default function SettingsManagement() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="text-sm font-semibold text-blue-900 mb-2">How Delivery Charges Work:</h3>
           <div className="text-sm text-blue-800 space-y-1">
-            <p>• Free delivery within {settings.delivery_radius_km.value} km</p>
-            <p>• Beyond {settings.delivery_radius_km.value} km: ₹{settings.charge_per_km.value} per additional km</p>
+            <p>• Free delivery within {settings.delivery_radius_km.value || '5'} km</p>
+            <p>• Beyond {settings.delivery_radius_km.value || '5'} km: ₹{settings.charge_per_km.value || '5'} per additional km</p>
             <p className="mt-2 font-medium">Example:</p>
             <p className="pl-4">
-              If customer is 8 km away and radius is {settings.delivery_radius_km.value} km:<br />
-              Extra distance: {8 - parseFloat(settings.delivery_radius_km.value)} km<br />
-              Charge: ₹{(8 - parseFloat(settings.delivery_radius_km.value)) * parseFloat(settings.charge_per_km.value) + parseFloat(settings.base_delivery_fee.value)}
+              If customer is 8 km away and radius is {settings.delivery_radius_km.value || '5'} km:<br />
+              Extra distance: {Math.max(0, 8 - (parseFloat(settings.delivery_radius_km.value) || 5)).toFixed(1)} km<br />
+              Charge: ₹{(
+                Math.max(0, 8 - (parseFloat(settings.delivery_radius_km.value) || 5)) * 
+                (parseFloat(settings.charge_per_km.value) || 5) + 
+                (parseFloat(settings.base_delivery_fee.value) || 0)
+              ).toFixed(0)}
             </p>
           </div>
         </div>

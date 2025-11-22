@@ -1,36 +1,77 @@
+import dynamic from 'next/dynamic'
 import Hero from '@/components/Hero'
-import ProductCatalog from '@/components/ProductCatalog'
-import RecipeSection from '@/components/RecipeSection'
-import WhyChooseUs from '@/components/WhyChooseUs'
-import PromotionsFlyer from '@/components/PromotionsFlyer'
-import ReviewsSection from '@/components/ReviewsSection'
 import pool from '@/lib/db'
 
+// Lazy load heavy components for better performance
+const ProductCatalog = dynamic(() => import('@/components/ProductCatalog'), {
+  loading: () => <div className="min-h-[400px] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-500"></div></div>,
+  ssr: true
+})
+
+const RecipeSection = dynamic(() => import('@/components/RecipeSection'), {
+  loading: () => <div className="min-h-[300px] flex items-center justify-center"><div className="animate-spin rounded-full h-10 w-10 border-4 border-orange-200 border-t-orange-500"></div></div>,
+  ssr: true
+})
+
+const WhyChooseUs = dynamic(() => import('@/components/WhyChooseUs'), {
+  ssr: true
+})
+
+const PromotionsFlyer = dynamic(() => import('@/components/PromotionsFlyer'), {
+  loading: () => <div className="min-h-[200px]"></div>,
+  ssr: true
+})
+
+const ReviewsSection = dynamic(() => import('@/components/ReviewsSection'), {
+  loading: () => <div className="min-h-[300px]"></div>,
+  ssr: true
+})
+
+const InauguralDiscountFlyer = dynamic(() => import('@/components/InauguralDiscountFlyer'), {
+  ssr: false // Client-side only component
+})
+
+// Cache column existence check (only check once, reuse result)
+let hasOriginalPriceColumn: boolean | null = null
+
+async function checkOriginalPriceColumn(client: any): Promise<boolean> {
+  if (hasOriginalPriceColumn !== null) {
+    return hasOriginalPriceColumn
+  }
+  try {
+    const columnCheck = await client.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'products' AND column_name = 'original_price'
+    `)
+    hasOriginalPriceColumn = columnCheck.rows.length > 0
+    return hasOriginalPriceColumn
+  } catch {
+    hasOriginalPriceColumn = false
+    return false
+  }
+}
+
 // Fetch data directly from database for better performance
+export const revalidate = 60 // Revalidate every 60 seconds
+
 async function getHomePageData() {
   const client = await pool.connect()
   try {
+    // Check column existence once
+    const hasOriginalPrice = await checkOriginalPriceColumn(client)
+    
     // Fetch all data in parallel
     const [productsResult, recipesResult, promotionsResult, reviewsResult] = await Promise.all([
-      (async () => {
-        // Check if original_price column exists
-        const columnCheck = await client.query(`
-          SELECT column_name 
-          FROM information_schema.columns 
-          WHERE table_name = 'products' AND column_name = 'original_price'
-        `)
-        const hasOriginalPrice = columnCheck.rows.length > 0
-        
-        return client.query(`
-          SELECT id, name, description, price, ${hasOriginalPrice ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
-                 COALESCE(stock_quantity, 100) as stock_quantity,
-                 COALESCE(low_stock_threshold, 10) as low_stock_threshold,
-                 COALESCE(in_stock, true) as in_stock
-          FROM products 
-          WHERE is_available = true 
-          ORDER BY category, name
-        `)
-      })(),
+      client.query(`
+        SELECT id, name, description, price, ${hasOriginalPrice ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+               COALESCE(stock_quantity, 100) as stock_quantity,
+               COALESCE(low_stock_threshold, 10) as low_stock_threshold,
+               COALESCE(in_stock, true) as in_stock
+        FROM products 
+        WHERE is_available = true 
+        ORDER BY category, name
+      `),
       client.query(`
         SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
         FROM recipes 
@@ -47,7 +88,7 @@ async function getHomePageData() {
         FROM reviews
         WHERE is_approved = true
         ORDER BY is_featured DESC, display_order ASC, created_at DESC
-        LIMIT 12
+        LIMIT 6
       `)
     ])
 
@@ -89,15 +130,10 @@ async function getHomePageData() {
 export default async function Home() {
   // Fetch data server-side
   const { products, recipes, promotions, reviews } = await getHomePageData()
-  
-  // Debug logging
-  console.log('Home page - Products count:', products.length)
-  if (products.length === 0) {
-    console.warn('⚠️ No products found! Check database connection and product availability.')
-  }
 
   return (
     <div>
+      <InauguralDiscountFlyer />
       <PromotionsFlyer initialPromotions={promotions} />
       <Hero />
       <div id="products">

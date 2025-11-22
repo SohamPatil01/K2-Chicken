@@ -5,6 +5,41 @@ import pool from '@/lib/db'
 export const revalidate = 60;
 export const runtime = 'nodejs';
 
+// Cache column existence checks (only check once per process)
+let cachedColumnCheck: {
+  hasStockColumns: boolean
+  hasOriginalPriceColumn: boolean
+  checked: boolean
+} = {
+  hasStockColumns: false,
+  hasOriginalPriceColumn: false,
+  checked: false
+}
+
+async function checkColumns(client: any) {
+  if (cachedColumnCheck.checked) {
+    return cachedColumnCheck
+  }
+  
+  try {
+    const columnCheck = await client.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'products' 
+      AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock', 'original_price')
+    `)
+    const columnNames = columnCheck.rows.map((row: any) => row.column_name)
+    cachedColumnCheck.hasStockColumns = ['stock_quantity', 'low_stock_threshold', 'in_stock'].every(col => columnNames.includes(col))
+    cachedColumnCheck.hasOriginalPriceColumn = columnNames.includes('original_price')
+    cachedColumnCheck.checked = true
+  } catch (error) {
+    // If check fails, assume columns don't exist
+    cachedColumnCheck.checked = true
+  }
+  
+  return cachedColumnCheck
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -13,25 +48,8 @@ export async function GET(request: NextRequest) {
     const client = await pool.connect()
     
     try {
-      // Check if additional columns exist in the database
-      let hasStockColumns = false
-      let hasOriginalPriceColumn = false
-      try {
-        const columnCheck = await client.query(`
-          SELECT column_name 
-          FROM information_schema.columns 
-          WHERE table_name = 'products' 
-          AND column_name IN ('stock_quantity', 'low_stock_threshold', 'in_stock', 'original_price')
-        `)
-        hasStockColumns = columnCheck.rows.some(row => ['stock_quantity', 'low_stock_threshold', 'in_stock'].includes(row.column_name)) && 
-                         columnCheck.rows.filter(row => ['stock_quantity', 'low_stock_threshold', 'in_stock'].includes(row.column_name)).length === 3
-        hasOriginalPriceColumn = columnCheck.rows.some(row => row.column_name === 'original_price')
-      } catch (error) {
-        // If check fails, assume columns don't exist
-        console.log('Column check failed, assuming columns do not exist:', error)
-        hasStockColumns = false
-        hasOriginalPriceColumn = false
-      }
+      // Check columns (cached after first check)
+      const { hasStockColumns, hasOriginalPriceColumn } = await checkColumns(client)
       
       const query = all 
         ? `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
@@ -50,46 +68,57 @@ export async function GET(request: NextRequest) {
       
       const result = await client.query(query)
       
-      // Check if product_weight_options table exists
-      const tableCheck = await client.query(`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_name = 'product_weight_options'
-        )
-      `)
-      const hasWeightOptionsTable = tableCheck.rows[0].exists
+      // Check if product_weight_options table exists (cached check)
+      let hasWeightOptionsTable = false
+      try {
+        const tableCheck = await client.query(`
+          SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'product_weight_options'
+          )
+        `)
+        hasWeightOptionsTable = tableCheck.rows[0].exists
+      } catch {
+        hasWeightOptionsTable = false
+      }
       
-      // Fetch weight options for each product (if table exists)
-      const productsWithWeights = await Promise.all(
-        result.rows.map(async (product) => {
-          let weightOptions = []
+      // Batch fetch all weight options at once (much faster than per-product queries)
+      let weightOptionsMap: { [key: number]: any[] } = {}
+      if (hasWeightOptionsTable && result.rows.length > 0) {
+        try {
+          const productIds = result.rows.map((p: any) => p.id)
+          const weightResult = await client.query(
+            `SELECT id, product_id, weight, weight_unit, price, is_default 
+             FROM product_weight_options 
+             WHERE product_id = ANY($1::int[])
+             ORDER BY product_id, weight ASC`,
+            [productIds]
+          )
           
-          if (hasWeightOptionsTable) {
-            try {
-              const weightResult = await client.query(
-                `SELECT id, weight, weight_unit, price, is_default 
-                 FROM product_weight_options 
-                 WHERE product_id = $1 
-                 ORDER BY weight ASC`,
-                [product.id]
-              )
-              weightOptions = weightResult.rows
-            } catch (error) {
-              // Table might not exist yet, use default
-              console.log('Weight options table not accessible, using default')
+          // Group weight options by product_id
+          weightResult.rows.forEach((wo: any) => {
+            if (!weightOptionsMap[wo.product_id]) {
+              weightOptionsMap[wo.product_id] = []
             }
-          }
-          
-          return {
-            ...product,
-            weightOptions: weightOptions.length > 0 
-              ? weightOptions 
-              : [
-                  { id: null, weight: 500, weight_unit: 'g', price: product.price, is_default: true }
-                ]
-          }
-        })
-      )
+            weightOptionsMap[wo.product_id].push(wo)
+          })
+        } catch (error) {
+          // Table might not exist yet, use defaults
+        }
+      }
+      
+      // Attach weight options to products
+      const productsWithWeights = result.rows.map((product: any) => {
+        const weightOptions = weightOptionsMap[product.id] || []
+        return {
+          ...product,
+          weightOptions: weightOptions.length > 0 
+            ? weightOptions 
+            : [
+                { id: null, weight: 500, weight_unit: 'g', price: product.price, is_default: true }
+              ]
+        }
+      })
       
       return NextResponse.json(productsWithWeights)
     } finally {

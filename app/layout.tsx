@@ -11,6 +11,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Chicken Vicken - Finger Lickin\' Good!',
   description: 'The best chicken in town - crispy, juicy, and absolutely delicious!',
+  icons: {
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
+  },
 }
 
 export default function RootLayout({
@@ -19,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
             <div className="min-h-screen flex flex-col">

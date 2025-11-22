@@ -333,7 +333,7 @@ export async function initializeDatabase() {
       BEGIN
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                        WHERE table_name='orders' AND column_name='user_id') THEN
-          ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+          ALTER TABLE orders ADD COLUMN user_id INTEGER;
         END IF;
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                        WHERE table_name='orders' AND column_name='delivery_type') THEN
@@ -369,6 +369,27 @@ export async function initializeDatabase() {
         END IF;
       END $$;
     `);
+
+    // Ensure user_id foreign key constraint exists and allows NULL values
+    // This fixes the constraint if it was created incorrectly
+    await client.query(`
+      DO $$
+      BEGIN
+        -- Drop existing constraint if it exists (to recreate with proper NULL handling)
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'orders_user_id_fkey') THEN
+          ALTER TABLE orders DROP CONSTRAINT orders_user_id_fkey;
+        END IF;
+      EXCEPTION
+        WHEN OTHERS THEN NULL;
+      END $$;
+    `).catch(() => {}) // Ignore errors if constraint doesn't exist
+    
+    // Add constraint that properly allows NULL values
+    await client.query(`
+      ALTER TABLE orders 
+      ADD CONSTRAINT orders_user_id_fkey 
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+    `).catch(() => {}) // Ignore error if constraint already exists
 
     // Initialize default delivery settings if they don't exist
     const settingsCount = await client.query('SELECT COUNT(*) FROM settings WHERE key = $1', ['delivery_radius_km']);
@@ -413,17 +434,16 @@ export async function initializeDatabase() {
       `);
     }
 
-    // Insert sample reviews
+    // Insert sample reviews - fewer but more insightful reviews about products and service
     const reviewCount = await client.query('SELECT COUNT(*) FROM reviews');
     if (parseInt(reviewCount.rows[0].count) === 0) {
       await client.query(`
         INSERT INTO reviews (user_name, rating, comment, is_approved, is_featured, display_order) VALUES
-        ('Rajesh Kumar', 5, 'Best quality chicken in town! Fresh, tender, and always delivered on time. Highly recommend K2 Chicken to everyone!', true, true, 1),
-        ('Priya Sharma', 5, 'Amazing service and premium quality products. The chicken curry cut was perfect for my recipe. Will definitely order again!', true, true, 2),
-        ('Amit Patel', 5, 'Excellent quality and great customer service. The whole chicken was fresh and well-packaged. Very satisfied!', true, true, 3),
-        ('Sneha Desai', 4, 'Good quality chicken, delivery was quick. The prices are reasonable too. Happy with my purchase!', true, true, 4),
-        ('Vikram Singh', 5, 'Top-notch quality! The chicken breast boneless was so tender. Best place to buy fresh chicken online.', true, true, 5),
-        ('Anjali Mehta', 5, 'Love the variety of cuts available. The chicken wings were perfect for our party. Great service!', true, true, 6)
+        ('Rajesh Kumar', 5, 'Ordered the Whole Chicken for a family dinner and it was absolutely fresh! The packaging was excellent - sealed properly and arrived cold. The chicken was clean, well-cut, and had no unpleasant odor. Delivery was exactly on time as promised. The quality is restaurant-grade and the price is very reasonable. Will definitely order again!', true, true, 1),
+        ('Priya Sharma', 5, 'I''ve been ordering Chicken Curry Cut regularly for my weekly meal prep. What I love most is the consistency - every order is fresh, properly portioned, and the cuts are uniform. The delivery team is always polite and calls before arriving. The weight options (250g, 500g, 1kg) make it easy to order exactly what I need. Highly recommend for regular customers!', true, true, 2),
+        ('Amit Patel', 5, 'Tried the Chicken Breast Boneless for the first time and was impressed! The meat was tender, no excess fat, and perfect for grilling. The customer service team helped me choose the right weight option. Delivery was within 30 minutes and the packaging kept everything fresh. The quality is definitely better than local meat shops. Worth every rupee!', true, true, 3),
+        ('Sneha Desai', 4, 'Ordered Chicken Wings for a party and they were a hit! The wings were fresh, well-cleaned, and the perfect size. Delivery was prompt and the packaging was neat. Only minor issue was I wish there were more weight options, but overall great service. The prices are competitive and the quality is good. Will order again for special occasions.', true, true, 4),
+        ('Vikram Singh', 5, 'Best online chicken service in Pune! I''ve tried multiple products - Chicken Kheema, Drumsticks, and Liver. Each one is consistently fresh and well-packaged. The delivery is always on time, and they even accommodate special delivery time requests. The customer support is responsive and helpful. The variety of cuts and weight options make meal planning easy. Highly satisfied customer!', true, true, 5)
       `);
     }
 

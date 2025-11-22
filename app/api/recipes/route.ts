@@ -3,6 +3,8 @@ import pool from '@/lib/db'
 
 // Cache for 60 seconds
 export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET() {
   try {

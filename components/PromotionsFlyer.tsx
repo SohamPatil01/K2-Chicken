@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Tag, Calendar, Percent, Sparkles, ArrowRight, ChevronLeft, ChevronRight, Zap, Gift } from 'lucide-react'
 
 interface Promotion {
@@ -22,6 +23,7 @@ interface PromotionsFlyerProps {
 }
 
 export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerProps = {}) {
+  const router = useRouter()
   const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions || [])
   const [loading, setLoading] = useState(!initialPromotions)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -29,10 +31,11 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
-    if (!initialPromotions) {
-      fetchPromotions()
-    } else {
+    if (initialPromotions && initialPromotions.length > 0) {
+      setPromotions(initialPromotions)
       setLoading(false)
+    } else if (!initialPromotions) {
+      fetchPromotions()
     }
   }, [initialPromotions])
 
@@ -52,7 +55,9 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
 
   const fetchPromotions = async () => {
     try {
-      const response = await fetch('/api/promotions?active=true')
+      const response = await fetch('/api/promotions?active=true', {
+        next: { revalidate: 60 } // Cache for 60 seconds
+      })
       const data = await response.json()
       const activePromotions = Array.isArray(data)
         ? data.filter((p: Promotion) => {
@@ -73,6 +78,7 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
       setPromotions(activePromotions)
     } catch (error) {
       console.error('Error fetching promotions:', error)
+      setPromotions([])
     } finally {
       setLoading(false)
     }
@@ -245,13 +251,23 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
               )}
               
               {currentPromo.promo_code && (
-                <div className="mt-3 inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-orange-200 shadow-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer">
+                <button
+                  onClick={() => {
+                    // Redirect to checkout page with promo code in URL
+                    if (currentPromo.promo_code) {
+                      router.push(`/checkout?promo=${encodeURIComponent(currentPromo.promo_code)}`)
+                    } else {
+                      router.push('/checkout')
+                    }
+                  }}
+                  className="mt-3 inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-orange-200 shadow-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:bg-white hover:shadow-md"
+                >
                   <span className="text-xs sm:text-sm font-semibold text-gray-700">Use Code:</span>
                   <span className="text-base sm:text-lg md:text-xl font-bold tracking-wide text-orange-600">
                     {currentPromo.promo_code}
                   </span>
                   <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600 group-hover:translate-x-1 transition-transform duration-300" />
-                </div>
+                </button>
               )}
               
               {(currentPromo.start_date || currentPromo.end_date) && (

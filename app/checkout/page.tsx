@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { MessageCircle, MapPin, Tag, Check, X, Clock, Plus, Home, ArrowRight, User, Phone, Truck, Store, Sparkles, ShoppingBag, LogIn, CreditCard, Wallet, QrCode, Info, CheckCircle } from 'lucide-react'
 import AddressMapPicker from '@/components/AddressMapPicker'
 import { QRCodeSVG } from 'qrcode.react'
@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const { state, dispatch } = useCart()
   const { user, isAuthenticated, loading: authLoading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [orderCount, setOrderCount] = useState(0)
   const [loyaltyDiscount, setLoyaltyDiscount] = useState(0)
@@ -62,6 +63,9 @@ export default function CheckoutPage() {
   const [orderTotalAmount, setOrderTotalAmount] = useState<number | null>(null)
   const WHATSAPP_NUMBER = '8484978622'
 
+  // Calculate subtotal (needed for promo code validation and calculations)
+  const subtotal = state.total
+
   // Load saved addresses and order history if user is authenticated
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -75,7 +79,7 @@ export default function CheckoutPage() {
     }
   }, [isAuthenticated, user])
 
-  // Fetch order history to calculate loyalty discount
+  // Fetch order history to calculate loyalty discount and inaugural discount
   const fetchOrderHistory = async () => {
     try {
       const response = await fetch('/api/orders/my', {
@@ -84,11 +88,14 @@ export default function CheckoutPage() {
       if (response.ok) {
         const orders = await response.json()
         setOrderCount(orders.length)
-        // Apply loyalty discount: 5% for 3+ orders, 10% for 10+ orders
-        if (orders.length >= 10) {
-          setLoyaltyDiscount(10) // 10% discount
+        
+        // Apply inaugural discount: 10% for first order (0 orders)
+        if (orders.length === 0) {
+          setLoyaltyDiscount(10) // 10% inaugural discount for first-time customers
+        } else if (orders.length >= 10) {
+          setLoyaltyDiscount(10) // 10% discount for 10+ orders
         } else if (orders.length >= 3) {
-          setLoyaltyDiscount(5) // 5% discount
+          setLoyaltyDiscount(5) // 5% discount for 3+ orders
         }
       }
     } catch (error) {
@@ -208,6 +215,8 @@ export default function CheckoutPage() {
             })
           })
           const data = await response.json()
+          console.log('Delivery calculation response:', data)
+          
           if (data.success) {
             // Round the delivery charge to ensure consistency
             const roundedCharge = Math.round(data.deliveryCharge || 0)
@@ -221,6 +230,8 @@ export default function CheckoutPage() {
               setFormData(prev => ({ ...prev, deliveryAddress: data.formattedAddress }))
             }
           } else {
+            console.warn('Delivery calculation failed:', data.error || 'Unknown error')
+            // Still set delivery charge to 0, but log the error
             setDeliveryCharge(0)
             setDistance(null)
           }
@@ -282,7 +293,6 @@ export default function CheckoutPage() {
     window.open(whatsappUrl, '_blank')
   }
 
-  const subtotal = state.total
   // Calculate loyalty discount amount
   const loyaltyDiscountAmount = loyaltyDiscount > 0 ? (subtotal * loyaltyDiscount / 100) : 0
   // Total discount = promo discount + loyalty discount
@@ -295,8 +305,9 @@ export default function CheckoutPage() {
     : 0
   const totalWithDelivery = Math.max(0, Math.round(totalWithDiscount + finalDeliveryCharge))
 
-  const handleApplyPromoCode = async () => {
-    if (!promoCode.trim()) {
+  const handleApplyPromoCode = async (codeToApply?: string) => {
+    const code = codeToApply || promoCode.trim()
+    if (!code) {
       setPromoError('Please enter a promo code')
       return
     }
@@ -309,7 +320,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          promoCode: promoCode.trim(),
+          promoCode: code.toUpperCase(),
           subtotal: subtotal,
           deliveryCharge: finalDeliveryCharge
         })
@@ -320,7 +331,14 @@ export default function CheckoutPage() {
       if (data.valid) {
         setAppliedPromo(data.promotion)
         setDiscountAmount(data.discountAmount)
+        setPromoCode(code.toUpperCase())
         setPromoError('')
+        // Remove promo from URL after successful application
+        if (codeToApply) {
+          const url = new URL(window.location.href)
+          url.searchParams.delete('promo')
+          router.replace(url.pathname + url.search, { scroll: false })
+        }
       } else {
         setAppliedPromo(null)
         setDiscountAmount(0)
@@ -342,6 +360,21 @@ export default function CheckoutPage() {
     setDiscountAmount(0)
     setPromoError('')
   }
+
+  // Check for promo code in URL and auto-apply it (moved after handleApplyPromoCode is defined)
+  useEffect(() => {
+    const promoFromUrl = searchParams.get('promo')
+    if (promoFromUrl && !appliedPromo && !promoCode && subtotal > 0) {
+      // Set the promo code and apply it
+      setPromoCode(promoFromUrl.toUpperCase())
+      // Auto-apply after a short delay to ensure state is updated
+      const timer = setTimeout(() => {
+        handleApplyPromoCode(promoFromUrl)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, subtotal, appliedPromo, promoCode])
 
   // Generate UPI payment URL with customer details
   const generateUPIUrl = (orderId: number, customerName: string, total: number) => {
@@ -389,9 +422,32 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Validate cart is not empty
+    if (state.items.length === 0) {
+      alert('Your cart is empty. Please add items before placing an order.')
+      router.push('/')
+      return
+    }
+    
     // Require login before placing order
     if (!isAuthenticated) {
       router.push('/login?redirect=/checkout')
+      return
+    }
+    
+    // Validate required fields
+    if (!formData.customerName || !formData.customerName.trim()) {
+      alert('Please enter your name')
+      return
+    }
+    
+    if (!formData.customerPhone || !formData.customerPhone.trim()) {
+      alert('Please enter your phone number')
+      return
+    }
+    
+    if (deliveryType === 'delivery' && (!formData.deliveryAddress || !formData.deliveryAddress.trim())) {
+      alert('Please enter your delivery address')
       return
     }
     
@@ -847,7 +903,7 @@ export default function CheckoutPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={handleApplyPromoCode}
+                        onClick={() => handleApplyPromoCode()}
                         disabled={validatingPromo || !promoCode.trim()}
                         className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
                       >
@@ -1041,7 +1097,11 @@ export default function CheckoutPage() {
                   </div>
                   {loyaltyDiscountAmount > 0 && (
                     <div className="flex justify-between text-sm text-green-600">
-                      <span>Loyalty Discount ({orderCount} orders - {loyaltyDiscount}%)</span>
+                      <span>
+                        {orderCount === 0 
+                          ? `🎉 Inaugural Discount (${loyaltyDiscount}%)` 
+                          : `Loyalty Discount (${orderCount} orders - ${loyaltyDiscount}%)`}
+                      </span>
                       <span className="font-bold">-₹{loyaltyDiscountAmount.toFixed(0)}</span>
                     </div>
                   )}

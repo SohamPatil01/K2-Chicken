@@ -25,16 +25,19 @@ export default function RecipeSection({ initialRecipes }: RecipeSectionProps = {
   const [loading, setLoading] = useState(!initialRecipes)
 
   useEffect(() => {
-    if (!initialRecipes) {
-      fetchRecipes()
-    } else {
+    if (initialRecipes && initialRecipes.length > 0) {
+      setRecipes(initialRecipes)
       setLoading(false)
+    } else if (!initialRecipes) {
+      fetchRecipes()
     }
   }, [initialRecipes])
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch('/api/recipes')
+      const response = await fetch('/api/recipes', {
+        next: { revalidate: 60 } // Cache for 60 seconds
+      })
       const data = await response.json()
       setRecipes(Array.isArray(data) ? data : [])
     } catch (error) {

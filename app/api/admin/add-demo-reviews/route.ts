@@ -36,36 +36,17 @@ export async function GET(request: NextRequest) {
         )
       `);
 
-      // Clear existing reviews (optional - comment out if you want to keep existing ones)
-      // await client.query('DELETE FROM reviews');
+      // Clear existing reviews to replace with new insightful ones
+      await client.query('DELETE FROM reviews');
 
-      // Check current review count
-      const countResult = await client.query('SELECT COUNT(*) FROM reviews');
-      const currentCount = parseInt(countResult.rows[0].count);
-
-      if (currentCount > 0) {
-        return NextResponse.json({
-          success: true,
-          message: `Reviews already exist (${currentCount} reviews). To add more, delete existing reviews first.`,
-          count: currentCount
-        });
-      }
-
-      // Insert demo reviews
+      // Insert demo reviews - fewer but more insightful reviews about products and service
       await client.query(`
         INSERT INTO reviews (user_name, rating, comment, is_approved, is_featured, display_order) VALUES
-        ('Rajesh Kumar', 5, 'Best quality chicken in town! Fresh, tender, and always delivered on time. Highly recommend K2 Chicken to everyone!', true, true, 1),
-        ('Priya Sharma', 5, 'Amazing service and premium quality products. The chicken curry cut was perfect for my recipe. Will definitely order again!', true, true, 2),
-        ('Amit Patel', 5, 'Excellent quality and great customer service. The whole chicken was fresh and well-packaged. Very satisfied!', true, true, 3),
-        ('Sneha Desai', 4, 'Good quality chicken, delivery was quick. The prices are reasonable too. Happy with my purchase!', true, true, 4),
-        ('Vikram Singh', 5, 'Top-notch quality! The chicken breast boneless was so tender. Best place to buy fresh chicken online.', true, true, 5),
-        ('Anjali Mehta', 5, 'Love the variety of cuts available. The chicken wings were perfect for our party. Great service!', true, true, 6),
-        ('Rahul Verma', 5, 'Outstanding freshness! The chicken drumsticks were perfect for grilling. Fast delivery and excellent packaging.', true, true, 7),
-        ('Kavita Nair', 5, 'Premium quality at affordable prices. The chicken kheema made the best kebabs. Highly recommended!', true, true, 8),
-        ('Mohit Agarwal', 4, 'Good quality products and timely delivery. The whole chicken was perfect for our family dinner. Will order again!', true, false, 9),
-        ('Divya Reddy', 5, 'Best chicken shop in the area! Fresh, hygienic, and always on time. The chicken liver was excellent too!', true, false, 10),
-        ('Arjun Menon', 5, 'Superb quality! Every cut is fresh and well-packaged. The customer service is also very responsive. 5 stars!', true, false, 11),
-        ('Meera Joshi', 4, 'Great experience! The chicken was fresh and the delivery was prompt. Prices are competitive. Satisfied customer!', true, false, 12)
+        ('Rajesh Kumar', 5, 'Ordered the Whole Chicken for a family dinner and it was absolutely fresh! The packaging was excellent - sealed properly and arrived cold. The chicken was clean, well-cut, and had no unpleasant odor. Delivery was exactly on time as promised. The quality is restaurant-grade and the price is very reasonable. Will definitely order again!', true, true, 1),
+        ('Priya Sharma', 5, 'I''ve been ordering Chicken Curry Cut regularly for my weekly meal prep. What I love most is the consistency - every order is fresh, properly portioned, and the cuts are uniform. The delivery team is always polite and calls before arriving. The weight options (250g, 500g, 1kg) make it easy to order exactly what I need. Highly recommend for regular customers!', true, true, 2),
+        ('Amit Patel', 5, 'Tried the Chicken Breast Boneless for the first time and was impressed! The meat was tender, no excess fat, and perfect for grilling. The customer service team helped me choose the right weight option. Delivery was within 30 minutes and the packaging kept everything fresh. The quality is definitely better than local meat shops. Worth every rupee!', true, true, 3),
+        ('Sneha Desai', 4, 'Ordered Chicken Wings for a party and they were a hit! The wings were fresh, well-cleaned, and the perfect size. Delivery was prompt and the packaging was neat. Only minor issue was I wish there were more weight options, but overall great service. The prices are competitive and the quality is good. Will order again for special occasions.', true, true, 4),
+        ('Vikram Singh', 5, 'Best online chicken service in Pune! I''ve tried multiple products - Chicken Kheema, Drumsticks, and Liver. Each one is consistently fresh and well-packaged. The delivery is always on time, and they even accommodate special delivery time requests. The customer support is responsive and helpful. The variety of cuts and weight options make meal planning easy. Highly satisfied customer!', true, true, 5)
       `);
 
       const finalCount = await client.query('SELECT COUNT(*) FROM reviews');
@@ -90,4 +71,6 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+
 

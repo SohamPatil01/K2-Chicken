@@ -70,14 +70,18 @@ export default function OrderManagement() {
       })
       
       if (response.ok) {
-        await fetchOrders()
+        const updatedOrder = await response.json()
         if (selectedOrder && selectedOrder.id === orderId) {
-          const updatedOrder = await response.json()
           setSelectedOrder({ ...selectedOrder, status, ...updatedOrder })
         }
+        await fetchOrders()
+      } else {
+        const error = await response.json().catch(() => ({ error: 'Failed to update order status' }))
+        alert(error.error || 'Failed to update order status')
       }
     } catch (error) {
       console.error('Error updating order status:', error)
+      alert('Failed to update order status. Please try again.')
     }
   }
 
@@ -110,14 +114,15 @@ export default function OrderManagement() {
       })
 
       if (response.ok) {
-        await fetchOrders()
         const updatedOrder = await response.json()
         setSelectedOrder(updatedOrder)
+        await fetchOrders()
         setShowDiscountModal(false)
         setDiscountInput('')
         alert('Discount applied successfully!')
       } else {
-        alert('Failed to apply discount')
+        const error = await response.json().catch(() => ({ error: 'Failed to apply discount' }))
+        alert(error.error || 'Failed to apply discount')
       }
     } catch (error) {
       console.error('Error applying discount:', error)

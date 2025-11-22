@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from 'lucide-react'
 import pool from '@/lib/db'
 import { notFound } from 'next/navigation'
@@ -58,10 +59,14 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
           {/* Recipe Image */}
           <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500">
             {recipe.image_url ? (
-              <img 
-                src={recipe.image_url} 
+              <Image
+                src={recipe.image_url}
                 alt={recipe.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority
+                quality={85}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}
