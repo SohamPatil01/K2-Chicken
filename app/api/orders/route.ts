@@ -17,6 +17,16 @@ function getUserIdFromToken(request: NextRequest): number | null {
 
 export async function POST(request: NextRequest) {
   try {
+    const requestBody = await request.json()
+    console.log('Order API received request:', {
+      customerName: requestBody.customerName,
+      customerPhone: requestBody.customerPhone,
+      deliveryType: requestBody.deliveryType,
+      itemsCount: requestBody.items?.length || 0,
+      total: requestBody.total,
+      paymentMethod: requestBody.paymentMethod
+    })
+    
     const { 
       customerName, 
       customerPhone, 
@@ -32,7 +42,7 @@ export async function POST(request: NextRequest) {
       deliveryTimeSlotId,
       preferredDeliveryDate,
       preferredDeliveryTime
-    } = await request.json()
+    } = requestBody
     
     // Validate required fields
     if (!customerName || !customerName.trim()) {
@@ -106,13 +116,50 @@ export async function POST(request: NextRequest) {
         ADD COLUMN IF NOT EXISTS payment_method VARCHAR(20) DEFAULT 'cash'
       `).catch(() => {}) // Ignore error if column already exists
 
+      // Ensure delivery_time_slot_id foreign key allows NULL (fix constraint if needed)
+      // Note: Foreign keys in PostgreSQL allow NULL by default, so this should work
+      // But we'll ensure the constraint exists properly
+      await client.query(`
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint 
+            WHERE conname = 'orders_delivery_time_slot_id_fkey'
+          ) THEN
+            ALTER TABLE orders 
+            ADD CONSTRAINT orders_delivery_time_slot_id_fkey 
+            FOREIGN KEY (delivery_time_slot_id) REFERENCES delivery_time_slots(id);
+          END IF;
+        EXCEPTION
+          WHEN OTHERS THEN NULL;
+        END $$;
+      `).catch(() => {})
+
       // Ensure we use the exact total sent from client to avoid any calculation discrepancies
       const finalTotal = parseFloat(total) || 0
       const finalSubtotal = parseFloat(subtotal) || finalTotal
       const finalDeliveryCharge = parseFloat(deliveryCharge) || 0
       const finalDiscountAmount = parseFloat(discountAmount) || 0
       
-      // Insert order
+      console.log('Inserting order with values:', {
+        customerName,
+        customerPhone,
+        deliveryType,
+        finalTotal,
+        finalSubtotal,
+        finalDeliveryCharge,
+        finalDiscountAmount,
+        paymentMethod,
+        finalUserId,
+        deliveryTimeSlotId: deliveryTimeSlotId || null,
+        preferredDeliveryDate: preferredDeliveryDate || null,
+        preferredDeliveryTime: preferredDeliveryTime || null
+      })
+      
+      // Calculate estimated delivery time using PostgreSQL's NOW() for timezone-aware calculation
+      const estimatedMinutes = deliveryType === 'delivery' ? 45 : 20
+      
+      // Insert order - use PostgreSQL's NOW() + INTERVAL for timezone-aware time calculation
       const orderResult = await client.query(`
         INSERT INTO orders (
           customer_name, 
@@ -131,7 +178,7 @@ export async function POST(request: NextRequest) {
           preferred_delivery_date,
           preferred_delivery_time
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW() + INTERVAL '${estimatedMinutes} minutes', $11, $12, $13, $14)
         RETURNING *
       `, [
         customerName,
@@ -144,12 +191,13 @@ export async function POST(request: NextRequest) {
         finalDiscountAmount,
         paymentMethod || 'cash',
         'pending',
-        new Date(Date.now() + (deliveryType === 'delivery' ? 45 : 20) * 60000),
         finalUserId, // Use validated userId (can be NULL for guest orders)
         deliveryTimeSlotId || null,
         preferredDeliveryDate || null,
         preferredDeliveryTime || null
       ])
+      
+      console.log('Order created successfully:', orderResult.rows[0].id)
       
       // Store promo code info if available (we'll add a promo_code column to orders table if needed)
       // For now, we can add it as a note or extend the schema

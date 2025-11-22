@@ -8,23 +8,13 @@ import {
   Plus,
   Minus,
   Search,
-  Filter,
   Star,
-  ArrowUpDown,
   CheckCircle,
   AlertCircle,
   XCircle,
   Sparkles,
   ShoppingBag,
 } from "lucide-react";
-
-type SortOption =
-  | "default"
-  | "price-low"
-  | "price-high"
-  | "name-asc"
-  | "name-desc"
-  | "newest";
 
 interface ProductCardProps {
   product: Product;
@@ -329,8 +319,6 @@ export default function ProductCatalog({
   );
   const [loading, setLoading] = useState(!initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortOption, setSortOption] = useState<SortOption>("default");
   const { state, dispatch } = useCart();
 
   // Bestseller products (you can make this dynamic based on order data)
@@ -348,7 +336,7 @@ export default function ProductCatalog({
 
   useEffect(() => {
     filterAndSortProducts();
-  }, [products, searchTerm, selectedCategory, sortOption]);
+  }, [products, searchTerm]);
 
   const getStockStatus = (product: Product) => {
     if (!product.in_stock || (product.stock_quantity ?? 0) === 0) {
@@ -380,7 +368,7 @@ export default function ProductCatalog({
   const filterAndSortProducts = () => {
     let filtered = products;
 
-    // Filter by search term
+    // Filter by search term only
     if (searchTerm) {
       filtered = filtered.filter(
         (product) =>
@@ -389,40 +377,7 @@ export default function ProductCatalog({
       );
     }
 
-    // Filter by category
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    // Sort products
-    filtered = [...filtered].sort((a, b) => {
-      switch (sortOption) {
-        case "price-low":
-          return Number(a.price) - Number(b.price);
-        case "price-high":
-          return Number(b.price) - Number(a.price);
-        case "name-asc":
-          return a.name.localeCompare(b.name);
-        case "name-desc":
-          return b.name.localeCompare(a.name);
-        case "newest":
-          return (b.id || 0) - (a.id || 0);
-        default:
-          return 0;
-      }
-    });
-
     setFilteredProducts(filtered);
-  };
-
-  const getCategories = () => {
-    const categories = [
-      "all",
-      ...Array.from(new Set(products.map((p) => p.category))),
-    ];
-    return categories;
   };
 
   const fetchProducts = async () => {
@@ -528,7 +483,7 @@ export default function ProductCatalog({
           </p>
         </div>
 
-        {/* Search, Filter and Sort Bar */}
+        {/* Search Bar */}
         <div className="mb-8 sm:mb-12 bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mx-4 sm:mx-0 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up stagger-3">
           <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
             {/* Search Bar */}
@@ -541,41 +496,6 @@ export default function ProductCatalog({
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white text-sm sm:text-base"
               />
-            </div>
-
-            {/* Category Filter */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Filter className="text-gray-400 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium sm:min-w-[180px] text-sm sm:text-base"
-              >
-                {getCategories().map((category) => (
-                  <option key={category} value={category}>
-                    {category === "all"
-                      ? "All Categories"
-                      : category.charAt(0).toUpperCase() + category.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sort Option */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <ArrowUpDown className="text-gray-400 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value as SortOption)}
-                className="flex-1 sm:flex-none px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white font-medium sm:min-w-[180px] text-sm sm:text-base"
-              >
-                <option value="default">Default</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name-asc">Name: A to Z</option>
-                <option value="name-desc">Name: Z to A</option>
-                <option value="newest">Newest First</option>
-              </select>
             </div>
           </div>
         </div>
@@ -616,12 +536,10 @@ export default function ProductCatalog({
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  setSelectedCategory("all");
-                  setSortOption("default");
                 }}
                 className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
               >
-                Clear Filters
+                Clear Search
               </button>
             </div>
           </div>

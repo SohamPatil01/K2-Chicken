@@ -31,6 +31,7 @@ export default function OrderConfirmationPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentStatus, setCurrentStatus] = useState<string>('')
+  const [showAnimation, setShowAnimation] = useState(false)
 
   useEffect(() => {
     console.log('useEffect triggered, params:', params)
@@ -82,6 +83,10 @@ export default function OrderConfirmationPage() {
         const data = await response.json()
         console.log('Order data:', data)
         setOrder(data)
+        // Trigger animation after order is loaded
+        setTimeout(() => {
+          setShowAnimation(true)
+        }, 100)
       } else {
         console.error('Failed to fetch order:', response.status, response.statusText)
         setOrder(null)
@@ -133,7 +138,18 @@ export default function OrderConfirmationPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString()
+    // Parse the date string and format it in local timezone
+    const date = new Date(dateString)
+    // Use Indian timezone (IST) or local timezone
+    return date.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    })
   }
 
   const handlePrint = () => {
@@ -182,22 +198,51 @@ export default function OrderConfirmationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Success Header */}
-        <div className="text-center mb-8 sm:mb-10 no-print animate-slide-down">
-          <div className="relative inline-block mb-5">
-            <div className="absolute inset-0 bg-green-400 rounded-full blur-2xl opacity-30"></div>
-            <div className="relative inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full border-2 border-green-100 animate-bounce-in">
-              <CheckCircle size={40} className="text-green-500" />
+        {/* Success Header with Subtle Animation */}
+        <div className="text-center mb-8 sm:mb-10 no-print relative">
+          {/* Subtle confetti particles */}
+          {showAnimation && (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ height: '200px' }}>
+              {[...Array(15)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 rounded-full opacity-70"
+                  style={{
+                    left: `${10 + Math.random() * 80}%`,
+                    top: '0%',
+                    backgroundColor: ['#f97316', '#ef4444', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random() * 5)],
+                    animation: `confetti-fall ${1.5 + Math.random() * 1.5}s ease-out forwards`,
+                    animationDelay: `${Math.random() * 0.8}s`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+          
+          <div className={`relative inline-block mb-5 transition-all duration-1000 ${showAnimation ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+            {/* Animated background glow */}
+            <div className={`absolute inset-0 bg-green-400 rounded-full blur-2xl transition-all duration-1000 ${showAnimation ? 'opacity-30 scale-150' : 'opacity-0 scale-100'}`}></div>
+            {/* Pulsing ring effects */}
+            {showAnimation && (
+              <>
+                <div className="absolute inset-0 border-2 border-green-300 rounded-full opacity-0 animate-ping" style={{ animationDelay: '0.3s', animationDuration: '2s' }}></div>
+                <div className="absolute inset-0 border-2 border-green-200 rounded-full opacity-0 animate-ping" style={{ animationDelay: '0.6s', animationDuration: '2s' }}></div>
+              </>
+            )}
+            {/* Success icon with scale animation */}
+            <div className={`relative inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full border-2 border-green-100 transition-all duration-700 ${showAnimation ? 'scale-100 rotate-0 animate-success-glow' : 'scale-0 rotate-180'}`}>
+              <CheckCircle size={40} className={`text-green-500 transition-all duration-500 ${showAnimation ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`} style={{ transitionDelay: '0.2s' }} />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 animate-slide-up stagger-1">
+          
+          <h1 className={`text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.4s' }}>
             Order Confirmed
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 animate-slide-up stagger-2">
+          <p className={`text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.6s' }}>
             Thank you for choosing K2 Chicken! Your order is being prepared with care.
           </p>
           {order.discount_amount && order.discount_amount > 0 && (
-            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-lg border border-green-200 animate-scale-in stagger-3 shadow-md">
+            <div className={`inline-flex items-center gap-2 bg-green-50 text-green-700 px-5 py-2.5 rounded-lg border border-green-200 shadow-md transition-all duration-700 ${showAnimation ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4'}`} style={{ transitionDelay: '0.8s' }}>
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-medium">You saved ₹{Number(order.discount_amount).toFixed(0)}!</span>
             </div>
@@ -206,7 +251,7 @@ export default function OrderConfirmationPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
           {/* Order Info Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print animate-slide-up stagger-1">
+          <div className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '1s' }}>
             <div className="flex items-center gap-2 mb-5">
               <div className="p-2 bg-orange-50 rounded-lg">
                 <Receipt className="h-5 w-5 text-orange-600" />
@@ -254,7 +299,7 @@ export default function OrderConfirmationPage() {
           </div>
 
           {/* Delivery Info Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print animate-slide-up stagger-2">
+          <div className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '1.2s' }}>
             <div className="flex items-center gap-2 mb-5">
               <div className={`p-2 rounded-lg ${
                 order.delivery_type === 'pickup' ? 'bg-blue-50' : 'bg-purple-50'
@@ -319,7 +364,7 @@ export default function OrderConfirmationPage() {
           </div>
 
           {/* Order Summary Card */}
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] animate-slide-up stagger-3">
+          <div className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '1.4s' }}>
             <div className="flex items-center justify-between mb-5 no-print">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-green-50 rounded-lg">
@@ -392,7 +437,7 @@ export default function OrderConfirmationPage() {
 
 
         {/* Order Progress Timeline */}
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6 no-print hover:shadow-md transition-all duration-300 animate-slide-up stagger-4">
+        <div className={`bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6 no-print hover:shadow-md transition-all duration-300 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '1.6s' }}>
           <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
             <ChefHat className="h-5 w-5 text-orange-500" />
             Order Progress
@@ -533,7 +578,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center no-print animate-slide-up stagger-5">
+        <div className={`flex flex-col sm:flex-row gap-3 justify-center no-print ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '1.8s' }}>
           <Link 
             href="/" 
             className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
