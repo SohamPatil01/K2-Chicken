@@ -75,24 +75,31 @@ export default function OrderConfirmationPage() {
   }
 
   const fetchOrder = async (orderId: string) => {
-    console.log('Fetching order with ID:', orderId)
+    console.log('📋 Fetching order with ID:', orderId)
     try {
       const response = await fetch(`/api/orders/${orderId}`)
-      console.log('Response status:', response.status)
+      console.log('📡 Response status:', response.status)
       if (response.ok) {
         const data = await response.json()
-        console.log('Order data:', data)
+        console.log('✅ Order data received:', {
+          id: data.id,
+          status: data.status,
+          total: data.total_amount,
+          items: data.items?.length || 0
+        })
         setOrder(data)
         // Trigger animation after order is loaded
         setTimeout(() => {
           setShowAnimation(true)
-        }, 100)
+          console.log('🎬 Animation triggered')
+        }, 150)
       } else {
-        console.error('Failed to fetch order:', response.status, response.statusText)
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ Failed to fetch order:', response.status, response.statusText, errorData)
         setOrder(null)
       }
     } catch (error) {
-      console.error('Error fetching order:', error)
+      console.error('❌ Error fetching order:', error)
       setOrder(null)
     } finally {
       setLoading(false)
@@ -235,10 +242,13 @@ export default function OrderConfirmationPage() {
             </div>
           </div>
           
-          <h1 className={`text-3xl sm:text-4xl font-semibold text-gray-900 mb-3 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.4s' }}>
-            Order Confirmed
+          <h1 className={`text-3xl sm:text-4xl font-bold text-gray-900 mb-3 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.4s' }}>
+            🎉 Order Placed Successfully!
           </h1>
-          <p className={`text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.6s' }}>
+          <p className={`text-lg sm:text-xl text-gray-700 max-w-xl mx-auto mb-3 font-semibold transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.6s' }}>
+            {order ? `Your order #${order.id.toString().padStart(6, '0')} has been confirmed` : 'Your order has been confirmed'}
+          </p>
+          <p className={`text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 transition-all duration-700 ${showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0.7s' }}>
             Thank you for choosing K2 Chicken! Your order is being prepared with care.
           </p>
           {order.discount_amount && order.discount_amount > 0 && (

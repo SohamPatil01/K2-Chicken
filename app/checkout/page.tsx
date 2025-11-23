@@ -85,9 +85,9 @@ export default function CheckoutPage() {
   const [upiPaymentUrl, setUpiPaymentUrl] = useState("");
   const [currentOrderId, setCurrentOrderId] = useState<number | null>(null);
   const [orderTotalAmount, setOrderTotalAmount] = useState<number | null>(null);
-  const [showOrderSuccess, setShowOrderSuccess] = useState(false);
-  const [placedOrderId, setPlacedOrderId] = useState<number | null>(null);
-  const [placedOrderDetails, setPlacedOrderDetails] = useState<any>(null);
+  const [redirectingToOrder, setRedirectingToOrder] = useState<number | null>(
+    null
+  );
   const WHATSAPP_NUMBER = "8484978622";
 
   // Calculate subtotal (needed for promo code validation and calculations)
@@ -106,12 +106,12 @@ export default function CheckoutPage() {
     }
   }, [isAuthenticated, user]);
 
-  // Redirect to cart if empty
+  // Redirect to cart if empty (but not if we're redirecting to order confirmation)
   useEffect(() => {
-    if (!authLoading && state.items.length === 0) {
+    if (!authLoading && state.items.length === 0 && !redirectingToOrder) {
       router.push("/cart");
     }
-  }, [state.items.length, authLoading, router]);
+  }, [state.items.length, authLoading, router, redirectingToOrder]);
 
   // Fetch order history to calculate loyalty discount and inaugural discount
   const fetchOrderHistory = async () => {
@@ -583,47 +583,27 @@ export default function CheckoutPage() {
           return;
         }
 
-        // For other payment methods, show success popup
-        console.log(
-          "Order placed successfully, showing popup. Order ID:",
-          order.id
-        );
-        // Store items before clearing cart
-        const orderItems = [...state.items];
-
-        // Store order details for display
-        const orderDetails = {
+        // For other payment methods, redirect to order confirmation page
+        console.log("✅ Order placed successfully! Order ID:", order.id);
+        console.log("📦 Order details:", {
           id: order.id,
-          order_number: order.id.toString().padStart(6, "0"),
-          total_amount: order.total_amount || totalWithDelivery,
-          subtotal: order.subtotal || subtotal,
-          delivery_charge: order.delivery_charge || finalDeliveryCharge,
-          discount_amount: order.discount_amount || totalDiscountAmount,
-          delivery_type: order.delivery_type || deliveryType,
-          delivery_address: order.delivery_address || formData.deliveryAddress,
-          payment_method: order.payment_method || paymentMethod,
-          estimated_delivery: order.estimated_delivery,
-          items: orderItems, // Store items before clearing cart
-        };
+          total: order.total_amount,
+          status: order.status,
+          items: order.items?.length || 0,
+        });
 
-        console.log("Setting order details:", orderDetails);
-        console.log("Order items count:", orderItems.length);
-
-        // Set all states together
-        setPlacedOrderId(order.id);
-        setPlacedOrderDetails(orderDetails);
+        // Set redirecting flag BEFORE clearing cart to prevent empty cart UI and useEffect redirect
+        setRedirectingToOrder(order.id);
         setIsSubmitting(false);
 
-        // Clear cart after storing details
-        dispatch({ type: "CLEAR_CART" });
+        // Redirect immediately to order confirmation page BEFORE clearing cart
+        console.log("🔄 Redirecting to order confirmation page...");
+        router.replace(`/order-confirmation/${order.id}`);
 
-        // Show popup immediately
-        setShowOrderSuccess(true);
-        console.log("Success popup should now be visible. States:", {
-          showOrderSuccess: true,
-          placedOrderId: order.id,
-          placedOrderDetails: orderDetails,
-        });
+        // Clear cart AFTER redirect (with small delay to ensure redirect happens first)
+        setTimeout(() => {
+          dispatch({ type: "CLEAR_CART" });
+        }, 100);
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("Order API error response:", errorData);
@@ -642,26 +622,30 @@ export default function CheckoutPage() {
 
   // Handle UPI payment confirmation (after user has paid)
   const handleUPIPaymentConfirm = async () => {
+    console.log("✅ UPI payment confirmed. Order ID:", currentOrderId);
     setShowUPIQR(false);
     setUpiPaymentUrl("");
-    dispatch({ type: "CLEAR_CART" });
-    // Show success popup instead of redirecting
+    // Set redirecting flag BEFORE clearing cart
     if (currentOrderId) {
-      console.log(
-        "UPI payment confirmed, showing popup. Order ID:",
-        currentOrderId
-      );
-      setPlacedOrderId(currentOrderId);
+      setRedirectingToOrder(currentOrderId);
+      console.log("🔄 Redirecting to order confirmation page for UPI order...");
+      // Redirect BEFORE clearing cart
+      router.replace(`/order-confirmation/${currentOrderId}`);
+      // Clear cart AFTER redirect (with small delay to ensure redirect happens first)
       setTimeout(() => {
-        setShowOrderSuccess(true);
-        console.log("Success popup should now be visible");
+        dispatch({ type: "CLEAR_CART" });
       }, 100);
     } else {
-      router.push("/orders");
+      console.warn("⚠️ No order ID found, redirecting to orders page");
+      router.replace("/orders");
+      setTimeout(() => {
+        dispatch({ type: "CLEAR_CART" });
+      }, 100);
     }
   };
 
-  if (state.items.length === 0) {
+  // Don't show empty cart if we're redirecting to order confirmation
+  if (state.items.length === 0 && !redirectingToOrder) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -696,7 +680,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       {/* Loading Overlay */}
-      {isSubmitting && !showOrderSuccess && (
+      {isSubmitting && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
             <div className="relative inline-block mb-6">
@@ -723,182 +707,6 @@ export default function CheckoutPage() {
                 style={{ animationDelay: "0.4s" }}
               ></div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Order Success Popup */}
-      {showOrderSuccess && placedOrderId && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto"
-          onClick={(e) => {
-            // Close popup if clicking outside
-            if (e.target === e.currentTarget) {
-              setShowOrderSuccess(false);
-              router.push("/");
-            }
-          }}
-        >
-          <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-2xl w-full mx-4 my-4 animate-scale-in max-h-[90vh] overflow-y-auto">
-            {/* Success Header */}
-            <div className="text-center mb-6">
-              <div className="relative inline-block mb-4">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full blur-2xl opacity-30 animate-pulse"></div>
-                <div className="relative inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-full border-4 border-green-200 animate-success-scale">
-                  <CheckCircle size={40} className="text-green-500" />
-                </div>
-              </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                Order Placed Successfully!
-              </h3>
-              <p className="text-gray-600">
-                Your order #
-                {placedOrderDetails?.order_number ||
-                  placedOrderId?.toString().padStart(6, "0")}{" "}
-                has been placed and is being prepared.
-              </p>
-            </div>
-
-            {/* Order Details */}
-            <div className="border-t border-gray-200 pt-6 mb-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                Order Summary
-              </h4>
-
-              {/* Order Items */}
-              <div className="space-y-3 mb-4">
-                {placedOrderDetails?.items?.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">
-                        {item.product.name}
-                      </p>
-                      {item.selectedWeight && (
-                        <p className="text-sm text-gray-600">
-                          {item.selectedWeight.weight}
-                          {item.selectedWeight.weight_unit}
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-600">
-                        Qty: {item.quantity}
-                      </p>
-                    </div>
-                    <p className="font-semibold text-gray-900">
-                      ₹
-                      {(
-                        (item.selectedWeight?.price || item.product.price) *
-                        item.quantity
-                      ).toFixed(0)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Price Breakdown */}
-              <div className="space-y-2 pt-4 border-t border-gray-200">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium text-gray-900">
-                    ₹{parseFloat(placedOrderDetails?.subtotal || 0).toFixed(0)}
-                  </span>
-                </div>
-                {placedOrderDetails?.delivery_type === "delivery" &&
-                  (placedOrderDetails?.delivery_charge || 0) > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Delivery Charge</span>
-                      <span className="font-medium text-gray-900">
-                        ₹
-                        {parseFloat(
-                          placedOrderDetails?.delivery_charge || 0
-                        ).toFixed(0)}
-                      </span>
-                    </div>
-                  )}
-                {(placedOrderDetails?.discount_amount || 0) > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
-                    <span>Discount</span>
-                    <span className="font-medium">
-                      -₹
-                      {parseFloat(
-                        placedOrderDetails?.discount_amount || 0
-                      ).toFixed(0)}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-orange-600">
-                    ₹
-                    {parseFloat(placedOrderDetails?.total_amount || 0).toFixed(
-                      0
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              {/* Delivery Info */}
-              {placedOrderDetails && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold">Delivery Type:</span>{" "}
-                    {placedOrderDetails.delivery_type === "delivery"
-                      ? "Delivery"
-                      : "Pickup"}
-                  </p>
-                  {placedOrderDetails.delivery_type === "delivery" &&
-                    placedOrderDetails.delivery_address && (
-                      <p className="text-sm text-gray-700 mt-1">
-                        <span className="font-semibold">Address:</span>{" "}
-                        {placedOrderDetails.delivery_address}
-                      </p>
-                    )}
-                  <p className="text-sm text-gray-700 mt-1">
-                    <span className="font-semibold">Payment:</span>{" "}
-                    {placedOrderDetails.payment_method === "upi"
-                      ? "UPI"
-                      : placedOrderDetails.payment_method === "card"
-                      ? "Card"
-                      : "Cash on Delivery"}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => {
-                  setShowOrderSuccess(false);
-                  router.push(`/order-confirmation/${placedOrderId}`);
-                }}
-                className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Receipt className="h-5 w-5" />
-                View Full Details
-              </button>
-              <button
-                onClick={() => {
-                  setShowOrderSuccess(false);
-                  router.push("/orders");
-                }}
-                className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:scale-105"
-              >
-                <ShoppingBag className="h-5 w-5" />
-                My Orders
-              </button>
-            </div>
-            <button
-              onClick={() => {
-                setShowOrderSuccess(false);
-                router.push("/");
-              }}
-              className="mt-3 w-full text-gray-600 hover:text-gray-900 font-medium py-2 transition-colors"
-            >
-              Continue Shopping
-            </button>
           </div>
         </div>
       )}
