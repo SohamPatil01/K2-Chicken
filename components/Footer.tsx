@@ -130,7 +130,7 @@ export default function Footer() {
               &copy; 2024 K2 Chicken. All rights reserved. Made with <span className="text-red-400">❤️</span> and lots of <span className="text-orange-400">🐔</span>
             </p>
             <Link 
-              href="/admin/console" 
+              href="/admin" 
               className="group flex items-center gap-2 text-gray-500 hover:text-orange-400 transition-all duration-300 text-sm"
               title="Click to access Admin Console"
             >

@@ -17,6 +17,14 @@ const WhyChooseUs = dynamic(() => import('@/components/WhyChooseUs'), {
   ssr: true
 })
 
+const AboutSection = dynamic(() => import('@/components/AboutSection'), {
+  ssr: true
+})
+
+const ContactSection = dynamic(() => import('@/components/ContactSection'), {
+  ssr: false // Client-side only for map
+})
+
 const PromotionsFlyer = dynamic(() => import('@/components/PromotionsFlyer'), {
   loading: () => <div className="min-h-[200px]"></div>,
   ssr: true
@@ -139,9 +147,11 @@ export default async function Home() {
       <div id="products">
         <ProductCatalog initialProducts={products} />
       </div>
+      <AboutSection />
       <RecipeSection initialRecipes={recipes} />
       <ReviewsSection initialReviews={reviews} />
       <WhyChooseUs />
+      <ContactSection />
     </div>
   )
 }

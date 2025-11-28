@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Clock, Users, ChefHat, ArrowLeft } from 'lucide-react'
 import pool from '@/lib/db'
+import { unstable_cache } from 'next/cache'
 
 interface Recipe {
   id: number
@@ -14,7 +15,7 @@ interface Recipe {
   servings: number
 }
 
-async function getRecipes(): Promise<Recipe[]> {
+const getRecipes = unstable_cache(async (): Promise<Recipe[]> => {
   try {
     const client = await pool.connect()
     try {
@@ -31,7 +32,7 @@ async function getRecipes(): Promise<Recipe[]> {
     console.error('Error fetching recipes:', error)
     return []
   }
-}
+}, ['recipes-list'], { revalidate: 300 })
 
 export default async function RecipesPage() {
   const recipes = await getRecipes()

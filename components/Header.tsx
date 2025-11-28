@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ShoppingCart,
@@ -11,8 +12,9 @@ import {
   Home,
   Package,
   ChefHat,
+  Phone,
+  Star,
 } from "lucide-react";
-import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -68,6 +70,36 @@ export default function Header() {
     };
   }, [pathname]);
 
+  const scrollToSection = (sectionId: string) => {
+    if (typeof window === "undefined") return;
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleHomeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      event.preventDefault();
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.replaceState(null, "", "/");
+      }
+      setHash("");
+    }
+  };
+
+  const handleProductsClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      event.preventDefault();
+      scrollToSection("products");
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", "#products");
+      }
+      setHash("#products");
+    }
+  };
+
   const isActive = (path: string) => {
     if (path === "/") {
       // Home is active only if we're on home page and not on products section
@@ -114,14 +146,32 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1.5">
+            {/* Phone Number - Social Proof Badge */}
+            <a
+              href="tel:8484978622"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all duration-300 group"
+              title="Call us now"
+            >
+              <div className="flex items-center gap-1.5">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs font-bold text-green-700">4.8</span>
+              </div>
+              <div className="h-4 w-px bg-green-300"></div>
+              <Phone className="h-3.5 w-3.5 text-green-700 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-900">
+                8484978622
+              </span>
+            </a>
+
             <Link
               href="/"
               prefetch={true}
               className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
                 isActive("/")
                   ? "text-orange-600 bg-orange-50"
-                  : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
               }`}
+              onClick={handleHomeClick}
             >
               <div className="flex items-center gap-2">
                 <Home
@@ -144,8 +194,9 @@ export default function Header() {
               className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
                 isActive("/#products")
                   ? "text-orange-600 bg-orange-50"
-                  : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
               }`}
+              onClick={handleProductsClick}
             >
               <div className="flex items-center gap-2">
                 <Package
@@ -168,7 +219,7 @@ export default function Header() {
               className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
                 isActive("/recipes")
                   ? "text-orange-600 bg-orange-50"
-                  : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -198,7 +249,7 @@ export default function Header() {
                     <Link
                       href="/orders"
                       prefetch={true}
-                      className="px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-orange-600 rounded-xl hover:bg-orange-50/50 transition-all duration-300 flex items-center gap-2 group"
+                      className="px-4 py-2.5 text-sm font-semibold text-gray-800 hover:text-orange-600 rounded-xl hover:bg-orange-50/50 transition-all duration-300 flex items-center gap-2 group"
                       title="My Orders"
                     >
                       <div className="p-1.5 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg group-hover:from-orange-100 group-hover:to-red-100 transition-colors">
@@ -210,27 +261,38 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-red-600 rounded-xl hover:bg-red-50/50 transition-all duration-300 flex items-center gap-2 group"
+                      className="px-4 py-2.5 text-sm font-semibold text-gray-800 hover:text-red-600 rounded-xl hover:bg-red-50/50 transition-all duration-300 flex items-center gap-2 group"
                       title="Logout"
                     >
                       <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-red-50 transition-colors">
                         <LogOut
                           size={16}
-                          className="text-gray-600 group-hover:text-red-600"
+                          className="text-gray-700 group-hover:text-red-600"
                         />
                       </div>
                       <span className="hidden lg:inline">Logout</span>
                     </button>
                   </div>
                 ) : (
-                  <Link
-                    href="/login"
-                    prefetch={true}
-                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
-                  >
-                    <LogIn size={16} />
-                    <span>Login</span>
-                  </Link>
+                  <>
+                    {/* Phone Number for Non-authenticated Users */}
+                    <a
+                      href="tel:8484978622"
+                      className="hidden lg:flex items-center gap-2 px-3 py-2 text-sm font-semibold text-gray-800 hover:text-green-700 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-all duration-300 group"
+                      title="Call us now"
+                    >
+                      <Phone className="h-4 w-4 text-green-700 group-hover:scale-110 transition-transform" />
+                      <span>8484978622</span>
+                    </a>
+                    <Link
+                      href="/login"
+                      prefetch={true}
+                      className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                    >
+                      <LogIn size={16} />
+                      <span>Login</span>
+                    </Link>
+                  </>
                 )}
               </>
             )}
@@ -238,7 +300,7 @@ export default function Header() {
             <Link
               href="/cart"
               prefetch={true}
-              className="relative p-2.5 text-gray-700 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50 group"
+              className="relative p-2.5 text-gray-800 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50 group"
             >
               <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-orange-50 transition-colors">
                 <ShoppingCart
@@ -254,8 +316,18 @@ export default function Header() {
             </Link>
 
             {/* Mobile menu button */}
+            {/* Mobile Phone Number */}
+            <a
+              href="tel:8484978622"
+              className="md:hidden flex items-center gap-1.5 px-2.5 py-2 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all duration-300 group"
+              title="Call us now"
+            >
+              <Phone className="h-4 w-4 text-green-700 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-900">Call</span>
+            </a>
+
             <button
-              className="md:hidden p-2.5 text-gray-700 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50"
+              className="md:hidden p-2.5 text-gray-800 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <div className="p-1.5 bg-gray-50 rounded-lg">
@@ -279,9 +351,12 @@ export default function Header() {
                 className={`px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/")
                     ? "text-orange-600 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                    : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
                 }`}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(event) => {
+                  handleHomeClick(event);
+                  setIsMenuOpen(false);
+                }}
               >
                 <Home size={18} />
                 <span>Home</span>
@@ -292,9 +367,12 @@ export default function Header() {
                 className={`px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#products")
                     ? "text-orange-600 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                    : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
                 }`}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(event) => {
+                  handleProductsClick(event);
+                  setIsMenuOpen(false);
+                }}
               >
                 <Package size={18} />
                 <span>Products</span>
@@ -305,7 +383,7 @@ export default function Header() {
                 className={`px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/recipes")
                     ? "text-orange-600 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50"
+                    : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -319,7 +397,7 @@ export default function Header() {
                       <Link
                         href="/orders"
                         prefetch={true}
-                        className="px-4 py-3 text-sm font-semibold text-gray-700 hover:text-orange-600 rounded-xl hover:bg-orange-50/50 transition-all duration-300 flex items-center gap-3"
+                        className="px-4 py-3 text-sm font-semibold text-gray-800 hover:text-orange-600 rounded-xl hover:bg-orange-50/50 transition-all duration-300 flex items-center gap-3"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <User size={18} />
@@ -337,15 +415,26 @@ export default function Header() {
                       </button>
                     </>
                   ) : (
-                    <Link
-                      href="/login"
-                      prefetch={true}
-                      className="px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 flex items-center gap-3 shadow-md"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <LogIn size={18} />
-                      <span>Login</span>
-                    </Link>
+                    <>
+                      {/* Mobile Phone Number */}
+                      <a
+                        href="tel:8484978622"
+                        className="px-4 py-3 text-sm font-semibold text-gray-800 hover:text-green-700 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Phone size={18} className="text-green-700" />
+                        <span>Call: 8484978622</span>
+                      </a>
+                      <Link
+                        href="/login"
+                        prefetch={true}
+                        className="px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 flex items-center gap-3 shadow-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <LogIn size={18} />
+                        <span>Login</span>
+                      </Link>
+                    </>
                   )}
                 </>
               )}

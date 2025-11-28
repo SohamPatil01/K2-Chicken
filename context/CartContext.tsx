@@ -35,10 +35,20 @@ interface CartState {
   total: number
 }
 
+const isSameWeightOption = (a?: WeightOption, b?: WeightOption) => {
+  if (!a && !b) return true
+  if (!a || !b) return false
+  return (
+    a.weight === b.weight &&
+    a.weight_unit === b.weight_unit &&
+    a.id === b.id
+  )
+}
+
 type CartAction =
   | { type: 'ADD_ITEM'; payload: { product: Product; quantity: number; selectedWeight?: WeightOption } }
-  | { type: 'REMOVE_ITEM'; payload: { productId: number } }
-  | { type: 'UPDATE_QUANTITY'; payload: { productId: number; quantity: number } }
+  | { type: 'REMOVE_ITEM'; payload: { productId: number; selectedWeight?: WeightOption } }
+  | { type: 'UPDATE_QUANTITY'; payload: { productId: number; quantity: number; selectedWeight?: WeightOption } }
   | { type: 'CLEAR_CART' }
 
 const CartContext = createContext<{
@@ -56,13 +66,13 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       
       const existingItem = state.items.find(
         item => item.product.id === action.payload.product.id && 
-                item.selectedWeight?.weight === action.payload.selectedWeight?.weight
+                isSameWeightOption(item.selectedWeight, action.payload.selectedWeight)
       )
       
       if (existingItem) {
         const updatedItems = state.items.map(item =>
           item.product.id === action.payload.product.id && 
-          item.selectedWeight?.weight === action.payload.selectedWeight?.weight
+          isSameWeightOption(item.selectedWeight, action.payload.selectedWeight)
             ? { ...item, quantity: item.quantity + action.payload.quantity }
             : item
         )
@@ -90,9 +100,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     
     case 'REMOVE_ITEM': {
-      const updatedItems = state.items.filter(
-        item => item.product.id !== action.payload.productId
-      )
+      const updatedItems = state.items.filter(item => {
+        if (item.product.id !== action.payload.productId) return true
+        if (!action.payload.selectedWeight) return false
+        return !isSameWeightOption(item.selectedWeight, action.payload.selectedWeight)
+      })
       return {
         items: updatedItems,
         total: updatedItems.reduce((sum, item) => {
@@ -104,11 +116,12 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     
     case 'UPDATE_QUANTITY': {
       if (action.payload.quantity <= 0) {
-        return cartReducer(state, { type: 'REMOVE_ITEM', payload: { productId: action.payload.productId } })
+        return cartReducer(state, { type: 'REMOVE_ITEM', payload: { productId: action.payload.productId, selectedWeight: action.payload.selectedWeight } })
       }
       
       const updatedItems = state.items.map(item =>
-        item.product.id === action.payload.productId
+        item.product.id === action.payload.productId &&
+        isSameWeightOption(item.selectedWeight, action.payload.selectedWeight)
           ? { ...item, quantity: action.payload.quantity }
           : item
       )

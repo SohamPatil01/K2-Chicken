@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings, Tag, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, ChefHat, ShoppingCart, MessageCircle, LogOut, User, Warehouse, Settings, Tag, X, BarChart3, TrendingUp, Clock, DollarSign } from 'lucide-react'
 import ProductManagement from '@/components/ProductManagement'
 import RecipeManagement from '@/components/RecipeManagement'
 import OrderManagement from '@/components/OrderManagement'
@@ -22,6 +22,13 @@ export default function AdminPage() {
   const [previousOrdersCount, setPreviousOrdersCount] = useState(0)
   const [showOrderNotification, setShowOrderNotification] = useState(false)
   const [newOrderCount, setNewOrderCount] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+    totalRevenue: 0
+  })
   const router = useRouter()
 
   useEffect(() => {
@@ -55,36 +62,48 @@ export default function AdminPage() {
     checkAuth()
   }, [])
 
-  // Fetch new orders count periodically
   useEffect(() => {
-    const fetchNewOrdersCount = async () => {
+    if (!isLoading && user) {
+      setMounted(true)
+    }
+  }, [isLoading, user])
+
+  // Fetch stats
+  useEffect(() => {
+    const fetchStats = async () => {
       try {
-        const response = await fetch('/api/orders/new/count')
-        const data = await response.json()
-        const count = data.count || 0
+        const [ordersRes] = await Promise.all([
+          fetch('/api/orders')
+        ])
         
-        // Check if new orders arrived
-        if (count > previousOrdersCount && previousOrdersCount > 0) {
-          const newOrders = count - previousOrdersCount
-          setNewOrderCount(newOrders)
-          triggerOrderAlarm(newOrders)
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json()
+          const orders = Array.isArray(ordersData) ? ordersData : []
+          
+          const pending = orders.filter((o: any) => o.status !== 'delivered' && o.status !== 'cancelled').length
+          const completed = orders.filter((o: any) => o.status === 'delivered').length
+          const revenue = orders
+            .filter((o: any) => o.status === 'delivered')
+            .reduce((sum: number, o: any) => sum + (parseFloat(o.total_amount) || 0), 0)
+          
+          setStats({
+            totalOrders: orders.length,
+            pendingOrders: pending,
+            completedOrders: completed,
+            totalRevenue: revenue
+          })
         }
-        
-        setNewOrdersCount(count)
-        setPreviousOrdersCount(count)
       } catch (error) {
-        console.error('Error fetching new orders count:', error)
+        console.error('Error fetching stats:', error)
       }
     }
 
-    // Fetch immediately
-    fetchNewOrdersCount()
-
-    // Poll every 10 seconds for new orders
-    const interval = setInterval(fetchNewOrdersCount, 10000)
-
-    return () => clearInterval(interval)
-  }, [previousOrdersCount])
+    if (user) {
+      fetchStats()
+      const interval = setInterval(fetchStats, 30000) // Refresh every 30 seconds
+      return () => clearInterval(interval)
+    }
+  }, [user])
 
   // Function to trigger alarm/buzzer when new orders arrive
   const triggerOrderAlarm = (orderCount: number) => {
@@ -150,6 +169,40 @@ export default function AdminPage() {
     }
   }
 
+  // Fetch new orders count periodically
+  useEffect(() => {
+    if (!user) return
+
+    const fetchNewOrdersCount = async () => {
+      try {
+        const response = await fetch('/api/orders/new/count')
+        const data = await response.json()
+        const count = data.count || 0
+        
+        // Check if new orders arrived
+        if (count > previousOrdersCount && previousOrdersCount > 0) {
+          const newOrders = count - previousOrdersCount
+          setNewOrderCount(newOrders)
+          triggerOrderAlarm(newOrders)
+        }
+        
+        setNewOrdersCount(count)
+        setPreviousOrdersCount(count)
+      } catch (error) {
+        console.error('Error fetching new orders count:', error)
+      }
+    }
+
+    // Fetch immediately
+    fetchNewOrdersCount()
+
+    // Poll every 10 seconds for new orders
+    const interval = setInterval(fetchNewOrdersCount, 10000)
+
+    return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previousOrdersCount, user])
+
   // Reset count when Orders tab is clicked
   const handleOrdersTabClick = () => {
     setActiveTab('orders')
@@ -199,7 +252,7 @@ export default function AdminPage() {
   }
 
   const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: Package },
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'recipes', label: 'Recipes', icon: ChefHat },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
@@ -213,103 +266,138 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50">
       {/* Order Notification Alert */}
       {showOrderNotification && (
-        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 fade-in duration-300">
-          <div className="bg-white rounded-xl shadow-lg border-l-4 border-orange-500 px-4 py-3 flex items-center space-x-3 min-w-[280px] animate-pulse">
-            <div className="text-2xl">🔔</div>
-            <div className="flex-grow">
-              <div className="font-semibold text-gray-900 text-sm">New Order!</div>
-              <div className="text-xs text-gray-600">
-                {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} arrived
+        <div className="fixed top-4 right-4 z-50 animate-bounce-in">
+          <div className="bg-white border-2 border-orange-300 text-gray-900 px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[300px] animate-scale-in">
+            <div className="text-3xl animate-pulse">🔔</div>
+            <div className="flex-1">
+              <div className="font-bold text-lg text-gray-900">New Order Alert!</div>
+              <div className="text-sm text-gray-600">
+                {newOrderCount} new order{newOrderCount > 1 ? 's' : ''} has arrived!
               </div>
             </div>
             <button
               onClick={() => setShowOrderNotification(false)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="ml-auto text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <X className="h-4 w-4" />
+              ✕
             </button>
           </div>
         </div>
+        
       )}
 
       {/* Admin Header */}
-      <div className="bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-40">
+      <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-3 sm:py-4 gap-3">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <img 
-                  src="/logo.svg" 
-                  alt="K2 Chicken" 
-                  className="h-8 sm:h-10 w-auto"
-                />
-                <div className="text-xs font-medium text-orange-600 mt-0.5" style={{ marginLeft: '28px' }}>
-                  K2 Chicken
-                </div>
+          <div className="flex justify-between items-center py-4">
+            <div className={`flex items-center space-x-4 ${mounted ? 'animate-slide-in-from-left' : 'opacity-0'}`}>
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                <h1 className="text-xl font-bold text-gray-900">Admin Console</h1>
               </div>
-              <div>
-                <h1 className="text-base sm:text-lg font-semibold text-gray-900">
-                  Admin Console
-                </h1>
-                <p className="text-xs text-gray-500 hidden sm:block">Management Dashboard</p>
+              <div className="hidden md:block text-sm text-gray-600">
+                K2 Chicken Management System
               </div>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="w-7 h-7 bg-orange-100 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-orange-600" />
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-xs font-medium text-gray-700">{user.username}</p>
+            <div className={`flex items-center space-x-4 ${mounted ? 'animate-slide-in-from-right' : 'opacity-0'}`}>
+              <div className="flex items-center space-x-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-200">
+                <User className="h-4 w-4 text-orange-600" />
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">User</p>
+                  <p className="text-sm font-semibold text-gray-900">{user.username}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm font-medium"
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all duration-300 font-semibold text-sm border border-gray-200"
               >
                 <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Logout</span>
+                <span>Logout</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-lg border border-gray-200 mb-5 overflow-hidden">
-          <nav className="flex space-x-0.5 p-1 overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              const isOrdersTab = tab.id === 'orders'
-              const showBadge = isOrdersTab && newOrdersCount > 0 && activeTab !== 'orders'
-              
+      {/* Quick Stats Bar */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: 'Total Orders', value: stats.totalOrders, icon: BarChart3, color: 'blue', delay: '0.1s' },
+              { label: 'Pending', value: stats.pendingOrders, icon: Clock, color: 'orange', delay: '0.2s' },
+              { label: 'Completed', value: stats.completedOrders, icon: TrendingUp, color: 'green', delay: '0.3s' },
+              { label: 'Revenue', value: `₹${stats.totalRevenue.toFixed(0)}`, icon: DollarSign, color: 'yellow', delay: '0.4s' },
+            ].map((stat, index) => {
+              const Icon = stat.icon
+              const colorClasses = {
+                blue: 'bg-blue-50 text-blue-600 border-blue-200',
+                orange: 'bg-orange-50 text-orange-600 border-orange-200',
+                green: 'bg-green-50 text-green-600 border-green-200',
+                yellow: 'bg-yellow-50 text-yellow-600 border-yellow-200',
+              }
               return (
-                <button
-                  key={tab.id}
-                  onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
-                  className={`relative flex items-center space-x-2 py-2 px-4 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'bg-orange-50 text-orange-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
+                <div
+                  key={index}
+                  className={`bg-white rounded-2xl p-5 border-2 ${colorClasses[stat.color as keyof typeof colorClasses]} shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] ${mounted ? 'animate-slide-up' : 'opacity-0'}`}
+                  style={{ animationDelay: stat.delay }}
                 >
-                  <Icon size={16} className={activeTab === tab.id ? 'text-orange-600' : 'text-gray-400'} />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  {showBadge && (
-                    <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
-                      {newOrdersCount > 99 ? '99+' : newOrdersCount}
-                    </span>
-                  )}
-                </button>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-gray-600 uppercase tracking-wide mb-1 font-medium">{stat.label}</p>
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    </div>
+                    <div className={`p-3 rounded-xl ${colorClasses[stat.color as keyof typeof colorClasses]}`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                  </div>
+                </div>
               )
             })}
-          </nav>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Tab Navigation */}
+        <div className={`bg-white rounded-2xl border border-gray-200 mb-6 overflow-hidden shadow-sm ${mounted ? 'animate-slide-down' : 'opacity-0'}`}>
+          <div className="p-3">
+            <nav className="flex flex-wrap gap-2">
+              {tabs.map((tab, index) => {
+                const Icon = tab.icon
+                const isOrdersTab = tab.id === 'orders'
+                const showBadge = isOrdersTab && newOrdersCount > 0 && activeTab !== 'orders'
+                
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => isOrdersTab ? handleOrdersTabClick() : setActiveTab(tab.id as TabType)}
+                    className={`relative flex items-center space-x-2 py-2.5 px-4 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                      mounted ? 'animate-slide-up' : 'opacity-0'
+                    } ${
+                      activeTab === tab.id
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : 'bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-200'
+                    }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <Icon size={18} />
+                    <span>{tab.label}</span>
+                    {showBadge && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center border-2 border-white shadow-md animate-pulse">
+                        {newOrdersCount > 99 ? '99+' : newOrdersCount}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </nav>
+          </div>
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="p-5">
+        <div className={`bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm ${mounted ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+          <div className="p-6 sm:p-8">
             {activeTab === 'dashboard' && <AdminDashboard />}
             {activeTab === 'products' && <ProductManagement />}
             {activeTab === 'recipes' && <RecipeManagement />}

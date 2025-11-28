@@ -1,6 +1,6 @@
 'use client'
 
-import { useCart } from '@/context/CartContext'
+import { useCart, WeightOption } from '@/context/CartContext'
 import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, ArrowRight, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -31,16 +31,16 @@ export default function CartPage() {
     window.open(whatsappUrl, '_blank')
   }
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (productId: number, quantity: number, selectedWeight?: WeightOption) => {
     if (quantity <= 0) {
-      dispatch({ type: 'REMOVE_ITEM', payload: { productId } })
+      dispatch({ type: 'REMOVE_ITEM', payload: { productId, selectedWeight } })
     } else {
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, quantity } })
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, quantity, selectedWeight } })
     }
   }
 
-  const removeItem = (productId: number) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: { productId } })
+  const removeItem = (productId: number, selectedWeight?: WeightOption) => {
+    dispatch({ type: 'REMOVE_ITEM', payload: { productId, selectedWeight } })
   }
 
   const clearCart = () => {
@@ -108,10 +108,11 @@ export default function CartPage() {
             {state.items.map((item, index) => {
               const itemPrice = item.selectedWeight?.price || item.product.price
               const totalPrice = Number(itemPrice) * item.quantity
+              const itemKey = `${item.product.id}-${item.selectedWeight?.weight ?? 'default'}-${item.selectedWeight?.id ?? 'base'}`
               
               return (
                 <div 
-                  key={item.product.id}
+                  key={itemKey}
                   className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
@@ -168,7 +169,7 @@ export default function CartPage() {
                           
                           {/* Remove Button */}
                           <button
-                            onClick={() => removeItem(item.product.id)}
+                          onClick={() => removeItem(item.product.id, item.selectedWeight)}
                             className="flex-shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
                             title="Remove item"
                           >
@@ -180,7 +181,7 @@ export default function CartPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-1">
                             <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.selectedWeight)}
                               className="w-9 h-9 flex items-center justify-center bg-white hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
                             >
                               <Minus size={18} />
@@ -189,7 +190,7 @@ export default function CartPage() {
                               <span className="text-lg font-bold text-gray-900">{item.quantity}</span>
                             </div>
                             <button
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.selectedWeight)}
                               className="w-9 h-9 flex items-center justify-center bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
                             >
                               <Plus size={18} />
