@@ -116,11 +116,17 @@ export default function AboutSection() {
 
           {/* Image - Scale in */}
           <div className={`relative ${mounted ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-            <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
-              {/* Placeholder for chicken image */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-200 via-red-200 to-orange-300 flex items-center justify-center">
-                <ChefHat className="w-32 h-32 text-white opacity-50" />
-              </div>
+            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500 border-4 border-orange-100">
+              <Image
+                src="/images/shop-interior.jpg"
+                alt="K2 Chicken Shop Interior - Clean, well-lit store with display refrigerators and fresh chicken products"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
+              {/* Decorative overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
               {/* Decorative spice icons */}
               <div className="absolute top-4 right-4 w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg animate-float">
                 <span className="text-2xl">🌶️</span>
