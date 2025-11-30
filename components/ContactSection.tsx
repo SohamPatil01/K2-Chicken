@@ -110,9 +110,7 @@ export default function ContactSection() {
   };
 
   const operatingHours = [
-    { day: "Monday - Friday", hours: "9:00 AM - 10:00 PM" },
-    { day: "Saturday", hours: "9:00 AM - 11:00 PM" },
-    { day: "Sunday", hours: "10:00 AM - 9:00 PM" },
+    { day: "Monday - Sunday", hours: "8:00 AM - 8:00 PM" },
   ];
 
   return (
