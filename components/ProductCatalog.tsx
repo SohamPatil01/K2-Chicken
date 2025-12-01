@@ -127,20 +127,20 @@ function ProductCard({
         </div>
       )}
 
-      {/* Product Image Container */}
-      <div className="relative h-36 sm:h-40 bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 overflow-hidden">
+      {/* Product Image Container - Licious Style */}
+      <div className="relative h-36 sm:h-40 bg-white overflow-hidden border-b border-gray-100">
         {product.image_url ? (
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full p-3 sm:p-4">
             <Image
               src={product.image_url}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              className="object-contain transition-transform duration-300 ease-out group-hover:scale-105"
               quality={95}
               priority={index < 6}
               style={{
-                objectFit: "cover",
+                objectFit: "contain",
               }}
               onError={(e) => {
                 const target = e.currentTarget;
@@ -157,16 +157,16 @@ function ProductCard({
         <div
           className={`absolute inset-0 w-full h-full ${
             product.image_url ? "hidden" : "flex"
-          } bg-gradient-to-br from-orange-50 to-red-50 items-center justify-center`}
+          } bg-gray-50 items-center justify-center`}
         >
           <span className="text-4xl transform transition-transform duration-300 group-hover:scale-110">
             🍗
           </span>
         </div>
 
-        {/* Gradient Overlay for Info Panel */}
+        {/* Subtle Gradient Overlay for Info Panel */}
         <div
-          className={`absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent transition-opacity duration-300 ${
+          className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white via-white/60 to-transparent transition-opacity duration-300 ${
             showInfo ? "opacity-0" : "opacity-100"
           }`}
         ></div>
@@ -401,8 +401,8 @@ function ProductCard({
               </button>
             </div>
           )}
-        </div>
       </div>
+    </div>
   );
 }
 
@@ -812,17 +812,19 @@ export default function ProductCatalog({
 
             {featuredProduct && (
               <div className="bg-white/95 border border-gray-100 rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row">
-                <div className="md:w-1/2 relative h-64 bg-gradient-to-br from-orange-50 to-red-50">
+                <div className="md:w-1/2 relative h-64 bg-white">
                   {featuredProduct.image_url ? (
-                    <Image
-                      src={featuredProduct.image_url}
-                      alt={featuredProduct.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
+                    <div className="relative w-full h-full p-6">
+                      <Image
+                        src={featuredProduct.image_url}
+                        alt={featuredProduct.name}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl">
+                    <div className="w-full h-full flex items-center justify-center text-6xl bg-gray-50">
                       🍗
                     </div>
                   )}
@@ -841,13 +843,20 @@ export default function ProductCatalog({
                   </p>
                   <div className="flex flex-wrap items-center gap-4">
                     {(() => {
-                      const defaultWeight = featuredProduct.weightOptions?.find((w) => w.is_default) || featuredProduct.weightOptions?.[0];
-                      const displayPrice = defaultWeight?.price || featuredProduct.price;
+                      const defaultWeight =
+                        featuredProduct.weightOptions?.find(
+                          (w) => w.is_default
+                        ) || featuredProduct.weightOptions?.[0];
+                      const displayPrice =
+                        defaultWeight?.price || featuredProduct.price;
                       const displayWeight = defaultWeight?.weight || 500;
-                      const displayUnit = defaultWeight?.weight_unit || 'g';
-                      const originalPrice = Number((featuredProduct as any).original_price);
-                      const hasDiscount = originalPrice && originalPrice > Number(displayPrice);
-                      
+                      const displayUnit = defaultWeight?.weight_unit || "g";
+                      const originalPrice = Number(
+                        (featuredProduct as any).original_price
+                      );
+                      const hasDiscount =
+                        originalPrice && originalPrice > Number(displayPrice);
+
                       return (
                         <div className="flex flex-col gap-1">
                           <div className="flex items-baseline gap-2">
@@ -860,12 +869,16 @@ export default function ProductCatalog({
                               </span>
                             )}
                             <span className="text-base font-medium text-gray-500">
-                              / {displayWeight}{displayUnit}
+                              / {displayWeight}
+                              {displayUnit}
                             </span>
                           </div>
                           {hasDiscount && (
                             <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded w-fit">
-                              Save ₹{(originalPrice - Number(displayPrice)).toFixed(0)}
+                              Save ₹
+                              {(originalPrice - Number(displayPrice)).toFixed(
+                                0
+                              )}
                             </span>
                           )}
                         </div>

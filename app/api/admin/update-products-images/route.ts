@@ -29,11 +29,11 @@ export async function GET(request: NextRequest) {
     try {
       console.log('Updating products with correct image URLs...');
       
-      // Product image mappings - using only existing images from /public/images/
+      // Product image mappings - using images from /public/images/ folder
       const productUpdates = [
         {
           name: 'Chicken Breast Boneless',
-          image_url: '/images/upload/1761282105435-Chicken-Breast-Boneless.-2 copy.jpg'
+          image_url: '/images/Chicken-Breast-Boneless.jpg'
         },
         {
           name: 'Chicken Curry Cut',
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         },
         {
           name: 'Chicken Drumstick',
-          image_url: '/images/upload/1761282158358-Chicken-Drumstick-3 copy.jpg'
+          image_url: '/images/Chicken-Drumstick.jpg'
         },
         {
           name: 'Chicken Kheema',
