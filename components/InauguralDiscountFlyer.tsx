@@ -1,63 +1,69 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useRef } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { X, Gift, Sparkles, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { X, Gift, Sparkles, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function InauguralDiscountFlyer() {
-  const [isVisible, setIsVisible] = useState(false)
-  const { user, isAuthenticated } = useAuth()
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [isVisible, setIsVisible] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Only show if user is not authenticated
     if (isAuthenticated) {
-      setIsVisible(false)
-      return
+      setIsVisible(false);
+      // Mark as shown for this session so it doesn't appear after sign-up
+      sessionStorage.setItem("inauguralFlyerShown", "true");
+      return;
     }
 
-    // Show flyer immediately after a short delay
-    const initialTimer = setTimeout(() => {
-      setIsVisible(true)
-    }, 1500)
+    // Check if flyer has been shown in this session
+    const hasBeenShown =
+      sessionStorage.getItem("inauguralFlyerShown") === "true";
+    if (hasBeenShown) {
+      setIsVisible(false);
+      return;
+    }
 
-    // Set up interval to show flyer every 15 seconds
-    intervalRef.current = setInterval(() => {
-      setIsVisible(true)
-    }, 15000) // 15 seconds
+    // Show flyer immediately after a short delay (only once per page reload)
+    const initialTimer = setTimeout(() => {
+      setIsVisible(true);
+      sessionStorage.setItem("inauguralFlyerShown", "true");
+    }, 1500);
 
     return () => {
-      clearTimeout(initialTimer)
+      clearTimeout(initialTimer);
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+        clearInterval(intervalRef.current);
       }
-    }
-  }, [isAuthenticated])
+    };
+  }, [isAuthenticated]);
 
   const handleClose = () => {
-    setIsVisible(false)
-    // Don't set localStorage - allow flyer to show again after 15 seconds
-  }
+    setIsVisible(false);
+    sessionStorage.setItem("inauguralFlyerShown", "true");
+  };
 
   const handleSignUpClick = () => {
-    setIsVisible(false)
-    // Don't set localStorage - allow flyer to show again after 15 seconds
-  }
+    setIsVisible(false);
+    sessionStorage.setItem("inauguralFlyerShown", "true");
+  };
 
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
     <>
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
         onClick={handleClose}
       />
-      
+
       {/* Flyer Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div 
+        <div
           className="relative bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 rounded-3xl shadow-2xl max-w-md w-full pointer-events-auto animate-scale-in overflow-hidden border-2 border-orange-200"
           onClick={(e) => e.stopPropagation()}
         >
@@ -103,10 +109,13 @@ export default function InauguralDiscountFlyer() {
 
             {/* Description */}
             <p className="text-center text-gray-700 mb-2 text-lg font-semibold">
-              Get <span className="text-orange-600 font-bold">10% discount</span> on your first order!
+              Get{" "}
+              <span className="text-orange-600 font-bold">10% discount</span> on
+              your first order!
             </p>
             <p className="text-center text-gray-600 mb-6 text-sm">
-              Sign up now and enjoy fresh, premium chicken at amazing prices. Limited time offer for new customers!
+              Sign up now and enjoy fresh, premium chicken at amazing prices.
+              Limited time offer for new customers!
             </p>
 
             {/* Benefits */}
@@ -151,6 +160,5 @@ export default function InauguralDiscountFlyer() {
         </div>
       </div>
     </>
-  )
+  );
 }
-

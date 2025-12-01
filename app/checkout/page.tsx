@@ -295,6 +295,25 @@ export default function CheckoutPage() {
     setShowMapPicker(false);
   };
 
+  // Calculate loyalty discount amount (needed for WhatsApp function)
+  const loyaltyDiscountAmount =
+    loyaltyDiscount > 0 ? (subtotal * loyaltyDiscount) / 100 : 0;
+  // Total discount = promo discount + loyalty discount
+  const totalDiscountAmount = discountAmount + loyaltyDiscountAmount;
+  const totalWithDiscount = subtotal - totalDiscountAmount;
+  // If free delivery promo is applied, delivery charge is 0
+  // Also ensure delivery charge is 0 for pickup
+  const finalDeliveryChargeCalc =
+    deliveryType === "delivery"
+      ? appliedPromo?.discount_type === "free_delivery"
+        ? 0
+        : Math.round(deliveryCharge || 0)
+      : 0;
+  const totalWithDelivery = Math.max(
+    0,
+    Math.round(totalWithDiscount + finalDeliveryChargeCalc)
+  );
+
   const handleWhatsAppOrder = () => {
     const orderItems = state.items
       .map((item) => {
@@ -322,25 +341,48 @@ export default function CheckoutPage() {
             appliedPromo?.promo_code
           }):* -₹${discountAmount.toFixed(0)}`
         : "";
+    const loyaltyDiscountInfo =
+      loyaltyDiscountAmount > 0
+        ? `\n*Loyalty Discount:* -₹${loyaltyDiscountAmount.toFixed(0)}`
+        : "";
     const deliveryInfo =
       deliveryType === "delivery"
         ? `\n*Delivery Address:* ${
-            formData.deliveryAddress || "To be provided"
+            formData.deliveryAddress || selectedCoordinates
+              ? `${selectedCoordinates?.lat}, ${selectedCoordinates?.lng}`
+              : "To be provided"
+          }${
+            selectedCoordinates
+              ? `\n*Coordinates:* ${selectedCoordinates.lat}, ${selectedCoordinates.lng}`
+              : ""
           }\n*Delivery Charge:* ₹${finalDeliveryCharge}${
             appliedPromo?.discount_type === "free_delivery"
               ? " (FREE - Promo Applied)"
               : ""
           }`
-        : "\n*Order Type:* Pickup";
+        : "\n*Order Type:* Pickup\n*Pickup Location:* K2 Chicken Store";
+
+    // Use authenticated user data if available, otherwise use form data
+    const customerName =
+      user?.name || formData.customerName || "To be provided";
+    const customerPhone =
+      user?.phone || formData.customerPhone || "To be provided";
 
     const message = encodeURIComponent(
       `🍗 *Order from K2 Chicken*\n\n` +
         `*Customer Details:*\n` +
-        `Name: ${formData.customerName || "To be provided"}\n` +
-        `Phone: ${formData.customerPhone || "To be provided"}\n\n` +
+        `Name: ${customerName}\n` +
+        `Phone: ${customerPhone}\n\n` +
         `*Order Details:*\n${orderItems}\n\n` +
-        `*Subtotal:* ₹${subtotal}${discountInfo}${deliveryInfo}\n\n` +
+        `*Subtotal:* ₹${subtotal}${discountInfo}${loyaltyDiscountInfo}${deliveryInfo}\n\n` +
         `*Total Amount:* ₹${total}\n\n` +
+        `*Payment Method:* ${
+          paymentMethod === "cash"
+            ? "Cash on Delivery"
+            : paymentMethod === "upi"
+            ? "UPI"
+            : "Card"
+        }\n\n` +
         `Please confirm this order.`
     );
 
@@ -348,24 +390,8 @@ export default function CheckoutPage() {
     window.open(whatsappUrl, "_blank");
   };
 
-  // Calculate loyalty discount amount
-  const loyaltyDiscountAmount =
-    loyaltyDiscount > 0 ? (subtotal * loyaltyDiscount) / 100 : 0;
-  // Total discount = promo discount + loyalty discount
-  const totalDiscountAmount = discountAmount + loyaltyDiscountAmount;
-  const totalWithDiscount = subtotal - totalDiscountAmount;
-  // If free delivery promo is applied, delivery charge is 0
-  // Also ensure delivery charge is 0 for pickup
-  const finalDeliveryCharge =
-    deliveryType === "delivery"
-      ? appliedPromo?.discount_type === "free_delivery"
-        ? 0
-        : Math.round(deliveryCharge || 0)
-      : 0;
-  const totalWithDelivery = Math.max(
-    0,
-    Math.round(totalWithDiscount + finalDeliveryCharge)
-  );
+  // Use calculated values (already defined above)
+  const finalDeliveryCharge = finalDeliveryChargeCalc;
 
   const handleApplyPromoCode = async (codeToApply?: string) => {
     const code = codeToApply || promoCode.trim();

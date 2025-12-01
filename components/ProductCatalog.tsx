@@ -14,7 +14,6 @@ import {
   XCircle,
   Sparkles,
   ShoppingBag,
-  Leaf,
   Truck,
   ChevronRight,
   PhoneCall,
@@ -63,6 +62,13 @@ function ProductCard({
   );
 
   // Calculate discount if original_price exists
+  // Base product prices (for 1kg or default weight)
+  const baseProductPrice = Number(product.price);
+  const baseOriginalPrice = Number(
+    (product as any).original_price || product.price
+  );
+
+  // Calculate price per gram from base price
   const referenceWeight =
     selectedWeight?.weight || defaultWeight?.weight || 1000;
   const referencePrice = Number(
@@ -70,12 +76,22 @@ function ProductCard({
   );
   const pricePerGram =
     referenceWeight > 0 ? referencePrice / referenceWeight : referencePrice;
+
+  // Calculate original price per gram (if discount exists)
+  const originalPricePerGram =
+    baseOriginalPrice > baseProductPrice
+      ? baseOriginalPrice / referenceWeight
+      : pricePerGram;
+
   const normalizeWeight = (value: number) => {
     if (Number.isNaN(value)) return 500;
     return Math.max(100, Math.min(5000, value));
   };
   const customWeightValue = normalizeWeight(parseFloat(customWeight));
   const customPrice = Math.round(pricePerGram * customWeightValue);
+  const customOriginalPrice = Math.round(
+    originalPricePerGram * customWeightValue
+  );
   const customWeightOption: WeightOption = {
     id: customWeightValue,
     weight: customWeightValue,
@@ -87,19 +103,30 @@ function ProductCard({
     ? customWeightOption
     : selectedWeight;
   const currentPrice = Number(activeWeight?.price || product.price);
-  const originalPrice = Number(
-    (product as any).original_price || product.price
-  );
-  const hasDiscount = originalPrice > currentPrice;
+
+  // Calculate original price for current weight
+  const currentWeight = activeWeight?.weight || referenceWeight;
+  const originalPriceForCurrentWeight = customWeightEnabled
+    ? customOriginalPrice
+    : Math.round(originalPricePerGram * currentWeight);
+
+  // Calculate discount based on base product price (not weight-specific)
+  // This ensures discount percentage stays constant regardless of weight
+  const hasDiscount = baseOriginalPrice > baseProductPrice;
   const discountPercent = hasDiscount
-    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+    ? Math.round(
+        ((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100
+      )
     : 0;
+
+  // For display, use the original price for current weight
+  const originalPrice = originalPriceForCurrentWeight;
 
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+      className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-300 transform hover:-translate-y-0.5"
       onMouseEnter={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
@@ -127,32 +154,27 @@ function ProductCard({
         </div>
       )}
 
-      {/* Product Image Container - Licious Style */}
-      <div className="relative h-36 sm:h-40 bg-white overflow-hidden border-b border-gray-100">
+      {/* Product Image Container - Filled Style */}
+      <div className="relative w-full h-48 sm:h-52 bg-white overflow-hidden border-b border-gray-100">
         {product.image_url ? (
-          <div className="relative w-full h-full p-3 sm:p-4">
-            <Image
-              src={product.image_url}
-              alt={product.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-contain transition-transform duration-300 ease-out group-hover:scale-105"
-              quality={95}
-              priority={index < 6}
-              style={{
-                objectFit: "contain",
-              }}
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.style.display = "none";
-                const fallback = target.parentElement
-                  ?.nextElementSibling as HTMLElement | null;
-                if (fallback) {
-                  fallback.style.display = "flex";
-                }
-              }}
-            />
-          </div>
+          <Image
+            src={product.image_url}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+            quality={95}
+            priority={index < 6}
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.style.display = "none";
+              const fallback = target.parentElement
+                ?.nextElementSibling as HTMLElement | null;
+              if (fallback) {
+                fallback.style.display = "flex";
+              }
+            }}
+          />
         ) : null}
         <div
           className={`absolute inset-0 w-full h-full ${
@@ -163,13 +185,6 @@ function ProductCard({
             🍗
           </span>
         </div>
-
-        {/* Subtle Gradient Overlay for Info Panel */}
-        <div
-          className={`absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white via-white/60 to-transparent transition-opacity duration-300 ${
-            showInfo ? "opacity-0" : "opacity-100"
-          }`}
-        ></div>
       </div>
 
       {/* Product Info - Sliding Panel */}
@@ -646,27 +661,6 @@ export default function ProductCatalog({
     );
   }
 
-  const statCards = [
-    {
-      icon: Sparkles,
-      label: "Cuts & marinades",
-      value: `${products.length}+`,
-      helper: "Trimmed at dawn, packed by noon",
-    },
-    {
-      icon: Truck,
-      label: "Ready to dispatch",
-      value: `${totalInStock}`,
-      helper: "Currently in cold storage",
-    },
-    {
-      icon: Leaf,
-      label: "Limited-time offers",
-      value: totalDiscounted > 0 ? `${totalDiscounted}` : "Seasonal",
-      helper: "Only while stocks last",
-    },
-  ];
-
   return (
     <section className="relative py-20 bg-gradient-to-b from-gray-50 via-orange-50/15 to-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.15),transparent_45%)] pointer-events-none" />
@@ -774,26 +768,6 @@ export default function ProductCatalog({
 
           {/* Main content */}
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {statCards.map(({ icon: Icon, label, value, helper }) => (
-                <div
-                  key={label}
-                  className="bg-white/90 border border-gray-100 rounded-2xl p-5 shadow-sm flex items-start gap-3"
-                >
-                  <div className="p-2 rounded-xl bg-orange-50 text-orange-600">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">
-                      {label}
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">{value}</p>
-                    <p className="text-xs text-gray-500 mt-1">{helper}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
             <div className="flex flex-wrap gap-3">
               {quickFilterOptions.map((filter) => (
                 <button

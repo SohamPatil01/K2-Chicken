@@ -42,30 +42,28 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-orange-300 transition-all duration-300"
+      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-orange-300 transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Product Image Container - Licious Style */}
-      <div className="relative h-56 bg-white overflow-hidden border-b border-gray-100">
+      {/* Product Image Container - Filled Style */}
+      <div className="relative w-full h-64 bg-white overflow-hidden border-b border-gray-100">
         {product.image_url ? (
-          <div className="relative w-full h-full p-4">
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className={`w-full h-full object-contain transition-transform duration-300 ${
-                isHovered ? "scale-105" : "scale-100"
-              }`}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-                const fallback = e.currentTarget
-                  .nextElementSibling as HTMLElement | null;
-                if (fallback) {
-                  fallback.style.display = "flex";
-                }
-              }}
-            />
-          </div>
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className={`w-full h-full object-cover transition-transform duration-300 ${
+              isHovered ? "scale-105" : "scale-100"
+            }`}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              const fallback = e.currentTarget
+                .nextElementSibling as HTMLElement | null;
+              if (fallback) {
+                fallback.style.display = "flex";
+              }
+            }}
+          />
         ) : null}
         <div
           className={`w-full h-full ${

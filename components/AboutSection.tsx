@@ -158,8 +158,8 @@ export default function AboutSection() {
           >
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500 border-4 border-orange-100">
               <Image
-                src="/images/shop-interior.jpg"
-                alt="K2 Chicken Shop Interior - Clean, well-lit store with display refrigerators and fresh chicken products"
+                src="/images/Whole-Chicken-5.jpg"
+                alt="Fresh Premium Chicken - K2 Chicken offers the finest quality chicken, expertly cut and prepared for your favorite recipes"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
