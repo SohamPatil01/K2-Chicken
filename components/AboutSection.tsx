@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Award,
   Users,
@@ -14,6 +14,10 @@ import Image from "next/image";
 export default function AboutSection() {
   const [mounted, setMounted] = useState(false);
   const [visibleCards, setVisibleCards] = useState(0);
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(
+    new Set()
+  );
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -27,6 +31,34 @@ export default function AboutSection() {
     }, 200);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = sectionRefs.current.indexOf(
+              entry.target as HTMLDivElement
+            );
+            if (index !== -1) {
+              setVisibleSections((prev) => new Set(prev).add(index));
+            }
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      sectionRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, [mounted]);
 
   const features = [
     {
@@ -66,39 +98,42 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="py-20 sm:py-24 bg-gradient-to-b from-white via-orange-50/30 to-white relative overflow-hidden"
+      className="relative py-20 bg-gradient-to-b from-gray-50 via-orange-50/15 to-white overflow-hidden"
     >
-      {/* Decorative Elements */}
+      {/* Radial Gradient Overlay - Matching ProductCatalog */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.15),transparent_45%)] pointer-events-none" />
+
+      {/* Decorative Elements - More subtle to match flow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-15"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
           <div
-            className={`inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-sm font-semibold text-orange-700 mb-4 ${
-              mounted ? "animate-slide-down" : "opacity-0"
+            className={`inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold text-orange-700 mb-5 shadow-sm transition-all duration-300 hover:shadow-md ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             <Sparkles className="w-4 h-4 text-orange-500" />
             <span>Our Story</span>
           </div>
           <h2
-            className={`text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-4 ${
-              mounted ? "animate-slide-up" : "opacity-0"
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 mb-5 leading-tight transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ animationDelay: "0.2s" }}
           >
             About{" "}
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent">
               K2 Chicken
             </span>
           </h2>
           <p
-            className={`text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto ${
-              mounted ? "animate-slide-up" : "opacity-0"
+            className={`text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ animationDelay: "0.4s" }}
           >
@@ -106,113 +141,191 @@ export default function AboutSection() {
           </p>
         </div>
 
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
-          {/* Text Content - Slide in from left */}
+        {/* Legacy Section */}
+        <div className="mb-16 lg:mb-20">
           <div
-            className={`space-y-6 ${
-              mounted ? "animate-slide-in-from-left" : "opacity-0"
+            ref={(el) => {
+              sectionRefs.current[0] = el;
+            }}
+            className={`max-w-4xl mx-auto text-center transition-all duration-700 ${
+              visibleSections.has(0)
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
             }`}
           >
-            <div className="space-y-6">
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                A Legacy of Excellence
-              </h3>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                K2 Chicken was founded with a simple mission: to bring the most
-                delicious, fresh, and high-quality chicken to your table. What
-                started as a small neighborhood business has today grown into Pune's most trusted name in fresh chicken—and we are proud to take the next big leap forward.
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-4">
+              A Legacy of Excellence
+            </h3>
+            <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">
+              K2 Chicken was founded with a simple mission: to bring the most
+              delicious, fresh, and high-quality chicken to your table. What
+              started as a small neighborhood business has today grown into
+              Pune's most trusted name in fresh chicken—and we are proud to take
+              the next big leap forward.
+            </p>
+          </div>
+        </div>
+
+        {/* Franchise Partnership Section */}
+        <div className="mb-16 lg:mb-20">
+          <div
+            ref={(el) => {
+              sectionRefs.current[1] = el;
+            }}
+            className={`max-w-5xl mx-auto bg-white rounded-3xl shadow-lg border border-orange-100 overflow-hidden transition-all duration-700 hover:shadow-xl ${
+              visibleSections.has(1)
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
+            }`}
+          >
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 px-6 sm:px-8 py-4">
+              <h4 className="text-xl sm:text-2xl font-semibold text-white">
+                Now a Franchise Partner of Chicken Vicken – Baramati Agro
+              </h4>
+            </div>
+            <div className="p-6 sm:p-8 lg:p-10">
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
+                To serve you even better, K2 Chicken is now officially a
+                franchise of Chicken Vicken, Baramati Agro—one of India's most
+                respected and fastest-growing brands in the poultry industry.
+                With this partnership, we bring you:
               </p>
-              
-              {/* Franchise Partnership Section */}
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200">
-                <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                  Now a Franchise Partner of Chicken Vicken – Baramati Agro
-                </h4>
-                <p className="text-base text-gray-700 leading-relaxed mb-4">
-                  To serve you even better, K2 Chicken is now officially a franchise of Chicken Vicken, Baramati Agro—one of India's most respected and fastest-growing brands in the poultry industry. With this partnership, we bring you:
-                </p>
-                <ul className="space-y-2 mb-4">
-                  {[
-                    "International-grade processing standards",
-                    "Farm-fresh chicken sourced directly from Baramati Agro farms",
-                    "Unmatched hygiene, safety, and consistency",
-                    "Premium cuts crafted with expert precision",
-                  ].map((point, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{point}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-base text-gray-700 leading-relaxed">
-                  This collaboration elevates K2 Chicken's commitment to quality while giving our customers access to trusted, certified, and professionally processed Chicken Vicken products—right here in your neighborhood.
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {[
+                  "International-grade processing standards",
+                  "Farm-fresh chicken sourced directly from Baramati Agro farms",
+                  "Unmatched hygiene, safety, and consistency",
+                  "Premium cuts crafted with expert precision",
+                ].map((point, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 bg-orange-50/50 rounded-xl p-4 transition-all duration-300 hover:bg-orange-50 hover:shadow-md hover:-translate-y-1"
+                    style={{ transitionDelay: `${index * 0.1}s` }}
+                  >
+                    <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700 text-sm sm:text-base">
+                      {point}
+                    </span>
+                  </div>
+                ))}
               </div>
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
+                This collaboration elevates K2 Chicken's commitment to quality
+                while giving our customers access to trusted, certified, and
+                professionally processed Chicken Vicken products—right here in
+                your neighborhood.
+              </p>
+            </div>
+          </div>
+        </div>
 
-              {/* Freshness Section */}
-              <div className="space-y-4">
-                <h4 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  Freshness You Can Taste
-                </h4>
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  Our secret remains unchanged:
-                </p>
-                <p className="text-base text-gray-700 leading-relaxed">
-                  We source only the freshest, highest-grade chicken, cut and portioned with precision, and delivered chilled to preserve perfect texture and flavor.
-                </p>
-                <p className="text-base text-gray-700 leading-relaxed font-semibold">
-                  Every piece goes through:
-                </p>
-                <ul className="space-y-2">
-                  {[
-                    "Double cleaning process",
-                    "Strict hygiene checks",
-                    "Temperature-controlled handling",
-                  ].map((point, index) => (
-                    <li key={index} className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                      </div>
-                      <span className="text-gray-700 font-medium">{point}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-base text-gray-700 leading-relaxed italic">
-                  The result? Restaurant-quality chicken, ready for your favorite recipes—juicy, tender, and unbelievably fresh.
-                </p>
-              </div>
-
-              {/* Partnership Promise */}
-              <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-6 text-white">
-                <h4 className="text-xl sm:text-2xl font-bold mb-4">
-                  K2 Chicken x Chicken Vicken
-                </h4>
-                <div className="space-y-2 text-orange-50">
-                  <p className="font-semibold">A partnership built on trust, quality, and customer delight.</p>
-                  <p className="font-semibold">A promise to deliver only the best.</p>
-                  <p className="font-semibold">A commitment to freshness—every single day.</p>
-                </div>
-              </div>
+        {/* Two Column Layout - Freshness & Image */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-16 lg:mb-20">
+          {/* Freshness Section */}
+          <div
+            ref={(el) => {
+              sectionRefs.current[2] = el;
+            }}
+            className={`space-y-6 order-2 lg:order-1 transition-all duration-700 ${
+              visibleSections.has(2)
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-8"
+            }`}
+          >
+            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
+              <h4 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4">
+                Freshness You Can Taste
+              </h4>
+              <p className="text-base text-gray-700 leading-relaxed mb-4">
+                Our secret remains unchanged:
+              </p>
+              <p className="text-base text-gray-700 leading-relaxed mb-5">
+                We source only the freshest, highest-grade chicken, cut and
+                portioned with precision, and delivered chilled to preserve
+                perfect texture and flavor.
+              </p>
+              <p className="text-base text-gray-900 font-medium mb-3">
+                Every piece goes through:
+              </p>
+              <ul className="space-y-3 mb-5">
+                {[
+                  "Double cleaning process",
+                  "Strict hygiene checks",
+                  "Temperature-controlled handling",
+                ].map((point, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center gap-3 transition-all duration-300 hover:translate-x-2"
+                    style={{ transitionDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                      <CheckCircle className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-gray-700 font-medium">{point}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-base text-gray-700 leading-relaxed italic border-l-4 border-orange-400 pl-4">
+                The result? Restaurant-quality chicken, ready for your favorite
+                recipes—juicy, tender, and unbelievably fresh.
+              </p>
             </div>
           </div>
 
-          {/* Image - Scale in */}
+          {/* Image */}
           <div
-            className={`relative ${mounted ? "animate-scale-in" : "opacity-0"}`}
-            style={{ animationDelay: "0.3s" }}
+            ref={(el) => {
+              sectionRefs.current[3] = el;
+            }}
+            className={`relative order-1 lg:order-2 transition-all duration-700 ${
+              visibleSections.has(3)
+                ? "opacity-100 scale-100 translate-x-0"
+                : "opacity-0 scale-95 translate-x-8"
+            }`}
           >
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500 border-4 border-orange-100">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-all duration-500 border border-orange-100 group">
               <Image
                 src="/images/Whole-Chicken-5.jpg"
                 alt="Fresh Premium Chicken - K2 Chicken offers the finest quality chicken, expertly cut and prepared for your favorite recipes"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
               />
-              {/* Decorative overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Partnership Promise */}
+        <div className="mb-16 lg:mb-20">
+          <div
+            ref={(el) => {
+              sectionRefs.current[4] = el;
+            }}
+            className={`max-w-4xl mx-auto bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-2xl transition-all duration-700 hover:shadow-3xl hover:scale-[1.02] ${
+              visibleSections.has(4)
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
+            }`}
+          >
+            <h4 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">
+              K2 Chicken x Chicken Vicken
+            </h4>
+            <div className="space-y-4 text-center">
+              {[
+                "A partnership built on trust, quality, and customer delight.",
+                "A promise to deliver only the best.",
+                "A commitment to freshness—every single day.",
+              ].map((text, index) => (
+                <p
+                  key={index}
+                  className="text-lg sm:text-xl font-medium text-orange-50 transition-all duration-500 hover:text-white hover:translate-x-1"
+                  style={{ transitionDelay: `${index * 0.1}s` }}
+                >
+                  {text}
+                </p>
+              ))}
             </div>
           </div>
         </div>
@@ -225,9 +338,9 @@ export default function AboutSection() {
             return (
               <div
                 key={index}
-                className={`group bg-white border-2 ${
+                className={`group bg-white border ${
                   feature.borderColor
-                } rounded-2xl p-6 sm:p-8 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 ${
+                } rounded-2xl p-6 sm:p-8 hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-10"
@@ -235,14 +348,14 @@ export default function AboutSection() {
                 style={{ transitionDelay: `${index * 0.1}s` }}
               >
                 <div
-                  className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <Icon className="w-8 h-8 text-white" />
+                  <Icon className="w-7 h-7 text-white" />
                 </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">
+                <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                   {feature.title}
                 </h4>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
               </div>
