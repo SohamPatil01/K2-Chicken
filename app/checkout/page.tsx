@@ -58,6 +58,7 @@ export default function CheckoutPage() {
     customerName: "",
     customerPhone: "",
     deliveryAddress: "",
+    deliveryInstructions: "",
   });
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [distance, setDistance] = useState<number | null>(null);
@@ -349,11 +350,16 @@ export default function CheckoutPage() {
       deliveryType === "delivery"
         ? `\n*Delivery Address:* ${
             formData.deliveryAddress || selectedCoordinates
-              ? `${selectedCoordinates?.lat}, ${selectedCoordinates?.lng}`
+              ? formData.deliveryAddress ||
+                `${selectedCoordinates?.lat}, ${selectedCoordinates?.lng}`
               : "To be provided"
           }${
             selectedCoordinates
               ? `\n*Coordinates:* ${selectedCoordinates.lat}, ${selectedCoordinates.lng}`
+              : ""
+          }${
+            formData.deliveryInstructions
+              ? `\n*Delivery Instructions:* ${formData.deliveryInstructions}`
               : ""
           }\n*Delivery Charge:* ₹${finalDeliveryCharge}${
             appliedPromo?.discount_type === "free_delivery"
@@ -1065,6 +1071,32 @@ export default function CheckoutPage() {
                   </>
                 )}
 
+                {/* Delivery Instructions */}
+                {deliveryType === "delivery" && (
+                  <div>
+                    <label
+                      htmlFor="deliveryInstructions"
+                      className="block text-sm font-semibold text-gray-700 mb-2"
+                    >
+                      <Info className="inline h-4 w-4 mr-1" />
+                      Delivery Instructions (Optional)
+                    </label>
+                    <textarea
+                      id="deliveryInstructions"
+                      name="deliveryInstructions"
+                      value={formData.deliveryInstructions}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 resize-none"
+                      placeholder="Add special instructions for delivery (e.g., Gate code: A123, Floor: 3rd, Landmark: Near blue building, Call before delivery, etc.)"
+                      maxLength={200}
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Help our delivery team find you easily
+                    </p>
+                  </div>
+                )}
+
                 {deliveryType === "pickup" && (
                   <div className="p-6 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl">
                     <div className="flex items-center gap-3 mb-3">
@@ -1534,7 +1566,7 @@ export default function CheckoutPage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-bounce-in">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-2xl relative overflow-hidden">
+            <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-2xl overflow-hidden">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg">

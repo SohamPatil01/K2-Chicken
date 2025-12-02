@@ -1,6 +1,7 @@
 "use client";
 
-import { useCart, WeightOption } from "@/context/CartContext";
+import { useCart, WeightOption, Product } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import {
   Minus,
   Plus,
@@ -14,30 +15,303 @@ import {
   Shield,
   Truck,
   CheckCircle,
+  Heart,
+  Clock,
+  TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+// Recommendation Card Component
+function RecommendationCard({
+  product,
+  onAdd,
+}: {
+  product: Product;
+  onAdd: (product: Product, weight?: WeightOption) => void;
+}) {
+  const defaultWeight =
+    product.weightOptions?.find((w) => w.is_default) ||
+    product.weightOptions?.[0];
+  const [selectedWeight, setSelectedWeight] = useState<
+    WeightOption | undefined
+  >(defaultWeight);
+
+  // Calculate pricing
+  const baseProductPrice = Number(product.price);
+  const baseOriginalPrice = Number(
+    (product as any).original_price || product.price
+  );
+  const hasDiscount = baseOriginalPrice > baseProductPrice;
+  const discountPercent = hasDiscount
+    ? Math.round(
+        ((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100
+      )
+    : 0;
+
+  const currentPrice = Number(selectedWeight?.price || product.price);
+  const referenceWeight =
+    selectedWeight?.weight || defaultWeight?.weight || 1000;
+  const originalPricePerGram = baseOriginalPrice / referenceWeight;
+  const originalPriceForWeight = Math.round(
+    originalPricePerGram * referenceWeight
+  );
+  const displayOriginalPrice = hasDiscount
+    ? originalPriceForWeight
+    : currentPrice;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-200 group relative">
+      {/* Discount Badge */}
+      {hasDiscount && (
+        <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1 shadow-md">
+          <Sparkles className="h-2.5 w-2.5" />
+          <span>{discountPercent}% OFF</span>
+        </div>
+      )}
+
+      <div className="relative h-40 bg-gradient-to-br from-orange-50 to-red-50 overflow-hidden">
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-4xl">🍗</span>
+          </div>
+        )}
+      </div>
+      <div className="p-4">
+        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm">
+          {product.name}
+        </h3>
+
+        {/* Weight Options */}
+        {product.weightOptions && product.weightOptions.length > 0 && (
+          <div className="mb-3">
+            {product.weightOptions.length > 1 ? (
+              <>
+                <p className="text-xs text-gray-600 mb-1.5 font-medium">
+                  Select Weight:
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.weightOptions.map((weight) => (
+                    <button
+                      key={weight.id || weight.weight}
+                      onClick={() => setSelectedWeight(weight)}
+                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                        selectedWeight?.weight === weight.weight
+                          ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {weight.weight}
+                      {weight.weight_unit}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-1.5 mb-2">
+                <Package className="w-3 h-3 text-gray-500" />
+                <span className="text-xs text-gray-600 font-medium">
+                  {selectedWeight?.weight || defaultWeight?.weight}
+                  {selectedWeight?.weight_unit || defaultWeight?.weight_unit}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Pricing */}
+        <div className="flex items-center justify-between">
+          <div>
+            {hasDiscount && (
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs text-gray-500 line-through">
+                  ₹{displayOriginalPrice.toFixed(0)}
+                </span>
+                <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-semibold">
+                  {discountPercent}% OFF
+                </span>
+              </div>
+            )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-bold text-orange-600">
+                ₹{currentPrice.toFixed(0)}
+              </span>
+              {selectedWeight && (
+                <span className="text-xs text-gray-500">
+                  / {selectedWeight.weight}
+                  {selectedWeight.weight_unit}
+                </span>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={() => onAdd(product, selectedWeight)}
+            className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CartPage() {
   const { state, dispatch } = useCart();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const { user, isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [visibleItems, setVisibleItems] = useState<Set<string>>(new Set());
+  const [recommendations, setRecommendations] = useState<Product[]>([]);
+  const [favoriteOrders, setFavoriteOrders] = useState<any[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const [loadingFavorites, setLoadingFavorites] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     // Staggered animation for cart items
     if (state.items.length > 0) {
+      const timeouts: NodeJS.Timeout[] = [];
       state.items.forEach((item, index) => {
         const itemKey = `${item.product.id}-${
           item.selectedWeight?.weight ?? "default"
         }-${item.selectedWeight?.id ?? "base"}`;
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
           setVisibleItems((prev) => new Set(prev).add(itemKey));
         }, index * 100);
+        timeouts.push(timeout);
       });
+
+      return () => {
+        timeouts.forEach((timeout) => clearTimeout(timeout));
+      };
     }
   }, [state.items]);
+
+  // Fetch recommendations
+  useEffect(() => {
+    if (state.items.length > 0) {
+      fetchRecommendations();
+    }
+  }, [state.items]);
+
+  // Fetch favorite orders
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchFavoriteOrders();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchRecommendations = async () => {
+    setLoadingRecommendations(true);
+    try {
+      // Get product IDs from cart
+      const cartProductIds = state.items.map((item) => item.product.id);
+
+      // Fetch all products
+      const response = await fetch("/api/products");
+      if (response.ok) {
+        const allProducts = await response.json();
+
+        // Filter out products already in cart
+        const recommended = allProducts
+          .filter(
+            (p: Product) => !cartProductIds.includes(p.id) && p.is_available
+          )
+          .slice(0, 6); // Get top 6 recommendations
+
+        setRecommendations(recommended);
+      }
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  const fetchFavoriteOrders = async () => {
+    setLoadingFavorites(true);
+    try {
+      const params = new URLSearchParams();
+      if (user?.id) params.append("user_id", user.id.toString());
+      if (user?.phone) params.append("phone", user.phone);
+
+      const response = await fetch(`/api/orders/favorites?${params}`);
+      if (response.ok) {
+        const favorites = await response.json();
+        setFavoriteOrders(favorites);
+      }
+    } catch (error) {
+      console.error("Error fetching favorite orders:", error);
+    } finally {
+      setLoadingFavorites(false);
+    }
+  };
+
+  const handleQuickReorder = async (order: any) => {
+    if (!order.items || order.items.length === 0) return;
+
+    try {
+      // Fetch current product details
+      const productIds = order.items
+        .map((item: any) => item.product_id)
+        .filter(Boolean);
+      if (productIds.length === 0) return;
+
+      const response = await fetch(`/api/products?ids=${productIds.join(",")}`);
+      if (!response.ok) return;
+
+      const products = await response.json();
+      const productMap = new Map(products.map((p: Product) => [p.id, p]));
+
+      // Add items to cart
+      for (const item of order.items) {
+        const product = productMap.get(item.product_id) as Product | undefined;
+        if (product && product.is_available !== false) {
+          const defaultWeight =
+            product.weightOptions?.find((w) => w.is_default) ||
+            product.weightOptions?.[0];
+          dispatch({
+            type: "ADD_ITEM",
+            payload: {
+              product,
+              quantity: item.quantity,
+              selectedWeight: defaultWeight,
+            },
+          });
+        }
+      }
+
+      // Scroll to top of cart
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      console.error("Error reordering:", error);
+    }
+  };
+
+  const handleAddRecommendation = (
+    product: Product,
+    selectedWeight?: WeightOption
+  ) => {
+    const weightToUse =
+      selectedWeight ||
+      product.weightOptions?.find((w) => w.is_default) ||
+      product.weightOptions?.[0];
+    dispatch({
+      type: "ADD_ITEM",
+      payload: {
+        product,
+        quantity: 1,
+        selectedWeight: weightToUse,
+      },
+    });
+  };
 
   const updateQuantity = (
     productId: number,
@@ -314,6 +588,113 @@ export default function CartPage() {
                 </div>
               );
             })}
+
+            {/* Save Cart for Later */}
+            {state.items.length > 0 && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        Save Cart for Later
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Your cart is automatically saved and will persist across
+                        sessions
+                      </p>
+                    </div>
+                  </div>
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            )}
+
+            {/* Recommendations Section */}
+            {recommendations.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <TrendingUp className="w-6 h-6 text-orange-600" />
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    You May Also Like
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                  {recommendations.map((product) => (
+                    <RecommendationCard
+                      key={product.id}
+                      product={product}
+                      onAdd={handleAddRecommendation}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Favorite Orders Section */}
+            {isAuthenticated && favoriteOrders.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <Heart className="w-6 h-6 text-red-600 fill-red-600" />
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Your Favorite Orders
+                  </h2>
+                </div>
+                <div className="space-y-3">
+                  {favoriteOrders.slice(0, 3).map((order) => (
+                    <div
+                      key={order.id}
+                      className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-200 p-4"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-1">
+                            {order.order_name || `Order #${order.order_id}`}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {order.items?.length || 0} items • ₹
+                            {Number(order.total_amount || 0).toFixed(0)}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleQuickReorder(order)}
+                          className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          Reorder
+                        </button>
+                      </div>
+                      {order.items && order.items.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {order.items
+                            .slice(0, 3)
+                            .map((item: any, idx: number) => (
+                              <span
+                                key={idx}
+                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-lg"
+                              >
+                                {item.product_name} × {item.quantity}
+                              </span>
+                            ))}
+                          {order.items.length > 3 && (
+                            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-lg">
+                              +{order.items.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href="/orders"
+                  className="mt-4 inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold text-sm"
+                >
+                  View All Orders
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Order Summary - Sticky */}

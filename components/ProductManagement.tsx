@@ -489,7 +489,7 @@ export default function ProductManagement() {
                           }
                         }}
                       />
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs hidden">
+                      <div className="hidden w-full h-full bg-gray-200 items-center justify-center text-gray-500 text-xs">
                         Error
                       </div>
                     </div>

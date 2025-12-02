@@ -104,12 +104,18 @@ async function getHomePageData() {
     const productIds = productsResult.rows.map(p => p.id)
     let weightOptions: any[] = []
     if (productIds.length > 0) {
-      const weightResult = await client.query(`
-        SELECT * FROM product_weight_options 
-        WHERE product_id = ANY($1::int[])
-        ORDER BY product_id, weight
-      `, [productIds])
-      weightOptions = weightResult.rows
+      try {
+        const weightResult = await client.query(`
+          SELECT * FROM product_weight_options 
+          WHERE product_id = ANY($1::int[])
+          ORDER BY product_id, weight
+        `, [productIds])
+        weightOptions = weightResult.rows
+      } catch (error) {
+        // Table might not exist yet, use empty array
+        console.error('Error fetching weight options:', error)
+        weightOptions = []
+      }
     }
 
     // Attach weight options to products

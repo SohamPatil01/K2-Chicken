@@ -65,30 +65,54 @@ export default function OrderConfirmationPage() {
   }, [params.id]);
 
   const setupStatusStream = (orderId: string) => {
-    const eventSource = new EventSource(`/api/orders/${orderId}/status-stream`);
+    let eventSource: EventSource | null = null;
 
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("Status update received:", data);
-        if (data.status) {
-          setCurrentStatus(data.status);
-          // Update the order status in the state
-          setOrder((prev) => (prev ? { ...prev, status: data.status } : null));
+    try {
+      eventSource = new EventSource(`/api/orders/${orderId}/status-stream`);
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("Status update received:", data);
+          if (data.status) {
+            setCurrentStatus(data.status);
+            // Update the order status in the state
+            setOrder((prev) =>
+              prev ? { ...prev, status: data.status } : null
+            );
+          }
+        } catch (error) {
+          console.error("Error parsing status update:", error);
         }
-      } catch (error) {
-        console.error("Error parsing status update:", error);
-      }
-    };
+      };
 
-    eventSource.onerror = (error) => {
-      console.error("Status stream error:", error);
-      eventSource.close();
-    };
+      eventSource.onerror = (error) => {
+        // Silently handle connection errors (browser extensions, network issues, etc.)
+        if (eventSource) {
+          try {
+            eventSource.close();
+          } catch (e) {
+            // Ignore errors when closing
+          }
+        }
+      };
+
+      eventSource.onopen = () => {
+        console.log("Status stream connected");
+      };
+    } catch (error) {
+      console.error("Error setting up status stream:", error);
+    }
 
     // Clean up on component unmount
     return () => {
-      eventSource.close();
+      if (eventSource) {
+        try {
+          eventSource.close();
+        } catch (e) {
+          // Ignore errors when closing
+        }
+      }
     };
   };
 

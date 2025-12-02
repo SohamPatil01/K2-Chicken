@@ -44,6 +44,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const all = searchParams.get('all') === 'true'
+    const idsParam = searchParams.get('ids')
+    const productIds = idsParam ? idsParam.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id)) : null
     
     const client = await pool.connect()
     
@@ -51,22 +53,39 @@ export async function GET(request: NextRequest) {
       // Check columns (cached after first check)
       const { hasStockColumns, hasOriginalPriceColumn } = await checkColumns(client)
       
-      const query = all 
-        ? `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
-                  ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
-                  ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
-                  ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
-           FROM products 
-           ORDER BY category, name`
-        : `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
-                  ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
-                  ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
-                  ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
-           FROM products 
-           WHERE is_available = true 
-           ORDER BY category, name`
+      let query: string
+      let queryParams: any[] = []
       
-      const result = await client.query(query)
+      if (productIds && productIds.length > 0) {
+        // Fetch specific products by IDs
+        query = `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+                  ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
+                  ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
+                  ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
+           FROM products 
+           WHERE id = ANY($1::int[])
+           ORDER BY category, name`
+        queryParams = [productIds]
+      } else {
+        query = all 
+          ? `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+                    ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
+                    ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
+                    ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
+             FROM products 
+             ORDER BY category, name`
+          : `SELECT id, name, description, price, ${hasOriginalPriceColumn ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+                    ${hasStockColumns ? 'COALESCE(stock_quantity, 100) as stock_quantity,' : '100 as stock_quantity,'}
+                    ${hasStockColumns ? 'COALESCE(low_stock_threshold, 10) as low_stock_threshold,' : '10 as low_stock_threshold,'}
+                    ${hasStockColumns ? 'COALESCE(in_stock, true) as in_stock' : 'true as in_stock'}
+             FROM products 
+             WHERE is_available = true 
+             ORDER BY category, name`
+      }
+      
+      const result = queryParams.length > 0 
+        ? await client.query(query, queryParams)
+        : await client.query(query)
       
       // Check if product_weight_options table exists (cached check)
       let hasWeightOptionsTable = false

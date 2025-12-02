@@ -141,7 +141,7 @@ export default function Header() {
               <div className="absolute inset-0 bg-gradient-to-br from-orange-400/30 via-red-400/20 to-orange-400/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10 scale-110"></div>
               {/* Pulse effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 animate-pulse -z-10"></div>
-              
+
               <div className="relative transform group-hover:scale-105 transition-all duration-300">
                 <img
                   src="/logo.png"
@@ -154,7 +154,7 @@ export default function Header() {
                 />
               </div>
             </div>
-            
+
             <div className="hidden sm:block transform group-hover:translate-x-1 transition-transform duration-300">
               <div
                 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent leading-tight group-hover:from-orange-700 group-hover:via-orange-600 group-hover:to-red-700 transition-all duration-300"
@@ -192,7 +192,7 @@ export default function Header() {
                     : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 }`}
               ></div>
-              
+
               {/* Text with icon */}
               <span className="relative z-10 flex items-center gap-2">
                 <Home
@@ -205,7 +205,7 @@ export default function Header() {
                 />
                 Home
               </span>
-              
+
               {/* Active indicator */}
               {isActive("/") && (
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
@@ -229,7 +229,7 @@ export default function Header() {
                     : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 }`}
               ></div>
-              
+
               <span className="relative z-10 flex items-center gap-2">
                 <Package
                   size={16}
@@ -241,7 +241,7 @@ export default function Header() {
                 />
                 Products
               </span>
-              
+
               {isActive("/#products") && (
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
               )}
@@ -263,7 +263,7 @@ export default function Header() {
                     : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
                 }`}
               ></div>
-              
+
               <span className="relative z-10 flex items-center gap-2">
                 <ChefHat
                   size={16}
@@ -275,7 +275,7 @@ export default function Header() {
                 />
                 Recipes
               </span>
-              
+
               {isActive("/recipes") && (
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
               )}
@@ -393,9 +393,7 @@ export default function Header() {
         {/* Mobile Navigation - Enhanced */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-            isMenuOpen
-              ? "max-h-[600px] opacity-100"
-              : "max-h-0 opacity-0"
+            isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="py-4 border-t border-gray-100/50 bg-white/98 backdrop-blur-sm">

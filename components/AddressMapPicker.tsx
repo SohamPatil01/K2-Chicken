@@ -370,13 +370,23 @@ export default function AddressMapPicker({
       }, 100);
 
       // Cleanup interval after 10 seconds
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         clearInterval(checkGoogle);
         if (!window.google) {
           console.error("Google Maps failed to load after 10 seconds");
           setIsLoading(false);
         }
       }, 10000);
+
+      return () => {
+        clearInterval(checkGoogle);
+        clearTimeout(timeoutId);
+        // Cleanup - don't remove the script as it might be used by other components
+        // Just clear the map instance references
+        mapInstance = null;
+        markerInstance = null;
+        geocoderInstance = null;
+      };
     }
 
     return () => {

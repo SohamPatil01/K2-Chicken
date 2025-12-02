@@ -480,11 +480,17 @@ export default function ProductCatalog({
     setMounted(true);
     // Staggered animation for products
     if (filteredProducts.length > 0) {
+      const timeouts: NodeJS.Timeout[] = [];
       filteredProducts.forEach((product, index) => {
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
           setVisibleProducts((prev) => new Set(prev).add(product.id));
         }, index * 50);
+        timeouts.push(timeout);
       });
+
+      return () => {
+        timeouts.forEach((timeout) => clearTimeout(timeout));
+      };
     }
   }, [filteredProducts]);
 

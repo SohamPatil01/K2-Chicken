@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       customerName, 
       customerPhone, 
       deliveryAddress, 
+      deliveryInstructions,
       deliveryType, 
       items, 
       subtotal, 
@@ -159,12 +160,24 @@ export async function POST(request: NextRequest) {
       // Calculate estimated delivery time using PostgreSQL's NOW() for timezone-aware calculation
       const estimatedMinutes = deliveryType === 'delivery' ? 45 : 20
       
+      // Ensure delivery_instructions column exists
+      await client.query(`
+        DO $$ 
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                         WHERE table_name='orders' AND column_name='delivery_instructions') THEN
+            ALTER TABLE orders ADD COLUMN delivery_instructions TEXT;
+          END IF;
+        END $$;
+      `)
+
       // Insert order - use PostgreSQL's NOW() + INTERVAL for timezone-aware time calculation
       const orderResult = await client.query(`
         INSERT INTO orders (
           customer_name, 
           customer_phone, 
           delivery_address, 
+          delivery_instructions,
           delivery_type, 
           subtotal, 
           delivery_charge, 
@@ -178,12 +191,13 @@ export async function POST(request: NextRequest) {
           preferred_delivery_date,
           preferred_delivery_time
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW() + INTERVAL '${estimatedMinutes} minutes', $11, $12, $13, $14)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW() + INTERVAL '${estimatedMinutes} minutes', $12, $13, $14, $15)
         RETURNING *
       `, [
         customerName,
         customerPhone,
         deliveryType === 'delivery' ? deliveryAddress : 'Pickup at store',
+        deliveryInstructions || null,
         deliveryType || 'delivery',
         finalSubtotal,
         finalDeliveryCharge,

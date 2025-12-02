@@ -1,140 +1,214 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import Link from 'next/link'
-import { Clock, MapPin, Package, CheckCircle, XCircle, AlertCircle, Truck, Store, Calendar, ArrowRight, Sparkles, ShoppingBag } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
+import {
+  Clock,
+  MapPin,
+  Package,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Truck,
+  Store,
+  Calendar,
+  ArrowRight,
+  Sparkles,
+  ShoppingBag,
+  Heart,
+} from "lucide-react";
 
 interface Order {
-  id: number
-  customer_name: string
-  customer_phone: string
-  delivery_address: string
-  delivery_type: string
-  total_amount: number
-  subtotal?: number
-  delivery_charge?: number
-  discount_amount?: number
-  status: string
-  estimated_delivery: string
-  preferred_delivery_date?: string
-  preferred_delivery_time?: string
-  created_at: string
+  id: number;
+  customer_name: string;
+  customer_phone: string;
+  delivery_address: string;
+  delivery_type: string;
+  total_amount: number;
+  subtotal?: number;
+  delivery_charge?: number;
+  discount_amount?: number;
+  status: string;
+  estimated_delivery: string;
+  preferred_delivery_date?: string;
+  preferred_delivery_time?: string;
+  created_at: string;
   items: Array<{
-    product_name: string
-    quantity: number
-    price: number
-  }>
+    product_name: string;
+    quantity: number;
+    price: number;
+  }>;
 }
 
 export default function OrdersPage() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth()
-  const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(true)
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [favoriteOrderIds, setFavoriteOrderIds] = useState<Set<number>>(
+    new Set()
+  );
 
   useEffect(() => {
     if (!authLoading) {
       if (isAuthenticated) {
-        fetchOrders()
+        fetchOrders();
+        fetchFavoriteOrders();
       } else {
-        setLoading(false)
+        setLoading(false);
       }
     }
-  }, [isAuthenticated, authLoading])
+  }, [isAuthenticated, authLoading]);
+
+  const fetchFavoriteOrders = async () => {
+    if (!user) return;
+    try {
+      const params = new URLSearchParams();
+      if (user.id) params.append("user_id", user.id.toString());
+      if (user.phone) params.append("phone", user.phone);
+
+      const response = await fetch(`/api/orders/favorites?${params}`);
+      if (response.ok) {
+        const favorites = await response.json();
+        setFavoriteOrderIds(new Set(favorites.map((f: any) => f.order_id)));
+      }
+    } catch (error) {
+      console.error("Error fetching favorite orders:", error);
+    }
+  };
+
+  const toggleFavorite = async (orderId: number) => {
+    if (!user) return;
+
+    const isFavorite = favoriteOrderIds.has(orderId);
+
+    try {
+      if (isFavorite) {
+        // Remove from favorites
+        const params = new URLSearchParams();
+        if (user.id) params.append("user_id", user.id.toString());
+        if (user.phone) params.append("user_phone", user.phone);
+        params.append("order_id", orderId.toString());
+
+        await fetch(`/api/orders/favorites?${params}`, { method: "DELETE" });
+        setFavoriteOrderIds((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(orderId);
+          return newSet;
+        });
+      } else {
+        // Add to favorites
+        const order = orders.find((o) => o.id === orderId);
+        await fetch("/api/orders/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user.id || null,
+            user_phone: user.phone || null,
+            order_id: orderId,
+            order_name: order ? `Order #${orderId}` : undefined,
+          }),
+        });
+        setFavoriteOrderIds((prev) => new Set(prev).add(orderId));
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('/api/orders/my', {
-        credentials: 'include' // Include cookies for authentication
-      })
+      const response = await fetch("/api/orders/my", {
+        credentials: "include", // Include cookies for authentication
+      });
       if (response.ok) {
-        const data = await response.json()
-        console.log('Orders fetched:', data)
-        setOrders(Array.isArray(data) ? data : [])
+        const data = await response.json();
+        console.log("Orders fetched:", data);
+        setOrders(Array.isArray(data) ? data : []);
       } else {
-        const errorData = await response.json().catch(() => ({}))
-        console.error('Error fetching orders:', response.status, errorData)
-        setOrders([])
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Error fetching orders:", response.status, errorData);
+        setOrders([]);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error)
-      setOrders([])
+      console.error("Error fetching orders:", error);
+      setOrders([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'delivered':
-        return <CheckCircle className="h-6 w-6 text-green-500" />
-      case 'cancelled':
-        return <XCircle className="h-6 w-6 text-red-500" />
-      case 'preparing':
-        return <Package className="h-6 w-6 text-orange-500" />
-      case 'ready':
-      case 'ready_for_pickup':
-        return <AlertCircle className="h-6 w-6 text-blue-500" />
+      case "delivered":
+        return <CheckCircle className="h-6 w-6 text-green-500" />;
+      case "cancelled":
+        return <XCircle className="h-6 w-6 text-red-500" />;
+      case "preparing":
+        return <Package className="h-6 w-6 text-orange-500" />;
+      case "ready":
+      case "ready_for_pickup":
+        return <AlertCircle className="h-6 w-6 text-blue-500" />;
       default:
-        return <Clock className="h-6 w-6 text-gray-500" />
+        return <Clock className="h-6 w-6 text-gray-500" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered':
-        return 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-300 shadow-lg shadow-green-200'
-      case 'cancelled':
-        return 'bg-gradient-to-r from-red-500 to-rose-500 text-white border-red-300 shadow-lg shadow-red-200'
-      case 'preparing':
-        return 'bg-gradient-to-r from-orange-500 to-amber-500 text-white border-orange-300 shadow-lg shadow-orange-200'
-      case 'ready':
-      case 'ready_for_pickup':
-        return 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-blue-300 shadow-lg shadow-blue-200'
+      case "delivered":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-300 shadow-lg shadow-green-200";
+      case "cancelled":
+        return "bg-gradient-to-r from-red-500 to-rose-500 text-white border-red-300 shadow-lg shadow-red-200";
+      case "preparing":
+        return "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-orange-300 shadow-lg shadow-orange-200";
+      case "ready":
+      case "ready_for_pickup":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-blue-300 shadow-lg shadow-blue-200";
       default:
-        return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white border-gray-300 shadow-lg shadow-gray-200'
+        return "bg-gradient-to-r from-gray-400 to-gray-500 text-white border-gray-300 shadow-lg shadow-gray-200";
     }
-  }
+  };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'delivered':
-        return 'Delivered'
-      case 'cancelled':
-        return 'Cancelled'
-      case 'preparing':
-        return 'Preparing'
-      case 'ready':
-        return 'Ready'
-      case 'ready_for_pickup':
-        return 'Ready for Pickup'
-      case 'pending':
-        return 'Pending'
-      case 'received':
-        return 'Received'
+      case "delivered":
+        return "Delivered";
+      case "cancelled":
+        return "Cancelled";
+      case "preparing":
+        return "Preparing";
+      case "ready":
+        return "Ready";
+      case "ready_for_pickup":
+        return "Ready for Pickup";
+      case "pending":
+        return "Pending";
+      case "received":
+        return "Received";
       default:
-        return status.charAt(0).toUpperCase() + status.slice(1)
+        return status.charAt(0).toUpperCase() + status.slice(1);
     }
-  }
+  };
 
   const getStatusProgress = (status: string) => {
     switch (status) {
-      case 'delivered':
-        return 100
-      case 'ready':
-      case 'ready_for_pickup':
-        return 75
-      case 'preparing':
-        return 50
-      case 'pending':
-      case 'received':
-        return 25
-      case 'cancelled':
-        return 0
+      case "delivered":
+        return 100;
+      case "ready":
+      case "ready_for_pickup":
+        return 75;
+      case "preparing":
+        return 50;
+      case "pending":
+      case "received":
+        return 25;
+      case "cancelled":
+        return 0;
       default:
-        return 25
+        return 25;
     }
-  }
+  };
 
   if (authLoading || loading) {
     return (
@@ -142,11 +216,13 @@ export default function OrdersPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto"></div>
-            <p className="mt-6 text-lg text-gray-600 font-medium">Loading your orders...</p>
+            <p className="mt-6 text-lg text-gray-600 font-medium">
+              Loading your orders...
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
@@ -157,12 +233,14 @@ export default function OrdersPage() {
             <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <ShoppingBag className="h-10 w-10 text-orange-600" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Please Login</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Please Login
+            </h1>
             <p className="text-lg text-gray-600 mb-8">
               You need to be logged in to view your order history.
             </p>
-            <Link 
-              href="/login?redirect=/orders" 
+            <Link
+              href="/login?redirect=/orders"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span>Login Now</span>
@@ -171,7 +249,7 @@ export default function OrdersPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -187,7 +265,9 @@ export default function OrdersPage() {
                   My Orders
                 </h1>
               </div>
-              <p className="text-gray-600 text-lg animate-slide-up stagger-1">Track your orders and view your history</p>
+              <p className="text-gray-600 text-lg animate-slide-up stagger-1">
+                Track your orders and view your history
+              </p>
             </div>
             <Link
               href="/"
@@ -204,12 +284,15 @@ export default function OrdersPage() {
             <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Package className="h-12 w-12 text-orange-500" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">No Orders Yet</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              No Orders Yet
+            </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
-              Start your delicious journey! Place your first order and experience the best chicken in town.
+              Start your delicious journey! Place your first order and
+              experience the best chicken in town.
             </p>
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span>Start Shopping</span>
@@ -219,10 +302,10 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-6">
             {orders.map((order, index) => {
-              const progress = getStatusProgress(order.status)
+              const progress = getStatusProgress(order.status);
               return (
-                <div 
-                  key={order.id} 
+                <div
+                  key={order.id}
                   className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:scale-[1.01] animate-slide-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
@@ -230,33 +313,53 @@ export default function OrdersPage() {
                   <div className="bg-gradient-to-r from-gray-50 to-orange-50 p-6 border-b border-gray-200 relative overflow-hidden">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex items-start gap-4">
-                        <div className={`p-3 rounded-xl ${getStatusColor(order.status)} transform transition-all duration-300 hover:scale-110`}>
+                        <div
+                          className={`p-3 rounded-xl ${getStatusColor(
+                            order.status
+                          )} transform transition-all duration-300 hover:scale-110`}
+                        >
                           {getStatusIcon(order.status)}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-2xl font-bold text-gray-900">Order #{order.id}</h3>
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold border-2 ${getStatusColor(order.status)}`}>
+                            <h3 className="text-2xl font-bold text-gray-900">
+                              Order #{order.id}
+                            </h3>
+                            <span
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold border-2 ${getStatusColor(
+                                order.status
+                              )}`}
+                            >
                               {getStatusText(order.status)}
                             </span>
                           </div>
                           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
-                              <span>{new Date(order.created_at).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                              })}</span>
+                              <span>
+                                {new Date(order.created_at).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4" />
-                              <span>{new Date(order.created_at).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}</span>
+                              <span>
+                                {new Date(order.created_at).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </span>
                             </div>
-                            {order.delivery_type === 'pickup' ? (
+                            {order.delivery_type === "pickup" ? (
                               <div className="flex items-center gap-2">
                                 <Store className="h-4 w-4" />
                                 <span>Pickup</span>
@@ -274,30 +377,57 @@ export default function OrdersPage() {
                         <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
                           ₹{Number(order.total_amount).toFixed(0)}
                         </div>
-                        <Link 
-                          href={`/order-confirmation/${order.id}`}
-                          className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold group px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-300"
-                        >
-                          <span>View Details</span>
-                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                        <div className="flex items-center gap-2 justify-end">
+                          <button
+                            onClick={() => toggleFavorite(order.id)}
+                            className={`p-2 rounded-lg transition-all duration-300 ${
+                              favoriteOrderIds.has(order.id)
+                                ? "text-red-600 bg-red-50 hover:bg-red-100"
+                                : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+                            }`}
+                            title={
+                              favoriteOrderIds.has(order.id)
+                                ? "Remove from favorites"
+                                : "Add to favorites"
+                            }
+                          >
+                            <Heart
+                              className={`h-5 w-5 transition-all duration-300 ${
+                                favoriteOrderIds.has(order.id)
+                                  ? "fill-red-600"
+                                  : ""
+                              }`}
+                            />
+                          </button>
+                          <Link
+                            href={`/order-confirmation/${order.id}`}
+                            className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold group px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-300"
+                          >
+                            <span>View Details</span>
+                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
 
                     {/* Progress Bar */}
-                    {order.status !== 'cancelled' && (
+                    {order.status !== "cancelled" && (
                       <div className="mt-4">
                         <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
                           <span>Order Progress</span>
                           <span>{progress}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                          <div 
+                          <div
                             className={`h-full rounded-full transition-all duration-500 ${
-                              order.status === 'delivered' ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
-                              order.status === 'ready' || order.status === 'ready_for_pickup' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
-                              order.status === 'preparing' ? 'bg-gradient-to-r from-orange-500 to-amber-500' :
-                              'bg-gradient-to-r from-gray-400 to-gray-500'
+                              order.status === "delivered"
+                                ? "bg-gradient-to-r from-green-500 to-emerald-500"
+                                : order.status === "ready" ||
+                                  order.status === "ready_for_pickup"
+                                ? "bg-gradient-to-r from-blue-500 to-cyan-500"
+                                : order.status === "preparing"
+                                ? "bg-gradient-to-r from-orange-500 to-amber-500"
+                                : "bg-gradient-to-r from-gray-400 to-gray-500"
                             }`}
                             style={{ width: `${progress}%` }}
                           ></div>
@@ -316,14 +446,16 @@ export default function OrdersPage() {
                       </h4>
                       <div className="space-y-2">
                         {order.items?.map((item, index) => (
-                          <div 
-                            key={index} 
+                          <div
+                            key={index}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] animate-slide-up"
                             style={{ animationDelay: `${index * 0.05}s` }}
                           >
                             <div className="flex items-center gap-3">
                               <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                              <span className="text-sm font-medium text-gray-900">{item.product_name}</span>
+                              <span className="text-sm font-medium text-gray-900">
+                                {item.product_name}
+                              </span>
                               <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full">
                                 x{item.quantity}
                               </span>
@@ -338,24 +470,34 @@ export default function OrdersPage() {
 
                     {/* Order Details Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                      {order.delivery_type === 'delivery' && order.delivery_address && (
-                        <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                          <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs font-semibold text-blue-900 mb-1">Delivery Address</p>
-                            <p className="text-sm text-blue-700">{order.delivery_address}</p>
+                      {order.delivery_type === "delivery" &&
+                        order.delivery_address && (
+                          <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs font-semibold text-blue-900 mb-1">
+                                Delivery Address
+                              </p>
+                              <p className="text-sm text-blue-700">
+                                {order.delivery_address}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      
+                        )}
+
                       {order.preferred_delivery_date && (
                         <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
                           <Calendar className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="text-xs font-semibold text-purple-900 mb-1">Preferred Time</p>
+                            <p className="text-xs font-semibold text-purple-900 mb-1">
+                              Preferred Time
+                            </p>
                             <p className="text-sm text-purple-700">
-                              {new Date(order.preferred_delivery_date).toLocaleDateString()}
-                              {order.preferred_delivery_time && ` • ${order.preferred_delivery_time}`}
+                              {new Date(
+                                order.preferred_delivery_date
+                              ).toLocaleDateString()}
+                              {order.preferred_delivery_time &&
+                                ` • ${order.preferred_delivery_time}`}
                             </p>
                           </div>
                         </div>
@@ -364,16 +506,21 @@ export default function OrdersPage() {
 
                     {/* Price Breakdown */}
                     <div className="border-t border-gray-200 pt-4 space-y-2">
-                      {order.subtotal && order.subtotal !== order.total_amount && (
-                        <div className="flex justify-between text-sm text-gray-600">
-                          <span>Subtotal</span>
-                          <span className="font-medium">₹{Number(order.subtotal).toFixed(0)}</span>
-                        </div>
-                      )}
+                      {order.subtotal &&
+                        order.subtotal !== order.total_amount && (
+                          <div className="flex justify-between text-sm text-gray-600">
+                            <span>Subtotal</span>
+                            <span className="font-medium">
+                              ₹{Number(order.subtotal).toFixed(0)}
+                            </span>
+                          </div>
+                        )}
                       {order.delivery_charge && order.delivery_charge > 0 && (
                         <div className="flex justify-between text-sm text-gray-600">
                           <span>Delivery Charge</span>
-                          <span className="font-medium">₹{Number(order.delivery_charge).toFixed(0)}</span>
+                          <span className="font-medium">
+                            ₹{Number(order.delivery_charge).toFixed(0)}
+                          </span>
                         </div>
                       )}
                       {order.discount_amount && order.discount_amount > 0 && (
@@ -382,11 +529,15 @@ export default function OrdersPage() {
                             <Sparkles className="h-4 w-4" />
                             Discount Applied
                           </span>
-                          <span className="text-green-600 font-bold text-lg">-₹{Number(order.discount_amount).toFixed(0)}</span>
+                          <span className="text-green-600 font-bold text-lg">
+                            -₹{Number(order.discount_amount).toFixed(0)}
+                          </span>
                         </div>
                       )}
                       <div className="flex justify-between items-center pt-3 border-t-2 border-gray-300">
-                        <span className="text-base font-bold text-gray-900">Total Amount</span>
+                        <span className="text-base font-bold text-gray-900">
+                          Total Amount
+                        </span>
                         <span className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                           ₹{Number(order.total_amount).toFixed(0)}
                         </span>
@@ -394,12 +545,11 @@ export default function OrdersPage() {
                     </div>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
-
