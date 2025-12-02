@@ -1,144 +1,164 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Tag, Calendar, Percent, Sparkles, ArrowRight, ChevronLeft, ChevronRight, Zap, Gift } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Tag,
+  Calendar,
+  Percent,
+  Sparkles,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Zap,
+  Gift,
+} from "lucide-react";
 
 interface Promotion {
-  id: number
-  title: string
-  description?: string
-  discount_type?: 'percentage' | 'fixed' | 'buy_x_get_y' | 'free_delivery'
-  discount_value?: number
-  promo_code?: string
-  image_url?: string
-  start_date?: string
-  end_date?: string
-  is_active: boolean
-  display_order: number
+  id: number;
+  title: string;
+  description?: string;
+  discount_type?: "percentage" | "fixed" | "buy_x_get_y" | "free_delivery";
+  discount_value?: number;
+  promo_code?: string;
+  image_url?: string;
+  start_date?: string;
+  end_date?: string;
+  is_active: boolean;
+  display_order: number;
 }
 
 interface PromotionsFlyerProps {
-  initialPromotions?: Promotion[]
+  initialPromotions?: Promotion[];
 }
 
-export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerProps = {}) {
-  const router = useRouter()
-  const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions || [])
-  const [loading, setLoading] = useState(!initialPromotions)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+export default function PromotionsFlyer({
+  initialPromotions,
+}: PromotionsFlyerProps = {}) {
+  const router = useRouter();
+  const [promotions, setPromotions] = useState<Promotion[]>(
+    initialPromotions || []
+  );
+  const [loading, setLoading] = useState(!initialPromotions);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     if (initialPromotions && initialPromotions.length > 0) {
-      setPromotions(initialPromotions)
-      setLoading(false)
+      setPromotions(initialPromotions);
+      setLoading(false);
     } else if (!initialPromotions) {
-      fetchPromotions()
+      fetchPromotions();
     }
-  }, [initialPromotions])
+  }, [initialPromotions]);
 
   useEffect(() => {
     if (promotions.length > 1 && !isPaused) {
       const interval = setInterval(() => {
-        setIsTransitioning(true)
+        setIsTransitioning(true);
         setTimeout(() => {
-          setCurrentIndex((prev) => (prev + 1) % promotions.length)
-          setIsTransitioning(false)
-        }, 300)
-      }, 5000)
+          setCurrentIndex((prev) => (prev + 1) % promotions.length);
+          setIsTransitioning(false);
+        }, 300);
+      }, 5000);
 
-      return () => clearInterval(interval)
+      return () => clearInterval(interval);
     }
-  }, [promotions.length, isPaused])
+  }, [promotions.length, isPaused]);
 
   const fetchPromotions = async () => {
     try {
-      const response = await fetch('/api/promotions?active=true', {
-        next: { revalidate: 60 } // Cache for 60 seconds
-      })
-      const data = await response.json()
+      const response = await fetch("/api/promotions?active=true", {
+        next: { revalidate: 60 }, // Cache for 60 seconds
+      });
+      const data = await response.json();
       const activePromotions = Array.isArray(data)
         ? data.filter((p: Promotion) => {
-            if (!p.is_active) return false
-            const today = new Date()
-            today.setHours(0, 0, 0, 0)
+            if (!p.is_active) return false;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             if (p.end_date) {
-              const endDate = new Date(p.end_date)
-              if (endDate < today) return false
+              const endDate = new Date(p.end_date);
+              if (endDate < today) return false;
             }
             if (p.start_date) {
-              const startDate = new Date(p.start_date)
-              if (startDate > today) return false
+              const startDate = new Date(p.start_date);
+              if (startDate > today) return false;
             }
-            return true
+            return true;
           })
-        : []
-      setPromotions(activePromotions)
+        : [];
+      setPromotions(activePromotions);
     } catch (error) {
-      console.error('Error fetching promotions:', error)
-      setPromotions([])
+      console.error("Error fetching promotions:", error);
+      setPromotions([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const formatDiscount = (promo: Promotion) => {
-    if (promo.discount_type === 'percentage' && promo.discount_value) {
-      return `${promo.discount_value}%`
-    } else if (promo.discount_type === 'fixed' && promo.discount_value) {
-      return `₹${promo.discount_value}`
-    } else if (promo.discount_type === 'free_delivery') {
-      return 'FREE'
-    } else if (promo.discount_type === 'buy_x_get_y') {
-      return 'BUY X GET Y'
+    if (promo.discount_type === "percentage" && promo.discount_value) {
+      // Remove .00 from percentage values
+      const value = Number(promo.discount_value);
+      return `${value % 1 === 0 ? value.toFixed(0) : value}%`;
+    } else if (promo.discount_type === "fixed" && promo.discount_value) {
+      // Remove .00 from fixed discount values
+      const value = Number(promo.discount_value);
+      return `₹${value % 1 === 0 ? value.toFixed(0) : value}`;
+    } else if (promo.discount_type === "free_delivery") {
+      return "FREE";
+    } else if (promo.discount_type === "buy_x_get_y") {
+      return "BUY X GET Y";
     }
-    return 'SPECIAL'
-  }
+    return "SPECIAL";
+  };
 
   const goToSlide = (index: number) => {
     if (index !== currentIndex) {
-      setIsTransitioning(true)
+      setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentIndex(index)
-        setIsTransitioning(false)
-      }, 300)
+        setCurrentIndex(index);
+        setIsTransitioning(false);
+      }, 300);
     }
-  }
+  };
 
   if (loading) {
-    return null
+    return null;
   }
 
   if (promotions.length === 0) {
-    return null
+    return null;
   }
 
-  const currentPromo = promotions[currentIndex]
+  const currentPromo = promotions[currentIndex];
 
   const goToPrevious = () => {
     if (promotions.length > 1) {
-      setIsTransitioning(true)
+      setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentIndex((prev) => (prev - 1 + promotions.length) % promotions.length)
-        setIsTransitioning(false)
-      }, 300)
+        setCurrentIndex(
+          (prev) => (prev - 1 + promotions.length) % promotions.length
+        );
+        setIsTransitioning(false);
+      }, 300);
     }
-  }
+  };
 
   const goToNext = () => {
     if (promotions.length > 1) {
-      setIsTransitioning(true)
+      setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % promotions.length)
-        setIsTransitioning(false)
-      }, 300)
+        setCurrentIndex((prev) => (prev + 1) % promotions.length);
+        setIsTransitioning(false);
+      }, 300);
     }
-  }
+  };
 
   return (
-    <section 
+    <section
       className="relative w-full overflow-hidden bg-gradient-to-br from-orange-50 via-red-50 to-orange-50"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -147,15 +167,15 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 via-red-100/50 to-orange-100/50"></div>
       </div>
-      
+
       {/* Subtle animated overlay pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div 
+        <div
           className="absolute inset-0"
           style={{
             backgroundImage: `radial-gradient(circle at 20% 50%, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
                              radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.1) 0%, transparent 50%)`,
-            animation: 'float 20s ease-in-out infinite'
+            animation: "float 20s ease-in-out infinite",
           }}
         ></div>
       </div>
@@ -170,7 +190,7 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
               left: `${15 + i * 20}%`,
               top: `${20 + (i % 2) * 40}%`,
               animation: `float ${5 + (i % 2)}s ease-in-out infinite`,
-              animationDelay: `${i * 0.5}s`
+              animationDelay: `${i * 0.5}s`,
             }}
           />
         ))}
@@ -212,26 +232,39 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
                 <div className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-orange-700/80 mb-1 animate-fade-in">
                   Special Offer
                 </div>
-                <div className={`text-2xl sm:text-3xl md:text-4xl font-bold transform transition-all duration-500 ${
-                  isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-                }`}>
+                <div
+                  className={`text-2xl sm:text-3xl md:text-4xl font-bold transform transition-all duration-500 ${
+                    isTransitioning
+                      ? "opacity-0 scale-95"
+                      : "opacity-100 scale-100"
+                  }`}
+                >
                   <span className="text-orange-600">
                     {formatDiscount(currentPromo)}
                   </span>
-                  {(currentPromo.discount_type === 'percentage' || currentPromo.discount_type === 'fixed') && (
-                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">OFF</span>
+                  {(currentPromo.discount_type === "percentage" ||
+                    currentPromo.discount_type === "fixed") && (
+                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">
+                      OFF
+                    </span>
                   )}
-                  {currentPromo.discount_type === 'free_delivery' && (
-                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">DELIVERY</span>
+                  {currentPromo.discount_type === "free_delivery" && (
+                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">
+                      DELIVERY
+                    </span>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Center - Promotion Details with enhanced slide animation */}
-            <div className={`flex-1 text-center transform transition-all duration-500 px-4 ${
-              isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
-            }`}>
+            <div
+              className={`flex-1 text-center transform transition-all duration-500 px-4 ${
+                isTransitioning
+                  ? "opacity-0 translate-y-4"
+                  : "opacity-100 translate-y-0"
+              }`}
+            >
               <div className="inline-flex items-center space-x-2 mb-2 animate-scale-in">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
                 <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-orange-700/80 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-orange-200">
@@ -239,44 +272,58 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
                 </span>
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
               </div>
-              
+
               <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight text-gray-900">
                 {currentPromo.title}
               </h3>
-              
+
               {currentPromo.description && (
                 <p className="text-sm sm:text-base text-gray-700 mb-3 font-normal max-w-2xl mx-auto leading-relaxed">
                   {currentPromo.description}
                 </p>
               )}
-              
+
               {currentPromo.promo_code && (
                 <button
                   onClick={() => {
                     // Redirect to checkout page with promo code in URL
                     if (currentPromo.promo_code) {
-                      router.push(`/checkout?promo=${encodeURIComponent(currentPromo.promo_code)}`)
+                      router.push(
+                        `/checkout?promo=${encodeURIComponent(
+                          currentPromo.promo_code
+                        )}`
+                      );
                     } else {
-                      router.push('/checkout')
+                      router.push("/checkout");
                     }
                   }}
                   className="mt-3 inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-orange-200 shadow-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:bg-white hover:shadow-md"
                 >
-                  <span className="text-xs sm:text-sm font-semibold text-gray-700">Use Code:</span>
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+                    Use Code:
+                  </span>
                   <span className="text-base sm:text-lg md:text-xl font-bold tracking-wide text-orange-600">
                     {currentPromo.promo_code}
                   </span>
                   <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
               )}
-              
+
               {(currentPromo.start_date || currentPromo.end_date) && (
                 <div className="mt-3 flex items-center justify-center space-x-2 text-xs sm:text-sm text-gray-600">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="font-medium">
-                    {currentPromo.start_date && new Date(currentPromo.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    {currentPromo.start_date && currentPromo.end_date && ' - '}
-                    {currentPromo.end_date && new Date(currentPromo.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {currentPromo.start_date &&
+                      new Date(currentPromo.start_date).toLocaleDateString(
+                        "en-US",
+                        { month: "short", day: "numeric" }
+                      )}
+                    {currentPromo.start_date && currentPromo.end_date && " - "}
+                    {currentPromo.end_date &&
+                      new Date(currentPromo.end_date).toLocaleDateString(
+                        "en-US",
+                        { month: "short", day: "numeric", year: "numeric" }
+                      )}
                   </span>
                 </div>
               )}
@@ -290,13 +337,11 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
                     key={index}
                     onClick={() => goToSlide(index)}
                     className={`relative transition-all duration-300 group ${
-                      index === currentIndex
-                        ? 'w-2.5 h-8 lg:h-10' 
-                        : 'w-2 h-2'
+                      index === currentIndex ? "w-2.5 h-8 lg:h-10" : "w-2 h-2"
                     } rounded-full ${
                       index === currentIndex
-                        ? 'bg-orange-600 shadow-md'
-                        : 'bg-orange-300/50 hover:bg-orange-300'
+                        ? "bg-orange-600 shadow-md"
+                        : "bg-orange-300/50 hover:bg-orange-300"
                     }`}
                     aria-label={`Go to promotion ${index + 1}`}
                   >
@@ -311,5 +356,5 @@ export default function PromotionsFlyer({ initialPromotions }: PromotionsFlyerPr
         </div>
       </div>
     </section>
-  )
+  );
 }

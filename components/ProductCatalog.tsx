@@ -126,7 +126,7 @@ function ProductCard({
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-300 transform hover:-translate-y-0.5"
+      className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl"
       onMouseEnter={() => setShowInfo(true)}
       onMouseLeave={() => setShowInfo(false)}
     >
@@ -436,6 +436,10 @@ export default function ProductCatalog({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string>("all");
+  const [mounted, setMounted] = useState(false);
+  const [visibleProducts, setVisibleProducts] = useState<Set<number>>(
+    new Set()
+  );
   const { state, dispatch } = useCart();
 
   // Bestseller products (you can make this dynamic based on order data)
@@ -471,6 +475,18 @@ export default function ProductCatalog({
     const base = Number((product as any).original_price);
     return base && base > Number(product.price);
   }).length;
+
+  useEffect(() => {
+    setMounted(true);
+    // Staggered animation for products
+    if (filteredProducts.length > 0) {
+      filteredProducts.forEach((product, index) => {
+        setTimeout(() => {
+          setVisibleProducts((prev) => new Set(prev).add(product.id));
+        }, index * 50);
+      });
+    }
+  }, [filteredProducts]);
 
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
@@ -665,18 +681,37 @@ export default function ProductCatalog({
     <section className="relative py-20 bg-gradient-to-b from-gray-50 via-orange-50/15 to-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.15),transparent_45%)] pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
-          <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-orange-200 text-orange-700 text-xs sm:text-sm font-semibold shadow-sm">
+        <div
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
+          }`}
+        >
+          <p
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-orange-200 text-orange-700 text-xs sm:text-sm font-semibold shadow-sm transition-all duration-500 ${
+              mounted ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }`}
+            style={{ transitionDelay: "0.1s" }}
+          >
             <Sparkles className="h-4 w-4 text-orange-500" />
             Chef-selected for your kitchen
           </p>
-          <h2 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
+          <h2
+            className={`mt-4 text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-tight transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "0.2s" }}
+          >
             Product{" "}
             <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
               Collection
             </span>
           </h2>
-          <p className="mt-3 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+          <p
+            className={`mt-3 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "0.3s" }}
+          >
             Browse ready-to-cook cuts, premium marinades, and chef specials
             crafted for weeknight dinners and weekend feasts.
           </p>
@@ -684,25 +719,30 @@ export default function ProductCatalog({
 
         <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-8 items-start">
           {/* Sidebar */}
-          <aside className="space-y-6">
-            <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <aside
+            className={`space-y-6 transition-all duration-700 ${
+              mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+            }`}
+            style={{ transitionDelay: "0.4s" }}
+          >
+            <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
               <p className="text-sm font-semibold text-gray-700">
                 Search our catalog
               </p>
               <div className="relative mt-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
                 <input
                   type="text"
                   placeholder="Chicken wings, curry cut..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-400 text-sm bg-white"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-400 text-sm bg-white transition-all duration-300 hover:border-orange-300"
                 />
               </div>
             </div>
 
             {categories.length > 1 && (
-              <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm">
+              <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm font-semibold text-gray-700">
                     Browse by category
@@ -712,7 +752,7 @@ export default function ProductCatalog({
                   </span>
                 </div>
                 <div className="space-y-2">
-                  {categories.map((category) => {
+                  {categories.map((category, index) => {
                     const isActive = selectedCategory === category;
                     const label =
                       category === "all"
@@ -726,7 +766,7 @@ export default function ProductCatalog({
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category)}
-                        className={`w-full flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all ${
+                        className={`w-full flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all duration-300 transform hover:scale-[1.02] ${
                           isActive
                             ? "border-orange-300 bg-orange-50 text-orange-700 shadow-sm"
                             : "border-gray-100 bg-white text-gray-700 hover:border-orange-200 hover:bg-orange-50/60"
@@ -741,7 +781,14 @@ export default function ProductCatalog({
               </div>
             )}
 
-            <div className="bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-2xl p-6 shadow-lg space-y-4">
+            <div
+              className={`bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-2xl p-6 shadow-lg space-y-4 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${
+                mounted
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: "0.5s" }}
+            >
               <div>
                 <p className="text-xs uppercase tracking-wide opacity-80">
                   Need a hand?
@@ -749,14 +796,14 @@ export default function ProductCatalog({
                 <h3 className="text-2xl font-bold">Talk to butcher-in-chief</h3>
               </div>
               <p className="text-sm text-orange-50/90 leading-relaxed">
-                Unsure about portions or cuts? Call us and we’ll portion it for
+                Unsure about portions or cuts? Call us and we'll portion it for
                 your recipe, just like at the store.
               </p>
               <button
                 onClick={() => (window.location.href = "tel:+918484978622")}
-                className="w-full inline-flex items-center justify-center gap-2 bg-white/15 border border-white/30 rounded-xl py-3 text-sm font-semibold backdrop-blur transition hover:bg-white/25"
+                className="w-full inline-flex items-center justify-center gap-2 bg-white/15 border border-white/30 rounded-xl py-3 text-sm font-semibold backdrop-blur transition-all duration-300 hover:bg-white/25 transform hover:scale-105 active:scale-95"
               >
-                <PhoneCall className="h-4 w-4" />
+                <PhoneCall className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
                 +91 84849 78622
               </button>
               <div className="flex items-center gap-2 text-xs text-orange-50/80">
@@ -767,17 +814,23 @@ export default function ProductCatalog({
           </aside>
 
           {/* Main content */}
-          <div className="space-y-8">
+          <div
+            className={`space-y-8 transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: "0.6s" }}
+          >
             <div className="flex flex-wrap gap-3">
-              {quickFilterOptions.map((filter) => (
+              {quickFilterOptions.map((filter, index) => (
                 <button
                   key={filter.id}
                   onClick={() => setSelectedQuickFilter(filter.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 border transform hover:scale-105 active:scale-95 ${
                     selectedQuickFilter === filter.id
-                      ? "bg-gray-900 text-white border-gray-900"
-                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                      ? "bg-gray-900 text-white border-gray-900 shadow-md"
+                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
                   }`}
+                  style={{ transitionDelay: `${0.7 + index * 0.1}s` }}
                 >
                   {filter.label}
                 </button>
@@ -785,20 +838,27 @@ export default function ProductCatalog({
             </div>
 
             {featuredProduct && (
-              <div className="bg-white/95 border border-gray-100 rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row">
-                <div className="md:w-1/2 relative h-64 bg-white">
+              <div
+                className={`bg-white/95 border border-gray-100 rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row hover:shadow-xl transition-all duration-500 transform hover:scale-[1.01] ${
+                  mounted
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-8"
+                }`}
+                style={{ transitionDelay: "0.8s" }}
+              >
+                <div className="md:w-1/2 relative h-64 bg-white group overflow-hidden">
                   {featuredProduct.image_url ? (
                     <div className="relative w-full h-full p-6">
                       <Image
                         src={featuredProduct.image_url}
                         alt={featuredProduct.name}
                         fill
-                        className="object-contain"
+                        className="object-contain transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />
                     </div>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl bg-gray-50">
+                    <div className="w-full h-full flex items-center justify-center text-6xl bg-gray-50 group-hover:scale-110 transition-transform duration-500">
                       🍗
                     </div>
                   )}
@@ -873,19 +933,19 @@ export default function ProductCatalog({
                           )
                         )
                       }
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-red-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-red-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 group"
                     >
-                      <ShoppingBag className="h-4 w-4" />
+                      <ShoppingBag className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
                       Add to cart
                     </button>
                     <button
                       onClick={() =>
                         setSelectedCategory(featuredProduct.category || "all")
                       }
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-gray-300"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-gray-300 transition-all duration-300 transform hover:scale-105 active:scale-95 group"
                     >
                       Explore similar
-                      <ChevronRight className="h-4 w-4" />
+                      <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </button>
                   </div>
                 </div>
@@ -893,23 +953,30 @@ export default function ProductCatalog({
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-              {filteredProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="animate-slide-up"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <ProductCard
-                    product={product}
-                    isBestseller={bestsellerIds.includes(product.id)}
-                    onAddToCart={addToCart}
-                    onUpdateQuantity={updateQuantity}
-                    getStockStatus={getStockStatus}
-                    getWeightQuantity={getWeightQuantity}
-                    index={index}
-                  />
-                </div>
-              ))}
+              {filteredProducts.map((product, index) => {
+                const isVisible = visibleProducts.has(product.id) || mounted;
+                return (
+                  <div
+                    key={product.id}
+                    className={`transition-all duration-500 ${
+                      isVisible
+                        ? "opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 translate-y-8 scale-95"
+                    }`}
+                    style={{ transitionDelay: `${index * 0.05}s` }}
+                  >
+                    <ProductCard
+                      product={product}
+                      isBestseller={bestsellerIds.includes(product.id)}
+                      onAddToCart={addToCart}
+                      onUpdateQuantity={updateQuantity}
+                      getStockStatus={getStockStatus}
+                      getWeightQuantity={getWeightQuantity}
+                      index={index}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             {filteredProducts.length === 0 && !loading && (

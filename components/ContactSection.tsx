@@ -1,10 +1,22 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Phone, Mail, MapPin, Clock, Send, Facebook, Instagram, Twitter, Youtube, MessageCircle, PhoneCall, MapPin as MapPinIcon, Sparkles, CheckCircle, Zap } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  Send,
+  MessageCircle,
+  PhoneCall,
+  MapPin as MapPinIcon,
+  Sparkles,
+  CheckCircle,
+  Zap,
+} from "lucide-react";
 const SHOP_LOCATION = {
-  lat: 18.585268,
-  lng: 73.781721,
+  lat: 18.578073140740553,
+  lng: 73.78656665952684,
   address:
     "Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027",
 };
@@ -21,6 +33,7 @@ export default function ContactSection() {
     name: "",
     email: "",
     phone: "",
+    address: "",
     message: "",
   });
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -33,7 +46,10 @@ export default function ContactSection() {
     // Load Google Maps
     if (typeof window !== "undefined" && mapRef.current) {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-      if (apiKey && !document.querySelector('script[src*="maps.googleapis.com"]')) {
+      if (
+        apiKey &&
+        !document.querySelector('script[src*="maps.googleapis.com"]')
+      ) {
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
@@ -85,27 +101,91 @@ export default function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitSuccess(false);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitSuccess(true);
-      setFormData({ name: "", email: "", phone: "", message: "" });
-      setIsSubmitting(false);
-      setTimeout(() => setSubmitSuccess(false), 5000);
-    }, 1000);
+
+    // Generate Google Maps link if address is provided
+    let mapsLink = "";
+    const addressValue = (formData.address || "").trim();
+    if (addressValue.length > 0) {
+      // Encode address for URL
+      const encodedAddress = encodeURIComponent(addressValue);
+      // Create Google Maps search URL
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+      // Format the maps link section - URL on separate line so WhatsApp recognizes it
+      mapsLink = `\n📍 *Delivery Location:*\n${addressValue}\n\n🗺️ *View on Maps:*\n${mapsUrl}\n`;
+    }
+
+    // Format the message for WhatsApp with better structure
+    // Using ASCII characters for maximum compatibility
+    let whatsappMessage =
+      `🍗 *NEW ENQUIRY - K2 CHICKEN*\n\n` +
+      `👤 *Customer Details*\n` +
+      `----------------------\n` +
+      `• *Name:* ${formData.name}\n` +
+      `• *Email:* ${formData.email}\n` +
+      `• *Phone:* ${formData.phone}\n`;
+
+    // Add maps link if address is provided
+    if (mapsLink) {
+      whatsappMessage += mapsLink;
+    }
+
+    whatsappMessage +=
+      `\n💬 *Message*\n` +
+      `----------------------\n` +
+      `${formData.message}\n\n` +
+      `----------------------\n` +
+      `📱 Sent via: K2 Chicken Website Contact Form\n` +
+      `🕐 Time: ${new Date().toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Asia/Kolkata",
+      })}`;
+
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+
+    // Open WhatsApp with the formatted message
+    const whatsappUrl = `https://wa.me/918484978622?text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+
+    // Show success message and reset form
+    setSubmitSuccess(true);
+    setFormData({ name: "", email: "", phone: "", address: "", message: "" });
+    setIsSubmitting(false);
+    setTimeout(() => setSubmitSuccess(false), 5000);
   };
 
   const handleWhatsAppClick = () => {
-    const message = encodeURIComponent(
-      `Hello! I'd like to get in touch with K2 Chicken.\n\n` +
-      `Name: ${formData.name || 'Customer'}\n` +
-      `Phone: ${formData.phone || 'Not provided'}\n\n` +
-      `${formData.message || 'I have a question about your products.'}`
-    );
-    window.open(`https://wa.me/918484978622?text=${message}`, '_blank');
+    // Generate Google Maps link if address is provided
+    let mapsLink = "";
+    const addressValue = formData.address?.trim() || "";
+    if (addressValue.length > 0) {
+      const encodedAddress = encodeURIComponent(addressValue);
+      // Use Google Maps search URL format
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+      mapsLink = `\n📍 *Delivery Location:*\n${addressValue}\n\n🗺️ *View on Maps:*\n${mapsUrl}\n`;
+    }
+
+    const message =
+      `🍗 *Hello! I'd like to get in touch with K2 Chicken*\n\n` +
+      `👤 *My Details*\n` +
+      `----------------------\n` +
+      `• *Name:* ${formData.name || "Customer"}\n` +
+      `• *Phone:* ${formData.phone || "Not provided"}\n` +
+      (formData.email ? `• *Email:* ${formData.email}\n` : "") +
+      (mapsLink ? mapsLink : "") +
+      `\n💬 *Message*\n` +
+      `----------------------\n` +
+      `${formData.message || "I have a question about your products."}\n\n` +
+      `----------------------\n` +
+      `📱 Sent via: K2 Chicken Website`;
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/918484978622?text=${encodedMessage}`, "_blank");
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -114,7 +194,10 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-20 sm:py-24 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section
+      id="contact"
+      className="py-20 sm:py-24 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden"
+    >
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20"></div>
@@ -124,33 +207,63 @@ export default function ContactSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <div className={`inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-sm font-semibold text-orange-700 mb-4 ${mounted ? 'animate-slide-down' : 'opacity-0'}`}>
+          <div
+            className={`inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-sm font-semibold text-orange-700 mb-4 ${
+              mounted ? "animate-slide-down" : "opacity-0"
+            }`}
+          >
             <Sparkles className="w-4 h-4 text-orange-500" />
             <span>We're Here to Help</span>
           </div>
-          <h2 className={`text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-4 ${mounted ? 'animate-slide-up' : 'opacity-0'}`}>
-            Get in <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Touch</span>
+          <h2
+            className={`text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-4 ${
+              mounted ? "animate-slide-up" : "opacity-0"
+            }`}
+          >
+            Get in{" "}
+            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+              Touch
+            </span>
           </h2>
-          <p className={`text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto ${mounted ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-            Have questions about our products? Need help with your order? We're just a call or message away!
+          <p
+            className={`text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto ${
+              mounted ? "animate-slide-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.2s" }}
+          >
+            Have questions about our products? Need help with your order? We're
+            just a call or message away!
           </p>
         </div>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           {/* Contact Form */}
-          <div className={`bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 ${mounted ? 'animate-slide-in-from-left' : 'opacity-0'}`}>
+          <div
+            className={`bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 ${
+              mounted ? "animate-slide-in-from-left" : "opacity-0"
+            }`}
+          >
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Send us a Message</h3>
-              <p className="text-sm text-gray-600">Fill out the form below and we'll get back to you within 24 hours</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Send us a Message
+              </h3>
+              <p className="text-sm text-gray-600">
+                Fill out the form below and we'll get back to you within 24
+                hours
+              </p>
             </div>
-            
+
             {submitSuccess && (
               <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3 animate-scale-in">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-green-800">Message sent successfully!</p>
-                  <p className="text-xs text-green-600">We'll get back to you soon.</p>
+                  <p className="text-sm font-semibold text-green-800">
+                    Message sent successfully!
+                  </p>
+                  <p className="text-xs text-green-600">
+                    We'll get back to you soon.
+                  </p>
                 </div>
               </div>
             )}
@@ -224,6 +337,32 @@ export default function ContactSection() {
                 />
               </div>
 
+              {/* Delivery Address Field */}
+              <div className="relative">
+                <label
+                  className={`absolute left-4 transition-all duration-300 ${
+                    focusedField === "address" || formData.address
+                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      : "top-4 text-sm text-gray-500"
+                  }`}
+                >
+                  Delivery Address (Optional)
+                </label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField("address")}
+                  onBlur={() => setFocusedField(null)}
+                  rows={3}
+                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none resize-none"
+                  placeholder="Enter your delivery address for faster service..."
+                />
+                <p className="text-xs text-gray-500 mt-1 ml-1">
+                  Include your address to get a Google Maps link in the message
+                </p>
+              </div>
+
               {/* Message Field */}
               <div className="relative">
                 <label
@@ -256,7 +395,7 @@ export default function ContactSection() {
                   <Send className="w-5 h-5" />
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
-                
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-200"></div>
@@ -265,7 +404,7 @@ export default function ContactSection() {
                     <span className="px-4 bg-white text-gray-500">Or</span>
                   </div>
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={handleWhatsAppClick}
@@ -279,13 +418,19 @@ export default function ContactSection() {
           </div>
 
           {/* Map and Contact Info */}
-          <div className={`space-y-6 ${mounted ? 'animate-slide-in-from-right' : 'opacity-0'}`}>
+          <div
+            className={`space-y-6 ${
+              mounted ? "animate-slide-in-from-right" : "opacity-0"
+            }`}
+          >
             {/* Map */}
             <div className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-gray-100 relative group h-64 sm:h-80">
               <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-gray-200">
                 <div className="flex items-center gap-2">
                   <MapPinIcon className="w-4 h-4 text-orange-600" />
-                  <span className="text-xs font-semibold text-gray-900">Our Location</span>
+                  <span className="text-xs font-semibold text-gray-900">
+                    Our Location
+                  </span>
                 </div>
               </div>
               <div ref={mapRef} className="w-full h-full absolute inset-0" />
@@ -329,7 +474,9 @@ export default function ContactSection() {
                     <MessageCircle className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-base mb-0.5">WhatsApp Us</h4>
+                    <h4 className="font-semibold text-base mb-0.5">
+                      WhatsApp Us
+                    </h4>
                     <p className="text-sm text-orange-600">Instant response</p>
                   </div>
                 </div>
@@ -355,7 +502,9 @@ export default function ContactSection() {
                   <MapPinIcon className="w-6 h-6 text-orange-600" />
                 </div>
                 <h4 className="font-bold text-gray-900 mb-1">Visit Us</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">Shop No. 4, 24K Avenue, Pimple Nilakh, Pune</p>
+                <p className="text-gray-600 text-xs leading-relaxed">
+                  Shop No. 4, 24K Avenue, Pimple Nilakh, Pune
+                </p>
               </div>
             </div>
 
@@ -366,49 +515,36 @@ export default function ContactSection() {
                   <Clock className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 text-lg">Operating Hours</h4>
-                  <p className="text-xs text-gray-600">We're open 7 days a week</p>
+                  <h4 className="font-bold text-gray-900 text-lg">
+                    Operating Hours
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    We're open 7 days a week
+                  </p>
                 </div>
               </div>
               <div className="space-y-3">
                 {operatingHours.map((schedule, index) => (
-                  <div key={index} className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-orange-100">
-                    <span className="text-gray-800 font-semibold text-sm">{schedule.day}</span>
-                    <span className="text-gray-700 font-medium text-sm">{schedule.hours}</span>
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-orange-100"
+                  >
+                    <span className="text-gray-800 font-semibold text-sm">
+                      {schedule.day}
+                    </span>
+                    <span className="text-gray-700 font-medium text-sm">
+                      {schedule.hours}
+                    </span>
                   </div>
                 ))}
               </div>
               <div className="mt-4 pt-4 border-t border-orange-200">
                 <p className="text-xs text-gray-600 flex items-center gap-2">
                   <Zap className="w-3 h-3 text-orange-500" />
-                  <span>Same-day delivery available for orders placed before 6 PM</span>
+                  <span>
+                    Same-day delivery available for orders placed before 6 PM
+                  </span>
                 </p>
-              </div>
-            </div>
-
-            {/* Social Media */}
-            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6">
-              <h4 className="font-bold text-gray-900 mb-2">Follow Us</h4>
-              <p className="text-xs text-gray-600 mb-4">Stay updated with our latest offers and recipes</p>
-              <div className="flex gap-3">
-                {[
-                  { icon: Facebook, color: "bg-blue-50 hover:bg-blue-100", iconColor: "text-blue-600", href: "#", label: "Facebook" },
-                  { icon: Instagram, color: "bg-pink-50 hover:bg-pink-100", iconColor: "text-pink-600", href: "#", label: "Instagram" },
-                  { icon: Twitter, color: "bg-blue-50 hover:bg-blue-100", iconColor: "text-blue-400", href: "#", label: "Twitter" },
-                  { icon: Youtube, color: "bg-red-50 hover:bg-red-100", iconColor: "text-red-600", href: "#", label: "YouTube" },
-                ].map((social, index) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={index}
-                      href={social.href}
-                      title={social.label}
-                      className={`w-12 h-12 ${social.color} rounded-xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:rotate-6 ${social.iconColor} shadow-sm hover:shadow-md`}
-                    >
-                      <Icon className="w-6 h-6" />
-                    </a>
-                  );
-                })}
               </div>
             </div>
           </div>
@@ -417,4 +553,3 @@ export default function ContactSection() {
     </section>
   );
 }
-

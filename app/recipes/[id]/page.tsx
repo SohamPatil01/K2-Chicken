@@ -1,53 +1,60 @@
-import Link from 'next/link'
-import Image from 'next/image'
-import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from 'lucide-react'
-import pool from '@/lib/db'
-import { notFound } from 'next/navigation'
+import Link from "next/link";
+import Image from "next/image";
+import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from "lucide-react";
+import pool from "@/lib/db";
+import { notFound } from "next/navigation";
 
 interface Recipe {
-  id: number
-  title: string
-  description: string
-  ingredients: string[]
-  instructions: string[]
-  image_url: string
-  prep_time: number
-  cook_time: number
-  servings: number
+  id: number;
+  title: string;
+  description: string;
+  ingredients: string[];
+  instructions: string[];
+  image_url: string;
+  prep_time: number;
+  cook_time: number;
+  servings: number;
 }
 
 async function getRecipe(id: string): Promise<Recipe | null> {
   try {
-    const client = await pool.connect()
+    const client = await pool.connect();
     try {
-      const result = await client.query(`
+      const result = await client.query(
+        `
         SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
         FROM recipes 
         WHERE id = $1
-      `, [id])
-      return result.rows[0] || null
+      `,
+        [id]
+      );
+      return result.rows[0] || null;
     } finally {
-      client.release()
+      client.release();
     }
   } catch (error) {
-    console.error('Error fetching recipe:', error)
-    return null
+    console.error("Error fetching recipe:", error);
+    return null;
   }
 }
 
-export default async function RecipeDetailPage({ params }: { params: { id: string } }) {
-  const recipe = await getRecipe(params.id)
+export default async function RecipeDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const recipe = await getRecipe(params.id);
 
   if (!recipe) {
-    notFound()
+    notFound();
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
-        <Link 
-          href="/recipes" 
+        <Link
+          href="/recipes"
           className="inline-flex items-center text-chicken-red hover:text-red-700 mb-6 font-semibold transition-colors"
         >
           <ArrowLeft size={20} className="mr-2" />
@@ -68,7 +75,7 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
                 priority
                 quality={85}
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.style.display = "none";
                 }}
               />
             ) : null}
@@ -79,7 +86,9 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h1 className="text-4xl md:text-5xl font-black text-white mb-4">{recipe.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
+                {recipe.title}
+              </h1>
               <p className="text-xl text-white/90">{recipe.description}</p>
             </div>
           </div>
@@ -92,7 +101,9 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               </div>
               <div>
                 <p className="text-sm text-gray-600">Prep Time</p>
-                <p className="text-xl font-bold text-gray-900">{recipe.prep_time} min</p>
+                <p className="text-xl font-bold text-gray-900">
+                  {recipe.prep_time} min
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl">
@@ -101,7 +112,9 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               </div>
               <div>
                 <p className="text-sm text-gray-600">Cook Time</p>
-                <p className="text-xl font-bold text-gray-900">{recipe.cook_time} min</p>
+                <p className="text-xl font-bold text-gray-900">
+                  {recipe.cook_time} min
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-4 bg-yellow-50 rounded-xl">
@@ -110,7 +123,9 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               </div>
               <div>
                 <p className="text-sm text-gray-600">Servings</p>
-                <p className="text-xl font-bold text-gray-900">{recipe.servings} people</p>
+                <p className="text-xl font-bold text-gray-900">
+                  {recipe.servings} people
+                </p>
               </div>
             </div>
           </div>
@@ -125,11 +140,16 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-green-900 mb-2">🌾 Premium Quality Ingredients</h3>
+              <h3 className="text-lg font-bold text-green-900 mb-2">
+                🌾 Premium Quality Ingredients
+              </h3>
               <p className="text-green-800 leading-relaxed">
-                We proudly use <strong className="font-semibold">Baramati Agro</strong> products in our recipes. 
-                All our chicken products are sourced from Baramati Agro, ensuring premium quality, freshness, 
-                and the best taste for your family. Experience the difference that quality ingredients make!
+                We proudly use{" "}
+                <strong className="font-semibold">Baramati Agro</strong>{" "}
+                products in our recipes. All our Baramati agro chicken products
+                are sourced from Baramati Agro, ensuring premium quality,
+                freshness, and the best taste for your family. Experience the
+                difference that quality ingredients make!
               </p>
             </div>
           </div>
@@ -143,12 +163,24 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
               Ingredients
             </h2>
             <ul className="space-y-3">
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <CheckCircle className="text-green-500 mt-1 flex-shrink-0" size={20} />
-                  <span className="text-gray-700 text-lg">{ingredient}</span>
-                </li>
-              ))}
+              {recipe.ingredients.map((ingredient, index) => {
+                // Replace "chicken" with "Baramati agro chicken" (case-insensitive)
+                const processedIngredient = ingredient.replace(
+                  /\bchicken\b/gi,
+                  "Baramati agro chicken"
+                );
+                return (
+                  <li key={index} className="flex items-start space-x-3">
+                    <CheckCircle
+                      className="text-green-500 mt-1 flex-shrink-0"
+                      size={20}
+                    />
+                    <span className="text-gray-700 text-lg">
+                      {processedIngredient}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -164,7 +196,9 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold">
                     {index + 1}
                   </div>
-                  <p className="text-gray-700 text-lg leading-relaxed pt-1">{instruction}</p>
+                  <p className="text-gray-700 text-lg leading-relaxed pt-1">
+                    {instruction}
+                  </p>
                 </li>
               ))}
             </ol>
@@ -173,8 +207,8 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
 
         {/* Call to Action */}
         <div className="mt-8 text-center">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <ChefHat size={20} className="mr-2" />
@@ -183,6 +217,5 @@ export default async function RecipeDetailPage({ params }: { params: { id: strin
         </div>
       </div>
     </div>
-  )
+  );
 }
-
