@@ -102,7 +102,7 @@ export default function AboutSection() {
             }`}
             style={{ animationDelay: "0.4s" }}
           >
-            Serving the finest chicken since 1995
+            Freshness You Can Taste. Quality You Can Trust.
           </p>
         </div>
 

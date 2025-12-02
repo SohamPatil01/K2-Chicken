@@ -116,131 +116,108 @@ export default function Header() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/98 backdrop-blur-lg shadow-md border-b border-orange-100/50"
-          : "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100/50"
+          ? "bg-white/98 backdrop-blur-xl shadow-lg border-b border-orange-100/60"
+          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/40"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-3.5">
+        <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <Link
             href="/"
             prefetch={true}
-            className="group flex items-center gap-3 animate-slide-down"
+            className="group flex items-center gap-3 animate-slide-down hover:opacity-90 transition-opacity duration-300"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-red-400 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <div className="relative w-11 h-11 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-all duration-300">
-                <span className="text-white font-bold text-lg">K2</span>
-              </div>
+              {/* Subtle glow effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+              <img
+                src="/logo.png"
+                alt="Chicken Vicken - Baramati Agro"
+                className="h-12 sm:h-16 w-auto rounded-2xl group-hover:scale-105 transition-all duration-300 drop-shadow-sm"
+                onError={(e) => {
+                  // Fallback to SVG if PNG doesn't exist
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.src = "/logo.svg";
+                }}
+              />
             </div>
             <div className="hidden sm:block">
-              <div className="text-xl font-extrabold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent">
-                K2 Chicken
+              <div
+                className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent leading-tight tracking-tight"
+                style={{
+                  letterSpacing: "-0.02em",
+                  textShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                }}
+              >
+                Chicken Vicken
               </div>
-              <div className="text-xs text-gray-500 -mt-0.5 font-medium">
-                Fresh & Delicious
+              <div className="text-xs sm:text-sm text-gray-500 font-semibold tracking-widest uppercase mt-1">
+                K2 Chicken
               </div>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1.5">
-            {/* Phone Number - Social Proof Badge */}
-            <a
-              href="tel:8484978622"
-              className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all duration-300 group"
-              title="Call us now"
-            >
-              <div className="flex items-center gap-1.5">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                <span className="text-xs font-bold text-green-700">4.8</span>
-              </div>
-              <div className="h-4 w-px bg-green-300"></div>
-              <Phone className="h-3.5 w-3.5 text-green-700 group-hover:scale-110 transition-transform" />
-              <span className="text-xs font-semibold text-gray-900">
-                8484978622
-              </span>
-            </a>
-
+          {/* Desktop Navigation - Clean & Minimal */}
+          <nav className="hidden md:flex items-center space-x-1">
             <Link
               href="/"
               prefetch={true}
-              className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
+              className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                 isActive("/")
-                  ? "text-orange-600 bg-orange-50"
-                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
+                  ? "text-orange-600"
+                  : "text-gray-600 hover:text-orange-600"
               }`}
               onClick={handleHomeClick}
             >
-              <div className="flex items-center gap-2">
-                <Home
-                  size={16}
-                  className={
-                    isActive("/")
-                      ? "text-orange-600"
-                      : "text-gray-500 group-hover:text-orange-600"
-                  }
-                />
-                <span>Home</span>
-              </div>
+              Home
               {isActive("/") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-600 rounded-full"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
               )}
             </Link>
             <Link
               href="/#products"
               prefetch={true}
-              className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
+              className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                 isActive("/#products")
-                  ? "text-orange-600 bg-orange-50"
-                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
+                  ? "text-orange-600"
+                  : "text-gray-600 hover:text-orange-600"
               }`}
               onClick={handleProductsClick}
             >
-              <div className="flex items-center gap-2">
-                <Package
-                  size={16}
-                  className={
-                    isActive("/#products")
-                      ? "text-orange-600"
-                      : "text-gray-500 group-hover:text-orange-600 transition-colors"
-                  }
-                />
-                <span>Products</span>
-              </div>
+              Products
               {isActive("/#products") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-600 rounded-full"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
               )}
             </Link>
             <Link
               href="/recipes"
               prefetch={true}
-              className={`relative px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 group ${
+              className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                 isActive("/recipes")
-                  ? "text-orange-600 bg-orange-50"
-                  : "text-gray-800 hover:text-orange-600 hover:bg-orange-50/50"
+                  ? "text-orange-600"
+                  : "text-gray-600 hover:text-orange-600"
               }`}
             >
-              <div className="flex items-center gap-2">
-                <ChefHat
-                  size={16}
-                  className={
-                    isActive("/recipes")
-                      ? "text-orange-600"
-                      : "text-gray-500 group-hover:text-orange-600"
-                  }
-                />
-                <span>Recipes</span>
-              </div>
+              Recipes
               {isActive("/recipes") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-600 rounded-full"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
               )}
             </Link>
           </nav>
 
-          {/* Auth, Cart and Mobile Menu */}
-          <div className="flex items-center space-x-2">
+          {/* Right Side Actions - Clean & Minimal */}
+          <div className="flex items-center space-x-3">
+            {/* Phone Number - Compact */}
+            <a
+              href="tel:8484978622"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200"
+              title="Call us: 8484978622"
+            >
+              <Phone className="h-3.5 w-3.5" />
+              <span>8484978622</span>
+            </a>
+
             {/* User Account / Login */}
             {!authLoading && (
               <>
@@ -249,67 +226,41 @@ export default function Header() {
                     <Link
                       href="/orders"
                       prefetch={true}
-                      className="px-4 py-2.5 text-sm font-semibold text-gray-800 hover:text-orange-600 rounded-xl hover:bg-orange-50/50 transition-all duration-300 flex items-center gap-2 group"
+                      className="p-2 text-gray-600 hover:text-orange-600 rounded-lg hover:bg-orange-50 transition-all duration-200"
                       title="My Orders"
                     >
-                      <div className="p-1.5 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg group-hover:from-orange-100 group-hover:to-red-100 transition-colors">
-                        <User size={16} className="text-orange-600" />
-                      </div>
-                      <span className="max-w-[120px] truncate">
-                        {user?.name || user?.phone}
-                      </span>
+                      <User size={18} />
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2.5 text-sm font-semibold text-gray-800 hover:text-red-600 rounded-xl hover:bg-red-50/50 transition-all duration-300 flex items-center gap-2 group"
+                      className="p-2 text-gray-600 hover:text-red-600 rounded-lg hover:bg-red-50 transition-all duration-200"
                       title="Logout"
                     >
-                      <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-red-50 transition-colors">
-                        <LogOut
-                          size={16}
-                          className="text-gray-700 group-hover:text-red-600"
-                        />
-                      </div>
-                      <span className="hidden lg:inline">Logout</span>
+                      <LogOut size={18} />
                     </button>
                   </div>
                 ) : (
-                  <>
-                    {/* Phone Number for Non-authenticated Users */}
-                    <a
-                      href="tel:8484978622"
-                      className="hidden lg:flex items-center gap-2 px-3 py-2 text-sm font-semibold text-gray-800 hover:text-green-700 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-all duration-300 group"
-                      title="Call us now"
-                    >
-                      <Phone className="h-4 w-4 text-green-700 group-hover:scale-110 transition-transform" />
-                      <span>8484978622</span>
-                    </a>
-                    <Link
-                      href="/login"
-                      prefetch={true}
-                      className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
-                    >
-                      <LogIn size={16} />
-                      <span>Login</span>
-                    </Link>
-                  </>
+                  <Link
+                    href="/login"
+                    prefetch={true}
+                    className="hidden md:flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-lg hover:from-orange-700 hover:to-red-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    <LogIn size={16} />
+                    <span>Login</span>
+                  </Link>
                 )}
               </>
             )}
 
+            {/* Cart */}
             <Link
               href="/cart"
               prefetch={true}
-              className="relative p-2.5 text-gray-800 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50 group"
+              className="relative p-2 text-gray-600 hover:text-orange-600 transition-all duration-200 rounded-lg hover:bg-orange-50"
             >
-              <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-orange-50 transition-colors">
-                <ShoppingCart
-                  size={20}
-                  className="group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
+              <ShoppingCart size={20} />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg animate-bounce-in">
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md ring-2 ring-white">
                   {totalItems}
                 </span>
               )}
@@ -319,18 +270,18 @@ export default function Header() {
             {/* Mobile Phone Number */}
             <a
               href="tel:8484978622"
-              className="md:hidden flex items-center gap-1.5 px-2.5 py-2 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all duration-300 group"
-              title="Call us now"
+              className="md:hidden flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-gray-600 hover:text-green-700 rounded-lg hover:bg-green-50 transition-all duration-200"
+              title="Call us"
             >
-              <Phone className="h-4 w-4 text-green-700 group-hover:scale-110 transition-transform" />
-              <span className="text-xs font-semibold text-gray-900">Call</span>
+              <Phone className="h-4 w-4" />
+              <span>Call</span>
             </a>
 
             <button
-              className="md:hidden p-2.5 text-gray-800 hover:text-orange-600 transition-all duration-300 rounded-xl hover:bg-orange-50/50"
+              className="md:hidden p-2 text-gray-600 hover:text-orange-600 transition-all duration-200 rounded-lg hover:bg-orange-50"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <div className="p-1.5 bg-gray-50 rounded-lg">
+              <div className="p-1">
                 {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </div>
             </button>

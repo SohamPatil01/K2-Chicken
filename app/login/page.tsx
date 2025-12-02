@@ -1,65 +1,74 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/context/AuthContext'
-import { Phone, Lock, Eye, EyeOff, AlertCircle, LogIn, UserPlus } from 'lucide-react'
-import Link from 'next/link'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import {
+  Phone,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [isRegistering, setIsRegistering] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const router = useRouter()
-  const { login, register } = useAuth()
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const router = useRouter();
+  const { login, register } = useAuth();
 
   // Get redirect URL from query params
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const redirect = params.get('redirect')
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
     if (redirect) {
       // Store redirect URL for after login
-      sessionStorage.setItem('loginRedirect', redirect)
+      sessionStorage.setItem("loginRedirect", redirect);
     }
-  }, [])
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       if (isRegistering) {
         if (!password.trim()) {
-          setError('Password is required for registration')
-          setIsLoading(false)
-          return
+          setError("Password is required for registration");
+          setIsLoading(false);
+          return;
         }
-        await register(phone, email || undefined, name || undefined, password)
+        await register(phone, email || undefined, name || undefined, password);
       } else {
         if (!password.trim()) {
-          setError('Password is required')
-          setIsLoading(false)
-          return
+          setError("Password is required");
+          setIsLoading(false);
+          return;
         }
-        await login(phone, password)
+        await login(phone, password);
       }
       // Redirect to stored redirect URL or checkout
-      const redirectUrl = sessionStorage.getItem('loginRedirect') || '/checkout'
-      sessionStorage.removeItem('loginRedirect')
-      router.push(redirectUrl)
-      router.refresh()
+      const redirectUrl =
+        sessionStorage.getItem("loginRedirect") || "/checkout";
+      sessionStorage.removeItem("loginRedirect");
+      router.push(redirectUrl);
+      router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please check your credentials.')
+      setError(err.message || "Login failed. Please check your credentials.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-100 flex items-center justify-center px-4 py-12">
@@ -68,15 +77,21 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-2xl">K2</span>
-              </div>
+              <img
+                src="/logo.png"
+                alt="K2 Chicken - Baramati Agro"
+                className="h-20 w-auto rounded-2xl"
+                onError={(e) => {
+                  // Fallback to SVG if PNG doesn't exist
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.src = "/logo.svg";
+                }}
+              />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              K2 Chicken
-            </h1>
             <p className="text-gray-600 mt-2">
-              {isRegistering ? 'Create your account' : 'Sign in to your account'}
+              {isRegistering
+                ? "Create your account"
+                : "Sign in to your account"}
             </p>
           </Link>
         </div>
@@ -87,13 +102,13 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setIsRegistering(false)
-                setError('')
+                setIsRegistering(false);
+                setError("");
               }}
               className={`flex-1 py-2 font-semibold transition-colors ${
                 !isRegistering
-                  ? 'text-orange-600 border-b-2 border-orange-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? "text-orange-600 border-b-2 border-orange-600"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               Login
@@ -101,13 +116,13 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setIsRegistering(true)
-                setError('')
+                setIsRegistering(true);
+                setError("");
               }}
               className={`flex-1 py-2 font-semibold transition-colors ${
                 isRegistering
-                  ? 'text-orange-600 border-b-2 border-orange-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? "text-orange-600 border-b-2 border-orange-600"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               Register
@@ -125,7 +140,10 @@ export default function LoginPage() {
             {/* Name Field (Register only) */}
             {isRegistering && (
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -148,7 +166,10 @@ export default function LoginPage() {
             {/* Email Field (Register only) */}
             {isRegistering && (
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email (Optional)
                 </label>
                 <input
@@ -165,7 +186,10 @@ export default function LoginPage() {
 
             {/* Phone Field */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Phone Number *
               </label>
               <div className="relative">
@@ -187,7 +211,10 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password *
               </label>
               <div className="relative">
@@ -197,12 +224,14 @@ export default function LoginPage() {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-10 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-base"
-                  placeholder={isRegistering ? "Create a password" : "Enter your password"}
+                  placeholder={
+                    isRegistering ? "Create a password" : "Enter your password"
+                  }
                 />
                 {password && (
                   <button
@@ -229,12 +258,18 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>{isRegistering ? 'Creating account...' : 'Signing in...'}</span>
+                  <span>
+                    {isRegistering ? "Creating account..." : "Signing in..."}
+                  </span>
                 </>
               ) : (
                 <>
-                  {isRegistering ? <UserPlus className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}
-                  <span>{isRegistering ? 'Create Account' : 'Sign In'}</span>
+                  {isRegistering ? (
+                    <UserPlus className="h-5 w-5" />
+                  ) : (
+                    <LogIn className="h-5 w-5" />
+                  )}
+                  <span>{isRegistering ? "Create Account" : "Sign In"}</span>
                 </>
               )}
             </button>
@@ -242,7 +277,9 @@ export default function LoginPage() {
 
           {/* Benefits for logged-in users */}
           <div className="mt-6 p-4 bg-orange-50 rounded-lg">
-            <p className="text-sm font-semibold text-orange-900 mb-2">Benefits of creating an account:</p>
+            <p className="text-sm font-semibold text-orange-900 mb-2">
+              Benefits of creating an account:
+            </p>
             <ul className="text-xs text-orange-800 space-y-1">
               <li>✓ View your order history</li>
               <li>✓ Get exclusive discounts on repeat orders</li>
@@ -263,6 +300,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
