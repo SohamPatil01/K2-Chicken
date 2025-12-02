@@ -70,7 +70,13 @@ export default function OrdersPage() {
       const response = await fetch(`/api/orders/favorites?${params}`);
       if (response.ok) {
         const favorites = await response.json();
-        setFavoriteOrderIds(new Set(favorites.map((f: any) => f.order_id)));
+        if (Array.isArray(favorites)) {
+          setFavoriteOrderIds(
+            new Set(
+              favorites.map((f: any) => f.order_id || f.id).filter(Boolean)
+            )
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching favorite orders:", error);
@@ -301,252 +307,260 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order, index) => {
-              const progress = getStatusProgress(order.status);
-              return (
-                <div
-                  key={order.id}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:scale-[1.01] animate-slide-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  {/* Order Header */}
-                  <div className="bg-gradient-to-r from-gray-50 to-orange-50 p-6 border-b border-gray-200 relative overflow-hidden">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        <div
-                          className={`p-3 rounded-xl ${getStatusColor(
-                            order.status
-                          )} transform transition-all duration-300 hover:scale-110`}
-                        >
-                          {getStatusIcon(order.status)}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-2xl font-bold text-gray-900">
-                              Order #{order.id}
-                            </h3>
-                            <span
-                              className={`px-4 py-1.5 rounded-full text-xs font-bold border-2 ${getStatusColor(
-                                order.status
-                              )}`}
-                            >
-                              {getStatusText(order.status)}
-                            </span>
+            {orders && Array.isArray(orders) && orders.length > 0 ? (
+              orders.map((order, index) => {
+                const progress = getStatusProgress(order.status);
+                return (
+                  <div
+                    key={order.id}
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:scale-[1.01] animate-slide-up"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    {/* Order Header */}
+                    <div className="bg-gradient-to-r from-gray-50 to-orange-50 p-6 border-b border-gray-200 relative overflow-hidden">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-start gap-4">
+                          <div
+                            className={`p-3 rounded-xl ${getStatusColor(
+                              order.status
+                            )} transform transition-all duration-300 hover:scale-110`}
+                          >
+                            {getStatusIcon(order.status)}
                           </div>
-                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4" />
-                              <span>
-                                {new Date(order.created_at).toLocaleDateString(
-                                  "en-US",
-                                  {
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-2xl font-bold text-gray-900">
+                                Order #{order.id}
+                              </h3>
+                              <span
+                                className={`px-4 py-1.5 rounded-full text-xs font-bold border-2 ${getStatusColor(
+                                  order.status
+                                )}`}
+                              >
+                                {getStatusText(order.status)}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4" />
+                                <span>
+                                  {new Date(
+                                    order.created_at
+                                  ).toLocaleDateString("en-US", {
                                     year: "numeric",
                                     month: "short",
                                     day: "numeric",
-                                  }
-                                )}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4" />
-                              <span>
-                                {new Date(order.created_at).toLocaleTimeString(
-                                  "en-US",
-                                  {
+                                  })}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="h-4 w-4" />
+                                <span>
+                                  {new Date(
+                                    order.created_at
+                                  ).toLocaleTimeString("en-US", {
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                  }
+                                  })}
+                                </span>
+                              </div>
+                              {order.delivery_type === "pickup" ? (
+                                <div className="flex items-center gap-2">
+                                  <Store className="h-4 w-4" />
+                                  <span>Pickup</span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <Truck className="h-4 w-4" />
+                                  <span>Delivery</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+                            ₹{Number(order.total_amount).toFixed(0)}
+                          </div>
+                          <div className="flex items-center gap-2 justify-end">
+                            <button
+                              onClick={() => toggleFavorite(order.id)}
+                              className={`p-2 rounded-lg transition-all duration-300 ${
+                                favoriteOrderIds.has(order.id)
+                                  ? "text-red-600 bg-red-50 hover:bg-red-100"
+                                  : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+                              }`}
+                              title={
+                                favoriteOrderIds.has(order.id)
+                                  ? "Remove from favorites"
+                                  : "Add to favorites"
+                              }
+                            >
+                              <Heart
+                                className={`h-5 w-5 transition-all duration-300 ${
+                                  favoriteOrderIds.has(order.id)
+                                    ? "fill-red-600"
+                                    : ""
+                                }`}
+                              />
+                            </button>
+                            <Link
+                              href={`/order-confirmation/${order.id}`}
+                              className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold group px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-300"
+                            >
+                              <span>View Details</span>
+                              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      {order.status !== "cancelled" && (
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                            <span>Order Progress</span>
+                            <span>{progress}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-500 ${
+                                order.status === "delivered"
+                                  ? "bg-gradient-to-r from-green-500 to-emerald-500"
+                                  : order.status === "ready" ||
+                                    order.status === "ready_for_pickup"
+                                  ? "bg-gradient-to-r from-blue-500 to-cyan-500"
+                                  : order.status === "preparing"
+                                  ? "bg-gradient-to-r from-orange-500 to-amber-500"
+                                  : "bg-gradient-to-r from-gray-400 to-gray-500"
+                              }`}
+                              style={{ width: `${progress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Order Content */}
+                    <div className="p-6">
+                      {/* Items List */}
+                      <div className="mb-6">
+                        <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                          <Package className="h-4 w-4" />
+                          Order Items ({order.items?.length || 0})
+                        </h4>
+                        <div className="space-y-2">
+                          {order.items?.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] animate-slide-up"
+                              style={{ animationDelay: `${index * 0.05}s` }}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                <span className="text-sm font-medium text-gray-900">
+                                  {item.product_name}
+                                </span>
+                                <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full">
+                                  x{item.quantity}
+                                </span>
+                              </div>
+                              <span className="text-sm font-bold text-gray-900">
+                                ₹
+                                {(Number(item.price) * item.quantity).toFixed(
+                                  0
                                 )}
                               </span>
                             </div>
-                            {order.delivery_type === "pickup" ? (
-                              <div className="flex items-center gap-2">
-                                <Store className="h-4 w-4" />
-                                <span>Pickup</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                <Truck className="h-4 w-4" />
-                                <span>Delivery</span>
-                              </div>
-                            )}
-                          </div>
+                          ))}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
-                          ₹{Number(order.total_amount).toFixed(0)}
-                        </div>
-                        <div className="flex items-center gap-2 justify-end">
-                          <button
-                            onClick={() => toggleFavorite(order.id)}
-                            className={`p-2 rounded-lg transition-all duration-300 ${
-                              favoriteOrderIds.has(order.id)
-                                ? "text-red-600 bg-red-50 hover:bg-red-100"
-                                : "text-gray-400 hover:text-red-600 hover:bg-red-50"
-                            }`}
-                            title={
-                              favoriteOrderIds.has(order.id)
-                                ? "Remove from favorites"
-                                : "Add to favorites"
-                            }
-                          >
-                            <Heart
-                              className={`h-5 w-5 transition-all duration-300 ${
-                                favoriteOrderIds.has(order.id)
-                                  ? "fill-red-600"
-                                  : ""
-                              }`}
-                            />
-                          </button>
-                          <Link
-                            href={`/order-confirmation/${order.id}`}
-                            className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold group px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-300"
-                          >
-                            <span>View Details</span>
-                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
 
-                    {/* Progress Bar */}
-                    {order.status !== "cancelled" && (
-                      <div className="mt-4">
-                        <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                          <span>Order Progress</span>
-                          <span>{progress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all duration-500 ${
-                              order.status === "delivered"
-                                ? "bg-gradient-to-r from-green-500 to-emerald-500"
-                                : order.status === "ready" ||
-                                  order.status === "ready_for_pickup"
-                                ? "bg-gradient-to-r from-blue-500 to-cyan-500"
-                                : order.status === "preparing"
-                                ? "bg-gradient-to-r from-orange-500 to-amber-500"
-                                : "bg-gradient-to-r from-gray-400 to-gray-500"
-                            }`}
-                            style={{ width: `${progress}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Order Content */}
-                  <div className="p-6">
-                    {/* Items List */}
-                    <div className="mb-6">
-                      <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                        <Package className="h-4 w-4" />
-                        Order Items ({order.items?.length || 0})
-                      </h4>
-                      <div className="space-y-2">
-                        {order.items?.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] animate-slide-up"
-                            style={{ animationDelay: `${index * 0.05}s` }}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                              <span className="text-sm font-medium text-gray-900">
-                                {item.product_name}
-                              </span>
-                              <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full">
-                                x{item.quantity}
-                              </span>
+                      {/* Order Details Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        {order.delivery_type === "delivery" &&
+                          order.delivery_address && (
+                            <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                              <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs font-semibold text-blue-900 mb-1">
+                                  Delivery Address
+                                </p>
+                                <p className="text-sm text-blue-700">
+                                  {order.delivery_address}
+                                </p>
+                              </div>
                             </div>
-                            <span className="text-sm font-bold text-gray-900">
-                              ₹{(Number(item.price) * item.quantity).toFixed(0)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                          )}
 
-                    {/* Order Details Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                      {order.delivery_type === "delivery" &&
-                        order.delivery_address && (
-                          <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                            <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        {order.preferred_delivery_date && (
+                          <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                            <Calendar className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
                             <div>
-                              <p className="text-xs font-semibold text-blue-900 mb-1">
-                                Delivery Address
+                              <p className="text-xs font-semibold text-purple-900 mb-1">
+                                Preferred Time
                               </p>
-                              <p className="text-sm text-blue-700">
-                                {order.delivery_address}
+                              <p className="text-sm text-purple-700">
+                                {new Date(
+                                  order.preferred_delivery_date
+                                ).toLocaleDateString()}
+                                {order.preferred_delivery_time &&
+                                  ` • ${order.preferred_delivery_time}`}
                               </p>
                             </div>
                           </div>
                         )}
+                      </div>
 
-                      {order.preferred_delivery_date && (
-                        <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-xl border border-purple-100">
-                          <Calendar className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs font-semibold text-purple-900 mb-1">
-                              Preferred Time
-                            </p>
-                            <p className="text-sm text-purple-700">
-                              {new Date(
-                                order.preferred_delivery_date
-                              ).toLocaleDateString()}
-                              {order.preferred_delivery_time &&
-                                ` • ${order.preferred_delivery_time}`}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Price Breakdown */}
-                    <div className="border-t border-gray-200 pt-4 space-y-2">
-                      {order.subtotal &&
-                        order.subtotal !== order.total_amount && (
+                      {/* Price Breakdown */}
+                      <div className="border-t border-gray-200 pt-4 space-y-2">
+                        {order.subtotal &&
+                          order.subtotal !== order.total_amount && (
+                            <div className="flex justify-between text-sm text-gray-600">
+                              <span>Subtotal</span>
+                              <span className="font-medium">
+                                ₹{Number(order.subtotal).toFixed(0)}
+                              </span>
+                            </div>
+                          )}
+                        {order.delivery_charge && order.delivery_charge > 0 && (
                           <div className="flex justify-between text-sm text-gray-600">
-                            <span>Subtotal</span>
+                            <span>Delivery Charge</span>
                             <span className="font-medium">
-                              ₹{Number(order.subtotal).toFixed(0)}
+                              ₹{Number(order.delivery_charge).toFixed(0)}
                             </span>
                           </div>
                         )}
-                      {order.delivery_charge && order.delivery_charge > 0 && (
-                        <div className="flex justify-between text-sm text-gray-600">
-                          <span>Delivery Charge</span>
-                          <span className="font-medium">
-                            ₹{Number(order.delivery_charge).toFixed(0)}
+                        {order.discount_amount && order.discount_amount > 0 && (
+                          <div className="flex justify-between text-sm pt-2 border-t border-gray-100">
+                            <span className="text-green-600 font-semibold flex items-center gap-2">
+                              <Sparkles className="h-4 w-4" />
+                              Discount Applied
+                            </span>
+                            <span className="text-green-600 font-bold text-lg">
+                              -₹{Number(order.discount_amount).toFixed(0)}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center pt-3 border-t-2 border-gray-300">
+                          <span className="text-base font-bold text-gray-900">
+                            Total Amount
+                          </span>
+                          <span className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                            ₹{Number(order.total_amount).toFixed(0)}
                           </span>
                         </div>
-                      )}
-                      {order.discount_amount && order.discount_amount > 0 && (
-                        <div className="flex justify-between text-sm pt-2 border-t border-gray-100">
-                          <span className="text-green-600 font-semibold flex items-center gap-2">
-                            <Sparkles className="h-4 w-4" />
-                            Discount Applied
-                          </span>
-                          <span className="text-green-600 font-bold text-lg">
-                            -₹{Number(order.discount_amount).toFixed(0)}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex justify-between items-center pt-3 border-t-2 border-gray-300">
-                        <span className="text-base font-bold text-gray-900">
-                          Total Amount
-                        </span>
-                        <span className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                          ₹{Number(order.total_amount).toFixed(0)}
-                        </span>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="text-center py-12">
+                <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-600 text-lg">No orders found</p>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -97,20 +97,23 @@ function RecommendationCard({
                   Select Weight:
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {product.weightOptions.map((weight) => (
-                    <button
-                      key={weight.id || weight.weight}
-                      onClick={() => setSelectedWeight(weight)}
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
-                        selectedWeight?.weight === weight.weight
-                          ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      {weight.weight}
-                      {weight.weight_unit}
-                    </button>
-                  ))}
+                  {product.weightOptions &&
+                    Array.isArray(product.weightOptions) &&
+                    product.weightOptions.length > 0 &&
+                    product.weightOptions.map((weight) => (
+                      <button
+                        key={weight.id || weight.weight}
+                        onClick={() => setSelectedWeight(weight)}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
+                          selectedWeight?.weight === weight.weight
+                            ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        {weight.weight}
+                        {weight.weight_unit}
+                      </button>
+                    ))}
                 </div>
               </>
             ) : (
@@ -218,6 +221,10 @@ export default function CartPage() {
       const response = await fetch("/api/products");
       if (response.ok) {
         const allProducts = await response.json();
+        if (!Array.isArray(allProducts)) {
+          setRecommendations([]);
+          return;
+        }
 
         // Filter out products already in cart
         const recommended = allProducts
@@ -268,6 +275,7 @@ export default function CartPage() {
       if (!response.ok) return;
 
       const products = await response.json();
+      if (!Array.isArray(products)) return;
       const productMap = new Map(products.map((p: Product) => [p.id, p]));
 
       // Add items to cart
