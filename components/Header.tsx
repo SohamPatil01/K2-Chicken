@@ -144,15 +144,16 @@ export default function Header() {
             </div>
             <div className="hidden sm:block">
               <div
-                className="text-lg sm:text-xl font-extrabold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent leading-tight tracking-tight"
+                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent leading-tight"
                 style={{
-                  letterSpacing: "-0.02em",
-                  textShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                  fontFamily: "var(--font-poppins), sans-serif",
+                  letterSpacing: "0.01em",
+                  fontWeight: 600,
                 }}
               >
                 Chicken Vicken
               </div>
-              <div className="text-xs sm:text-sm text-gray-500 font-semibold tracking-widest uppercase mt-1">
+              <div className="text-xs sm:text-sm text-gray-500 font-medium tracking-wide mt-0.5">
                 K2 Chicken
               </div>
             </div>
