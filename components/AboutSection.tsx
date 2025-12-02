@@ -114,40 +114,86 @@ export default function AboutSection() {
               mounted ? "animate-slide-in-from-left" : "opacity-0"
             }`}
           >
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
                 A Legacy of Excellence
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed">
                 K2 Chicken was founded with a simple mission: to bring the most
                 delicious, fresh, and high-quality chicken to your table. What
-                started as a small business has grown into Pune's most trusted
-                chicken brand.
+                started as a small neighborhood business has today grown into Pune's most trusted name in fresh chicken—and we are proud to take the next big leap forward.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Our secret? We source only the freshest, highest-grade chicken
-                from trusted farms, cut and portion it with precision, and
-                deliver it chilled to preserve that perfect texture and flavor.
-                Every piece is cleaned twice, ensuring you get
-                restaurant-quality chicken ready for your favorite recipes.
-              </p>
-            </div>
+              
+              {/* Franchise Partnership Section */}
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-200">
+                <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                  Now a Franchise Partner of Chicken Vicken – Baramati Agro
+                </h4>
+                <p className="text-base text-gray-700 leading-relaxed mb-4">
+                  To serve you even better, K2 Chicken is now officially a franchise of Chicken Vicken, Baramati Agro—one of India's most respected and fastest-growing brands in the poultry industry. With this partnership, we bring you:
+                </p>
+                <ul className="space-y-2 mb-4">
+                  {[
+                    "International-grade processing standards",
+                    "Farm-fresh chicken sourced directly from Baramati Agro farms",
+                    "Unmatched hygiene, safety, and consistency",
+                    "Premium cuts crafted with expert precision",
+                  ].map((point, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-base text-gray-700 leading-relaxed">
+                  This collaboration elevates K2 Chicken's commitment to quality while giving our customers access to trusted, certified, and professionally processed Chicken Vicken products—right here in your neighborhood.
+                </p>
+              </div>
 
-            {/* Key Points */}
-            <div className="space-y-3 pt-4">
-              {[
-                "Farm-fresh chicken delivered daily",
-                "Expertly cut and portioned for your recipes",
-                "Double-cleaned for spotless preparation",
-                "100% quality guarantee on every order",
-              ].map((point, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700 font-medium">{point}</span>
+              {/* Freshness Section */}
+              <div className="space-y-4">
+                <h4 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  Freshness You Can Taste
+                </h4>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Our secret remains unchanged:
+                </p>
+                <p className="text-base text-gray-700 leading-relaxed">
+                  We source only the freshest, highest-grade chicken, cut and portioned with precision, and delivered chilled to preserve perfect texture and flavor.
+                </p>
+                <p className="text-base text-gray-700 leading-relaxed font-semibold">
+                  Every piece goes through:
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "Double cleaning process",
+                    "Strict hygiene checks",
+                    "Temperature-controlled handling",
+                  ].map((point, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      </div>
+                      <span className="text-gray-700 font-medium">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-base text-gray-700 leading-relaxed italic">
+                  The result? Restaurant-quality chicken, ready for your favorite recipes—juicy, tender, and unbelievably fresh.
+                </p>
+              </div>
+
+              {/* Partnership Promise */}
+              <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-6 text-white">
+                <h4 className="text-xl sm:text-2xl font-bold mb-4">
+                  K2 Chicken x Chicken Vicken
+                </h4>
+                <div className="space-y-2 text-orange-50">
+                  <p className="font-semibold">A partnership built on trust, quality, and customer delight.</p>
+                  <p className="font-semibold">A promise to deliver only the best.</p>
+                  <p className="font-semibold">A commitment to freshness—every single day.</p>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 
