@@ -61,6 +61,44 @@ function ProductCard({
     (defaultWeight?.weight || 500).toString()
   );
 
+  // Update selectedWeight only when product ID changes (new product)
+  // Don't reset when price or weightOptions update - preserve user's selection
+  useEffect(() => {
+    // Only set default weight if we don't have a selected weight yet
+    // or if this is a different product (check by comparing weight values)
+    const currentWeightValue = selectedWeight?.weight;
+    const matchingWeight = product.weightOptions?.find(
+      (w) => w.weight === currentWeightValue
+    );
+
+    if (!selectedWeight || !matchingWeight) {
+      // No selection yet or selected weight doesn't exist - use default
+      const newDefaultWeight =
+        product.weightOptions?.find((w) => w.is_default) ||
+        product.weightOptions?.[0];
+      if (newDefaultWeight) {
+        setSelectedWeight(newDefaultWeight);
+      }
+    } else {
+      // Product updated but same product - update the weight option with new price data
+      // but keep the same weight selection (preserve user's choice)
+      setSelectedWeight(matchingWeight);
+    }
+  }, [product.id]); // Only depend on product.id, not price or weightOptions
+
+  // Force re-render when product price changes
+  useEffect(() => {
+    // This effect will run whenever product.price changes
+    // Logging helps us verify the component is detecting the change
+    console.log(
+      "🔄 ProductCard price changed:",
+      product.id,
+      product.name,
+      "New price:",
+      product.price
+    );
+  }, [product.price, (product as any).original_price]);
+
   // Calculate discount if original_price exists
   // Base product prices (for 1kg or default weight)
   const baseProductPrice = Number(product.price);
@@ -494,6 +532,7 @@ export default function ProductCatalog({
     }
   }, [filteredProducts]);
 
+  // Initialize with server-side data only once on mount
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
       setProducts(initialProducts);
@@ -502,17 +541,26 @@ export default function ProductCatalog({
     } else if (!initialProducts) {
       fetchProducts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
-    // Periodically refresh products to get updated prices (every 3 seconds)
-    // This ensures price changes in admin console appear quickly
+  // Set up periodic refresh - always runs regardless of initialProducts
+  useEffect(() => {
+    // Start refreshing immediately, then every 2 seconds for faster updates
+    console.log("🔄 Starting product refresh interval...");
+    fetchProducts(); // Fetch immediately
+
     const refreshInterval = setInterval(() => {
       console.log("🔄 Refreshing products...");
       fetchProducts();
-    }, 3000); // Refresh every 3 seconds for faster updates
+    }, 2000); // Refresh every 2 seconds for faster updates
 
-    return () => clearInterval(refreshInterval);
+    return () => {
+      console.log("🛑 Stopping product refresh interval");
+      clearInterval(refreshInterval);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialProducts]);
+  }, []); // Only set up once on mount
 
   const filterAndSortProducts = () => {
     let filtered = products;
@@ -602,45 +650,59 @@ export default function ProductCatalog({
       const data = await response.json();
       const newProducts = Array.isArray(data) ? data : [];
 
-      // Always update products - compare by ID to detect price changes
-      setProducts((prevProducts) => {
-        // Create a map of previous products by ID for efficient lookup
-        const prevMap = new Map(prevProducts.map((p) => [p.id, p]));
+      // ALWAYS update products - no comparison, just update
+      // This ensures price changes from admin console are immediately reflected
+      console.log(
+        "🔄 Updating products from API:",
+        newProducts.length,
+        "products"
+      );
+      console.log(
+        "📊 Product prices:",
+        newProducts.slice(0, 5).map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          original_price: (p as any).original_price,
+        }))
+      );
 
-        // Check if any product has changed (by ID, price, or original_price)
-        const hasChanged =
-          prevProducts.length !== newProducts.length ||
-          newProducts.some((next) => {
-            const prev = prevMap.get(next.id);
-            if (!prev) return true; // New product
+      // Force update by creating a completely new array with new object references
+      // This ensures React detects the change and re-renders all ProductCards
+      // Use a unique timestamp for each product to force re-render
+      const updateTimestamp = Date.now();
+      const updatedProducts = newProducts.map((p, index) => ({
+        ...p,
+        // Create new object reference for each product with unique timestamp
+        _updated: updateTimestamp + index, // Unique timestamp per product
+        _refreshKey: Math.random(), // Random key to force React to see it as new
+      }));
 
-            // Compare prices as numbers to handle string comparisons
-            const prevPrice = parseFloat(prev.price.toString());
-            const nextPrice = parseFloat(next.price.toString());
-            const prevOriginal = parseFloat(
-              ((prev as any).original_price || prev.price).toString()
-            );
-            const nextOriginal = parseFloat(
-              ((next as any).original_price || next.price).toString()
-            );
+      console.log(
+        "🔄 Setting products state with",
+        updatedProducts.length,
+        "products at",
+        new Date().toLocaleTimeString()
+      );
 
-            return prevPrice !== nextPrice || prevOriginal !== nextOriginal;
-          });
+      // Force state update by clearing first, then setting new data
+      // This guarantees React will re-render all ProductCards
+      setProducts([]); // Clear first to force re-render
+      setTimeout(() => {
+        setProducts(updatedProducts);
+      }, 0);
 
-        // Always update if there's a change detected
-        if (hasChanged || prevProducts.length === 0) {
-          console.log("🔄 Products updated:", newProducts.length, "products");
-          return newProducts;
-        }
-        // Even if no change detected, update every few refreshes to ensure sync
-        // This handles edge cases where comparison might miss changes
-        return newProducts;
-      });
+      // Update filtered products immediately with new references
+      const updatedFiltered = newProducts.map((p, index) => ({
+        ...p,
+        _updated: updateTimestamp + index,
+        _refreshKey: Math.random(),
+      }));
 
-      setFilteredProducts((prevFiltered) => {
-        // Always update filtered products to match current products state
-        return newProducts;
-      });
+      setFilteredProducts([]); // Clear first
+      setTimeout(() => {
+        setFilteredProducts(updatedFiltered);
+      }, 0);
     } catch (error) {
       console.error("Error fetching products:", error);
       // Don't clear products on error, keep existing ones
@@ -1016,7 +1078,9 @@ export default function ProductCatalog({
                 const isVisible = visibleProducts.has(product.id) || mounted;
                 return (
                   <div
-                    key={product.id}
+                    key={`product-${product.id}-${product.price}-${
+                      (product as any).original_price || ""
+                    }`}
                     className={`transition-all duration-500 ${
                       isVisible
                         ? "opacity-100 translate-y-0 scale-100"

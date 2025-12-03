@@ -258,32 +258,66 @@ export default function ProductManagement() {
     setUpdatingPrices((prev) => [...prev, productId]);
     try {
       const product = products.find((p) => p.id === productId);
-      if (!product) return;
+      if (!product) {
+        console.error("❌ Product not found:", productId);
+        return;
+      }
+
+      const updatePayload = {
+        ...product,
+        price: price,
+        original_price: originalPrice,
+        name: product.name,
+        description: product.description,
+        image_url: product.image_url,
+        category: product.category,
+        is_available: product.is_available ?? true,
+      };
+
+      console.log("📤 Sending price update to API:", {
+        productId,
+        productName: product.name,
+        oldPrice: product.price,
+        newPrice: price,
+        oldOriginalPrice: (product as any).original_price,
+        newOriginalPrice: originalPrice,
+      });
 
       const response = await fetch(`/api/products/${productId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...product,
-          price: price,
-          original_price: originalPrice,
-          name: product.name,
-          description: product.description,
-          image_url: product.image_url,
-          category: product.category,
-          is_available: product.is_available ?? true,
-        }),
+        body: JSON.stringify(updatePayload),
       });
 
       if (response.ok) {
+        const updatedProduct = await response.json();
+        console.log("✅ Price update successful:", {
+          productId,
+          productName: updatedProduct.name,
+          newPrice: updatedProduct.price,
+          newOriginalPrice: updatedProduct.original_price,
+        });
+
         await fetchProducts();
         setQuickPriceUpdate((prev) => {
           const updated = { ...prev };
           delete updated[productId];
           return updated;
         });
+
+        // Show success message
+        alert(
+          `✅ Price updated successfully!\n\nProduct: ${
+            updatedProduct.name
+          }\nNew Price: ₹${updatedProduct.price}\nOriginal Price: ${
+            updatedProduct.original_price
+              ? `₹${updatedProduct.original_price}`
+              : "N/A"
+          }`
+        );
       } else {
         const error = await response.json();
+        console.error("❌ Price update failed:", error);
         alert(error.error || "Failed to update prices");
       }
     } catch (error) {

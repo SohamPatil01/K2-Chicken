@@ -37,9 +37,31 @@ export async function PUT(
   try {
     const { name, description, price, original_price, image_url, category, is_available } = await request.json()
     
+    console.log("📥 Received product update request:", {
+      productId: params.id,
+      name,
+      price,
+      original_price,
+    });
+    
     const client = await pool.connect()
     
     try {
+      // Get current product data before update
+      const currentProduct = await client.query(
+        'SELECT id, name, price, original_price FROM products WHERE id = $1',
+        [params.id]
+      );
+      
+      if (currentProduct.rows.length > 0) {
+        console.log("📊 Current product data:", {
+          id: currentProduct.rows[0].id,
+          name: currentProduct.rows[0].name,
+          currentPrice: currentProduct.rows[0].price,
+          currentOriginalPrice: currentProduct.rows[0].original_price,
+        });
+      }
+      
       // Ensure original_price column exists
       await client.query(`
         DO $$ 
@@ -59,8 +81,54 @@ export async function PUT(
       `, [name, description, price, original_price || null, image_url, category, is_available, params.id])
       
       if (result.rows.length === 0) {
+        console.error("❌ Product not found in database:", params.id);
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
+      
+      // Update weight options prices proportionally based on new base price
+      // This ensures displayed prices match the updated product price
+      try {
+        const weightOptionsResult = await client.query(
+          'SELECT id, weight FROM product_weight_options WHERE product_id = $1',
+          [params.id]
+        );
+        
+        if (weightOptionsResult.rows.length > 0) {
+          const basePrice = parseFloat(price.toString());
+          const oldBasePrice = parseFloat(currentProduct.rows[0]?.price || price.toString());
+          
+          // Only update if base price actually changed
+          if (oldBasePrice > 0 && basePrice !== oldBasePrice) {
+            const priceRatio = basePrice / oldBasePrice;
+            
+            for (const weightOption of weightOptionsResult.rows) {
+              const newPrice = (parseFloat(weightOption.weight) / 1000) * basePrice;
+              await client.query(
+                'UPDATE product_weight_options SET price = $1 WHERE id = $2',
+                [newPrice.toFixed(2), weightOption.id]
+              );
+            }
+            
+            console.log("✅ Updated weight options prices proportionally:", {
+              productId: params.id,
+              oldBasePrice,
+              newBasePrice: basePrice,
+              ratio: priceRatio,
+              weightOptionsUpdated: weightOptionsResult.rows.length
+            });
+          }
+        }
+      } catch (error) {
+        // If weight options table doesn't exist or update fails, log but don't fail the request
+        console.log("⚠️ Could not update weight options (this is okay if table doesn't exist):", error);
+      }
+      
+      console.log("✅ Product updated in database:", {
+        id: result.rows[0].id,
+        name: result.rows[0].name,
+        newPrice: result.rows[0].price,
+        newOriginalPrice: result.rows[0].original_price,
+      });
       
       // Revalidate the homepage and products page to show updated prices immediately
       revalidatePath('/')
