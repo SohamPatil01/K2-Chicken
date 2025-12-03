@@ -1,78 +1,95 @@
-import dynamic from 'next/dynamic'
-import Hero from '@/components/Hero'
-import pool from '@/lib/db'
+import dynamic from "next/dynamic";
+import Hero from "@/components/Hero";
+import pool from "@/lib/db";
 
 // Lazy load heavy components for better performance
-const ProductCatalog = dynamic(() => import('@/components/ProductCatalog'), {
-  loading: () => <div className="min-h-[400px] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-500"></div></div>,
-  ssr: true
-})
+const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
+  loading: () => (
+    <div className="min-h-[400px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-500"></div>
+    </div>
+  ),
+  ssr: true,
+});
 
-const RecipeSection = dynamic(() => import('@/components/RecipeSection'), {
-  loading: () => <div className="min-h-[300px] flex items-center justify-center"><div className="animate-spin rounded-full h-10 w-10 border-4 border-orange-200 border-t-orange-500"></div></div>,
-  ssr: true
-})
+const RecipeSection = dynamic(() => import("@/components/RecipeSection"), {
+  loading: () => (
+    <div className="min-h-[300px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-10 w-10 border-4 border-orange-200 border-t-orange-500"></div>
+    </div>
+  ),
+  ssr: true,
+});
 
-const WhyChooseUs = dynamic(() => import('@/components/WhyChooseUs'), {
-  ssr: true
-})
+const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"), {
+  ssr: true,
+});
 
-const AboutSection = dynamic(() => import('@/components/AboutSection'), {
-  ssr: true
-})
+const AboutSection = dynamic(() => import("@/components/AboutSection"), {
+  ssr: true,
+});
 
-const ContactSection = dynamic(() => import('@/components/ContactSection'), {
-  ssr: false // Client-side only for map
-})
+const ContactSection = dynamic(() => import("@/components/ContactSection"), {
+  ssr: false, // Client-side only for map
+});
 
-const PromotionsFlyer = dynamic(() => import('@/components/PromotionsFlyer'), {
+const PromotionsFlyer = dynamic(() => import("@/components/PromotionsFlyer"), {
   loading: () => <div className="min-h-[200px]"></div>,
-  ssr: true
-})
+  ssr: true,
+});
 
-const ReviewsSection = dynamic(() => import('@/components/ReviewsSection'), {
+const ReviewsSection = dynamic(() => import("@/components/ReviewsSection"), {
   loading: () => <div className="min-h-[300px]"></div>,
-  ssr: true
-})
+  ssr: true,
+});
 
-const InauguralDiscountFlyer = dynamic(() => import('@/components/InauguralDiscountFlyer'), {
-  ssr: false // Client-side only component
-})
+const InauguralDiscountFlyer = dynamic(
+  () => import("@/components/InauguralDiscountFlyer"),
+  {
+    ssr: false, // Client-side only component
+  }
+);
 
 // Cache column existence check (only check once, reuse result)
-let hasOriginalPriceColumn: boolean | null = null
+let hasOriginalPriceColumn: boolean | null = null;
 
 async function checkOriginalPriceColumn(client: any): Promise<boolean> {
   if (hasOriginalPriceColumn !== null) {
-    return hasOriginalPriceColumn
+    return hasOriginalPriceColumn;
   }
   try {
     const columnCheck = await client.query(`
       SELECT column_name 
       FROM information_schema.columns 
       WHERE table_name = 'products' AND column_name = 'original_price'
-    `)
-    hasOriginalPriceColumn = columnCheck.rows.length > 0
-    return hasOriginalPriceColumn
+    `);
+    hasOriginalPriceColumn = columnCheck.rows.length > 0;
+    return hasOriginalPriceColumn;
   } catch {
-    hasOriginalPriceColumn = false
-    return false
+    hasOriginalPriceColumn = false;
+    return false;
   }
 }
 
 // Fetch data directly from database for better performance
-export const revalidate = 60 // Revalidate every 60 seconds
+// Revalidate time reduced to 10 seconds for faster updates when prices change
+export const revalidate = 10; // Revalidate every 10 seconds
 
 async function getHomePageData() {
-  const client = await pool.connect()
+  const client = await pool.connect();
   try {
     // Check column existence once
-    const hasOriginalPrice = await checkOriginalPriceColumn(client)
-    
+    const hasOriginalPrice = await checkOriginalPriceColumn(client);
+
     // Fetch all data in parallel
-    const [productsResult, recipesResult, promotionsResult, reviewsResult] = await Promise.all([
-      client.query(`
-        SELECT id, name, description, price, ${hasOriginalPrice ? 'COALESCE(original_price, price) as original_price' : 'price as original_price'}, image_url, category, is_available,
+    const [productsResult, recipesResult, promotionsResult, reviewsResult] =
+      await Promise.all([
+        client.query(`
+        SELECT id, name, description, price, ${
+          hasOriginalPrice
+            ? "COALESCE(original_price, price) as original_price"
+            : "price as original_price"
+        }, image_url, category, is_available,
                COALESCE(stock_quantity, 100) as stock_quantity,
                COALESCE(low_stock_threshold, 10) as low_stock_threshold,
                COALESCE(in_stock, true) as in_stock
@@ -80,70 +97,74 @@ async function getHomePageData() {
         WHERE is_available = true 
         ORDER BY category, name
       `),
-      client.query(`
+        client.query(`
         SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
         FROM recipes 
         ORDER BY created_at DESC
         LIMIT 3
       `),
-      client.query(`
+        client.query(`
         SELECT * FROM promotions
         WHERE is_active = true AND (end_date IS NULL OR end_date >= CURRENT_DATE)
         ORDER BY display_order ASC, created_at DESC
       `),
-      client.query(`
+        client.query(`
         SELECT id, user_name, rating, comment, created_at
         FROM reviews
         WHERE is_approved = true
         ORDER BY is_featured DESC, display_order ASC, created_at DESC
         LIMIT 6
-      `)
-    ])
+      `),
+      ]);
 
     // Get weight options for products
-    const productIds = productsResult.rows.map(p => p.id)
-    let weightOptions: any[] = []
+    const productIds = productsResult.rows.map((p) => p.id);
+    let weightOptions: any[] = [];
     if (productIds.length > 0) {
       try {
-        const weightResult = await client.query(`
+        const weightResult = await client.query(
+          `
           SELECT * FROM product_weight_options 
           WHERE product_id = ANY($1::int[])
           ORDER BY product_id, weight
-        `, [productIds])
-        weightOptions = weightResult.rows
+        `,
+          [productIds]
+        );
+        weightOptions = weightResult.rows;
       } catch (error) {
         // Table might not exist yet, use empty array
-        console.error('Error fetching weight options:', error)
-        weightOptions = []
+        console.error("Error fetching weight options:", error);
+        weightOptions = [];
       }
     }
 
     // Attach weight options to products
-    const products = productsResult.rows.map(product => ({
+    const products = productsResult.rows.map((product) => ({
       ...product,
-      weightOptions: weightOptions.filter(wo => wo.product_id === product.id)
-    }))
+      weightOptions: weightOptions.filter((wo) => wo.product_id === product.id),
+    }));
 
     return {
       products,
       recipes: recipesResult.rows,
       promotions: promotionsResult.rows,
-      reviews: reviewsResult.rows
-    }
+      reviews: reviewsResult.rows,
+    };
   } catch (error) {
-    console.error('Error fetching homepage data:', error)
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    console.error('Error details:', errorMessage)
+    console.error("Error fetching homepage data:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("Error details:", errorMessage);
     // Log the error but don't crash the page
-    return { products: [], recipes: [], promotions: [], reviews: [] }
+    return { products: [], recipes: [], promotions: [], reviews: [] };
   } finally {
-    client.release()
+    client.release();
   }
 }
 
 export default async function Home() {
   // Fetch data server-side
-  const { products, recipes, promotions, reviews } = await getHomePageData()
+  const { products, recipes, promotions, reviews } = await getHomePageData();
 
   return (
     <div>
@@ -159,5 +180,5 @@ export default async function Home() {
       <WhyChooseUs />
       <ContactSection />
     </div>
-  )
+  );
 }

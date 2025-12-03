@@ -502,6 +502,16 @@ export default function ProductCatalog({
     } else if (!initialProducts) {
       fetchProducts();
     }
+
+    // Periodically refresh products to get updated prices (every 3 seconds)
+    // This ensures price changes in admin console appear quickly
+    const refreshInterval = setInterval(() => {
+      console.log("🔄 Refreshing products...");
+      fetchProducts();
+    }, 3000); // Refresh every 3 seconds for faster updates
+
+    return () => clearInterval(refreshInterval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialProducts]);
 
   const filterAndSortProducts = () => {
@@ -576,21 +586,64 @@ export default function ProductCatalog({
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products", {
-        next: { revalidate: 60 }, // Cache for 60 seconds
+      // Add timestamp to prevent browser caching
+      const timestamp = Date.now();
+      const response = await fetch(`/api/products?t=${timestamp}`, {
+        cache: "no-store", // Always fetch fresh data
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+        },
       });
       if (!response.ok) {
-        setProducts([]);
-        setFilteredProducts([]);
+        // Don't clear products on error, keep existing ones
         return;
       }
       const data = await response.json();
-      setProducts(Array.isArray(data) ? data : []);
-      setFilteredProducts(Array.isArray(data) ? data : []);
+      const newProducts = Array.isArray(data) ? data : [];
+
+      // Always update products - compare by ID to detect price changes
+      setProducts((prevProducts) => {
+        // Create a map of previous products by ID for efficient lookup
+        const prevMap = new Map(prevProducts.map((p) => [p.id, p]));
+
+        // Check if any product has changed (by ID, price, or original_price)
+        const hasChanged =
+          prevProducts.length !== newProducts.length ||
+          newProducts.some((next) => {
+            const prev = prevMap.get(next.id);
+            if (!prev) return true; // New product
+
+            // Compare prices as numbers to handle string comparisons
+            const prevPrice = parseFloat(prev.price.toString());
+            const nextPrice = parseFloat(next.price.toString());
+            const prevOriginal = parseFloat(
+              ((prev as any).original_price || prev.price).toString()
+            );
+            const nextOriginal = parseFloat(
+              ((next as any).original_price || next.price).toString()
+            );
+
+            return prevPrice !== nextPrice || prevOriginal !== nextOriginal;
+          });
+
+        // Always update if there's a change detected
+        if (hasChanged || prevProducts.length === 0) {
+          console.log("🔄 Products updated:", newProducts.length, "products");
+          return newProducts;
+        }
+        // Even if no change detected, update every few refreshes to ensure sync
+        // This handles edge cases where comparison might miss changes
+        return newProducts;
+      });
+
+      setFilteredProducts((prevFiltered) => {
+        // Always update filtered products to match current products state
+        return newProducts;
+      });
     } catch (error) {
       console.error("Error fetching products:", error);
-      setProducts([]);
-      setFilteredProducts([]);
+      // Don't clear products on error, keep existing ones
     } finally {
       setLoading(false);
     }

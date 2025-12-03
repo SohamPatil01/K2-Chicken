@@ -87,7 +87,7 @@ export default function ContactSection() {
         <div style="padding: 10px;">
           <h3 style="font-weight: bold; margin-bottom: 5px;">K2 Chicken</h3>
           <p style="margin: 0;">${SHOP_LOCATION.address}</p>
-          <a href="tel:8484978622" style="color: #ea580c; margin-top: 5px; display: block;">📞 8484978622</a>
+          <a href="tel:+918484978622" style="color: #ea580c; margin-top: 5px; display: block;">📞 +91 84849 78622</a>
         </div>
       `,
     });
@@ -450,7 +450,7 @@ export default function ContactSection() {
             {/* Quick Action Buttons */}
             <div className="grid grid-cols-1 gap-3 mb-6">
               <a
-                href="tel:8484978622"
+                href="tel:+918484978622"
                 className="bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-2xl p-5 border border-orange-200 hover:border-orange-300 transition-all duration-300 group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">

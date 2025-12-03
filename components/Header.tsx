@@ -286,12 +286,12 @@ export default function Header() {
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Phone Number - Enhanced */}
             <a
-              href="tel:8484978622"
+              href="tel:+918484978622"
               className="hidden lg:flex items-center gap-2 px-4 py-2 text-xs font-medium text-gray-700 hover:text-green-700 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 group border border-transparent hover:border-green-200"
-              title="Call us: 8484978622"
+              title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
-              <span className="font-semibold">8484978622</span>
+              <span className="font-semibold">+91 84849 78622</span>
             </a>
 
             {/* User Account / Login */}
@@ -356,12 +356,12 @@ export default function Header() {
 
             {/* Mobile Phone Number */}
             <a
-              href="tel:8484978622"
+              href="tel:+918484978622"
               className="md:hidden flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-700 hover:text-green-700 rounded-xl hover:bg-green-50 transition-all duration-300 border border-transparent hover:border-green-200"
-              title="Call us"
+              title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4" />
-              <span className="font-semibold">Call</span>
+              <span className="font-semibold">+91 84849 78622</span>
             </a>
 
             {/* Mobile menu button - Enhanced */}
@@ -514,7 +514,7 @@ export default function Header() {
                   ) : (
                     <>
                       <a
-                        href="tel:8484978622"
+                        href="tel:+918484978622"
                         className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-green-700 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3 overflow-hidden"
                         onClick={() => setIsMenuOpen(false)}
                       >
@@ -522,7 +522,9 @@ export default function Header() {
                           size={18}
                           className="relative z-10 text-green-700 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"
                         />
-                        <span className="relative z-10">Call: 8484978622</span>
+                        <span className="relative z-10">
+                          Call: +91 84849 78622
+                        </span>
                       </a>
                       <Link
                         href="/login"

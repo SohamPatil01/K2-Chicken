@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import pool from '@/lib/db'
 
-// Cache for 60 seconds (revalidate)
-export const revalidate = 60;
+// No caching - always fetch fresh data for real-time price updates
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 // Cache column existence checks (only check once per process)
@@ -193,6 +195,11 @@ export async function POST(request: NextRequest) {
       `, [newProduct.id, 0, 10])
       
       await client.query('COMMIT')
+      
+      // Revalidate the homepage and products page to show new product immediately
+      revalidatePath('/')
+      revalidatePath('/#products')
+      revalidatePath('/api/products')
       
       return NextResponse.json(newProduct)
     } catch (error) {

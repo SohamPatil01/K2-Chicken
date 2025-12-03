@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import pool from '@/lib/db'
 
 export async function GET(
@@ -60,6 +61,11 @@ export async function PUT(
       if (result.rows.length === 0) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
+      
+      // Revalidate the homepage and products page to show updated prices immediately
+      revalidatePath('/')
+      revalidatePath('/#products')
+      revalidatePath('/api/products')
       
       return NextResponse.json(result.rows[0])
     } finally {
@@ -167,6 +173,11 @@ export async function DELETE(
       )
       
       await client.query('COMMIT')
+      
+      // Revalidate the homepage and products page to remove deleted product immediately
+      revalidatePath('/')
+      revalidatePath('/#products')
+      revalidatePath('/api/products')
       
       return NextResponse.json({ 
         success: true,

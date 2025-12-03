@@ -119,7 +119,7 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-700 to-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </Link>
-            <Link href="tel:8484978622" className="group w-full sm:w-auto">
+            <Link href="tel:+918484978622" className="group w-full sm:w-auto">
               <button className="bg-white/90 backdrop-blur px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-semibold text-base sm:text-lg text-gray-900 hover:text-orange-700 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-3">
                 <Phone className="h-5 w-5 sm:h-5 sm:w-5" />
                 <span>Call Now</span>
