@@ -487,14 +487,14 @@ export default function ContactSection() {
             {/* Contact Methods */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <a
-                href="mailto:hello@k2chicken.com"
+                href="mailto:k2foodindia@gmail.com"
                 className="bg-white border-2 border-gray-200 rounded-2xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 transform hover:scale-105 group"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
                   <Mail className="w-6 h-6 text-blue-600" />
                 </div>
                 <h4 className="font-bold text-gray-900 mb-1">Email Us</h4>
-                <p className="text-gray-600 text-sm">hello@k2chicken.com</p>
+                <p className="text-gray-600 text-sm">k2foodindia@gmail.com</p>
               </a>
 
               <div className="bg-white border-2 border-gray-200 rounded-2xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 group">

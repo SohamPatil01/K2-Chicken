@@ -115,14 +115,14 @@ export default function Footer() {
                 <span className="text-sm sm:text-base">8484978622</span>
               </a>
               <a
-                href="mailto:hello@k2chicken.com"
+                href="mailto:k2foodindia@gmail.com"
                 className="flex items-center gap-3 hover:text-orange-400 transition-all duration-300 group"
               >
                 <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-orange-500/20 transition-colors duration-300">
                   <Mail className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-sm sm:text-base">
-                  hello@k2chicken.com
+                  k2foodindia@gmail.com
                 </span>
               </a>
               <div className="flex items-start gap-3 pt-1">
