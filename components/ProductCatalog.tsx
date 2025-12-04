@@ -57,10 +57,21 @@ function ProductCard({
     WeightOption | undefined
   >(defaultWeight);
   const [showInfo, setShowInfo] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [customWeightEnabled, setCustomWeightEnabled] = useState(false);
   const [customWeight, setCustomWeight] = useState<string>(
     (defaultWeight?.weight || 500).toString()
   );
+
+  // Detect if device is mobile/touch
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640 || 'ontouchstart' in window);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Update selectedWeight only when product ID changes (new product)
   // Don't reset when price or weightOptions update - preserve user's selection
@@ -161,11 +172,43 @@ function ProductCard({
 
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
 
+  // Handle click on mobile to toggle info panel
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Only handle clicks on mobile devices
+    if (!isMobile) return;
+    
+    // Don't toggle if clicking on interactive elements (buttons, inputs, etc.)
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'INPUT' ||
+      target.closest('button') ||
+      target.closest('input') ||
+      target.closest('a')
+    ) {
+      return;
+    }
+    
+    // Toggle info panel on mobile
+    setShowInfo((prev) => !prev);
+  };
+
   return (
     <div
       className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl"
-      onMouseEnter={() => setShowInfo(true)}
-      onMouseLeave={() => setShowInfo(false)}
+      onMouseEnter={() => {
+        // Only use hover on desktop (non-mobile)
+        if (!isMobile) {
+          setShowInfo(true);
+        }
+      }}
+      onMouseLeave={() => {
+        // Only use hover on desktop (non-mobile)
+        if (!isMobile) {
+          setShowInfo(false);
+        }
+      }}
+      onClick={handleCardClick}
     >
       {/* Discount Badge */}
       {hasDiscount && (

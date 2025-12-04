@@ -1,5 +1,12 @@
 "use client";
 
+// Note: This page intentionally uses client-side rendering because it requires:
+// - Cart state (useCart hook)
+// - Authentication state (useAuth hook)  
+// - Form state and user interactions
+// - Router navigation (useRouter, useSearchParams)
+// The "deopted into client-side rendering" warning is expected and harmless for this page.
+
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
