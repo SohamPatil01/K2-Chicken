@@ -18,6 +18,7 @@ interface OrderNotificationData {
   subtotal: number
   deliveryCharge: number
   discountAmount: number
+  loyaltyDiscountAmount?: number
   total: number
   paymentMethod: string
   promoCode?: string
@@ -44,8 +45,16 @@ export async function sendOrderNotificationToWhatsApp(orderData: OrderNotificati
       : `🏪 *Pickup at Store*\n`
 
     // Format discounts
-    const discountInfo = orderData.discountAmount > 0
-      ? `\n💰 *Discount:* -₹${orderData.discountAmount.toFixed(0)}${orderData.promoCode ? ` (${orderData.promoCode})` : ''}\n`
+    const promoDiscountText = orderData.discountAmount > 0
+      ? `\n💰 *Promo Discount:* -₹${orderData.discountAmount.toFixed(0)}${orderData.promoCode ? ` (${orderData.promoCode})` : ''}`
+      : ''
+    
+    const loyaltyDiscountText = orderData.loyaltyDiscountAmount && orderData.loyaltyDiscountAmount > 0
+      ? `\n🎉 *Loyalty Discount:* -₹${orderData.loyaltyDiscountAmount.toFixed(0)}`
+      : ''
+    
+    const discountInfo = promoDiscountText || loyaltyDiscountText
+      ? `${promoDiscountText}${loyaltyDiscountText}\n`
       : ''
 
     // Format payment method
