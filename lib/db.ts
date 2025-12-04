@@ -37,15 +37,21 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
 });
 
-// Test connection on startup
-pool.connect()
-  .then((client) => {
-    console.log('✅ Database connection pool initialized');
-    client.release();
-  })
-  .catch((err) => {
-    console.error('❌ Failed to initialize database connection pool:', err);
-  });
+// Test connection on startup - only log once per process
+// Using a symbol to ensure it's truly module-scoped
+const INIT_KEY = Symbol('db-init');
+if (!(globalThis as any)[INIT_KEY]) {
+  (globalThis as any)[INIT_KEY] = true;
+  // Test connection asynchronously without blocking
+  pool.connect()
+    .then((client) => {
+      console.log('✅ Database connection pool initialized');
+      client.release();
+    })
+    .catch((err) => {
+      console.error('❌ Failed to initialize database connection pool:', err);
+    });
+}
 
 export default pool;
 

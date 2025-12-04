@@ -807,11 +807,11 @@ export default function CartPage() {
                 <div className="space-y-3">
                   <Link
                     href="/checkout"
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-95 group"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-2xl active:scale-95 group min-h-[56px] text-base sm:text-lg"
                   >
-                    <Shield className="w-5 h-5" />
+                    <Shield className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span>Proceed to Checkout</span>
-                    <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-200 group-hover:translate-x-1" />
                   </Link>
 
                   <Link

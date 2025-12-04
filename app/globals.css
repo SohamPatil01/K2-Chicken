@@ -66,6 +66,17 @@
     }
   }
 
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .animate-in {
     animation: fadeIn 0.3s ease-in;
   }
@@ -83,19 +94,24 @@
   }
 
   /* Mobile-specific improvements */
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     body {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      width: 100%;
+      /* Mobile-first: larger base font */
+      font-size: 16px;
     }
 
-    /* Better touch targets for mobile */
+    /* Better touch targets for mobile - minimum 48px */
     button,
-    a,
-    input,
-    select,
-    textarea {
-      min-height: 44px; /* iOS recommended touch target size */
+    a[role="button"],
+    input[type="button"],
+    input[type="submit"],
+    .touch-target {
+      min-height: 48px;
+      min-width: 48px;
     }
 
     /* Prevent text size adjustment on iOS */
@@ -103,6 +119,33 @@
     select,
     textarea {
       font-size: 16px !important;
+    }
+
+    /* Smooth scrolling for mobile */
+    html {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Better tap highlight - subtle orange */
+    * {
+      -webkit-tap-highlight-color: rgba(251, 146, 60, 0.15);
+    }
+
+    /* Mobile-optimized spacing */
+    .mobile-container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    /* Hide scrollbar but allow scrolling */
+    .mobile-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .mobile-scroll::-webkit-scrollbar {
+      display: none;
     }
   }
 
@@ -119,480 +162,35 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold px-6 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-200 transform active:scale-95 min-h-[56px];
   }
 
-  .btn-secondary {
-    @apply bg-white border-2 border-gray-200 hover:border-orange-300 text-gray-700 hover:text-orange-600 font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md;
+  /* Mobile-optimized card */
+  .mobile-card {
+    @apply bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-200 active:scale-[0.98];
   }
 
-  .card {
-    @apply bg-white rounded-2xl shadow-md p-6 border border-gray-200;
+  /* Mobile-optimized button */
+  .mobile-btn {
+    @apply min-h-[56px] px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-200 active:scale-95;
   }
 
-  .chicken-gradient {
-    @apply bg-gradient-to-r from-orange-600 via-red-600 to-orange-500;
+  /* Safe area for mobile notches */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
   }
-}
 
-@keyframes gradient-x {
-  0%,
-  100% {
-    background-position: 0% 50%;
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
-  50% {
-    background-position: 100% 50%;
-  }
-}
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) translateX(0px);
+  /* Mobile header style */
+  .mobile-header {
+    @apply bg-white/98 backdrop-blur-xl border-b border-gray-200/50 shadow-sm;
   }
-  33% {
-    transform: translateY(-20px) translateX(10px);
-  }
-  66% {
-    transform: translateY(10px) translateX(-10px);
-  }
-}
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
+  /* Mobile bottom nav style */
+  .mobile-bottom-nav {
+    @apply bg-white/98 backdrop-blur-xl border-t border-gray-200/50 shadow-2xl;
   }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 15s ease infinite;
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  background-size: 200% auto;
-  animation: shimmer 3s linear infinite;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
-}
-
-@keyframes flash {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
-  }
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 5px rgba(239, 68, 68, 0.5), 0 0 10px rgba(239, 68, 68, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.5);
-  }
-}
-
-.order-badge-flash {
-  animation: flash 1.5s ease-in-out infinite, pulse-glow 2s ease-in-out infinite;
-}
-
-/* Enhanced animations for customer pages */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) translateY(20px);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05) translateY(-5px);
-  }
-  70% {
-    transform: scale(0.95) translateY(0);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes glow {
-  0%,
-  100% {
-    box-shadow: 0 0 5px rgba(251, 146, 60, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(251, 146, 60, 0.8),
-      0 0 30px rgba(251, 146, 60, 0.6);
-  }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out;
-}
-
-.animate-slide-down {
-  animation: slideDown 0.6s ease-out;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.4s ease-out;
-}
-
-.animate-bounce-in {
-  animation: bounceIn 0.6s ease-out;
-}
-
-.animate-shimmer-bg {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulse 3s ease-in-out infinite;
-}
-
-.animate-glow {
-  animation: glow 2s ease-in-out infinite;
-}
-
-/* Stagger animation delays */
-.stagger-1 {
-  animation-delay: 0.1s;
-}
-.stagger-2 {
-  animation-delay: 0.2s;
-}
-.stagger-3 {
-  animation-delay: 0.3s;
-}
-.stagger-4 {
-  animation-delay: 0.4s;
-}
-.stagger-5 {
-  animation-delay: 0.5s;
-}
-
-/* Additional animations for promotions */
-@keyframes shimmer-slide {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInFromRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes bounceSlow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes spinSlow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-shimmer-slide {
-  animation: shimmer-slide 3s ease-in-out infinite;
-}
-
-.animate-slide-in-from-left {
-  animation: slideInFromLeft 0.8s ease-out;
-}
-
-.animate-slide-in-from-right {
-  animation: slideInFromRight 0.8s ease-out;
-}
-
-.animate-bounce-slow {
-  animation: bounceSlow 2s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spinSlow 4s linear infinite;
-}
-
-/* Subtle confetti animation for order success */
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
-}
-
-@keyframes success-scale {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes success-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(34, 197, 94, 0.6), 0 0 60px rgba(34, 197, 94, 0.4);
-  }
-}
-
-.animate-confetti-fall {
-  animation: confetti-fall 3s ease-out forwards;
-}
-
-.animate-success-scale {
-  animation: success-scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.animate-success-glow {
-  animation: success-glow 2s ease-in-out infinite;
-}
-
-/* Hero Section Animations */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse-subtle {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-}
-
-@keyframes bounce-subtle {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 2s ease-in-out infinite;
-}
-
-.animate-bounce-subtle {
-  animation: bounce-subtle 2s ease-in-out infinite;
-}
-
-/* Parallax effect */
-.parallax {
-  will-change: transform;
-}
-
-/* Typewriter cursor */
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-
-.animate-blink {
-  animation: blink 1s infinite;
-}
-
-/* Slide animations */
-@keyframes slide-in-from-left {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-from-right {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-slide-in-from-left {
-  animation: slide-in-from-left 0.8s ease-out forwards;
-}
-
-.animate-slide-in-from-right {
-  animation: slide-in-from-right 0.8s ease-out forwards;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.6s ease-out forwards;
 }

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       paymentMethod: requestBody.paymentMethod
     })
     
-    const { 
+      const { 
       customerName, 
       customerPhone, 
       deliveryAddress, 
@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
       subtotal, 
       deliveryCharge, 
       total, 
-      discountAmount, 
+      discountAmount,
+      loyaltyDiscount,
       promoCode,
       paymentMethod,
       deliveryTimeSlotId,
@@ -315,6 +316,7 @@ export async function POST(request: NextRequest) {
           subtotal: finalSubtotal,
           deliveryCharge: finalDeliveryCharge,
           discountAmount: finalDiscountAmount,
+          loyaltyDiscountAmount: parseFloat(loyaltyDiscount || '0') || undefined,
           total: finalTotal,
           paymentMethod: paymentMethod || 'cash',
           promoCode: promoCode || undefined,

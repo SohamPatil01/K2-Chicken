@@ -119,17 +119,14 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ${
+      className={`sticky top-0 z-50 transition-all duration-300 safe-top ${
         scrolled
-          ? "bg-white/98 backdrop-blur-xl shadow-lg border-b border-orange-100/60"
-          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/40"
+          ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-gray-200/50"
+          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/30"
       }`}
     >
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-50/30 via-transparent to-red-50/30 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex justify-between items-center py-3 sm:py-4">
+        <div className="flex justify-between items-center py-3 md:py-4">
           {/* Logo - Enhanced with animations */}
           <Link
             href="/"
@@ -145,8 +142,8 @@ export default function Header() {
               <div className="relative transform group-hover:scale-105 transition-all duration-300">
                 <img
                   src="/logo.png"
-                  alt="Chicken Vicken - Baramati Agro"
-                  className="h-12 sm:h-16 w-auto rounded-2xl drop-shadow-md group-hover:drop-shadow-xl transition-all duration-300"
+                  alt="K2 Chicken"
+                  className="h-10 sm:h-12 md:h-16 w-auto rounded-xl md:rounded-2xl drop-shadow-sm transition-all duration-200"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     target.src = "/logo.svg";
@@ -337,53 +334,54 @@ export default function Header() {
               </>
             )}
 
-            {/* Cart - Enhanced */}
+            {/* Cart - Modern Mobile Design */}
             <Link
               href="/cart"
               prefetch={true}
-              className="relative p-2.5 text-gray-600 hover:text-orange-600 rounded-xl hover:bg-gradient-to-br hover:from-orange-50 hover:to-red-50 transition-all duration-300 group border border-transparent hover:border-orange-200"
+              className="relative p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-800 rounded-xl active:scale-95 transition-all duration-200 group"
             >
-              <ShoppingCart
-                size={20}
-                className="group-hover:scale-110 transition-transform duration-300"
-              />
-              {totalItems > 0 && mounted && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg ring-2 ring-white animate-bounce-in">
-                  {totalItems}
-                </span>
-              )}
+              <div className="relative">
+                <ShoppingCart
+                  size={22}
+                  className="transition-transform duration-200"
+                />
+                {totalItems > 0 && mounted && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-orange-600 to-red-600 text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </div>
             </Link>
 
-            {/* Mobile Phone Number */}
+            {/* Mobile Phone Number - Modern */}
             <a
               href="tel:+918484978622"
-              className="md:hidden flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-700 hover:text-green-700 rounded-xl hover:bg-green-50 transition-all duration-300 border border-transparent hover:border-green-200"
+              className="md:hidden flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] text-xs font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl active:scale-95 transition-all duration-200 shadow-md"
               title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4" />
-              <span className="font-semibold">+91 84849 78622</span>
             </a>
 
-            {/* Mobile menu button - Enhanced */}
+            {/* Mobile menu button - Modern */}
             <button
-              className="md:hidden p-2.5 text-gray-600 hover:text-orange-600 rounded-xl hover:bg-orange-50 transition-all duration-300 border border-transparent hover:border-orange-200"
+              className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-800 rounded-xl active:scale-95 transition-all duration-200"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
-              <div className="relative p-1">
+              <div className="relative w-6 h-6">
                 <div
-                  className={`absolute inset-0 transition-all duration-300 ${
+                  className={`absolute inset-0 transition-all duration-200 ${
                     isMenuOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
                   }`}
                 >
-                  <Menu size={20} />
+                  <Menu size={24} strokeWidth={2.5} />
                 </div>
                 <div
-                  className={`transition-all duration-300 ${
+                  className={`absolute inset-0 transition-all duration-200 ${
                     isMenuOpen ? "rotate-0 opacity-100" : "rotate-90 opacity-0"
                   }`}
                 >
-                  <X size={20} />
+                  <X size={24} strokeWidth={2.5} />
                 </div>
               </div>
             </button>

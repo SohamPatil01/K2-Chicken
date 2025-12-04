@@ -768,19 +768,19 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-6 sm:mb-8 animate-slide-down">
-          <div className="relative inline-block mb-3">
+        <div className="mb-4 sm:mb-6 md:mb-8 animate-slide-down">
+          <div className="relative inline-block mb-2 sm:mb-3">
             <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-3xl opacity-30"></div>
-            <h1 className="relative text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">
+            <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-1 sm:mb-2">
               Checkout{" "}
               <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 Details
               </span>
             </h1>
           </div>
-          <p className="text-gray-600 text-base sm:text-lg animate-slide-up stagger-1">
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg animate-slide-up stagger-1">
             Complete your order in just a few steps
           </p>
         </div>
@@ -831,7 +831,7 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
           {/* Order Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">

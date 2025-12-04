@@ -72,8 +72,8 @@ async function checkOriginalPriceColumn(client: any): Promise<boolean> {
 }
 
 // Fetch data directly from database for better performance
-// Revalidate time reduced to 0 for instant updates when prices change
-export const revalidate = 0; // Always fetch fresh data - no caching
+// Revalidate every 10 seconds to balance freshness and performance
+export const revalidate = 10; // Cache for 10 seconds
 
 async function getHomePageData() {
   const client = await pool.connect();
