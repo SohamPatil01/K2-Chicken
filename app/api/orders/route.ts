@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
-
 import jwt from 'jsonwebtoken'
+import { sendOrderNotificationToWhatsApp } from '@/lib/whatsapp/orderNotification'
 
 function getUserIdFromToken(request: NextRequest): number | null {
   try {
@@ -60,6 +60,32 @@ export async function POST(request: NextRequest) {
     
     if (deliveryType === 'delivery' && (!deliveryAddress || !deliveryAddress.trim())) {
       return NextResponse.json({ error: 'Delivery address is required for delivery orders' }, { status: 400 })
+    }
+    
+    // Check if delivery is enabled when delivery type is selected
+    if (deliveryType === 'delivery') {
+      const clientForDeliveryCheck = await pool.connect()
+      try {
+        const deliveryStatusResult = await clientForDeliveryCheck.query(
+          'SELECT value FROM settings WHERE key = $1',
+          ['delivery_enabled']
+        )
+        const isDeliveryEnabled = deliveryStatusResult.rows.length > 0 
+          ? (deliveryStatusResult.rows[0].value === 'true' || deliveryStatusResult.rows[0].value === true)
+          : true // Default to enabled if setting doesn't exist
+        
+        if (!isDeliveryEnabled) {
+          return NextResponse.json({ 
+            error: 'Delivery service is currently unavailable. Please select pickup instead.',
+            code: 'DELIVERY_DISABLED'
+          }, { status: 400 })
+        }
+      } catch (error) {
+        console.error('Error checking delivery status:', error)
+        // If we can't check, allow the order (fail open for availability)
+      } finally {
+        clientForDeliveryCheck.release()
+      }
     }
     
     if (!total || parseFloat(total) <= 0) {
@@ -268,6 +294,38 @@ export async function POST(request: NextRequest) {
         }))
       }
       
+      // Send WhatsApp notification to admin (non-blocking)
+      try {
+        const orderNumber = order.id.toString().padStart(6, '0')
+        await sendOrderNotificationToWhatsApp({
+          orderId: order.id,
+          orderNumber: orderNumber,
+          customerName: customerName,
+          customerPhone: customerPhone,
+          deliveryType: deliveryType || 'delivery',
+          deliveryAddress: deliveryAddress || undefined,
+          deliveryInstructions: deliveryInstructions || undefined,
+          items: items.map((item: any) => ({
+            product_name: item.product.name,
+            quantity: item.quantity,
+            price: parseFloat(String(item.selectedWeight?.price || item.product.price)),
+            selected_weight: item.selectedWeight?.weight?.toString(),
+            weight_unit: item.selectedWeight?.weight_unit
+          })),
+          subtotal: finalSubtotal,
+          deliveryCharge: finalDeliveryCharge,
+          discountAmount: finalDiscountAmount,
+          total: finalTotal,
+          paymentMethod: paymentMethod || 'cash',
+          promoCode: promoCode || undefined,
+          createdAt: order.created_at || new Date().toISOString()
+        })
+        console.log('✅ WhatsApp notification sent for order:', order.id)
+      } catch (whatsappError) {
+        // Log error but don't fail the order creation
+        console.error('⚠️ Failed to send WhatsApp notification (order still created):', whatsappError)
+      }
+      
       return NextResponse.json(orderWithItems)
     } catch (error) {
       // Rollback transaction on error
@@ -286,37 +344,75 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  try {
-    const client = await pool.connect()
-    
+  let client;
+  let retries = 3;
+  
+  while (retries > 0) {
     try {
-      const result = await client.query(`
-        SELECT o.*, 
-               COALESCE(o.subtotal, o.total_amount) as subtotal,
-               COALESCE(o.delivery_charge, 0) as delivery_charge,
-               COALESCE(o.discount_amount, 0) as discount_amount,
-               COALESCE(o.delivery_type, 'delivery') as delivery_type,
-               array_agg(
-                 json_build_object(
-                   'id', oi.id,
-                   'product_name', p.name,
-                   'quantity', oi.quantity,
-                   'price', oi.price
-                 )
-               ) FILTER (WHERE oi.id IS NOT NULL) as items
-        FROM orders o
-        LEFT JOIN order_items oi ON o.id = oi.order_id
-        LEFT JOIN products p ON oi.product_id = p.id
-        GROUP BY o.id
-        ORDER BY o.created_at DESC
-      `)
+      client = await pool.connect()
       
-      return NextResponse.json(result.rows)
-    } finally {
-      client.release()
+      try {
+        const result = await client.query(`
+          SELECT o.*, 
+                 COALESCE(o.subtotal, o.total_amount) as subtotal,
+                 COALESCE(o.delivery_charge, 0) as delivery_charge,
+                 COALESCE(o.discount_amount, 0) as discount_amount,
+                 COALESCE(o.delivery_type, 'delivery') as delivery_type,
+                 array_agg(
+                   json_build_object(
+                     'id', oi.id,
+                     'product_name', p.name,
+                     'quantity', oi.quantity,
+                     'price', oi.price
+                   )
+                 ) FILTER (WHERE oi.id IS NOT NULL) as items
+          FROM orders o
+          LEFT JOIN order_items oi ON o.id = oi.order_id
+          LEFT JOIN products p ON oi.product_id = p.id
+          GROUP BY o.id
+          ORDER BY o.created_at DESC
+        `)
+        
+        return NextResponse.json(result.rows)
+      } catch (queryError: any) {
+        // If query fails, check if it's a connection error
+        if (queryError.code === 'ECONNRESET' || queryError.code === '57P01' || queryError.message?.includes('ECONNRESET')) {
+          console.warn(`Database connection error (attempt ${4 - retries}/3):`, queryError.message)
+          retries--
+          if (retries > 0) {
+            // Wait a bit before retrying
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            continue
+          }
+        }
+        throw queryError
+      } finally {
+        if (client) {
+          client.release()
+        }
+      }
+    } catch (error: any) {
+      console.error('Error fetching orders:', error)
+      
+      // If it's a connection error and we have retries left, try again
+      if ((error.code === 'ECONNRESET' || error.code === '57P01' || error.message?.includes('ECONNRESET')) && retries > 0) {
+        retries--
+        if (retries > 0) {
+          console.log(`Retrying connection... (${retries} attempts left)`)
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          continue
+        }
+      }
+      
+      return NextResponse.json({ 
+        error: 'Failed to fetch orders',
+        message: error.message || 'Database connection error',
+        code: error.code
+      }, { status: 500 })
     }
-  } catch (error) {
-    console.error('Error fetching orders:', error)
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
   }
+  
+  return NextResponse.json({ 
+    error: 'Failed to fetch orders after multiple retries'
+  }, { status: 500 })
 }

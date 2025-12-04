@@ -30,6 +30,7 @@ import {
   Zap,
   Award,
   Receipt,
+  AlertCircle,
 } from "lucide-react";
 import AddressMapPicker from "@/components/AddressMapPicker";
 import { QRCodeSVG } from "qrcode.react";
@@ -51,6 +52,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderCount, setOrderCount] = useState(0);
   const [loyaltyDiscount, setLoyaltyDiscount] = useState(0);
+  const [deliveryEnabled, setDeliveryEnabled] = useState<boolean>(true);
   const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">(
     "delivery"
   );
@@ -532,6 +534,15 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Prevent submission if delivery is disabled but user selected delivery
+    if (!deliveryEnabled && deliveryType === "delivery") {
+      alert(
+        "Delivery service is currently unavailable. Please select pickup instead."
+      );
+      setDeliveryType("pickup");
+      return;
+    }
+
     // Validate cart is not empty
     if (state.items.length === 0) {
       alert("Your cart is empty. Please add items before placing an order.");
@@ -639,6 +650,20 @@ export default function CheckoutPage() {
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("Order API error response:", errorData);
+
+        // Handle delivery disabled error specifically
+        if (
+          errorData.code === "DELIVERY_DISABLED" ||
+          errorData.error?.includes("Delivery service is currently unavailable")
+        ) {
+          alert(
+            "Delivery service is currently unavailable. Please select pickup instead."
+          );
+          setDeliveryType("pickup");
+          setIsSubmitting(false);
+          return;
+        }
+
         const errorMessage =
           errorData.details || errorData.error || "Failed to place order";
         throw new Error(errorMessage);
@@ -833,12 +858,25 @@ export default function CheckoutPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-3">
                     Order Type
                   </label>
+                  {!deliveryEnabled && (
+                    <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+                      <div className="flex items-center space-x-2">
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                        <p className="text-sm font-semibold text-red-800">
+                          Delivery service is currently unavailable. Please
+                          select pickup.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-3">
                     <label
-                      className={`relative flex flex-col items-center justify-center p-5 border rounded-xl cursor-pointer transition-all duration-200 ${
-                        deliveryType === "delivery"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
+                      className={`relative flex flex-col items-center justify-center p-5 border rounded-xl transition-all duration-200 ${
+                        !deliveryEnabled
+                          ? "border-gray-200 bg-gray-100/50 cursor-not-allowed opacity-50"
+                          : deliveryType === "delivery"
+                          ? "border-orange-400 bg-orange-50/50 shadow-sm cursor-pointer"
+                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50 cursor-pointer"
                       }`}
                     >
                       <input
@@ -846,22 +884,28 @@ export default function CheckoutPage() {
                         value="delivery"
                         checked={deliveryType === "delivery"}
                         onChange={(e) =>
+                          deliveryEnabled &&
                           setDeliveryType(
                             e.target.value as "delivery" | "pickup"
                           )
                         }
+                        disabled={!deliveryEnabled}
                         className="sr-only"
                       />
                       <Truck
                         className={`h-6 w-6 mb-2 transition-colors ${
-                          deliveryType === "delivery"
+                          !deliveryEnabled
+                            ? "text-gray-400"
+                            : deliveryType === "delivery"
                             ? "text-orange-600"
                             : "text-gray-400"
                         }`}
                       />
                       <div
                         className={`font-semibold text-sm transition-colors ${
-                          deliveryType === "delivery"
+                          !deliveryEnabled
+                            ? "text-gray-500"
+                            : deliveryType === "delivery"
                             ? "text-orange-600"
                             : "text-gray-700"
                         }`}
@@ -869,8 +913,13 @@ export default function CheckoutPage() {
                         Delivery
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        30-45 min
+                        {!deliveryEnabled ? "Unavailable" : "30-45 min"}
                       </div>
+                      {!deliveryEnabled && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <X className="h-8 w-8 text-red-500 opacity-75" />
+                        </div>
+                      )}
                     </label>
 
                     <label

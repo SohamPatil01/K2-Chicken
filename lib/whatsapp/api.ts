@@ -132,3 +132,7 @@ export class WhatsAppAPI {
     };
   }
 }
+
+// Export singleton instance
+const whatsappAPI = new WhatsAppAPI()
+export default whatsappAPI

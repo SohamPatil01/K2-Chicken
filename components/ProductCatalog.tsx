@@ -17,6 +17,7 @@ import {
   Truck,
   ChevronRight,
   PhoneCall,
+  Store,
 } from "lucide-react";
 
 interface ProductCardProps {
@@ -461,10 +462,12 @@ function ProductCard({
 
 interface ProductCatalogProps {
   initialProducts?: Product[];
+  deliveryEnabled?: boolean;
 }
 
 export default function ProductCatalog({
   initialProducts,
+  deliveryEnabled = true,
 }: ProductCatalogProps = {}) {
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(
@@ -765,10 +768,6 @@ export default function ProductCatalog({
     return item ? item.quantity : 0;
   };
 
-  const featuredProduct =
-    filteredProducts.find((product) => bestsellerIds.includes(product.id)) ||
-    filteredProducts[0];
-
   if (loading) {
     return (
       <section className="py-20 bg-white">
@@ -927,10 +926,18 @@ export default function ProductCatalog({
                 <PhoneCall className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
                 +91 84849 78622
               </button>
-              <div className="flex items-center gap-2 text-xs text-orange-50/80">
-                <Truck className="h-4 w-4" />
-                Same-day chilled delivery across Pune
-              </div>
+              {deliveryEnabled && (
+                <div className="flex items-center gap-2 text-xs text-orange-50/80">
+                  <Truck className="h-4 w-4" />
+                  Same-day chilled delivery across Pune
+                </div>
+              )}
+              {!deliveryEnabled && (
+                <div className="flex items-center gap-2 text-xs text-orange-50/80">
+                  <Store className="h-4 w-4" />
+                  Available for pickup at store
+                </div>
+              )}
             </div>
           </aside>
 
@@ -957,121 +964,6 @@ export default function ProductCatalog({
                 </button>
               ))}
             </div>
-
-            {featuredProduct && (
-              <div
-                className={`bg-white/95 border border-gray-100 rounded-3xl overflow-hidden shadow-lg flex flex-col md:flex-row hover:shadow-xl transition-all duration-500 transform hover:scale-[1.01] ${
-                  mounted
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
-                }`}
-                style={{ transitionDelay: "0.8s" }}
-              >
-                <div className="md:w-1/2 relative h-64 bg-white group overflow-hidden">
-                  {featuredProduct.image_url ? (
-                    <div className="relative w-full h-full p-6">
-                      <Image
-                        src={featuredProduct.image_url}
-                        alt={featuredProduct.name}
-                        fill
-                        className="object-contain transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl bg-gray-50 group-hover:scale-110 transition-transform duration-500">
-                      🍗
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 p-6 sm:p-8 space-y-4">
-                  <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
-                    Featured pick
-                    <ChevronRight className="h-4 w-4" />
-                  </p>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                    {featuredProduct.name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {featuredProduct.description ||
-                      "Tender, juicy, and cleaned twice for a spotless prep experience."}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-4">
-                    {(() => {
-                      const defaultWeight =
-                        featuredProduct.weightOptions?.find(
-                          (w) => w.is_default
-                        ) || featuredProduct.weightOptions?.[0];
-                      const displayPrice =
-                        defaultWeight?.price || featuredProduct.price;
-                      const displayWeight = defaultWeight?.weight || 500;
-                      const displayUnit = defaultWeight?.weight_unit || "g";
-                      const originalPrice = Number(
-                        (featuredProduct as any).original_price
-                      );
-                      const hasDiscount =
-                        originalPrice && originalPrice > Number(displayPrice);
-
-                      return (
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-baseline gap-2">
-                            <p className="text-3xl font-black text-gray-900">
-                              ₹{Number(displayPrice).toFixed(0)}
-                            </p>
-                            {hasDiscount && (
-                              <span className="text-lg text-gray-400 line-through font-medium">
-                                ₹{originalPrice.toFixed(0)}
-                              </span>
-                            )}
-                            <span className="text-base font-medium text-gray-500">
-                              / {displayWeight}
-                              {displayUnit}
-                            </span>
-                          </div>
-                          {hasDiscount && (
-                            <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded w-fit">
-                              Save ₹
-                              {(originalPrice - Number(displayPrice)).toFixed(
-                                0
-                              )}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })()}
-                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">
-                      <CheckCircle className="h-4 w-4" />
-                      100% traceable farms
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      onClick={() =>
-                        addToCart(
-                          featuredProduct,
-                          featuredProduct.weightOptions?.find(
-                            (w) => w.is_default
-                          )
-                        )
-                      }
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-red-600 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 group"
-                    >
-                      <ShoppingBag className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
-                      Add to cart
-                    </button>
-                    <button
-                      onClick={() =>
-                        setSelectedCategory(featuredProduct.category || "all")
-                      }
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-gray-300 transition-all duration-300 transform hover:scale-105 active:scale-95 group"
-                    >
-                      Explore similar
-                      <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
               {filteredProducts.map((product, index) => {

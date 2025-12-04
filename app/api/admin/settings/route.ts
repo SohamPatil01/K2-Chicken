@@ -98,6 +98,19 @@ export async function PUT(request: NextRequest) {
             )
           }
         }
+        
+        // Validate boolean values
+        if (key === 'delivery_enabled') {
+          const boolValue = value === 'true' || value === true || value === '1'
+          await client.query(
+            `INSERT INTO settings (key, value, description, updated_at) 
+             VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+             ON CONFLICT (key) 
+             DO UPDATE SET value = $2, updated_at = CURRENT_TIMESTAMP`,
+            [key, String(boolValue), 'Enable or disable delivery service']
+          )
+          continue
+        }
 
         await client.query(
           `INSERT INTO settings (key, value, updated_at) 

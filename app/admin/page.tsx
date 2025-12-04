@@ -48,6 +48,10 @@ export default function AdminPage() {
   const [previousOrdersCount, setPreviousOrdersCount] = useState(0);
   const [showOrderNotification, setShowOrderNotification] = useState(false);
   const [newOrderCount, setNewOrderCount] = useState(0);
+  const [soundInterval, setSoundInterval] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState({
     totalOrders: 0,
@@ -139,79 +143,126 @@ export default function AdminPage() {
     }
   }, [user]);
 
+  // Function to stop the alarm sound
+  const stopOrderAlarm = () => {
+    if (soundInterval) {
+      clearInterval(soundInterval);
+      setSoundInterval(null);
+    }
+    if (audioContext) {
+      audioContext.close().catch(() => {});
+      setAudioContext(null);
+    }
+  };
+
   // Function to trigger alarm/buzzer when new orders arrive
   const triggerOrderAlarm = (orderCount: number) => {
-    // Play alarm sound using Web Audio API
-    const audioContext = new (window.AudioContext ||
+    // Stop any existing alarm first
+    stopOrderAlarm();
+
+    // Create new audio context
+    const ctx = new (window.AudioContext ||
       (window as any).webkitAudioContext)();
+    setAudioContext(ctx);
 
-    // Create a buzzer-like sound (beep pattern)
-    const beepPattern = [200, 150, 200, 150, 200]; // Frequency pattern in Hz
-    let currentBeep = 0;
+    // Create a loud, attention-grabbing alarm sound
+    const playAlarmSound = () => {
+      try {
+        // Create a more aggressive beep pattern (louder, more urgent)
+        const frequencies = [800, 600, 800, 600, 800]; // Higher frequencies for more urgency
+        let beepIndex = 0;
 
-    const playBeep = () => {
-      if (currentBeep >= beepPattern.length) {
-        audioContext.close();
-        return;
+        const playBeep = () => {
+          if (!ctx) return;
+
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
+
+          oscillator.frequency.value =
+            frequencies[beepIndex % frequencies.length];
+          oscillator.type = "square"; // Square wave is more harsh/attention-grabbing
+
+          // Much louder volume (0.8 instead of 0.3)
+          gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.01,
+            ctx.currentTime + 0.15
+          );
+
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.15);
+
+          beepIndex++;
+        };
+
+        // Play 5 beeps immediately
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => playBeep(), i * 200);
+        }
+
+        // Then repeat every 2 seconds until dismissed
+        const interval = setInterval(() => {
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => playBeep(), i * 200);
+          }
+        }, 2000);
+
+        setSoundInterval(interval);
+      } catch (error) {
+        console.error("Error playing alarm sound:", error);
       }
-
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      oscillator.frequency.value = beepPattern[currentBeep];
-      oscillator.type = "sine";
-
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        audioContext.currentTime + 0.2
-      );
-
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-
-      currentBeep++;
-      setTimeout(playBeep, 250);
     };
 
-    playBeep();
-
-    // Show visual notification
-    setShowOrderNotification(true);
-    setTimeout(() => {
-      setShowOrderNotification(false);
-    }, 5000);
-
-    // Also try to request browser notification permission and show notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(`New Order Alert! 🍗`, {
-        body: `${orderCount} new order${
-          orderCount > 1 ? "s" : ""
-        } has arrived!`,
-        icon: "/logo.svg",
-        badge: "/logo.svg",
-        tag: "new-order",
-        requireInteraction: false,
+    // Request permission and play sound
+    if (ctx.state === "suspended") {
+      ctx.resume().then(() => {
+        playAlarmSound();
       });
-    } else if (
-      "Notification" in window &&
-      Notification.permission !== "denied"
-    ) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          new Notification(`New Order Alert! 🍗`, {
-            body: `${orderCount} new order${
-              orderCount > 1 ? "s" : ""
-            } has arrived!`,
-            icon: "/logo.svg",
-            badge: "/logo.svg",
-          });
-        }
-      });
+    } else {
+      playAlarmSound();
     }
+
+    // Show visual notification (stays until dismissed)
+    setShowOrderNotification(true);
+    setNewOrderCount(orderCount);
+
+    // Request browser notification permission and show persistent notification
+    if ("Notification" in window) {
+      if (Notification.permission === "granted") {
+        new Notification(`🔔 New Order Alert! 🍗`, {
+          body: `${orderCount} new order${
+            orderCount > 1 ? "s" : ""
+          } has arrived! Click to view.`,
+          icon: "/logo.svg",
+          badge: "/logo.svg",
+          tag: "new-order",
+          requireInteraction: true, // Requires user interaction to dismiss
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            new Notification(`🔔 New Order Alert! 🍗`, {
+              body: `${orderCount} new order${
+                orderCount > 1 ? "s" : ""
+              } has arrived! Click to view.`,
+              icon: "/logo.svg",
+              badge: "/logo.svg",
+              requireInteraction: true,
+            });
+          }
+        });
+      }
+    }
+  };
+
+  // Handle notification dismissal
+  const handleDismissNotification = () => {
+    stopOrderAlarm();
+    setShowOrderNotification(false);
+    setNewOrderCount(0);
   };
 
   // Fetch new orders count periodically
@@ -241,8 +292,8 @@ export default function AdminPage() {
     // Fetch immediately
     fetchNewOrdersCount();
 
-    // Poll every 10 seconds for new orders
-    const interval = setInterval(fetchNewOrdersCount, 10000);
+    // Poll every 5 seconds for new orders (faster detection)
+    const interval = setInterval(fetchNewOrdersCount, 5000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,7 +304,16 @@ export default function AdminPage() {
     setActiveTab("orders");
     setNewOrdersCount(0);
     setPreviousOrdersCount(0);
+    // Stop alarm when viewing orders
+    handleDismissNotification();
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopOrderAlarm();
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -314,25 +374,28 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50">
-      {/* Order Notification Alert */}
+      {/* Order Notification Alert - Persistent until dismissed */}
       {showOrderNotification && (
-        <div className="fixed top-4 right-4 z-50 animate-bounce-in">
-          <div className="bg-white border-2 border-orange-300 text-gray-900 px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[300px] animate-scale-in">
-            <div className="text-3xl animate-pulse">🔔</div>
+        <div className="fixed top-4 right-4 z-[9999] animate-bounce-in">
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[350px] animate-pulse border-4 border-white">
+            <div className="text-4xl animate-bounce">🔔</div>
             <div className="flex-1">
-              <div className="font-bold text-lg text-gray-900">
-                New Order Alert!
+              <div className="font-bold text-xl text-white">
+                🚨 NEW ORDER ALERT! 🚨
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-base font-semibold text-white/90">
                 {newOrderCount} new order{newOrderCount > 1 ? "s" : ""} has
                 arrived!
               </div>
+              <div className="text-xs text-white/80 mt-1">
+                Sound will continue until you accept
+              </div>
             </div>
             <button
-              onClick={() => setShowOrderNotification(false)}
-              className="ml-auto text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={handleDismissNotification}
+              className="ml-auto bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-white/50"
             >
-              ✕
+              Accept
             </button>
           </div>
         </div>

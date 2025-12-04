@@ -144,11 +144,29 @@ async function getHomePageData() {
       weightOptions: weightOptions.filter((wo) => wo.product_id === product.id),
     }));
 
+    // Fetch delivery status
+    let deliveryEnabled = true;
+    try {
+      const deliveryStatusResult = await client.query(
+        "SELECT value FROM settings WHERE key = $1",
+        ["delivery_enabled"]
+      );
+      if (deliveryStatusResult.rows.length > 0) {
+        deliveryEnabled =
+          deliveryStatusResult.rows[0].value === "true" ||
+          deliveryStatusResult.rows[0].value === true;
+      }
+    } catch (error) {
+      console.error("Error fetching delivery status:", error);
+      // Default to enabled on error
+    }
+
     return {
       products,
       recipes: recipesResult.rows,
       promotions: promotionsResult.rows,
       reviews: reviewsResult.rows,
+      deliveryEnabled,
     };
   } catch (error) {
     console.error("Error fetching homepage data:", error);
@@ -156,7 +174,13 @@ async function getHomePageData() {
       error instanceof Error ? error.message : "Unknown error";
     console.error("Error details:", errorMessage);
     // Log the error but don't crash the page
-    return { products: [], recipes: [], promotions: [], reviews: [] };
+    return {
+      products: [],
+      recipes: [],
+      promotions: [],
+      reviews: [],
+      deliveryEnabled: true,
+    };
   } finally {
     client.release();
   }
@@ -164,15 +188,19 @@ async function getHomePageData() {
 
 export default async function Home() {
   // Fetch data server-side
-  const { products, recipes, promotions, reviews } = await getHomePageData();
+  const { products, recipes, promotions, reviews, deliveryEnabled } =
+    await getHomePageData();
 
   return (
     <div>
       <InauguralDiscountFlyer />
       <PromotionsFlyer initialPromotions={promotions} />
-      <Hero />
+      <Hero deliveryEnabled={deliveryEnabled} />
       <div id="products">
-        <ProductCatalog initialProducts={products} />
+        <ProductCatalog
+          initialProducts={products}
+          deliveryEnabled={deliveryEnabled}
+        />
       </div>
       <AboutSection />
       <RecipeSection initialRecipes={recipes} />

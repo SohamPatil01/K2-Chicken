@@ -20,7 +20,32 @@ if (process.env.DATABASE_URL) {
   };
 }
 
-const pool = new Pool(poolConfig);
+// Enhanced pool configuration for better connection handling
+const poolConfigWithRetry = {
+  ...poolConfig,
+  max: 20, // Maximum number of clients in the pool
+  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+  connectionTimeoutMillis: 10000, // Return an error after 10 seconds if connection could not be established
+  // Handle connection errors gracefully
+  allowExitOnIdle: false,
+};
+
+const pool = new Pool(poolConfigWithRetry);
+
+// Handle pool errors
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+});
+
+// Test connection on startup
+pool.connect()
+  .then((client) => {
+    console.log('✅ Database connection pool initialized');
+    client.release();
+  })
+  .catch((err) => {
+    console.error('❌ Failed to initialize database connection pool:', err);
+  });
 
 export default pool;
 

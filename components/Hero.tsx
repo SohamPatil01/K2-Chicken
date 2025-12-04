@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, Shield, Sparkles, Phone } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  deliveryEnabled?: boolean;
+}
+
+export default function Hero({ deliveryEnabled = true }: HeroProps) {
   const [mounted, setMounted] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
 
@@ -87,7 +91,10 @@ export default function Hero() {
               }`}
               style={{ animationDelay: "0.4s" }}
             >
-              Premium Quality • Fresh Daily • Delivered to Your Door
+              Premium Quality • Fresh Daily{" "}
+              {deliveryEnabled
+                ? "• Delivered to Your Door"
+                : "• Available for Pickup"}
             </p>
 
             {/* Subheading */}
@@ -151,22 +158,42 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-green-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-md">
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+            {deliveryEnabled && (
+              <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-green-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-md">
+                  <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
+                    30 Min
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-700 font-semibold">
+                    Fast Delivery
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 font-medium">
+                    Free over ₹500
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                  30 Min
+            )}
+            {!deliveryEnabled && (
+              <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-orange-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-md">
+                  <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                 </div>
-                <div className="text-xs sm:text-sm text-gray-700 font-semibold">
-                  Fast Delivery
-                </div>
-                <div className="text-xs text-gray-600 mt-1 font-medium">
-                  Free over ₹500
+                <div className="text-center">
+                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
+                    15 Min
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-700 font-semibold">
+                    Quick Pickup
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 font-medium">
+                    Store Ready
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-blue-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-md">
