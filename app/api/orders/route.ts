@@ -343,7 +343,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   let client;
   let retries = 3;
   
@@ -373,7 +373,14 @@ export async function GET() {
           ORDER BY o.created_at DESC
         `)
         
-        return NextResponse.json(result.rows)
+        // Disable caching for real-time order data
+        const response = NextResponse.json(result.rows)
+        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+        response.headers.set('Pragma', 'no-cache')
+        response.headers.set('Expires', '0')
+        response.headers.set('Surrogate-Control', 'no-store')
+        
+        return response
       } catch (queryError: any) {
         // If query fails, check if it's a connection error
         if (queryError.code === 'ECONNRESET' || queryError.code === '57P01' || queryError.message?.includes('ECONNRESET')) {

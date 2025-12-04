@@ -33,21 +33,64 @@ export default function OrderManagement() {
   const [discountType, setDiscountType] = useState<'fixed' | 'percentage'>('fixed')
 
   useEffect(() => {
+    // Clear any stale state on mount
+    setOrders([])
+    setSelectedOrder(null)
+    
+    // Fetch fresh orders
     fetchOrders()
+    
+    // Auto-refresh orders every 5 seconds
+    const interval = setInterval(() => {
+      fetchOrders()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [])
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('/api/orders')
+      // Add timestamp and random number to prevent browser caching
+      const timestamp = Date.now()
+      const random = Math.random()
+      const response = await fetch(`/api/orders?t=${timestamp}&r=${random}&_=${Date.now()}`, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
       // Ensure data is an array
-      setOrders(Array.isArray(data) ? data : [])
+      const newOrders = Array.isArray(data) ? data : []
+      console.log('📦 Fetched orders from API:', newOrders.length, 'orders')
+      console.log('📦 Order IDs:', newOrders.map((o: Order) => o.id))
+      
+      // Always update orders, even if empty
+      setOrders(newOrders)
+      
+      // Clear selected order if it no longer exists
+      if (selectedOrder) {
+        const updatedOrder = newOrders.find((o: Order) => o.id === selectedOrder.id)
+        if (updatedOrder) {
+          setSelectedOrder(updatedOrder)
+        } else {
+          console.log('🗑️ Clearing selected order (no longer exists)')
+          setSelectedOrder(null)
+        }
+      }
     } catch (error) {
       console.error('Error fetching orders:', error)
+      // On error, set empty array to clear stale data
+      console.log('🗑️ Clearing orders due to error')
       setOrders([])
+      setSelectedOrder(null)
     } finally {
       setLoading(false)
     }
@@ -186,9 +229,24 @@ export default function OrderManagement() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Order Management</h2>
-        <div className="text-sm text-gray-600">
-          {pendingOrders.length} pending • {completedOrders.length} completed
+        <div>
+          <h2 className="text-xl font-semibold">Order Management</h2>
+          <p className="text-xs text-gray-500 mt-1">Auto-refreshes every 5 seconds</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              setLoading(true)
+              fetchOrders()
+            }}
+            className="px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-semibold"
+            title="Refresh orders"
+          >
+            🔄 Refresh
+          </button>
+          <div className="text-sm text-gray-600">
+            {pendingOrders.length} pending • {completedOrders.length} completed
+          </div>
         </div>
       </div>
 

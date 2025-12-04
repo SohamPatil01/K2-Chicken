@@ -1,9 +1,32 @@
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
+
+// Load .env.local manually
+const envPath = path.join(__dirname, '..', '.env.local');
+if (fs.existsSync(envPath)) {
+  const envFile = fs.readFileSync(envPath, 'utf8');
+  envFile.split('\n').forEach(line => {
+    const match = line.match(/^([^#=]+)=(.*)$/);
+    if (match) {
+      const key = match[1].trim();
+      const value = match[2].trim().replace(/^["']|["']$/g, '');
+      if (!process.env[key]) {
+        process.env[key] = value;
+      }
+    }
+  });
+  console.log('✅ Loaded .env.local');
+} else {
+  console.log('⚠️  .env.local not found, using environment variables');
+}
 
 // Support both connection string and individual config
+// IMPORTANT: Use the same connection as the app (from .env.local)
 let poolConfig;
 
 if (process.env.DATABASE_URL) {
+  console.log('🔗 Using DATABASE_URL from .env.local');
   poolConfig = {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.DATABASE_URL.includes('sslmode=require') 
@@ -11,6 +34,7 @@ if (process.env.DATABASE_URL) {
       : undefined,
   };
 } else {
+  console.log('🔗 Using fallback database config');
   poolConfig = {
     user: process.env.POSTGRES_USER || 'postgres',
     host: process.env.POSTGRES_HOST || 'localhost',
@@ -116,13 +140,31 @@ async function cleanupDatabase() {
       console.log(`   ✅ Deleted ${usersResult.rowCount} users`);
     }
     
-    // 8. Reset sequences to start from 1
+    // 8. Reset sequences to start from 1 (or max ID + 1 if any records exist)
     console.log('\n   Resetting sequences...');
-    await client.query("SELECT setval('orders_id_seq', 1, false)");
-    await client.query("SELECT setval('order_items_id_seq', 1, false)");
-    await client.query("SELECT setval('users_id_seq', 1, false)");
-    await client.query("SELECT setval('user_addresses_id_seq', 1, false)");
-    console.log('   ✅ Sequences reset');
+    
+    // Check current max IDs
+    const maxOrderId = await client.query("SELECT COALESCE(MAX(id), 0) as max_id FROM orders");
+    const maxOrderItemId = await client.query("SELECT COALESCE(MAX(id), 0) as max_id FROM order_items");
+    const maxUserId = await client.query("SELECT COALESCE(MAX(id), 0) as max_id FROM users");
+    const maxAddressId = await client.query("SELECT COALESCE(MAX(id), 0) as max_id FROM user_addresses");
+    
+    const nextOrderId = Math.max(1, parseInt(maxOrderId.rows[0].max_id) + 1);
+    const nextOrderItemId = Math.max(1, parseInt(maxOrderItemId.rows[0].max_id) + 1);
+    const nextUserId = Math.max(1, parseInt(maxUserId.rows[0].max_id) + 1);
+    const nextAddressId = Math.max(1, parseInt(maxAddressId.rows[0].max_id) + 1);
+    
+    // Reset sequences to start from 1 (or next available ID if records exist)
+    await client.query(`SELECT setval('orders_id_seq', ${nextOrderId}, false)`);
+    await client.query(`SELECT setval('order_items_id_seq', ${nextOrderItemId}, false)`);
+    await client.query(`SELECT setval('users_id_seq', ${nextUserId}, false)`);
+    await client.query(`SELECT setval('user_addresses_id_seq', ${nextAddressId}, false)`);
+    
+    console.log(`   ✅ Sequences reset:`);
+    console.log(`      Orders: ${nextOrderId}`);
+    console.log(`      Order Items: ${nextOrderItemId}`);
+    console.log(`      Users: ${nextUserId}`);
+    console.log(`      Addresses: ${nextAddressId}`);
     
     await client.query('COMMIT');
     
