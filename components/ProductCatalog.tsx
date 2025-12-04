@@ -131,10 +131,15 @@ function ProductCard({
     price: customPrice,
     is_default: false,
   };
-  const activeWeight = customWeightEnabled
-    ? customWeightOption
-    : selectedWeight;
-  const currentPrice = Number(activeWeight?.price || product.price);
+  // Check if this is Whole Chicken product - hide weight options
+  const isWholeChicken = product.name.toLowerCase().includes("whole chicken");
+  
+  const activeWeight = isWholeChicken 
+    ? undefined 
+    : (customWeightEnabled ? customWeightOption : selectedWeight);
+  const currentPrice = isWholeChicken 
+    ? Number(product.price)
+    : Number(activeWeight?.price || product.price);
 
   // Calculate original price for current weight
   const currentWeight = activeWeight?.weight || referenceWeight;
@@ -249,7 +254,7 @@ function ProductCard({
                   ₹{currentPrice.toFixed(0)}
                 </span>
               )}
-              {activeWeight && (
+              {activeWeight && !isWholeChicken && (
                 <span className="text-[9px] sm:text-xs text-gray-500 font-normal sm:font-medium">
                   / {activeWeight.weight}
                   {activeWeight.weight_unit}
@@ -285,7 +290,7 @@ function ProductCard({
             </div>
 
             {/* Weight Options Selector */}
-            {product.weightOptions && product.weightOptions.length > 1 && (
+            {product.weightOptions && product.weightOptions.length > 1 && !isWholeChicken && (
               <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-500">
                   Select Weight:
@@ -314,43 +319,45 @@ function ProductCard({
 
             {/* Cart Controls */}
             <div className="pt-1">
-              <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
-                <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
-                  <span>Custom Weight</span>
-                  <button
-                    onClick={() => setCustomWeightEnabled((prev) => !prev)}
-                    className="text-orange-600"
-                  >
-                    {customWeightEnabled ? "Disable" : "Enable"}
-                  </button>
-                </div>
-                {customWeightEnabled && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min={100}
-                        max={5000}
-                        step={50}
-                        value={customWeight}
-                        onChange={(e) =>
-                          setCustomWeight(
-                            normalizeWeight(Number(e.target.value)).toString()
-                          )
-                        }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                      />
-                      <span className="text-xs text-gray-500">grams</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                      <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
-                      <span className="font-semibold text-gray-900">
-                        ₹{customPrice.toFixed(0)}
-                      </span>
-                    </div>
+              {!isWholeChicken && (
+                <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
+                  <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
+                    <span>Custom Weight</span>
+                    <button
+                      onClick={() => setCustomWeightEnabled((prev) => !prev)}
+                      className="text-orange-600"
+                    >
+                      {customWeightEnabled ? "Disable" : "Enable"}
+                    </button>
                   </div>
-                )}
-              </div>
+                  {customWeightEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={100}
+                          max={5000}
+                          step={50}
+                          value={customWeight}
+                          onChange={(e) =>
+                            setCustomWeight(
+                              normalizeWeight(Number(e.target.value)).toString()
+                            )
+                          }
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        />
+                        <span className="text-xs text-gray-500">grams</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-600">
+                        <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
+                        <span className="font-semibold text-gray-900">
+                          ₹{customPrice.toFixed(0)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               {stockStatus.status === "out" ? (
                 <button
                   disabled
@@ -363,7 +370,7 @@ function ProductCard({
                   onClick={() =>
                     onAddToCart(
                       product,
-                      customWeightEnabled ? activeWeight : selectedWeight
+                      isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                     )
                   }
                   className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-lg active:scale-95 text-sm min-h-[48px]"
@@ -382,7 +389,7 @@ function ProductCard({
                         onUpdateQuantity(
                           product.id,
                           currentWeightQuantity - 1,
-                          customWeightEnabled ? activeWeight : selectedWeight
+                          isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                         )
                       }
                       className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg active:bg-gray-100 transition-colors shadow-sm"
@@ -399,7 +406,7 @@ function ProductCard({
                         onUpdateQuantity(
                           product.id,
                           currentWeightQuantity + 1,
-                          customWeightEnabled ? activeWeight : selectedWeight
+                          isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                         )
                       }
                       disabled={stockStatus.status === "out"}
@@ -413,9 +420,11 @@ function ProductCard({
                       ₹
                       {(
                         Number(
-                          (customWeightEnabled
-                            ? activeWeight?.price
-                            : selectedWeight?.price) || product.price
+                          isWholeChicken 
+                            ? product.price 
+                            : ((customWeightEnabled
+                                ? activeWeight?.price
+                                : selectedWeight?.price) || product.price)
                         ) * currentWeightQuantity
                       ).toFixed(0)}
                     </div>
@@ -435,7 +444,7 @@ function ProductCard({
                 onClick={() =>
                   onAddToCart(
                     product,
-                    customWeightEnabled ? activeWeight : selectedWeight
+                    isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                   )
                 }
                 className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium sm:font-semibold py-1 sm:py-2 px-1.5 sm:px-3 rounded-md sm:rounded-lg flex items-center justify-center gap-0.5 sm:gap-1.5 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 text-[9px] sm:text-xs"
