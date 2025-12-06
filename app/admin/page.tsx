@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Plus,
@@ -48,6 +48,8 @@ export default function AdminPage() {
   const [previousOrdersCount, setPreviousOrdersCount] = useState<number | null>(null);
   const [showOrderNotification, setShowOrderNotification] = useState(false);
   const [newOrderCount, setNewOrderCount] = useState(0);
+  // Use ref to track previous count without causing re-renders
+  const previousCountRef = useRef<number | null>(null);
   const [soundInterval, setSoundInterval] = useState<NodeJS.Timeout | null>(
     null
   );
@@ -157,6 +159,8 @@ export default function AdminPage() {
 
   // Function to trigger alarm/buzzer when new orders arrive
   const triggerOrderAlarm = (orderCount: number) => {
+    console.log(`🚨 triggerOrderAlarm called with orderCount: ${orderCount}`);
+    
     // Stop any existing alarm first
     stopOrderAlarm();
 
@@ -164,6 +168,7 @@ export default function AdminPage() {
     const ctx = new (window.AudioContext ||
       (window as any).webkitAudioContext)();
     setAudioContext(ctx);
+    console.log(`🔊 Audio context created, state: ${ctx.state}`);
 
     // Create a loud, attention-grabbing alarm sound
     const playAlarmSound = () => {
@@ -280,46 +285,73 @@ export default function AdminPage() {
 
   // Fetch new orders count periodically
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log("⏸️ Alarm polling paused: user not authenticated");
+      return;
+    }
+
+    console.log("✅ Starting alarm polling for new orders...");
 
     const fetchNewOrdersCount = async () => {
       try {
-        const response = await fetch("/api/orders/new/count", {
+        const timestamp = Date.now();
+        const response = await fetch(`/api/orders/new/count?t=${timestamp}`, {
           cache: "no-store",
           headers: {
             "Cache-Control": "no-cache",
           },
         });
+        
+        if (!response.ok) {
+          console.error("❌ Failed to fetch orders count:", response.status);
+          return;
+        }
+        
         const data = await response.json();
         const count = data.count || 0;
+        const previousCount = previousCountRef.current;
+
+        console.log(`📊 Orders check: current=${count}, previous=${previousCount}`);
 
         // Check if new orders arrived (only if we have a previous count to compare)
-        if (previousOrdersCount !== null && count > previousOrdersCount) {
-          const newOrders = count - previousOrdersCount;
-          console.log(`🔔 New orders detected: ${newOrders} new order(s) (${previousOrdersCount} → ${count})`);
+        if (previousCount !== null && count > previousCount) {
+          const newOrders = count - previousCount;
+          console.log(`🔔🚨 ALARM TRIGGERED: ${newOrders} new order(s) detected! (${previousCount} → ${count})`);
           setNewOrderCount(newOrders);
+          setPreviousOrdersCount(count);
+          previousCountRef.current = count;
           triggerOrderAlarm(newOrders);
-        } else if (previousOrdersCount === null) {
+        } else if (previousCount === null) {
           // First fetch - just set the baseline
-          console.log(`📊 Initial orders count: ${count}`);
+          console.log(`📊 Initial orders count set: ${count}`);
+          previousCountRef.current = count;
+          setPreviousOrdersCount(count);
+        } else {
+          // No change or count decreased (orders processed)
+          if (count !== previousCount) {
+            console.log(`📉 Orders count changed: ${previousCount} → ${count} (orders may have been processed)`);
+            previousCountRef.current = count;
+            setPreviousOrdersCount(count);
+          }
         }
 
         setNewOrdersCount(count);
-        setPreviousOrdersCount(count);
       } catch (error) {
-        console.error("Error fetching new orders count:", error);
+        console.error("❌ Error fetching new orders count:", error);
       }
     };
 
     // Fetch immediately
     fetchNewOrdersCount();
 
-    // Poll every 5 seconds for new orders (faster detection)
-    const interval = setInterval(fetchNewOrdersCount, 5000);
+    // Poll every 3 seconds for faster detection
+    const interval = setInterval(fetchNewOrdersCount, 3000);
 
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previousOrdersCount, user]);
+    return () => {
+      console.log("🛑 Stopping alarm polling");
+      clearInterval(interval);
+    };
+  }, [user]); // Only depend on user, not previousOrdersCount
 
   // Reset count when Orders tab is clicked
   const handleOrdersTabClick = () => {
