@@ -54,6 +54,8 @@ export default function AdminPage() {
     null
   );
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState({
     totalOrders: 0,
@@ -102,6 +104,54 @@ export default function AdminPage() {
       setMounted(true);
     }
   }, [isLoading, user]);
+
+  // Enable audio on first user interaction (required by browsers)
+  useEffect(() => {
+    if (!user) return;
+
+    const enableAudio = async () => {
+      try {
+        // Create audio context on first interaction
+        const ctx = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+        
+        // Resume if suspended (browsers start with suspended state)
+        if (ctx.state === "suspended") {
+          await ctx.resume();
+        }
+        
+        audioContextRef.current = ctx;
+        setAudioContext(ctx);
+        setAudioEnabled(true);
+        console.log("✅ Audio enabled and ready for alarms");
+      } catch (error) {
+        console.error("⚠️ Could not enable audio:", error);
+        setAudioEnabled(false);
+      }
+    };
+
+    // Enable audio on any user interaction
+    const events = ["click", "keydown", "touchstart"];
+    const handlers = events.map((event) => {
+      const handler = () => {
+        if (!audioEnabled) {
+          enableAudio();
+          // Remove listeners after first interaction
+          events.forEach((e) => {
+            document.removeEventListener(e, handlers[events.indexOf(e)]);
+          });
+        }
+      };
+      document.addEventListener(event, handler, { once: true });
+      return handler;
+    });
+
+    return () => {
+      events.forEach((event, index) => {
+        document.removeEventListener(event, handlers[index]);
+      });
+    };
+  }, [user, audioEnabled]);
 
   // Fetch stats
   useEffect(() => {
@@ -158,17 +208,47 @@ export default function AdminPage() {
   };
 
   // Function to trigger alarm/buzzer when new orders arrive
-  const triggerOrderAlarm = (orderCount: number) => {
+  const triggerOrderAlarm = async (orderCount: number) => {
     console.log(`🚨 triggerOrderAlarm called with orderCount: ${orderCount}`);
+    
+    // ALWAYS show visual notification FIRST (before any audio setup)
+    // This ensures it shows even if audio fails
+    console.log(`📢 Showing visual notification for ${orderCount} order(s)`);
+    setNewOrderCount(orderCount);
+    setShowOrderNotification(true);
+    console.log(`✅ Notification state updated - should render now`);
     
     // Stop any existing alarm first
     stopOrderAlarm();
 
-    // Create new audio context
-    const ctx = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
-    setAudioContext(ctx);
-    console.log(`🔊 Audio context created, state: ${ctx.state}`);
+    // Use existing audio context or create new one
+    let ctx = audioContextRef.current;
+    
+    if (!ctx || ctx.state === "closed") {
+      try {
+        ctx = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+        audioContextRef.current = ctx;
+        setAudioContext(ctx);
+        console.log(`🔊 New audio context created, state: ${ctx.state}`);
+      } catch (error) {
+        console.error("❌ Failed to create audio context:", error);
+        // Visual notification already shown above
+        return;
+      }
+    }
+
+    // Ensure context is running
+    if (ctx.state === "suspended") {
+      try {
+        await ctx.resume();
+        console.log(`🔊 Audio context resumed, state: ${ctx.state}`);
+      } catch (error) {
+        console.error("⚠️ Could not resume audio context:", error);
+        // Visual notification already shown above
+        return;
+      }
+    }
 
     // Create a loud, attention-grabbing alarm sound
     const playAlarmSound = () => {
@@ -221,31 +301,14 @@ export default function AdminPage() {
       }
     };
 
-    // Request permission and play sound
-    // Modern browsers require user interaction to play audio
-    // Try to resume the context first
-    if (ctx.state === "suspended") {
-      ctx.resume()
-        .then(() => {
-          console.log("🔊 Audio context resumed, playing alarm");
-          playAlarmSound();
-        })
-        .catch((error) => {
-          console.error("⚠️ Could not resume audio context:", error);
-          // Still show visual notification even if audio fails
-        });
-    } else {
-      try {
-        playAlarmSound();
-      } catch (error) {
-        console.error("⚠️ Error playing alarm sound:", error);
-        // Still show visual notification even if audio fails
-      }
+    // Play sound - context should already be resumed above
+    try {
+      console.log(`🔊 Playing alarm sound, context state: ${ctx.state}`);
+      playAlarmSound();
+    } catch (error) {
+      console.error("⚠️ Error playing alarm sound:", error);
+      // Visual notification already shown above
     }
-
-    // Show visual notification (stays until dismissed)
-    setShowOrderNotification(true);
-    setNewOrderCount(orderCount);
 
     // Request browser notification permission and show persistent notification
     if ("Notification" in window) {
@@ -276,8 +339,14 @@ export default function AdminPage() {
     }
   };
 
+  // Debug: Track notification state changes
+  useEffect(() => {
+    console.log(`🔔 showOrderNotification changed to: ${showOrderNotification}, newOrderCount: ${newOrderCount}`);
+  }, [showOrderNotification, newOrderCount]);
+
   // Handle notification dismissal
   const handleDismissNotification = () => {
+    console.log("❌ Dismissing notification");
     stopOrderAlarm();
     setShowOrderNotification(false);
     setNewOrderCount(0);
@@ -430,9 +499,46 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50">
+      {/* Audio Enable Notice - Show if audio not enabled */}
+      {!audioEnabled && user && (
+        <div className="fixed top-4 right-4 z-50 bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 shadow-lg max-w-sm">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <span className="text-2xl">🔊</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-yellow-900 mb-1">
+                Enable Audio Alerts
+              </h3>
+              <p className="text-sm text-yellow-800 mb-2">
+                Click anywhere on the page to enable sound alerts for new orders.
+              </p>
+            </div>
+            <button
+              onClick={() => setAudioEnabled(true)}
+              className="text-yellow-600 hover:text-yellow-800"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Order Notification Alert - Persistent until dismissed */}
       {showOrderNotification && (
-        <div className="fixed top-4 right-4 z-[9999] animate-bounce-in">
+        <div 
+          className="fixed top-4 right-4 z-[99999]"
+          style={{ 
+            zIndex: 99999, 
+            position: 'fixed',
+            top: '1rem',
+            right: '1rem',
+            animation: 'fadeIn 0.3s ease-in',
+            pointerEvents: 'auto'
+          }}
+          role="alert"
+          aria-live="assertive"
+        >
           <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[350px] animate-pulse border-4 border-white">
             <div className="text-4xl animate-bounce">🔔</div>
             <div className="flex-1">
