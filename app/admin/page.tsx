@@ -241,22 +241,35 @@ export default function AdminPage() {
 
     // Ensure context is running - try multiple times if needed
     let attempts = 0;
-    while (ctx.state === "suspended" && attempts < 3) {
-      try {
-        await ctx.resume();
-        console.log(`🔊 Audio context resumed, state: ${ctx.state}`);
-        if (ctx.state === "running") break;
-      } catch (error) {
-        console.error(`⚠️ Could not resume audio context (attempt ${attempts + 1}):`, error);
-        attempts++;
-        if (attempts < 3) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+    while (attempts < 3) {
+      const currentState = ctx.state;
+      if (currentState === "running") {
+        break;
+      }
+      if (currentState === "suspended") {
+        try {
+          await ctx.resume();
+          console.log(`🔊 Audio context resumed, state: ${ctx.state}`);
+          // Check again after resume
+          if (ctx.state === "running") {
+            break;
+          }
+        } catch (error) {
+          console.error(`⚠️ Could not resume audio context (attempt ${attempts + 1}):`, error);
         }
+      } else {
+        // Context is in a different state (closed, etc.)
+        break;
+      }
+      attempts++;
+      if (attempts < 3) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
     
-    if (ctx.state !== "running") {
-      console.warn("⚠️ Audio context not running, but continuing with visual notification");
+    const finalState = ctx.state;
+    if (finalState !== "running") {
+      console.warn(`⚠️ Audio context not running (state: ${finalState}), but continuing with visual notification`);
     }
 
     // Create a loud, attention-grabbing alarm sound
