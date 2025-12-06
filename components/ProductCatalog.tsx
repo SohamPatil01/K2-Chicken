@@ -363,43 +363,43 @@ function ProductCard({
             {/* Cart Controls */}
             <div className="pt-1">
               {!isWholeChicken && (
-                <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
-                  <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
-                    <span>Custom Weight</span>
-                    <button
-                      onClick={() => setCustomWeightEnabled((prev) => !prev)}
-                      className="text-orange-600"
-                    >
-                      {customWeightEnabled ? "Disable" : "Enable"}
-                    </button>
-                  </div>
-                  {customWeightEnabled && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min={100}
-                          max={5000}
-                          step={50}
-                          value={customWeight}
-                          onChange={(e) =>
-                            setCustomWeight(
-                              normalizeWeight(Number(e.target.value)).toString()
-                            )
-                          }
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        />
-                        <span className="text-xs text-gray-500">grams</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
-                        <span className="font-semibold text-gray-900">
-                          ₹{customPrice.toFixed(0)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+              <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
+                <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
+                  <span>Custom Weight</span>
+                  <button
+                    onClick={() => setCustomWeightEnabled((prev) => !prev)}
+                    className="text-orange-600"
+                  >
+                    {customWeightEnabled ? "Disable" : "Enable"}
+                  </button>
                 </div>
+                {customWeightEnabled && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={100}
+                        max={5000}
+                        step={50}
+                        value={customWeight}
+                        onChange={(e) =>
+                          setCustomWeight(
+                            normalizeWeight(Number(e.target.value)).toString()
+                          )
+                        }
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                      />
+                      <span className="text-xs text-gray-500">grams</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-600">
+                      <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
+                      <span className="font-semibold text-gray-900">
+                        ₹{customPrice.toFixed(0)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
               )}
               {stockStatus.status === "out" ? (
                 <button
@@ -466,7 +466,7 @@ function ProductCard({
                           isWholeChicken 
                             ? product.price 
                             : ((customWeightEnabled
-                                ? activeWeight?.price
+                            ? activeWeight?.price
                                 : selectedWeight?.price) || product.price)
                         ) * currentWeightQuantity
                       ).toFixed(0)}
@@ -597,13 +597,13 @@ export default function ProductCatalog({
   useEffect(() => {
     // Only set up refresh if we don't have initial products
     if (!initialProducts || initialProducts.length === 0) {
-      const refreshInterval = setInterval(() => {
-        fetchProducts();
+    const refreshInterval = setInterval(() => {
+      fetchProducts();
       }, 30000); // Refresh every 30 seconds instead of 2 seconds
 
-      return () => {
-        clearInterval(refreshInterval);
-      };
+    return () => {
+      clearInterval(refreshInterval);
+    };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialProducts]); // Only set up once on mount

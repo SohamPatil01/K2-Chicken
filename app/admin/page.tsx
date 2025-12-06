@@ -45,7 +45,7 @@ export default function AdminPage() {
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [newOrdersCount, setNewOrdersCount] = useState(0);
-  const [previousOrdersCount, setPreviousOrdersCount] = useState(0);
+  const [previousOrdersCount, setPreviousOrdersCount] = useState<number | null>(null);
   const [showOrderNotification, setShowOrderNotification] = useState(false);
   const [newOrderCount, setNewOrderCount] = useState(0);
   const [soundInterval, setSoundInterval] = useState<NodeJS.Timeout | null>(
@@ -217,12 +217,25 @@ export default function AdminPage() {
     };
 
     // Request permission and play sound
+    // Modern browsers require user interaction to play audio
+    // Try to resume the context first
     if (ctx.state === "suspended") {
-      ctx.resume().then(() => {
-        playAlarmSound();
-      });
+      ctx.resume()
+        .then(() => {
+          console.log("🔊 Audio context resumed, playing alarm");
+          playAlarmSound();
+        })
+        .catch((error) => {
+          console.error("⚠️ Could not resume audio context:", error);
+          // Still show visual notification even if audio fails
+        });
     } else {
-      playAlarmSound();
+      try {
+        playAlarmSound();
+      } catch (error) {
+        console.error("⚠️ Error playing alarm sound:", error);
+        // Still show visual notification even if audio fails
+      }
     }
 
     // Show visual notification (stays until dismissed)
@@ -271,15 +284,24 @@ export default function AdminPage() {
 
     const fetchNewOrdersCount = async () => {
       try {
-        const response = await fetch("/api/orders/new/count");
+        const response = await fetch("/api/orders/new/count", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        });
         const data = await response.json();
         const count = data.count || 0;
 
-        // Check if new orders arrived
-        if (count > previousOrdersCount && previousOrdersCount > 0) {
+        // Check if new orders arrived (only if we have a previous count to compare)
+        if (previousOrdersCount !== null && count > previousOrdersCount) {
           const newOrders = count - previousOrdersCount;
+          console.log(`🔔 New orders detected: ${newOrders} new order(s) (${previousOrdersCount} → ${count})`);
           setNewOrderCount(newOrders);
           triggerOrderAlarm(newOrders);
+        } else if (previousOrdersCount === null) {
+          // First fetch - just set the baseline
+          console.log(`📊 Initial orders count: ${count}`);
         }
 
         setNewOrdersCount(count);
@@ -302,8 +324,10 @@ export default function AdminPage() {
   // Reset count when Orders tab is clicked
   const handleOrdersTabClick = () => {
     setActiveTab("orders");
+    // Don't reset previousOrdersCount to 0, set it to null so we can track new orders
+    // Only reset the displayed count
     setNewOrdersCount(0);
-    setPreviousOrdersCount(0);
+    setNewOrderCount(0);
     // Stop alarm when viewing orders
     handleDismissNotification();
   };
