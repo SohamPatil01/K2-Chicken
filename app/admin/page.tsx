@@ -216,6 +216,7 @@ export default function AdminPage() {
     console.log(`📢 Showing visual notification for ${orderCount} order(s)`);
     setNewOrderCount(orderCount);
     setShowOrderNotification(true);
+    setAudioEnabled(true); // Enable audio when alarm triggers
     console.log(`✅ Notification state updated - should render now`);
     
     // Stop any existing alarm first
@@ -238,49 +239,66 @@ export default function AdminPage() {
       }
     }
 
-    // Ensure context is running
-    if (ctx.state === "suspended") {
+    // Ensure context is running - try multiple times if needed
+    let attempts = 0;
+    while (ctx.state === "suspended" && attempts < 3) {
       try {
         await ctx.resume();
         console.log(`🔊 Audio context resumed, state: ${ctx.state}`);
+        if (ctx.state === "running") break;
       } catch (error) {
-        console.error("⚠️ Could not resume audio context:", error);
-        // Visual notification already shown above
-        return;
+        console.error(`⚠️ Could not resume audio context (attempt ${attempts + 1}):`, error);
+        attempts++;
+        if (attempts < 3) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
       }
+    }
+    
+    if (ctx.state !== "running") {
+      console.warn("⚠️ Audio context not running, but continuing with visual notification");
     }
 
     // Create a loud, attention-grabbing alarm sound
     const playAlarmSound = () => {
       try {
+        if (!ctx || ctx.state === "closed") {
+          console.warn("⚠️ Cannot play sound: audio context not available");
+          return;
+        }
+
         // Create a more aggressive beep pattern (louder, more urgent)
         const frequencies = [800, 600, 800, 600, 800]; // Higher frequencies for more urgency
         let beepIndex = 0;
 
         const playBeep = () => {
-          if (!ctx) return;
+          if (!ctx || ctx.state === "closed") return;
 
-          const oscillator = ctx.createOscillator();
-          const gainNode = ctx.createGain();
+          try {
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
 
-          oscillator.connect(gainNode);
-          gainNode.connect(ctx.destination);
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
 
-          oscillator.frequency.value =
-            frequencies[beepIndex % frequencies.length];
-          oscillator.type = "square"; // Square wave is more harsh/attention-grabbing
+            oscillator.frequency.value =
+              frequencies[beepIndex % frequencies.length];
+            oscillator.type = "square"; // Square wave is more harsh/attention-grabbing
 
-          // Much louder volume (0.8 instead of 0.3)
-          gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(
-            0.01,
-            ctx.currentTime + 0.15
-          );
+            // Much louder volume (0.8 instead of 0.3)
+            gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              ctx.currentTime + 0.15
+            );
 
-          oscillator.start(ctx.currentTime);
-          oscillator.stop(ctx.currentTime + 0.15);
+            oscillator.start(ctx.currentTime);
+            oscillator.stop(ctx.currentTime + 0.15);
 
-          beepIndex++;
+            beepIndex++;
+          } catch (beepError) {
+            console.error("Error playing individual beep:", beepError);
+          }
         };
 
         // Play 5 beeps immediately
@@ -290,21 +308,35 @@ export default function AdminPage() {
 
         // Then repeat every 2 seconds until dismissed
         const interval = setInterval(() => {
-          for (let i = 0; i < 5; i++) {
-            setTimeout(() => playBeep(), i * 200);
+          if (ctx && ctx.state !== "closed") {
+            for (let i = 0; i < 5; i++) {
+              setTimeout(() => playBeep(), i * 200);
+            }
+          } else {
+            clearInterval(interval);
+            setSoundInterval(null);
           }
         }, 2000);
 
         setSoundInterval(interval);
+        console.log("✅ Alarm sound started");
       } catch (error) {
-        console.error("Error playing alarm sound:", error);
+        console.error("❌ Error playing alarm sound:", error);
       }
     };
 
     // Play sound - context should already be resumed above
     try {
-      console.log(`🔊 Playing alarm sound, context state: ${ctx.state}`);
-      playAlarmSound();
+      console.log(`🔊 Attempting to play alarm sound, context state: ${ctx.state}`);
+      if (ctx.state === "running" || ctx.state === "suspended") {
+        // Try to resume one more time if suspended
+        if (ctx.state === "suspended") {
+          await ctx.resume();
+        }
+        playAlarmSound();
+      } else {
+        console.warn("⚠️ Audio context not in valid state for playback:", ctx.state);
+      }
     } catch (error) {
       console.error("⚠️ Error playing alarm sound:", error);
       // Visual notification already shown above
