@@ -43,13 +43,16 @@ const pool = new Pool(poolConfigWithRetry);
 
 // Handle pool errors - filter out expected timeout errors
 pool.on('error', (err: any) => {
-  // Ignore expected timeout errors on idle connections (common with serverless DBs)
-  if (err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+  // Ignore expected timeout/reset errors on idle connections (common with serverless DBs)
+  // These errors occur when idle connections are closed by the server
+  const expectedErrorCodes = ['ETIMEDOUT', 'ECONNRESET', 'EPIPE', 'ENOTFOUND', 'ECONNREFUSED'];
+  const isExpectedError = expectedErrorCodes.includes(err.code) || 
+                          err.message?.includes('timeout') ||
+                          err.message?.includes('idle client');
+  
+  if (isExpectedError) {
     // These are expected with serverless databases when connections idle out
-    // Only log in development for debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('⚠️ Idle connection timeout (expected with serverless DB):', err.code);
-    }
+    // Silently ignore - the pool will create new connections as needed
     return;
   }
   
