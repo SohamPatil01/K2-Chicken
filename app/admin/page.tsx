@@ -48,6 +48,7 @@ export default function AdminPage() {
   const [previousOrdersCount, setPreviousOrdersCount] = useState<number | null>(null);
   const [showOrderNotification, setShowOrderNotification] = useState(false);
   const [newOrderCount, setNewOrderCount] = useState(0);
+  const [audioResumeFailed, setAudioResumeFailed] = useState(false);
   // Use ref to track previous count without causing re-renders
   const previousCountRef = useRef<number | null>(null);
   const [soundInterval, setSoundInterval] = useState<NodeJS.Timeout | null>(
@@ -270,6 +271,9 @@ export default function AdminPage() {
     const finalState = ctx.state;
     if (finalState !== "running") {
       console.warn(`⚠️ Audio context not running (state: ${finalState}), but continuing with visual notification`);
+      setAudioResumeFailed(true); // Show button to enable audio manually
+    } else {
+      setAudioResumeFailed(false);
     }
 
     // Create a loud, attention-grabbing alarm sound
@@ -389,12 +393,107 @@ export default function AdminPage() {
     console.log(`🔔 showOrderNotification changed to: ${showOrderNotification}, newOrderCount: ${newOrderCount}`);
   }, [showOrderNotification, newOrderCount]);
 
+  // Handle manual audio enable from notification (user gesture required by browser)
+  const handleEnableAudioFromNotification = async () => {
+    console.log("🔊 User clicked to enable audio from notification");
+    let ctx = audioContextRef.current;
+    
+    if (!ctx || ctx.state === "closed") {
+      try {
+        ctx = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+        audioContextRef.current = ctx;
+        setAudioContext(ctx);
+      } catch (error) {
+        console.error("❌ Failed to create audio context:", error);
+        return;
+      }
+    }
+
+    try {
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+      
+      if (ctx.state === "running") {
+        setAudioResumeFailed(false);
+        setAudioEnabled(true);
+        
+        // Now play the alarm sound using the same logic
+        const playAlarmSound = () => {
+          try {
+            if (!ctx || ctx.state === "closed") return;
+
+            const frequencies = [800, 600, 800, 600, 800];
+            let beepIndex = 0;
+
+            const playBeep = () => {
+              if (!ctx || ctx.state === "closed") return;
+
+              try {
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                oscillator.frequency.value =
+                  frequencies[beepIndex % frequencies.length];
+                oscillator.type = "square";
+
+                gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(
+                  0.01,
+                  ctx.currentTime + 0.15
+                );
+
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.15);
+
+                beepIndex++;
+              } catch (beepError) {
+                console.error("Error playing individual beep:", beepError);
+              }
+            };
+
+            // Play 5 beeps immediately
+            for (let i = 0; i < 5; i++) {
+              setTimeout(() => playBeep(), i * 200);
+            }
+
+            // Then repeat every 2 seconds until dismissed
+            const interval = setInterval(() => {
+              if (ctx && ctx.state !== "closed") {
+                for (let i = 0; i < 5; i++) {
+                  setTimeout(() => playBeep(), i * 200);
+                }
+              } else {
+                clearInterval(interval);
+                setSoundInterval(null);
+              }
+            }, 2000);
+
+            setSoundInterval(interval);
+            console.log("✅ Alarm sound started after user interaction");
+          } catch (error) {
+            console.error("❌ Error playing alarm sound:", error);
+          }
+        };
+
+        playAlarmSound();
+      }
+    } catch (error) {
+      console.error("❌ Could not enable audio:", error);
+    }
+  };
+
   // Handle notification dismissal
   const handleDismissNotification = () => {
     console.log("❌ Dismissing notification");
     stopOrderAlarm();
     setShowOrderNotification(false);
     setNewOrderCount(0);
+    setAudioResumeFailed(false);
   };
 
   // Fetch new orders count periodically
@@ -598,12 +697,23 @@ export default function AdminPage() {
                 Sound will continue until you accept
               </div>
             </div>
-            <button
-              onClick={handleDismissNotification}
-              className="ml-auto bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-white/50"
-            >
-              Accept
-            </button>
+            <div className="ml-auto flex gap-2">
+              {audioResumeFailed && (
+                <button
+                  onClick={handleEnableAudioFromNotification}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-white/50"
+                  title="Click to enable sound (required by browser)"
+                >
+                  🔊 Enable Sound
+                </button>
+              )}
+              <button
+                onClick={handleDismissNotification}
+                className="bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-white/50"
+              >
+                Accept
+              </button>
+            </div>
           </div>
         </div>
       )}
