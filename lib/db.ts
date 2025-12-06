@@ -21,20 +21,44 @@ if (process.env.DATABASE_URL) {
 }
 
 // Enhanced pool configuration for better connection handling
+// For serverless databases (Neon, Supabase), use more conservative settings
+const isServerless = process.env.DATABASE_URL?.includes('neon.tech') || 
+                     process.env.DATABASE_URL?.includes('supabase.co') ||
+                     process.env.DATABASE_URL?.includes('railway.app');
+
 const poolConfigWithRetry = {
   ...poolConfig,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+  max: isServerless ? 10 : 20, // Lower max connections for serverless
+  idleTimeoutMillis: isServerless ? 10000 : 30000, // Shorter timeout for serverless
   connectionTimeoutMillis: 10000, // Return an error after 10 seconds if connection could not be established
   // Handle connection errors gracefully
   allowExitOnIdle: false,
+  // For serverless, close connections more aggressively
+  ...(isServerless && {
+    statement_timeout: 30000, // 30 second query timeout
+  }),
 };
 
 const pool = new Pool(poolConfigWithRetry);
 
-// Handle pool errors
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
+// Handle pool errors - filter out expected timeout errors
+pool.on('error', (err: any) => {
+  // Ignore expected timeout errors on idle connections (common with serverless DBs)
+  if (err.code === 'ETIMEDOUT' || err.code === 'ECONNRESET' || err.code === 'EPIPE') {
+    // These are expected with serverless databases when connections idle out
+    // Only log in development for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️ Idle connection timeout (expected with serverless DB):', err.code);
+    }
+    return;
+  }
+  
+  // Log actual unexpected errors
+  console.error('❌ Unexpected database pool error:', {
+    code: err.code,
+    message: err.message,
+    syscall: err.syscall,
+  });
 });
 
 // Test connection on startup - only log once per process
