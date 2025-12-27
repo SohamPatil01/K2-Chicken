@@ -70,7 +70,7 @@ function RecommendationCard({
         </div>
       )}
 
-      <div className="relative h-40 bg-gradient-to-br from-orange-50 to-red-50 overflow-hidden">
+      <div className="relative h-28 bg-gradient-to-br from-orange-50 to-red-50 overflow-hidden">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -79,7 +79,7 @@ function RecommendationCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl">🍗</span>
+            <span className="text-2xl">🍗</span>
           </div>
         )}
       </div>
@@ -478,7 +478,7 @@ export default function CartPage() {
                     <div className="flex gap-5">
                       {/* Product Image */}
                       <div className="relative flex-shrink-0">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-100 group-hover:border-orange-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-100 group-hover:border-orange-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
                           {item.product.image_url ? (
                             <img
                               src={item.product.image_url}
@@ -497,7 +497,7 @@ export default function CartPage() {
                               item.product.image_url ? "hidden" : "flex"
                             } items-center justify-center group-hover:scale-110 transition-transform duration-500`}
                           >
-                            <span className="text-5xl">🍗</span>
+                            <span className="text-3xl">🍗</span>
                           </div>
                         </div>
                       </div>
@@ -506,7 +506,7 @@ export default function CartPage() {
                       <div className="flex-grow min-w-0">
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <div className="flex-grow min-w-0">
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors mb-2">
+                            <h3 className="text-xl sm:text-2xl font-semibold text-gray-700 group-hover:text-orange-600 transition-colors mb-2">
                               {item.product.name}
                             </h3>
                             {item.selectedWeight && (
@@ -522,7 +522,7 @@ export default function CartPage() {
                               <span className="text-sm text-gray-500">
                                 Unit Price:
                               </span>
-                              <span className="text-lg font-bold text-orange-600">
+                              <span className="text-lg font-semibold text-orange-600">
                                 ₹{Number(itemPrice).toFixed(0)}
                               </span>
                             </div>
@@ -559,7 +559,7 @@ export default function CartPage() {
                               <Minus size={18} />
                             </button>
                             <div className="w-14 text-center">
-                              <span className="text-lg font-bold text-gray-900">
+                              <span className="text-lg font-medium text-gray-700">
                                 {item.quantity}
                               </span>
                             </div>
@@ -585,7 +585,7 @@ export default function CartPage() {
                             <p className="text-xs text-gray-500 mb-1 font-medium">
                               Item Total
                             </p>
-                            <p className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                            <p className="text-2xl font-bold text-orange-600">
                               ₹{totalPrice.toFixed(0)}
                             </p>
                           </div>
@@ -597,33 +597,12 @@ export default function CartPage() {
               );
             })}
 
-            {/* Save Cart for Later */}
-            {state.items.length > 0 && (
-              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-blue-600" />
-                    <div>
-                      <p className="font-semibold text-gray-900">
-                        Save Cart for Later
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Your cart is automatically saved and will persist across
-                        sessions
-                      </p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-              </div>
-            )}
-
             {/* Recommendations Section */}
             {recommendations.length > 0 && (
               <div className="mt-8">
                 <div className="flex items-center gap-3 mb-4">
                   <TrendingUp className="w-6 h-6 text-orange-600" />
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-semibold text-gray-800">
                     You May Also Like
                   </h2>
                 </div>
@@ -644,7 +623,7 @@ export default function CartPage() {
               <div className="mt-8">
                 <div className="flex items-center gap-3 mb-4">
                   <Heart className="w-6 h-6 text-red-600 fill-red-600" />
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-semibold text-gray-800">
                     Your Favorite Orders
                   </h2>
                 </div>
@@ -656,7 +635,7 @@ export default function CartPage() {
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-bold text-gray-900 mb-1">
+                          <h3 className="font-semibold text-gray-700 mb-1">
                             {order.order_name || `Order #${order.order_id}`}
                           </h3>
                           <p className="text-sm text-gray-600">
@@ -723,7 +702,7 @@ export default function CartPage() {
                     <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                       <ShoppingCart className="w-5 h-5" />
                     </div>
-                    <h2 className="text-2xl font-bold">Order Summary</h2>
+                    <h2 className="text-2xl font-semibold">Order Summary</h2>
                   </div>
                   <p className="text-orange-100 text-sm flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
@@ -754,7 +733,7 @@ export default function CartPage() {
                         style={{ transitionDelay: `${0.4 + index * 0.1}s` }}
                       >
                         <div className="flex-grow min-w-0 pr-2">
-                          <p className="font-semibold text-gray-900 truncate text-sm">
+                          <p className="font-medium text-gray-700 truncate text-sm">
                             {item.product.name}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
@@ -769,7 +748,7 @@ export default function CartPage() {
                             </span>
                           </div>
                         </div>
-                        <span className="font-bold text-gray-900 whitespace-nowrap text-sm">
+                        <span className="font-semibold text-gray-700 whitespace-nowrap text-sm">
                           ₹{totalPrice.toFixed(0)}
                         </span>
                       </div>
@@ -780,10 +759,10 @@ export default function CartPage() {
                 {/* Total */}
                 <div className="mb-6 space-y-3">
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-base font-semibold text-gray-700">
+                    <span className="text-base font-medium text-gray-600">
                       Subtotal
                     </span>
-                    <span className="text-base font-bold text-gray-900">
+                    <span className="text-base font-semibold text-gray-700">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
@@ -794,10 +773,10 @@ export default function CartPage() {
                     </p>
                   </div>
                   <div className="flex justify-between items-center pt-4 border-t-2 border-gray-200">
-                    <span className="text-xl font-bold text-gray-900">
+                    <span className="text-xl font-semibold text-gray-800">
                       Total Amount
                     </span>
-                    <span className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    <span className="text-3xl font-bold text-orange-600">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>

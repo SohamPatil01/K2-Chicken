@@ -98,10 +98,18 @@ export default function CheckoutPage() {
   const [redirectingToOrder, setRedirectingToOrder] = useState<number | null>(
     null
   );
+  const [suggestedProducts, setSuggestedProducts] = useState<any[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [activePromotions, setActivePromotions] = useState<any[]>([]);
   const WHATSAPP_NUMBER = "8484978622";
 
   // Calculate subtotal (needed for promo code validation and calculations)
   const subtotal = state.total;
+
+  // Calculate minimum order for free delivery (from delivery config)
+  const MIN_ORDER_FOR_FREE_DELIVERY = 500; // ₹500 minimum order for free delivery
+  const amountNeededForFreeDelivery = Math.max(0, MIN_ORDER_FOR_FREE_DELIVERY - subtotal);
+  const qualifiesForFreeDelivery = subtotal >= MIN_ORDER_FOR_FREE_DELIVERY;
 
   // Load saved addresses and order history if user is authenticated
   useEffect(() => {
@@ -115,6 +123,56 @@ export default function CheckoutPage() {
       }));
     }
   }, [isAuthenticated, user]);
+
+  // Fetch suggested products (products not in cart)
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (state.items.length === 0) return;
+      
+      setLoadingSuggestions(true);
+      try {
+        const response = await fetch("/api/products");
+        if (response.ok) {
+          const allProducts = await response.json();
+          const cartProductIds = new Set(state.items.map(item => item.product.id));
+          
+          // Filter out products already in cart and get top 4 available products
+          const suggestions = allProducts
+            .filter((p: any) => 
+              p.is_available !== false && 
+              !cartProductIds.has(p.id) &&
+              (p.in_stock !== false)
+            )
+            .slice(0, 4);
+          
+          setSuggestedProducts(suggestions);
+        }
+      } catch (error) {
+        console.error("Error fetching suggested products:", error);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [state.items]);
+
+  // Fetch active promotions/offers
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const response = await fetch("/api/promotions?active=true");
+        if (response.ok) {
+          const promotions = await response.json();
+          setActivePromotions(promotions);
+        }
+      } catch (error) {
+        console.error("Error fetching promotions:", error);
+      }
+    };
+
+    fetchPromotions();
+  }, []);
 
   // Redirect to cart if empty (but not if we're redirecting to order confirmation)
   useEffect(() => {
@@ -833,6 +891,187 @@ export default function CheckoutPage() {
                   <LogIn className="h-5 w-5" />
                   Login or Register
                 </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Offers Section - Subtle and Animated */}
+        {(deliveryType === "delivery" || activePromotions.length > 0) && (
+          <div className="mb-6 animate-fade-in">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+              <div className="bg-gray-50/50 px-5 py-3.5 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-1.5 bg-orange-100 rounded-lg">
+                    <Tag className="h-4 w-4 text-orange-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-semibold text-gray-800">Available Offers</h2>
+                    <p className="text-xs text-gray-500">Save more on your order</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 space-y-2.5">
+                {/* Free Delivery Offer */}
+                {deliveryType === "delivery" && !qualifiesForFreeDelivery && amountNeededForFreeDelivery > 0 && (
+                  <div className="bg-orange-50/50 border border-orange-100 rounded-lg p-3.5 hover:bg-orange-50 transition-all duration-300 animate-slide-in">
+                    <div className="flex items-start gap-2.5">
+                      <div className="p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                        <Truck className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-800 text-sm mb-0.5">
+                          Free Delivery Available
+                        </h3>
+                        <p className="text-xs text-gray-600 mb-2.5">
+                          Add <span className="font-semibold text-orange-600">₹{amountNeededForFreeDelivery.toFixed(0)}</span> more
+                        </p>
+                        {loadingSuggestions ? (
+                          <div className="flex items-center justify-center gap-2 py-2 text-sm text-gray-500">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                            Loading suggestions...
+                          </div>
+                        ) : suggestedProducts.length > 0 ? (
+                          <div className="space-y-1.5">
+                            {suggestedProducts.slice(0, 2).map((product, idx) => {
+                              const productPrice = Number(product.price) || 0;
+                              const willQualify = (subtotal + productPrice) >= MIN_ORDER_FOR_FREE_DELIVERY;
+                              return (
+                                <button
+                                  key={product.id}
+                                  type="button"
+                                  onClick={() => {
+                                    dispatch({
+                                      type: "ADD_ITEM",
+                                      payload: {
+                                        product,
+                                        quantity: 1,
+                                      },
+                                    });
+                                  }}
+                                  className="w-full flex items-center gap-2.5 p-2.5 bg-white rounded-lg border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all duration-200 group animate-fade-in"
+                                  style={{ animationDelay: `${idx * 100}ms` }}
+                                >
+                                  {product.image_url ? (
+                                    <img
+                                      src={product.image_url}
+                                      alt={product.name}
+                                      className="w-10 h-10 rounded-md object-cover flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-md bg-orange-50 flex items-center justify-center flex-shrink-0">
+                                      <span className="text-lg">🍗</span>
+                                    </div>
+                                  )}
+                                  <div className="flex-1 min-w-0 text-left">
+                                    <p className="text-xs font-medium text-gray-800 truncate group-hover:text-orange-600 transition-colors">
+                                      {product.name}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                      <p className="text-xs font-semibold text-orange-600">
+                                        ₹{productPrice.toFixed(0)}
+                                      </p>
+                                      {willQualify && (
+                                        <span className="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded font-medium">
+                                          ✓ Free delivery
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="flex-shrink-0 p-1.5 bg-orange-50 rounded-md group-hover:bg-orange-100 transition-colors">
+                                    <Plus className="h-3.5 w-3.5 text-orange-600 group-hover:rotate-90 transition-transform duration-200" />
+                                  </div>
+                                </button>
+                              );
+                            })}
+                            <Link
+                              href="/#products"
+                              className="block text-center text-xs text-orange-600 hover:text-orange-700 font-medium py-1 mt-1.5 transition-colors"
+                            >
+                              View all →
+                            </Link>
+                          </div>
+                        ) : (
+                          <Link
+                            href="/#products"
+                            className="block text-center text-sm text-orange-600 hover:text-orange-700 font-semibold bg-white px-3 py-2 rounded-lg border border-orange-200 hover:border-orange-400 transition-all"
+                          >
+                            Browse Products →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Active Promotions from Database */}
+                {activePromotions.map((promo, idx) => {
+                  // Skip if it's already applied
+                  if (appliedPromo?.id === promo.id) return null;
+                  
+                  return (
+                    <div
+                      key={promo.id}
+                      className="bg-blue-50/50 border border-blue-100 rounded-lg p-3 hover:bg-blue-50 transition-all duration-300 animate-slide-in"
+                      style={{ animationDelay: `${(idx + 1) * 100}ms` }}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        {promo.image_url ? (
+                          <img
+                            src={promo.image_url}
+                            alt={promo.title}
+                            className="w-12 h-12 rounded-md object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="p-2 bg-blue-100 rounded-md flex-shrink-0">
+                            <Tag className="h-4 w-4 text-blue-600" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-800 text-sm mb-0.5">
+                            {promo.title}
+                          </h3>
+                          {promo.description && (
+                            <p className="text-xs text-gray-600 mb-2">
+                              {promo.description}
+                            </p>
+                          )}
+                          {promo.promo_code && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPromoCode(promo.promo_code);
+                                handleApplyPromoCode(promo.promo_code);
+                              }}
+                              className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-md font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                            >
+                              Apply: {promo.promo_code}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Success Message for Free Delivery */}
+                {deliveryType === "delivery" && qualifiesForFreeDelivery && (
+                  <div className="bg-green-50/50 border border-green-100 rounded-lg p-3 animate-fade-in">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 bg-green-100 rounded-md">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-green-800 text-sm">
+                          Free Delivery Applied ✓
+                        </h3>
+                        <p className="text-xs text-green-700 mt-0.5">
+                          Your order qualifies for free delivery
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

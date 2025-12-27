@@ -229,9 +229,9 @@ export default function AdminPage() {
     if (!ctx || ctx.state === "closed") {
       try {
         ctx = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
+      (window as any).webkitAudioContext)();
         audioContextRef.current = ctx;
-        setAudioContext(ctx);
+    setAudioContext(ctx);
         console.log(`🔊 New audio context created, state: ${ctx.state}`);
       } catch (error) {
         console.error("❌ Failed to create audio context:", error);
@@ -292,27 +292,27 @@ export default function AdminPage() {
           if (!ctx || ctx.state === "closed") return;
 
           try {
-            const oscillator = ctx.createOscillator();
-            const gainNode = ctx.createGain();
+          const oscillator = ctx.createOscillator();
+          const gainNode = ctx.createGain();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(ctx.destination);
+          oscillator.connect(gainNode);
+          gainNode.connect(ctx.destination);
 
-            oscillator.frequency.value =
-              frequencies[beepIndex % frequencies.length];
-            oscillator.type = "square"; // Square wave is more harsh/attention-grabbing
+          oscillator.frequency.value =
+            frequencies[beepIndex % frequencies.length];
+          oscillator.type = "square"; // Square wave is more harsh/attention-grabbing
 
-            // Much louder volume (0.8 instead of 0.3)
-            gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(
-              0.01,
-              ctx.currentTime + 0.15
-            );
+          // Much louder volume (0.8 instead of 0.3)
+          gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.01,
+            ctx.currentTime + 0.15
+          );
 
-            oscillator.start(ctx.currentTime);
-            oscillator.stop(ctx.currentTime + 0.15);
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.15);
 
-            beepIndex++;
+          beepIndex++;
           } catch (beepError) {
             console.error("Error playing individual beep:", beepError);
           }
@@ -326,8 +326,8 @@ export default function AdminPage() {
         // Then repeat every 2 seconds until dismissed
         const interval = setInterval(() => {
           if (ctx && ctx.state !== "closed") {
-            for (let i = 0; i < 5; i++) {
-              setTimeout(() => playBeep(), i * 200);
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => playBeep(), i * 200);
             }
           } else {
             clearInterval(interval);
@@ -347,11 +347,11 @@ export default function AdminPage() {
       console.log(`🔊 Attempting to play alarm sound, context state: ${ctx.state}`);
       if (ctx.state === "running" || ctx.state === "suspended") {
         // Try to resume one more time if suspended
-        if (ctx.state === "suspended") {
+    if (ctx.state === "suspended") {
           await ctx.resume();
         }
         playAlarmSound();
-      } else {
+    } else {
         console.warn("⚠️ Audio context not in valid state for playback:", ctx.state);
       }
     } catch (error) {
@@ -707,12 +707,12 @@ export default function AdminPage() {
                   🔊 Enable Sound
                 </button>
               )}
-              <button
-                onClick={handleDismissNotification}
+            <button
+              onClick={handleDismissNotification}
                 className="bg-white/20 hover:bg-white/30 text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-white/50"
-              >
-                Accept
-              </button>
+            >
+              Accept
+            </button>
             </div>
           </div>
         </div>

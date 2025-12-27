@@ -6,27 +6,27 @@ export async function GET() {
   let retries = 3;
   
   while (retries > 0) {
-    try {
+  try {
       client = await pool.connect()
+    
+    try {
+      // Count pending orders from main orders table
+      const ordersCount = await client.query(`
+        SELECT COUNT(*) as count 
+        FROM orders 
+        WHERE status = 'pending'
+      `)
       
-      try {
-        // Count pending orders from main orders table
-        const ordersCount = await client.query(`
-          SELECT COUNT(*) as count 
-          FROM orders 
-          WHERE status = 'pending'
-        `)
-        
-        // Count pending/received orders from WhatsApp orders table
-        const whatsappOrdersCount = await client.query(`
-          SELECT COUNT(*) as count 
-          FROM whatsapp_orders 
-          WHERE status IN ('pending', 'received')
-        `)
-        
-        const newOrdersCount = parseInt(ordersCount.rows[0].count) + parseInt(whatsappOrdersCount.rows[0].count)
-        
-        return NextResponse.json({ count: newOrdersCount })
+      // Count pending/received orders from WhatsApp orders table
+      const whatsappOrdersCount = await client.query(`
+        SELECT COUNT(*) as count 
+        FROM whatsapp_orders 
+        WHERE status IN ('pending', 'received')
+      `)
+      
+      const newOrdersCount = parseInt(ordersCount.rows[0].count) + parseInt(whatsappOrdersCount.rows[0].count)
+      
+      return NextResponse.json({ count: newOrdersCount })
       } catch (queryError: any) {
         // If query fails, check if it's a connection error
         if (
@@ -45,10 +45,10 @@ export async function GET() {
           }
         }
         throw queryError
-      } finally {
+    } finally {
         if (client) {
-          client.release()
-        }
+      client.release()
+    }
       }
     } catch (error: any) {
       // If it's a connection error and we have retries left, try again
@@ -71,8 +71,8 @@ export async function GET() {
       // If all retries failed or it's a different error, return 0 count
       // This prevents the admin console from breaking
       console.error('Error counting new orders:', error.message || error)
-      return NextResponse.json({ count: 0 })
-    }
+    return NextResponse.json({ count: 0 })
+  }
   }
   
   // If we exhausted all retries, return 0 count

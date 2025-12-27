@@ -195,7 +195,7 @@ function ProductCard({
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-xl overflow-hidden hover:border-orange-400 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl"
+      className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-lg overflow-hidden hover:border-orange-400 transition-all duration-500 transform hover:-translate-y-1 hover:shadow-lg"
       onMouseEnter={() => {
         // Only use hover on desktop (non-mobile)
         if (!isMobile) {
@@ -235,7 +235,7 @@ function ProductCard({
       )}
 
       {/* Product Image Container - Filled Style */}
-      <div className="relative w-full h-24 sm:h-48 md:h-52 bg-white overflow-hidden border-b border-gray-100">
+      <div className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden border-b border-gray-100">
         {product.image_url ? (
           <Image
             src={product.image_url}
@@ -261,7 +261,7 @@ function ProductCard({
             product.image_url ? "hidden" : "flex"
           } bg-gray-50 items-center justify-center`}
         >
-          <span className="text-2xl sm:text-4xl transform transition-transform duration-300 group-hover:scale-110">
+          <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
             🍗
           </span>
         </div>
@@ -270,7 +270,7 @@ function ProductCard({
       {/* Product Info - Sliding Panel */}
       <div className="relative overflow-hidden bg-white">
         {/* Basic Info (Always Visible) */}
-        <div className="p-1.5 sm:p-3 pb-1.5 sm:pb-2">
+        <div className="p-1.5 sm:p-2.5 pb-1.5 sm:pb-2">
           <div className="mb-0.5 sm:mb-1.5">
             <h3 className="text-[10px] sm:text-sm font-medium sm:font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-0.5 sm:mb-1 line-clamp-2">
               {product.name}
@@ -962,7 +962,7 @@ export default function ProductCatalog({
               ))}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-1.5 sm:gap-4 lg:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
               {filteredProducts.map((product, index) => {
                 const isVisible = visibleProducts.has(product.id) || mounted;
                 return (
