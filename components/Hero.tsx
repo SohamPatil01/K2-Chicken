@@ -35,7 +35,7 @@ export default function Hero({ deliveryEnabled = true }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[calc(100vh-120px)] sm:min-h-[90vh] bg-gradient-to-br from-orange-50 via-white to-orange-50 overflow-hidden">
+    <section className="relative w-full bg-gradient-to-br from-orange-50 via-white to-orange-50 overflow-hidden">
       {/* Modern gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-orange-100/20 via-transparent to-red-100/20"></div>
       
@@ -51,7 +51,7 @@ export default function Hero({ deliveryEnabled = true }: HeroProps) {
       </div>
 
       {/* Main Content - Mobile First */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-120px)] sm:min-h-[90vh] flex flex-col justify-center py-8 sm:py-16 md:py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-8 sm:py-12 md:py-16">
         <div className="text-center space-y-6 sm:space-y-8 md:space-y-10 bg-white/80 backdrop-blur-sm rounded-3xl px-5 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 shadow-2xl border border-white/50">
           <div
             className={`inline-flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md border border-orange-200 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs md:text-sm font-semibold text-orange-700 shadow-sm transition-all duration-300 hover:shadow-md ${

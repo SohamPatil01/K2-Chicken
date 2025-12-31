@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { Product, WeightOption } from "@/context/CartContext";
@@ -62,6 +63,45 @@ function ProductCard({
   const [customWeight, setCustomWeight] = useState<string>(
     (defaultWeight?.weight || 500).toString()
   );
+  
+  // Swipe state
+  const [swipePage, setSwipePage] = useState(0); // 0 = image, 1 = info
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const swipeContainerRef = useRef<HTMLDivElement>(null);
+
+  // Update container width when component mounts or resizes
+  useEffect(() => {
+    const updateWidth = () => {
+      if (swipeContainerRef.current) {
+        setContainerWidth(swipeContainerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  // Auto-rotate between image and info (only on desktop when hovered, not when swiping)
+  useEffect(() => {
+    if (isMobile || !isHovered || isSwiping) {
+      // Reset to image page when not hovered (only on desktop)
+      if (!isHovered && !isMobile) {
+        setSwipePage(0);
+      }
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setSwipePage((prev) => (prev === 0 ? 1 : 0));
+    }, 4000); // Switch every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [isMobile, isHovered, isSwiping]);
 
   // Detect if device is mobile/touch
   useEffect(() => {
@@ -172,7 +212,103 @@ function ProductCard({
 
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
 
-  // Handle click on mobile to toggle info panel
+  // Swipe handlers
+  const minSwipeDistance = 50;
+
+  // Common function to handle swipe end
+  const handleSwipeEnd = (startX: number, endX: number) => {
+    const distance = startX - endX;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && swipePage === 0) {
+      // Swipe left to show info
+      setSwipePage(1);
+    } else if (isRightSwipe && swipePage === 1) {
+      // Swipe right to show image
+      setSwipePage(0);
+    }
+    
+    setTouchStart(null);
+    setSwipeOffset(0);
+  };
+
+  // Touch handlers (for mobile swipe) - Improved version
+  const onTouchStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    const touch = e.touches[0];
+    if (touch) {
+      setIsSwiping(true);
+      setTouchStart(touch.clientX);
+      setSwipeOffset(0);
+    }
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    
+    const currentTouch = touch.clientX;
+    const distance = touchStart - currentTouch;
+    
+    // Only prevent default if we're actually swiping horizontally
+    if (Math.abs(distance) > 5) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Calculate swipe offset as percentage of container width
+    if (containerWidth > 0) {
+      const percentage = (distance / containerWidth) * 100;
+      const maxPercentage = 100;
+      const clampedPercentage = Math.max(-maxPercentage, Math.min(maxPercentage, percentage));
+      setSwipeOffset((clampedPercentage / 100) * containerWidth);
+    } else {
+      // Fallback to pixel-based if container width not available
+      const maxOffset = 200;
+      const clampedDistance = Math.max(-maxOffset, Math.min(maxOffset, distance));
+      setSwipeOffset(clampedDistance);
+    }
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    
+    if (touchStart === null) {
+      setSwipeOffset(0);
+      setIsSwiping(false);
+      return;
+    }
+    
+    const touch = e.changedTouches[0];
+    if (!touch) {
+      setTouchStart(null);
+      setSwipeOffset(0);
+      setIsSwiping(false);
+      return;
+    }
+    
+    const endTouch = touch.clientX;
+    const distance = touchStart - endTouch;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && swipePage === 0) {
+      // Swipe left to show info
+      setSwipePage(1);
+    } else if (isRightSwipe && swipePage === 1) {
+      // Swipe right to show image
+      setSwipePage(0);
+    }
+    
+    setTouchStart(null);
+    setSwipeOffset(0);
+    setIsSwiping(false);
+  };
+
+
+  // Handle click on mobile to toggle info panel (for non-swipeable areas)
   const handleCardClick = (e: React.MouseEvent) => {
     // Only handle clicks on mobile devices
     if (!isMobile) return;
@@ -184,7 +320,8 @@ function ProductCard({
       target.tagName === 'INPUT' ||
       target.closest('button') ||
       target.closest('input') ||
-      target.closest('a')
+      target.closest('a') ||
+      target.closest('.swipeable-container')
     ) {
       return;
     }
@@ -195,17 +332,20 @@ function ProductCard({
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-lg overflow-hidden hover:border-orange-400 transition-all duration-500 transform hover:-translate-y-1 hover:shadow-lg"
+      className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-xl overflow-hidden hover:border-orange-300 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
       onMouseEnter={() => {
         // Only use hover on desktop (non-mobile)
         if (!isMobile) {
           setShowInfo(true);
+          setIsHovered(true);
         }
       }}
       onMouseLeave={() => {
         // Only use hover on desktop (non-mobile)
         if (!isMobile) {
           setShowInfo(false);
+          setIsHovered(false);
+          setSwipePage(0); // Reset to image when leaving
         }
       }}
       onClick={handleCardClick}
@@ -218,11 +358,13 @@ function ProductCard({
         </div>
       )}
 
-      {/* Bestseller Badge */}
+      {/* Bestseller Badge - Licious Style */}
       {isBestseller && !hasDiscount && (
-        <div className="absolute top-0.5 left-0.5 sm:top-2 sm:left-2 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-semibold sm:font-bold flex items-center gap-0.5 sm:gap-1 shadow-md">
-          <Star className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5 fill-white" />
-          <span>Bestseller</span>
+        <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg border border-orange-200 flex items-center gap-1 sm:gap-1.5">
+          <span className="text-[8px] sm:text-[10px] font-bold text-gray-800">
+            INDIA'S JUICIEST CHICKEN
+          </span>
+          <span className="text-xs sm:text-sm">🍗</span>
         </div>
       )}
 
@@ -234,36 +376,128 @@ function ProductCard({
         </div>
       )}
 
-      {/* Product Image Container - Filled Style */}
-      <div className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden border-b border-gray-100">
-        {product.image_url ? (
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-            quality={95}
-            priority={index < 6}
-            onError={(e) => {
-              const target = e.currentTarget;
-              target.style.display = "none";
-              const fallback = target.parentElement
-                ?.nextElementSibling as HTMLElement | null;
-              if (fallback) {
-                fallback.style.display = "flex";
-              }
-            }}
-          />
-        ) : null}
+      {/* Swipeable Product Container */}
+      <div 
+        className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden rounded-t-lg"
+        style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
+      >
         <div
-          className={`absolute inset-0 w-full h-full ${
-            product.image_url ? "hidden" : "flex"
-          } bg-gray-50 items-center justify-center`}
+          ref={swipeContainerRef}
+          className="swipeable-container relative w-full h-full flex select-none"
+          style={{
+            transform: `translateX(${
+              containerWidth > 0
+                ? swipePage === 0
+                  ? `${(-swipeOffset / containerWidth) * 100}%`
+                  : `${-100 + (swipeOffset / containerWidth) * 100}%`
+                : swipePage === 0
+                  ? '0%'
+                  : '-100%'
+            })`,
+            transition: swipeOffset === 0 && !isSwiping ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+            willChange: 'transform',
+            userSelect: 'none',
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onTouchCancel={() => {
+            setTouchStart(null);
+            setSwipeOffset(0);
+            setIsSwiping(false);
+          }}
         >
-          <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
-            🍗
-          </span>
+          {/* Page 1: Product Image */}
+          <div className="min-w-full h-full relative bg-white">
+            {product.image_url ? (
+              <Image
+                src={product.image_url}
+                alt={product.name}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                quality={95}
+                priority={index < 6}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = "none";
+                  const fallback = target.parentElement
+                    ?.nextElementSibling as HTMLElement | null;
+                  if (fallback) {
+                    fallback.style.display = "flex";
+                  }
+                }}
+              />
+            ) : null}
+            <div
+              className={`absolute inset-0 w-full h-full ${
+                product.image_url ? "hidden" : "flex"
+              } bg-gray-50 items-center justify-center`}
+            >
+              <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
+                🍗
+              </span>
+            </div>
+          </div>
+
+          {/* Page 2: Product Information */}
+          <div className="min-w-full h-full bg-gradient-to-br from-orange-50 to-red-50 p-3 sm:p-4 flex flex-col justify-center">
+            <div className="text-center">
+              <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3">
+                {product.name}
+              </h4>
+              <p className="text-[10px] sm:text-xs text-gray-700 leading-relaxed mb-3 sm:mb-4 px-1">
+                {product.description ||
+                  "Fresh and delicious premium quality chicken, carefully selected and prepared to ensure the best taste and nutrition for your family."}
+              </p>
+              <div className="space-y-2 sm:space-y-2.5">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                  <span className="text-[10px] sm:text-xs text-gray-700">
+                    Premium quality, fresh daily
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                  <span className="text-[10px] sm:text-xs text-gray-700">
+                    Rich in protein and nutrients
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                  <span className="text-[10px] sm:text-xs text-gray-700">
+                    Perfect for all your recipes
+                  </span>
+                </div>
+                {hasDiscount && (
+                  <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-orange-200">
+                    <span className="text-green-600 text-xs sm:text-sm font-bold flex-shrink-0">🎉</span>
+                    <span className="text-[10px] sm:text-xs text-green-700 font-semibold">
+                      Save {discountPercent}% - Limited time offer!
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Swipe Indicator Dots */}
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
+          <div
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+              swipePage === 0
+                ? "bg-orange-600 w-4"
+                : "bg-white/60 w-1.5"
+            }`}
+          />
+          <div
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+              swipePage === 1
+                ? "bg-orange-600 w-4"
+                : "bg-white/60 w-1.5"
+            }`}
+          />
         </div>
       </div>
 
@@ -478,25 +712,23 @@ function ProductCard({
           </div>
         </div>
 
-        {/* Quick Add Button (Visible when info is hidden) */}
+        {/* Quick Add Button (Visible when info is hidden) - Licious Style */}
         {!showInfo &&
           currentWeightQuantity === 0 &&
           stockStatus.status !== "out" && (
-            <div className="px-1.5 sm:px-3 pb-1.5 sm:pb-3">
+            <div className="absolute bottom-2 right-2 z-10">
               <button
-                onClick={() =>
+                onClick={(e) => {
+                  e.stopPropagation();
                   onAddToCart(
                     product,
                     isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
-                  )
-                }
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium sm:font-semibold py-1 sm:py-2 px-1.5 sm:px-3 rounded-md sm:rounded-lg flex items-center justify-center gap-0.5 sm:gap-1.5 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 text-[9px] sm:text-xs"
+                  );
+                }}
+                className="bg-white hover:bg-orange-50 text-red-600 hover:text-red-700 rounded-lg p-2 sm:p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-gray-100 hover:border-orange-200"
+                aria-label="Add to cart"
               >
-                <ShoppingBag
-                  size={10}
-                  className="sm:w-3.5 sm:h-3.5 transform transition-transform duration-300"
-                />
-                <span>Add</span>
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
           )}
@@ -514,12 +746,15 @@ export default function ProductCatalog({
   initialProducts,
   deliveryEnabled = true,
 }: ProductCatalogProps = {}) {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(
     initialProducts || []
   );
   const [loading, setLoading] = useState(!initialProducts);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams?.get("search") || ""
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string>("all");
   const [mounted, setMounted] = useState(false);
@@ -588,6 +823,11 @@ export default function ProductCatalog({
       setLoading(false);
     } else if (!initialProducts) {
       fetchProducts();
+    }
+    // Read search query from URL
+    const urlSearch = searchParams?.get("search");
+    if (urlSearch) {
+      setSearchTerm(urlSearch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once on mount
@@ -804,37 +1044,136 @@ export default function ProductCatalog({
     );
   }
 
-  return (
-    <section className="relative py-20 bg-gradient-to-b from-gray-50 via-orange-50/15 to-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.15),transparent_45%)] pointer-events-none" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          className={`text-center mb-6 sm:mb-10 md:mb-16 transition-all duration-500 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-          }`}
-        >
-          <h2
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-3 sm:mb-4 transition-all duration-500 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-            style={{ transitionDelay: "0.1s" }}
-          >
-            Our{" "}
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Products
-            </span>
-          </h2>
-          <p
-            className={`text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-500 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-            style={{ transitionDelay: "0.2s" }}
-          >
-            Fresh, premium quality chicken delivered to your door
-          </p>
-        </div>
+  // Separate bestsellers from other products
+  const bestsellerProducts = filteredProducts.filter((product) =>
+    bestsellerIds.includes(product.id)
+  );
+  const otherProducts = filteredProducts.filter(
+    (product) => !bestsellerIds.includes(product.id)
+  );
 
-        <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-4 sm:gap-6 lg:gap-8 items-start">
+  return (
+    <section className="relative py-12 sm:py-16 bg-white">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Bestsellers Section - Licious Style */}
+        {bestsellerProducts.length > 0 && (
+          <div
+            className={`mb-12 sm:mb-16 transition-all duration-500 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+            }`}
+          >
+            <div className="mb-6 sm:mb-8">
+              <h2
+                className={`text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 transition-all duration-500 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: "0.1s" }}
+              >
+                Bestsellers
+              </h2>
+              <p
+                className={`text-sm sm:text-base text-gray-600 transition-all duration-500 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: "0.2s" }}
+              >
+                Most popular products near you!
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+              {bestsellerProducts.map((product, index) => {
+                const isVisible = visibleProducts.has(product.id) || mounted;
+                return (
+                  <div
+                    key={`bestseller-${product.id}-${product.price}-${
+                      (product as any).original_price || ""
+                    }`}
+                    className={`transition-all duration-500 ${
+                      isVisible
+                        ? "opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 translate-y-8 scale-95"
+                    }`}
+                    style={{ transitionDelay: `${index * 0.05}s` }}
+                  >
+                    <ProductCard
+                      product={product}
+                      isBestseller={true}
+                      onAddToCart={addToCart}
+                      onUpdateQuantity={updateQuantity}
+                      getStockStatus={getStockStatus}
+                      getWeightQuantity={getWeightQuantity}
+                      index={index}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* All Products Section - Only show if there are other products and no filters */}
+        {otherProducts.length > 0 && selectedQuickFilter === "all" && selectedCategory === "all" && !searchTerm && (
+          <div
+            className={`transition-all duration-500 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+            }`}
+          >
+            <div
+              className={`text-center mb-6 sm:mb-10 md:mb-12 transition-all duration-500 ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+              }`}
+            >
+              <h2
+                className={`text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 transition-all duration-500 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: "0.1s" }}
+              >
+                All Products
+              </h2>
+              <p
+                className={`text-sm sm:text-base text-gray-600 max-w-2xl mx-auto transition-all duration-500 ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: "0.2s" }}
+              >
+                Fresh, premium quality chicken delivered to your door
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+              {otherProducts.map((product, index) => {
+                const isVisible = visibleProducts.has(product.id) || mounted;
+                return (
+                  <div
+                    key={`product-${product.id}-${product.price}-${
+                      (product as any).original_price || ""
+                    }`}
+                    className={`transition-all duration-500 ${
+                      isVisible
+                        ? "opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 translate-y-8 scale-95"
+                    }`}
+                    style={{ transitionDelay: `${index * 0.05}s` }}
+                  >
+                    <ProductCard
+                      product={product}
+                      isBestseller={false}
+                      onAddToCart={addToCart}
+                      onUpdateQuantity={updateQuantity}
+                      getStockStatus={getStockStatus}
+                      getWeightQuantity={getWeightQuantity}
+                      index={index + bestsellerProducts.length}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Filtered Products with Sidebar - Show when filters are applied */}
+        {(selectedQuickFilter !== "all" || selectedCategory !== "all" || searchTerm) && (
+          <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-4 sm:gap-6 lg:gap-8 items-start">
           {/* Sidebar */}
           <aside
             className={`space-y-4 sm:space-y-6 transition-all duration-700 ${
@@ -938,85 +1277,88 @@ export default function ProductCatalog({
             </div>
           </aside>
 
-          {/* Main content */}
-          <div
-            className={`space-y-8 transition-all duration-700 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-            style={{ transitionDelay: "0.6s" }}
-          >
-            <div className="flex flex-wrap gap-3">
-              {quickFilterOptions.map((filter, index) => (
-                <button
-                  key={filter.id}
-                  onClick={() => setSelectedQuickFilter(filter.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 border transform hover:scale-105 active:scale-95 ${
-                    selectedQuickFilter === filter.id
-                      ? "bg-gray-900 text-white border-gray-900 shadow-md"
-                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                  }`}
-                  style={{ transitionDelay: `${0.7 + index * 0.1}s` }}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-1.5 sm:gap-3 lg:gap-4">
-              {filteredProducts.map((product, index) => {
-                const isVisible = visibleProducts.has(product.id) || mounted;
-                return (
-                  <div
-                    key={`product-${product.id}-${product.price}-${
-                      (product as any).original_price || ""
-                    }`}
-                    className={`transition-all duration-500 ${
-                      isVisible
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 translate-y-8 scale-95"
-                    }`}
-                    style={{ transitionDelay: `${index * 0.05}s` }}
-                  >
-                    <ProductCard
-                      product={product}
-                      isBestseller={bestsellerIds.includes(product.id)}
-                      onAddToCart={addToCart}
-                      onUpdateQuantity={updateQuantity}
-                      getStockStatus={getStockStatus}
-                      getWeightQuantity={getWeightQuantity}
-                      index={index}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            {filteredProducts.length === 0 && !loading && (
-              <div className="text-center py-16 animate-bounce-in">
-                <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    No products found
-                  </h3>
-                  <p className="text-gray-600 mb-6 text-sm">
-                    We couldn't find any products matching your search.
-                  </p>
+            {/* Main content */}
+            <div
+              className={`space-y-8 transition-all duration-700 ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: "0.6s" }}
+            >
+              <div className="flex flex-wrap gap-3">
+                {quickFilterOptions.map((filter, index) => (
                   <button
-                    onClick={() => {
-                      setSearchTerm("");
-                      setSelectedQuickFilter("all");
-                    }}
-                    className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg"
+                    key={filter.id}
+                    onClick={() => setSelectedQuickFilter(filter.id)}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 border transform hover:scale-105 active:scale-95 ${
+                      selectedQuickFilter === filter.id
+                        ? "bg-gray-900 text-white border-gray-900 shadow-md"
+                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
+                    }`}
+                    style={{ transitionDelay: `${0.7 + index * 0.1}s` }}
                   >
-                    Clear filters
+                    {filter.label}
                   </button>
-                </div>
+                ))}
               </div>
-            )}
+
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                {filteredProducts.map((product, index) => {
+                  const isVisible = visibleProducts.has(product.id) || mounted;
+                  return (
+                    <div
+                      key={`product-${product.id}-${product.price}-${
+                        (product as any).original_price || ""
+                      }`}
+                      className={`transition-all duration-500 ${
+                        isVisible
+                          ? "opacity-100 translate-y-0 scale-100"
+                          : "opacity-0 translate-y-8 scale-95"
+                      }`}
+                      style={{ transitionDelay: `${index * 0.05}s` }}
+                    >
+                      <ProductCard
+                        product={product}
+                        isBestseller={bestsellerIds.includes(product.id)}
+                        onAddToCart={addToCart}
+                        onUpdateQuantity={updateQuantity}
+                        getStockStatus={getStockStatus}
+                        getWeightQuantity={getWeightQuantity}
+                        index={index}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {filteredProducts.length === 0 && !loading && (
+                <div className="text-center py-16 animate-bounce-in">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="h-8 w-8 text-orange-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      No products found
+                    </h3>
+                    <p className="text-gray-600 mb-6 text-sm">
+                      We couldn't find any products matching your search.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSelectedQuickFilter("all");
+                        setSelectedCategory("all");
+                      }}
+                      className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
       </div>
     </section>
   );

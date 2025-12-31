@@ -48,6 +48,7 @@ export default function Header() {
   };
 
   const [hash, setHash] = useState<string>("");
+  const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
     // Check hash on mount and when pathname changes
@@ -72,6 +73,55 @@ export default function Header() {
       window.removeEventListener("hashchange", checkHash);
       window.removeEventListener("popstate", checkHash);
       clearTimeout(timeout);
+    };
+  }, [pathname]);
+
+  // Scroll spy - detect which section is in view
+  useEffect(() => {
+    if (pathname !== "/") return; // Only on homepage
+
+    const handleScroll = () => {
+      const sections = [
+        { id: "products", element: document.getElementById("products") },
+        // Add more sections here if needed
+      ];
+
+      const scrollPosition = window.scrollY + 150; // Offset for header
+
+      // Check which section is in view
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section.element) {
+          const sectionTop = section.element.offsetTop;
+          const sectionHeight = section.element.offsetHeight;
+          
+          if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            setActiveSection(section.id);
+            // Update hash without scrolling
+            if (window.location.hash !== `#${section.id}`) {
+              window.history.replaceState(null, "", `#${section.id}`);
+              setHash(`#${section.id}`);
+            }
+            return;
+          }
+        }
+      }
+
+      // If at top of page, clear active section
+      if (window.scrollY < 100) {
+        setActiveSection("");
+        if (window.location.hash) {
+          window.history.replaceState(null, "", "/");
+          setHash("");
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check on mount
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [pathname]);
 
@@ -108,11 +158,11 @@ export default function Header() {
   const isActive = (path: string) => {
     if (path === "/") {
       // Home is active only if we're on home page and not on products section
-      return pathname === "/" && hash !== "#products";
+      return pathname === "/" && activeSection !== "products" && hash !== "#products";
     }
     if (path === "/#products") {
-      // Products is active if we're on home page and hash is #products
-      return pathname === "/" && hash === "#products";
+      // Products is active if we're on home page and hash is #products or activeSection is products
+      return pathname === "/" && (activeSection === "products" || hash === "#products");
     }
     return pathname?.startsWith(path);
   };
@@ -395,7 +445,7 @@ export default function Header() {
           }`}
         >
           <div className="py-4 border-t border-gray-100/50 bg-white/98 backdrop-blur-sm">
-            <nav className="flex flex-col space-y-2">
+            <nav className="flex flex-col space-y-2 px-4">
               <Link
                 href="/"
                 prefetch={true}
