@@ -14,7 +14,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 text-white relative overflow-hidden">
+    <footer className="bg-gray-900 border-t border-gray-800 text-white relative overflow-hidden">
       {/* Subtle background decoration */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <div

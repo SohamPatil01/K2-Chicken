@@ -57,11 +57,10 @@ export default function ReviewsSection({
     return Array.from({ length: 5 }).map((_, index) => (
       <Star
         key={index}
-        className={`h-5 w-5 transition-all duration-500 ${
-          index < rating
+        className={`h-5 w-5 transition-all duration-500 ${index < rating
             ? "fill-yellow-400 text-yellow-400 scale-110"
             : "fill-gray-200 text-gray-200"
-        }`}
+          }`}
         style={{ animationDelay: `${index * 0.1}s` }}
       />
     ));
@@ -93,10 +92,10 @@ export default function ReviewsSection({
           </div>
           <div className="flex justify-center">
             <div className="bg-white border border-gray-200 rounded-2xl p-12 w-full max-w-3xl animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
               <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-                <div className="h-20 bg-gray-200 rounded"></div>
-              </div>
+              <div className="h-20 bg-gray-200 rounded"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -104,9 +103,9 @@ export default function ReviewsSection({
   }
 
   if (reviews.length === 0) {
-  return (
-    <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    return (
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16 animate-bounce-in">
             <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-sm">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -144,7 +143,7 @@ export default function ReviewsSection({
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4 animate-slide-up stagger-1">
             What Our{" "}
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
               Customers Say
             </span>
           </h2>
@@ -156,14 +155,14 @@ export default function ReviewsSection({
         {/* Carousel Container */}
         <div className="relative max-w-4xl mx-auto">
           {/* Main Review Card */}
-            <div
+          <div
             key={currentReview.id}
             className="bg-white border-2 border-orange-200 rounded-3xl p-8 sm:p-12 shadow-2xl transform transition-all duration-500 hover:scale-[1.02]"
-            >
-              {/* Quote Icon */}
+          >
+            {/* Quote Icon */}
             <div className="mb-6 transform transition-transform duration-300 hover:scale-110">
               <Quote className="h-12 w-12 text-orange-200" />
-              </div>
+            </div>
 
             {/* Rating Stars with Animation */}
             <div className="flex items-center gap-2 mb-6">
@@ -171,24 +170,24 @@ export default function ReviewsSection({
               <span className="ml-2 text-sm font-semibold text-gray-600">
                 {currentReview.rating}/5
               </span>
-              </div>
+            </div>
 
-              {/* Review Comment */}
+            {/* Review Comment */}
             <p className="text-lg sm:text-xl text-gray-800 leading-relaxed mb-8 min-h-[120px]">
               "{currentReview.comment}"
-              </p>
+            </p>
 
             {/* Customer Info */}
             <div className="flex items-center justify-between pt-6 border-t border-gray-100">
-                <div>
+              <div>
                 <p className="font-bold text-gray-900 text-lg">
                   {currentReview.user_name}
-                  </p>
+                </p>
                 <p className="text-sm text-gray-500 mt-1">
-                    Verified Customer
-                  </p>
-                </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-xl shadow-lg transform transition-transform duration-300 hover:scale-110">
+                  Verified Customer
+                </p>
+              </div>
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center text-orange-600 font-bold text-xl shadow-lg transform transition-transform duration-300 hover:scale-110">
                 {currentReview.user_name.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -216,11 +215,10 @@ export default function ReviewsSection({
               <button
                 key={index}
                 onClick={() => goToReview(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
                     ? "bg-orange-600 w-8 scale-110"
                     : "bg-gray-300 hover:bg-gray-400"
-                }`}
+                  }`}
                 aria-label={`Go to review ${index + 1}`}
               />
             ))}
@@ -231,8 +229,8 @@ export default function ReviewsSection({
         <div className="text-center mt-8">
           <p className="text-sm text-gray-600">
             Showing {currentIndex + 1} of {reviews.length} reviews
-              </p>
-            </div>
+          </p>
+        </div>
       </div>
     </section>
   );

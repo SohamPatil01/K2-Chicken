@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, Shield, Sparkles, Phone } from "lucide-react";
 
+// Import CinematicBackground
+import CinematicBackground from "./CinematicBackground";
+
 interface HeroProps {
   deliveryEnabled?: boolean;
 }
@@ -35,173 +38,95 @@ export default function Hero({ deliveryEnabled = true }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative w-full bg-gradient-to-br from-orange-50 via-white to-orange-50 overflow-hidden">
-      {/* Modern gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-orange-100/20 via-transparent to-red-100/20"></div>
-      
-      {/* Subtle pattern */}
-      <div className="absolute inset-0 opacity-[0.02]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, #fb923c 1px, transparent 0)`,
-            backgroundSize: "32px 32px",
-          }}
-        ></div>
-      </div>
+    <section className="relative w-full h-[90vh] min-h-[600px] overflow-hidden flex items-center justify-center">
+      {/* Cinematic Background */}
+      <CinematicBackground />
 
-      {/* Main Content - Mobile First */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center py-8 sm:py-12 md:py-16">
-        <div className="text-center space-y-6 sm:space-y-8 md:space-y-10 bg-white/80 backdrop-blur-sm rounded-3xl px-5 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 shadow-2xl border border-white/50">
+      {/* Main Content - Centered */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+        <div className="text-center space-y-6 sm:space-y-8 md:space-y-10 bg-white/60 backdrop-blur-md rounded-[2.5rem] px-6 sm:px-10 md:px-14 py-10 sm:py-14 shadow-2xl shadow-orange-100/50 border border-white/40 max-w-5xl">
           <div
-            className={`inline-flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-md border border-orange-200 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs md:text-sm font-semibold text-orange-700 shadow-sm transition-all duration-300 hover:shadow-md ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
+            className={`inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-orange-500 to-orange-600 backdrop-blur-md border border-orange-100/20 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-orange-500/30 hover:scale-105 ${mounted ? "animate-fade-up" : "opacity-0"
+              }`}
           >
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500" />
-            <span className="whitespace-nowrap">Fresh Daily • Premium Quality</span>
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
+            <span className="uppercase tracking-wider">Fresh Daily • Premium Quality</span>
           </div>
 
-          {/* Main Heading with Typewriter Effect */}
-          <div className="space-y-3 sm:space-y-4 md:space-y-6 max-w-4xl mx-auto px-2 sm:px-4 md:px-6">
+          {/* Main Heading */}
+          <div className="space-y-2 sm:space-y-4 max-w-4xl mx-auto">
             <h1
-              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight text-gray-900 ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight tracking-tight ${mounted ? "animate-fade-up" : "opacity-0"
+                }`}
               style={{ animationDelay: "0.2s" }}
             >
-              <span className="block text-orange-600">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500 pb-2">
                 {displayedText}
-                {isTyping && <span className="animate-pulse">|</span>}
+                {isTyping && <span className="animate-pulse text-orange-600">|</span>}
               </span>
-              <span className="block text-gray-800 mt-1 sm:mt-2 md:mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold">
+              <span className="block text-chicken-wood mt-2 text-2xl sm:text-3xl md:text-5xl font-bold tracking-normal opacity-100">
                 Good Chicken
               </span>
             </h1>
 
             {/* Value Proposition */}
             <p
-              className={`text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-900 max-w-3xl mx-auto leading-relaxed font-semibold px-2 sm:px-4 ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
+              className={`text-lg sm:text-xl md:text-2xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed ${mounted ? "animate-fade-up" : "opacity-0"
+                }`}
               style={{ animationDelay: "0.4s" }}
             >
-              Premium Quality • Fresh Daily{" "}
-              {deliveryEnabled
-                ? "• Delivered to Your Door"
-                : "• Available for Pickup"}
-            </p>
-
-            {/* Subheading */}
-            <p
-              className={`text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed px-2 sm:px-4 ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
-              style={{ animationDelay: "0.6s" }}
-            >
-              Experience the juiciest, crispiest, and most delicious chicken in
-              town. Made fresh daily with our secret family recipes and premium
-              ingredients.
+              The crispiest, juiciest chicken in town.
+              <span className="block mt-2 text-base sm:text-lg opacity-80 font-normal">
+                {deliveryEnabled ? "Fast delivery to your doorstep." : "Ready for quick pickup."}
+              </span>
             </p>
           </div>
 
-          {/* CTA Buttons - Modern Mobile Design */}
+          {/* CTA Buttons */}
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center pt-4 sm:pt-6 px-2 sm:px-4 ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.8s" }}
+            className={`flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 ${mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+            style={{ animationDelay: "0.6s" }}
           >
             <Link href="/#products" className="group w-full sm:w-auto">
-              <button className="group relative bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-2xl font-bold text-base sm:text-lg shadow-xl active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 w-full sm:w-auto min-h-[56px]">
+              <button className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 hover:shadow-orange-400/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 border border-transparent">
                 <span>Order Now</span>
-                <ArrowRight className="h-5 w-5 transition-transform duration-200 group-active:translate-x-1" />
+                <ArrowRight className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </Link>
             <Link href="tel:+918484978622" className="group w-full sm:w-auto">
-              <button className="bg-white px-8 py-4 rounded-2xl font-bold text-base sm:text-lg text-gray-900 border-2 border-gray-200 shadow-lg active:scale-95 transition-all duration-200 w-full sm:w-auto flex items-center justify-center gap-3 min-h-[56px]">
-                <Phone className="h-5 w-5" />
+              <button className="w-full sm:w-auto bg-white/50 backdrop-blur-md text-gray-800 px-10 py-5 rounded-2xl font-bold text-lg border border-gray-200 hover:bg-white/80 hover:border-orange-200 shadow-lg shadow-gray-100 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+                <Phone className="h-5 w-5 fill-current text-gray-700" />
                 <span>Call Now</span>
               </button>
             </Link>
           </div>
 
-          {/* Trust Indicators */}
+          {/* Trust Indicators - Glassmorphism */}
           <div
-            className={`grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pt-6 sm:pt-8 md:pt-12 max-w-4xl mx-auto px-2 sm:px-4 ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "1s" }}
+            className={`grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-gray-200/60 mt-8 ${mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+            style={{ animationDelay: "0.8s" }}
           >
-            <div className="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 bg-white/95 backdrop-blur border border-orange-200 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-7 hover:shadow-lg transition-all duration-300">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md">
-                <Star className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-white fill-white" />
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-yellow-500 font-bold text-2xl flex items-center gap-1">
+                4.8 <Star className="fill-yellow-400 w-5 h-5 text-yellow-400" />
               </div>
-              <div className="text-center">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-0.5 sm:mb-1">
-                  4.8/5
-                </div>
-                <div className="text-[10px] sm:text-xs md:text-sm text-gray-700 font-semibold">
-                  Customer Rating
-                </div>
-                <div className="text-[10px] sm:text-xs text-gray-700 mt-0.5 sm:mt-1 font-semibold">
-                  500+ Reviews
-                </div>
-              </div>
+              <div className="text-gray-600 text-sm font-medium">500+ Reviews</div>
             </div>
 
-            {deliveryEnabled && (
-              <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-green-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-md">
-                  <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                    30 Min
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-700 font-semibold">
-                    Fast Delivery
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1 font-medium">
-                    Free over ₹500
-                  </div>
-                </div>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-orange-600 font-bold text-2xl flex items-center gap-1">
+                {deliveryEnabled ? "30m" : "15m"} <Clock className="w-5 h-5" />
               </div>
-            )}
-            {!deliveryEnabled && (
-              <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-orange-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-md">
-                  <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                    15 Min
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-700 font-semibold">
-                    Quick Pickup
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1 font-medium">
-                    Store Ready
-                  </div>
-                </div>
-              </div>
-            )}
+              <div className="text-gray-600 text-sm font-medium">{deliveryEnabled ? "Fast Delivery" : "Quick Pickup"}</div>
+            </div>
 
-            <div className="flex flex-col items-center gap-3 sm:gap-4 bg-white/95 backdrop-blur border border-blue-200 rounded-2xl p-6 sm:p-7 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-md">
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-blue-600 font-bold text-2xl flex items-center gap-1">
+                100% <Shield className="w-5 h-5" />
               </div>
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                  100%
-                </div>
-                <div className="text-xs sm:text-sm text-gray-700 font-semibold">
-                  Fresh Quality
-                </div>
-                <div className="text-xs text-gray-600 mt-1 font-medium">
-                  Premium Ingredients
-                </div>
-              </div>
+              <div className="text-gray-600 text-sm font-medium">Halal Certified</div>
             </div>
           </div>
         </div>

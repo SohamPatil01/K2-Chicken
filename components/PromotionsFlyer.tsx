@@ -75,19 +75,19 @@ export default function PromotionsFlyer({
       const data = await response.json();
       const activePromotions = Array.isArray(data)
         ? data.filter((p: Promotion) => {
-            if (!p.is_active) return false;
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (p.end_date) {
-              const endDate = new Date(p.end_date);
-              if (endDate < today) return false;
-            }
-            if (p.start_date) {
-              const startDate = new Date(p.start_date);
-              if (startDate > today) return false;
-            }
-            return true;
-          })
+          if (!p.is_active) return false;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (p.end_date) {
+            const endDate = new Date(p.end_date);
+            if (endDate < today) return false;
+          }
+          if (p.start_date) {
+            const startDate = new Date(p.start_date);
+            if (startDate > today) return false;
+          }
+          return true;
+        })
         : [];
       setPromotions(activePromotions);
     } catch (error) {
@@ -159,13 +159,13 @@ export default function PromotionsFlyer({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gradient-to-br from-orange-50 via-red-50 to-orange-50"
+      className="relative w-full overflow-hidden bg-gradient-to-br from-orange-50 via-orange-100/50 to-orange-50"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Subtle animated gradient background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 via-red-100/50 to-orange-100/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 via-orange-200/30 to-orange-100/50"></div>
       </div>
 
       {/* Subtle animated overlay pattern */}
@@ -173,8 +173,8 @@ export default function PromotionsFlyer({
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.1) 0%, transparent 50%)`,
+            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(254, 215, 170, 0.2) 0%, transparent 50%),
+                             radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.15) 0%, transparent 50%)`,
             animation: "float 20s ease-in-out infinite",
           }}
         ></div>
@@ -222,7 +222,7 @@ export default function PromotionsFlyer({
             {/* Left side - Animated Discount Badge */}
             <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 animate-slide-in-from-left">
               <div className="relative group">
-                <div className="relative bg-white/90 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-orange-200 shadow-md transform group-hover:scale-105 transition-all duration-300">
+                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-orange-200 shadow-md transform group-hover:scale-105 transition-all duration-300">
                   <div className="relative">
                     <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
                   </div>
@@ -233,21 +233,20 @@ export default function PromotionsFlyer({
                   Special Offer
                 </div>
                 <div
-                  className={`text-2xl sm:text-3xl md:text-4xl font-bold transform transition-all duration-500 ${
-                    isTransitioning
+                  className={`text-2xl sm:text-3xl md:text-4xl font-bold transform transition-all duration-500 ${isTransitioning
                       ? "opacity-0 scale-95"
                       : "opacity-100 scale-100"
-                  }`}
+                    }`}
                 >
-                  <span className="text-orange-600">
+                  <span className="text-orange-700">
                     {formatDiscount(currentPromo)}
                   </span>
                   {(currentPromo.discount_type === "percentage" ||
                     currentPromo.discount_type === "fixed") && (
-                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">
-                      OFF
-                    </span>
-                  )}
+                      <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-orange-900/70 font-medium">
+                        OFF
+                      </span>
+                    )}
                   {currentPromo.discount_type === "free_delivery" && (
                     <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">
                       DELIVERY
@@ -259,11 +258,10 @@ export default function PromotionsFlyer({
 
             {/* Center - Promotion Details with enhanced slide animation */}
             <div
-              className={`flex-1 text-center transform transition-all duration-500 px-4 ${
-                isTransitioning
+              className={`flex-1 text-center transform transition-all duration-500 px-4 ${isTransitioning
                   ? "opacity-0 translate-y-4"
                   : "opacity-100 translate-y-0"
-              }`}
+                }`}
             >
               <div className="inline-flex items-center space-x-2 mb-2 animate-scale-in">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
@@ -286,7 +284,6 @@ export default function PromotionsFlyer({
               {currentPromo.promo_code && (
                 <button
                   onClick={() => {
-                    // Redirect to checkout page with promo code in URL
                     if (currentPromo.promo_code) {
                       router.push(
                         `/checkout?promo=${encodeURIComponent(
@@ -297,15 +294,15 @@ export default function PromotionsFlyer({
                       router.push("/checkout");
                     }
                   }}
-                  className="mt-3 inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-orange-200 shadow-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:bg-white hover:shadow-md"
+                  className="mt-3 inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-200 transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:shadow-orange-300"
                 >
-                  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+                  <span className="text-xs sm:text-sm font-semibold text-white/90">
                     Use Code:
                   </span>
-                  <span className="text-base sm:text-lg md:text-xl font-bold tracking-wide text-orange-600">
+                  <span className="text-base sm:text-lg md:text-xl font-bold tracking-wide text-white">
                     {currentPromo.promo_code}
                   </span>
-                  <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600 group-hover:translate-x-1 transition-transform duration-300" />
+                  <ArrowRight className="h-4 w-4 text-white group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
               )}
 
@@ -336,13 +333,11 @@ export default function PromotionsFlyer({
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`relative transition-all duration-300 group ${
-                      index === currentIndex ? "w-2.5 h-8 lg:h-10" : "w-2 h-2"
-                    } rounded-full ${
-                      index === currentIndex
+                    className={`relative transition-all duration-300 group ${index === currentIndex ? "w-2.5 h-8 lg:h-10" : "w-2 h-2"
+                      } rounded-full ${index === currentIndex
                         ? "bg-orange-600 shadow-md"
                         : "bg-orange-300/50 hover:bg-orange-300"
-                    }`}
+                      }`}
                     aria-label={`Go to promotion ${index + 1}`}
                   >
                     {index === currentIndex && (

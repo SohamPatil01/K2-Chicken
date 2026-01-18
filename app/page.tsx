@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
+import MotionSection from "@/components/MotionSection";
 import pool from "@/lib/db";
 
 // Lazy load heavy components for better performance
@@ -85,11 +86,10 @@ async function getHomePageData() {
     const [productsResult, recipesResult, promotionsResult, reviewsResult] =
       await Promise.all([
         client.query(`
-        SELECT id, name, description, price, ${
-          hasOriginalPrice
+        SELECT id, name, description, price, ${hasOriginalPrice
             ? "COALESCE(original_price, price) as original_price"
             : "price as original_price"
-        }, image_url, category, is_available,
+          }, image_url, category, is_available,
                COALESCE(stock_quantity, 100) as stock_quantity,
                COALESCE(low_stock_threshold, 10) as low_stock_threshold,
                COALESCE(in_stock, true) as in_stock
@@ -196,17 +196,33 @@ export default async function Home() {
       <InauguralDiscountFlyer />
       <PromotionsFlyer initialPromotions={promotions} />
       <Hero deliveryEnabled={deliveryEnabled} />
-      <div id="products">
+
+      <MotionSection delay={0.2} id="products">
         <ProductCatalog
           initialProducts={products}
           deliveryEnabled={deliveryEnabled}
         />
-      </div>
-      <AboutSection />
-      <RecipeSection initialRecipes={recipes} />
-      <ReviewsSection initialReviews={reviews} />
-      <WhyChooseUs />
-      <ContactSection />
+      </MotionSection>
+
+      <MotionSection delay={0.3}>
+        <AboutSection />
+      </MotionSection>
+
+      <MotionSection delay={0.4}>
+        <RecipeSection initialRecipes={recipes} />
+      </MotionSection>
+
+      <MotionSection delay={0.5}>
+        <ReviewsSection initialReviews={reviews} />
+      </MotionSection>
+
+      <MotionSection delay={0.6}>
+        <WhyChooseUs />
+      </MotionSection>
+
+      <MotionSection delay={0.7}>
+        <ContactSection />
+      </MotionSection>
     </div>
   );
 }

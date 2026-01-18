@@ -94,7 +94,7 @@ export default function Header() {
         if (section.element) {
           const sectionTop = section.element.offsetTop;
           const sectionHeight = section.element.offsetHeight;
-          
+
           if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             setActiveSection(section.id);
             // Update hash without scrolling
@@ -169,11 +169,10 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 safe-top ${
-        scrolled
-          ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-gray-200/50"
-          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/30"
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 safe-top ${scrolled
+        ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-gray-200/50"
+        : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/30"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex justify-between items-center py-3 md:py-4">
@@ -204,7 +203,7 @@ export default function Header() {
 
             <div className="hidden sm:block transform group-hover:translate-x-1 transition-transform duration-300">
               <div
-                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent leading-tight group-hover:from-orange-700 group-hover:via-orange-600 group-hover:to-red-700 transition-all duration-300"
+                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-orange-700 via-orange-600 to-orange-500 bg-clip-text text-transparent leading-tight group-hover:from-orange-800 group-hover:via-orange-700 group-hover:to-orange-600 transition-all duration-300"
                 style={{
                   fontFamily: "var(--font-poppins), sans-serif",
                   letterSpacing: "0.01em",
@@ -224,108 +223,63 @@ export default function Header() {
             <Link
               href="/"
               prefetch={true}
-              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
-                isActive("/")
-                  ? "text-orange-600"
-                  : "text-gray-700 hover:text-orange-600"
-              }`}
+              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${isActive("/")
+                ? "text-chicken-wood bg-chicken-cream border border-orange-200"
+                : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                }`}
               onClick={handleHomeClick}
             >
-              {/* Animated background */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl transition-all duration-300 ${
-                  isActive("/")
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
-                }`}
-              ></div>
-
-              {/* Text with icon */}
               <span className="relative z-10 flex items-center gap-2">
                 <Home
                   size={16}
-                  className={`transition-all duration-300 ${
-                    isActive("/")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-500 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`transition-all duration-300 ${isActive("/")
+                    ? "text-orange-500 scale-110"
+                    : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                    }`}
                 />
                 Home
               </span>
-
-              {/* Active indicator */}
-              {isActive("/") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
-              )}
             </Link>
 
             <Link
               href="/#products"
               prefetch={true}
-              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
-                isActive("/#products")
-                  ? "text-orange-600"
-                  : "text-gray-700 hover:text-orange-600"
-              }`}
+              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${isActive("/#products")
+                ? "text-chicken-wood bg-chicken-cream border border-orange-200"
+                : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                }`}
               onClick={handleProductsClick}
             >
-              <div
-                className={`absolute inset-0 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl transition-all duration-300 ${
-                  isActive("/#products")
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
-                }`}
-              ></div>
-
               <span className="relative z-10 flex items-center gap-2">
                 <Package
                   size={16}
-                  className={`transition-all duration-300 ${
-                    isActive("/#products")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-500 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`transition-all duration-300 ${isActive("/#products")
+                    ? "text-orange-500 scale-110"
+                    : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                    }`}
                 />
                 Products
               </span>
-
-              {isActive("/#products") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
-              )}
             </Link>
 
             <Link
               href="/recipes"
               prefetch={true}
-              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
-                isActive("/recipes")
-                  ? "text-orange-600"
-                  : "text-gray-700 hover:text-orange-600"
-              }`}
-            >
-              <div
-                className={`absolute inset-0 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl transition-all duration-300 ${
-                  isActive("/recipes")
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+              className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${isActive("/recipes")
+                ? "text-chicken-wood bg-chicken-cream border border-orange-200"
+                : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
                 }`}
-              ></div>
-
+            >
               <span className="relative z-10 flex items-center gap-2">
                 <ChefHat
                   size={16}
-                  className={`transition-all duration-300 ${
-                    isActive("/recipes")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-500 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`transition-all duration-300 ${isActive("/recipes")
+                    ? "text-orange-500 scale-110"
+                    : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                    }`}
                 />
                 Recipes
               </span>
-
-              {isActive("/recipes") && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-scale-in"></div>
-              )}
             </Link>
           </nav>
 
@@ -372,7 +326,7 @@ export default function Header() {
                   <Link
                     href="/login"
                     prefetch={true}
-                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group"
+                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group"
                   >
                     <LogIn
                       size={16}
@@ -396,7 +350,7 @@ export default function Header() {
                   className="transition-transform duration-200"
                 />
                 {totalItems > 0 && mounted && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-orange-600 to-red-600 text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-orange-600 to-orange-700 text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
@@ -420,16 +374,14 @@ export default function Header() {
             >
               <div className="relative w-6 h-6">
                 <div
-                  className={`absolute inset-0 transition-all duration-200 ${
-                    isMenuOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
-                  }`}
+                  className={`absolute inset-0 transition-all duration-200 ${isMenuOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
+                    }`}
                 >
                   <Menu size={24} strokeWidth={2.5} />
                 </div>
                 <div
-                  className={`absolute inset-0 transition-all duration-200 ${
-                    isMenuOpen ? "rotate-0 opacity-100" : "rotate-90 opacity-0"
-                  }`}
+                  className={`absolute inset-0 transition-all duration-200 ${isMenuOpen ? "rotate-0 opacity-100" : "rotate-90 opacity-0"
+                    }`}
                 >
                   <X size={24} strokeWidth={2.5} />
                 </div>
@@ -440,33 +392,30 @@ export default function Header() {
 
         {/* Mobile Navigation - Enhanced */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-            isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="py-4 border-t border-gray-100/50 bg-white/98 backdrop-blur-sm">
             <nav className="flex flex-col space-y-2 px-4">
               <Link
                 href="/"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
-                  isActive("/")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
-                }`}
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${isActive("/")
+                  ? "text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 border border-transparent hover:border-orange-200"
+                  }`}
                 onClick={(event) => {
                   handleHomeClick(event);
                   setIsMenuOpen(false);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-orange-200/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Home
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
-                    isActive("/")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`relative z-10 transition-all duration-300 ${isActive("/")
+                    ? "text-orange-600 scale-110"
+                    : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                    }`}
                 />
                 <span className="relative z-10">Home</span>
                 {isActive("/") && (
@@ -477,11 +426,10 @@ export default function Header() {
               <Link
                 href="/#products"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
-                  isActive("/#products")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
-                }`}
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${isActive("/#products")
+                  ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                  }`}
                 onClick={(event) => {
                   handleProductsClick(event);
                   setIsMenuOpen(false);
@@ -490,11 +438,10 @@ export default function Header() {
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Package
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
-                    isActive("/#products")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`relative z-10 transition-all duration-300 ${isActive("/#products")
+                    ? "text-orange-600 scale-110"
+                    : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                    }`}
                 />
                 <span className="relative z-10">Products</span>
                 {isActive("/#products") && (
@@ -505,21 +452,19 @@ export default function Header() {
               <Link
                 href="/recipes"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
-                  isActive("/recipes")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
-                }`}
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${isActive("/recipes")
+                  ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
+                  : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <ChefHat
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
-                    isActive("/recipes")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
-                  }`}
+                  className={`relative z-10 transition-all duration-300 ${isActive("/recipes")
+                    ? "text-orange-600 scale-110"
+                    : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                    }`}
                 />
                 <span className="relative z-10">Recipes</span>
                 {isActive("/recipes") && (
@@ -577,7 +522,7 @@ export default function Header() {
                       <Link
                         href="/login"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all duration-300 flex items-center gap-3 shadow-md hover:shadow-lg transform hover:scale-[1.02] overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 flex items-center gap-3 shadow-md hover:shadow-lg transform hover:scale-[1.02] overflow-hidden"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

@@ -66,8 +66,8 @@ export default function WhyChooseUs() {
           {features.map((feature, index) => {
             const Icon = feature.icon
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="group relative bg-white border border-gray-100 rounded-2xl p-6 sm:p-7 hover:border-gray-200 hover:shadow-lg transition-all duration-500 transform hover:-translate-y-1 animate-slide-up text-center"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -78,7 +78,7 @@ export default function WhyChooseUs() {
                     <Icon size={28} className={`${feature.iconColor} sm:w-8 sm:h-8`} />
                   </div>
                 </div>
-                
+
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2.5 group-hover:text-orange-600 transition-colors duration-300">
                   {feature.title}
                 </h3>
@@ -92,7 +92,7 @@ export default function WhyChooseUs() {
 
         {/* Stats Section */}
         <div className="mt-10 sm:mt-12 animate-slide-up stagger-5">
-          <div className="bg-gradient-to-br from-orange-50/80 via-red-50/50 to-orange-50/80 backdrop-blur-sm border border-orange-200 rounded-2xl p-8 sm:p-10 shadow-sm hover:shadow-md transition-all duration-300">
+          <div className="bg-gradient-to-br from-orange-50/80 via-orange-100/30 to-orange-50/80 backdrop-blur-sm border border-orange-200 rounded-2xl p-8 sm:p-10 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="text-center mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium text-orange-700 mb-4 shadow-sm">
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500" />
@@ -105,20 +105,20 @@ export default function WhyChooseUs() {
                 Join thousands of satisfied customers who choose K2 Chicken for the best chicken experience in town.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
               <div className="text-center group">
                 <div className="relative inline-block">
                   <div className="absolute inset-0 bg-orange-200/30 rounded-xl blur-lg group-hover:opacity-50 transition-opacity duration-300"></div>
                   <div className="relative bg-white/80 backdrop-blur-sm border border-orange-200 rounded-xl p-5 sm:p-6 group-hover:shadow-md transition-all duration-300">
-                    <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+                    <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent mb-2">
                       10,000+
                     </div>
                     <div className="text-xs sm:text-sm text-gray-600 font-medium">Happy Customers</div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center group">
                 <div className="relative inline-block">
                   <div className="absolute inset-0 bg-yellow-200/30 rounded-xl blur-lg group-hover:opacity-50 transition-opacity duration-300"></div>
@@ -130,7 +130,7 @@ export default function WhyChooseUs() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center group">
                 <div className="relative inline-block">
                   <div className="absolute inset-0 bg-green-200/30 rounded-xl blur-lg group-hover:opacity-50 transition-opacity duration-300"></div>

@@ -20,6 +20,7 @@ import {
   PhoneCall,
   Store,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductCardProps {
   product: Product;
@@ -63,7 +64,7 @@ function ProductCard({
   const [customWeight, setCustomWeight] = useState<string>(
     (defaultWeight?.weight || 500).toString()
   );
-  
+
   // Swipe state
   const [swipePage, setSwipePage] = useState(0); // 0 = image, 1 = info
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -95,7 +96,7 @@ function ProductCard({
       }
       return;
     }
-    
+
     const interval = setInterval(() => {
       setSwipePage((prev) => (prev === 0 ? 1 : 0));
     }, 4000); // Switch every 4 seconds
@@ -184,11 +185,11 @@ function ProductCard({
   };
   // Check if this is Whole Chicken product - hide weight options
   const isWholeChicken = product.name.toLowerCase().includes("whole chicken");
-  
-  const activeWeight = isWholeChicken 
-    ? undefined 
+
+  const activeWeight = isWholeChicken
+    ? undefined
     : (customWeightEnabled ? customWeightOption : selectedWeight);
-  const currentPrice = isWholeChicken 
+  const currentPrice = isWholeChicken
     ? Number(product.price)
     : Number(activeWeight?.price || product.price);
 
@@ -203,8 +204,8 @@ function ProductCard({
   const hasDiscount = baseOriginalPrice > baseProductPrice;
   const discountPercent = hasDiscount
     ? Math.round(
-        ((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100
-      )
+      ((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100
+    )
     : 0;
 
   // For display, use the original price for current weight
@@ -228,7 +229,7 @@ function ProductCard({
       // Swipe right to show image
       setSwipePage(0);
     }
-    
+
     setTouchStart(null);
     setSwipeOffset(0);
   };
@@ -248,16 +249,16 @@ function ProductCard({
     if (touchStart === null) return;
     const touch = e.touches[0];
     if (!touch) return;
-    
+
     const currentTouch = touch.clientX;
     const distance = touchStart - currentTouch;
-    
+
     // Only prevent default if we're actually swiping horizontally
     if (Math.abs(distance) > 5) {
       e.preventDefault();
       e.stopPropagation();
     }
-    
+
     // Calculate swipe offset as percentage of container width
     if (containerWidth > 0) {
       const percentage = (distance / containerWidth) * 100;
@@ -274,13 +275,13 @@ function ProductCard({
 
   const onTouchEnd = (e: React.TouchEvent) => {
     e.stopPropagation();
-    
+
     if (touchStart === null) {
       setSwipeOffset(0);
       setIsSwiping(false);
       return;
     }
-    
+
     const touch = e.changedTouches[0];
     if (!touch) {
       setTouchStart(null);
@@ -288,7 +289,7 @@ function ProductCard({
       setIsSwiping(false);
       return;
     }
-    
+
     const endTouch = touch.clientX;
     const distance = touchStart - endTouch;
     const isLeftSwipe = distance > minSwipeDistance;
@@ -301,7 +302,7 @@ function ProductCard({
       // Swipe right to show image
       setSwipePage(0);
     }
-    
+
     setTouchStart(null);
     setSwipeOffset(0);
     setIsSwiping(false);
@@ -312,7 +313,7 @@ function ProductCard({
   const handleCardClick = (e: React.MouseEvent) => {
     // Only handle clicks on mobile devices
     if (!isMobile) return;
-    
+
     // Don't toggle if clicking on interactive elements (buttons, inputs, etc.)
     const target = e.target as HTMLElement;
     if (
@@ -325,14 +326,14 @@ function ProductCard({
     ) {
       return;
     }
-    
+
     // Toggle info panel on mobile
     setShowInfo((prev) => !prev);
   };
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-lg sm:rounded-xl overflow-hidden hover:border-orange-300 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
+      className="group relative bg-white border border-gray-100/80 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl shadow-sm"
       onMouseEnter={() => {
         // Only use hover on desktop (non-mobile)
         if (!isMobile) {
@@ -352,7 +353,7 @@ function ProductCard({
     >
       {/* Discount Badge */}
       {hasDiscount && (
-        <div className="absolute top-0.5 left-0.5 sm:top-2 sm:left-2 z-10 bg-gradient-to-r from-red-500 to-orange-500 text-white px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-semibold sm:font-bold flex items-center gap-0.5 sm:gap-1 shadow-md">
+        <div className="absolute top-0.5 left-0.5 sm:top-2 sm:left-2 z-10 bg-gradient-to-r from-orange-400 to-orange-600 text-white px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-semibold sm:font-bold flex items-center gap-0.5 sm:gap-1 shadow-md">
           <Sparkles className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
           <span>{discountPercent}% OFF</span>
         </div>
@@ -377,7 +378,7 @@ function ProductCard({
       )}
 
       {/* Swipeable Product Container */}
-      <div 
+      <div
         className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden rounded-t-lg"
         style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
       >
@@ -385,15 +386,14 @@ function ProductCard({
           ref={swipeContainerRef}
           className="swipeable-container relative w-full h-full flex select-none"
           style={{
-            transform: `translateX(${
-              containerWidth > 0
-                ? swipePage === 0
-                  ? `${(-swipeOffset / containerWidth) * 100}%`
-                  : `${-100 + (swipeOffset / containerWidth) * 100}%`
-                : swipePage === 0
-                  ? '0%'
-                  : '-100%'
-            })`,
+            transform: `translateX(${containerWidth > 0
+              ? swipePage === 0
+                ? `${(-swipeOffset / containerWidth) * 100}%`
+                : `${-100 + (swipeOffset / containerWidth) * 100}%`
+              : swipePage === 0
+                ? '0%'
+                : '-100%'
+              })`,
             transition: swipeOffset === 0 && !isSwiping ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
             willChange: 'transform',
             userSelect: 'none',
@@ -430,9 +430,8 @@ function ProductCard({
               />
             ) : null}
             <div
-              className={`absolute inset-0 w-full h-full ${
-                product.image_url ? "hidden" : "flex"
-              } bg-gray-50 items-center justify-center`}
+              className={`absolute inset-0 w-full h-full ${product.image_url ? "hidden" : "flex"
+                } bg-gray-50 items-center justify-center`}
             >
               <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
                 🍗
@@ -441,7 +440,7 @@ function ProductCard({
           </div>
 
           {/* Page 2: Product Information */}
-          <div className="min-w-full h-full bg-gradient-to-br from-orange-50 to-red-50 p-3 sm:p-4 flex flex-col justify-center">
+          <div className="min-w-full h-full bg-chicken-cream border-t border-dashed border-gray-200 p-3 sm:p-4 flex flex-col justify-center">
             <div className="text-center">
               <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3">
                 {product.name}
@@ -485,18 +484,16 @@ function ProductCard({
         {/* Swipe Indicator Dots */}
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
           <div
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-              swipePage === 0
-                ? "bg-orange-600 w-4"
-                : "bg-white/60 w-1.5"
-            }`}
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 0
+              ? "bg-orange-600 w-4"
+              : "bg-white/60 w-1.5"
+              }`}
           />
           <div
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-              swipePage === 1
-                ? "bg-orange-600 w-4"
-                : "bg-white/60 w-1.5"
-            }`}
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 1
+              ? "bg-orange-600 w-4"
+              : "bg-white/60 w-1.5"
+              }`}
           />
         </div>
       </div>
@@ -509,9 +506,7 @@ function ProductCard({
             <h3 className="text-[10px] sm:text-sm font-medium sm:font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-0.5 sm:mb-1 line-clamp-2">
               {product.name}
             </h3>
-            <span className="inline-block text-[8px] sm:text-xs text-gray-500 capitalize bg-gray-50 px-1 sm:px-1.5 py-0.5 rounded font-normal sm:font-medium">
-              {product.category}
-            </span>
+            {/* Category label removed as per request */}
           </div>
 
           {/* Price Section with Discount */}
@@ -550,9 +545,8 @@ function ProductCard({
 
         {/* Sliding Info Panel */}
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            showInfo ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${showInfo ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="px-3 pb-2 space-y-2 border-t border-gray-100 pt-2">
             {/* Description */}
@@ -580,11 +574,10 @@ function ProductCard({
                         setSelectedWeight(weight);
                         setCustomWeightEnabled(false);
                       }}
-                      className={`px-1.5 py-0.5 rounded text-xs font-medium transition-all duration-200 ${
-                        selectedWeight?.weight === weight.weight
-                          ? "bg-orange-100 text-orange-700 border border-orange-200"
-                          : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
-                      }`}
+                      className={`px-1.5 py-0.5 rounded text-xs font-medium transition-all duration-200 ${selectedWeight?.weight === weight.weight
+                        ? "bg-orange-100 text-orange-700 border border-orange-200"
+                        : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
+                        }`}
                     >
                       {weight.weight}
                       {weight.weight_unit}
@@ -597,43 +590,43 @@ function ProductCard({
             {/* Cart Controls */}
             <div className="pt-1">
               {!isWholeChicken && (
-              <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
-                <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
-                  <span>Custom Weight</span>
-                  <button
-                    onClick={() => setCustomWeightEnabled((prev) => !prev)}
-                    className="text-orange-600"
-                  >
-                    {customWeightEnabled ? "Disable" : "Enable"}
-                  </button>
-                </div>
-                {customWeightEnabled && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min={100}
-                        max={5000}
-                        step={50}
-                        value={customWeight}
-                        onChange={(e) =>
-                          setCustomWeight(
-                            normalizeWeight(Number(e.target.value)).toString()
-                          )
-                        }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                      />
-                      <span className="text-xs text-gray-500">grams</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                      <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
-                      <span className="font-semibold text-gray-900">
-                        ₹{customPrice.toFixed(0)}
-                      </span>
-                    </div>
+                <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
+                  <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
+                    <span>Custom Weight</span>
+                    <button
+                      onClick={() => setCustomWeightEnabled((prev) => !prev)}
+                      className="text-orange-600"
+                    >
+                      {customWeightEnabled ? "Disable" : "Enable"}
+                    </button>
                   </div>
-                )}
-              </div>
+                  {customWeightEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={100}
+                          max={5000}
+                          step={50}
+                          value={customWeight}
+                          onChange={(e) =>
+                            setCustomWeight(
+                              normalizeWeight(Number(e.target.value)).toString()
+                            )
+                          }
+                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        />
+                        <span className="text-xs text-gray-500">grams</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-600">
+                        <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
+                        <span className="font-semibold text-gray-900">
+                          ₹{customPrice.toFixed(0)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
               {stockStatus.status === "out" ? (
                 <button
@@ -650,7 +643,7 @@ function ProductCard({
                       isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                     )
                   }
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-lg active:scale-95 text-sm min-h-[48px]"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-orange-200 active:scale-95 text-sm min-h-[48px]"
                 >
                   <ShoppingBag
                     size={16}
@@ -697,11 +690,11 @@ function ProductCard({
                       ₹
                       {(
                         Number(
-                          isWholeChicken 
-                            ? product.price 
+                          isWholeChicken
+                            ? product.price
                             : ((customWeightEnabled
-                            ? activeWeight?.price
-                                : selectedWeight?.price) || product.price)
+                              ? activeWeight?.price
+                              : selectedWeight?.price) || product.price)
                         ) * currentWeightQuantity
                       ).toFixed(0)}
                     </div>
@@ -725,7 +718,7 @@ function ProductCard({
                     isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
                   );
                 }}
-                className="bg-white hover:bg-orange-50 text-red-600 hover:text-red-700 rounded-lg p-2 sm:p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-gray-100 hover:border-orange-200"
+                className="bg-white hover:bg-orange-50 text-orange-600 hover:text-orange-700 rounded-lg p-2 sm:p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-gray-100 hover:border-orange-200"
                 aria-label="Add to cart"
               >
                 <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -837,13 +830,13 @@ export default function ProductCatalog({
   useEffect(() => {
     // Only set up refresh if we don't have initial products
     if (!initialProducts || initialProducts.length === 0) {
-    const refreshInterval = setInterval(() => {
-      fetchProducts();
+      const refreshInterval = setInterval(() => {
+        fetchProducts();
       }, 30000); // Refresh every 30 seconds instead of 2 seconds
 
-    return () => {
-      clearInterval(refreshInterval);
-    };
+      return () => {
+        clearInterval(refreshInterval);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialProducts]); // Only set up once on mount
@@ -937,15 +930,15 @@ export default function ProductCatalog({
       } else {
         // Create a map for efficient comparison
         const oldProductMap = new Map(products.map(p => [p.id, p]));
-        const hasChanged = 
+        const hasChanged =
           products.length !== newProducts.length ||
           newProducts.some((newProduct) => {
             const oldProduct = oldProductMap.get(newProduct.id);
-            return !oldProduct || 
-                   oldProduct.price !== newProduct.price ||
-                   (oldProduct as any).original_price !== (newProduct as any).original_price ||
-                   oldProduct.stock_quantity !== newProduct.stock_quantity ||
-                   oldProduct.in_stock !== newProduct.in_stock;
+            return !oldProduct ||
+              oldProduct.price !== newProduct.price ||
+              (oldProduct as any).original_price !== (newProduct as any).original_price ||
+              oldProduct.stock_quantity !== newProduct.stock_quantity ||
+              oldProduct.in_stock !== newProduct.in_stock;
           });
 
         if (hasChanged) {
@@ -1015,26 +1008,25 @@ export default function ProductCatalog({
     return item ? item.quantity : 0;
   };
 
-  if (loading) {
+  if (loading && !products.length) {
     return (
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white min-h-[500px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Products
+              Our Fresh Collection
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-2xl overflow-hidden animate-pulse"
+                className="bg-white border border-gray-200 rounded-2xl h-80 overflow-hidden animate-pulse"
               >
-                <div className="bg-gray-200 h-56"></div>
-                <div className="p-6 space-y-3">
+                <div className="bg-gray-200 h-48 w-full"></div>
+                <div className="p-4 space-y-3">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-10 bg-gray-200 rounded"></div>
                 </div>
               </div>
             ))}
@@ -1044,323 +1036,105 @@ export default function ProductCatalog({
     );
   }
 
-  // Separate bestsellers from other products
-  const bestsellerProducts = filteredProducts.filter((product) =>
-    bestsellerIds.includes(product.id)
-  );
-  const otherProducts = filteredProducts.filter(
-    (product) => !bestsellerIds.includes(product.id)
-  );
-
   return (
-    <section className="relative py-12 sm:py-16 bg-white">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Bestsellers Section - Licious Style */}
-        {bestsellerProducts.length > 0 && (
-          <div
-            className={`mb-12 sm:mb-16 transition-all duration-500 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-            }`}
-          >
-            <div className="mb-6 sm:mb-8">
-              <h2
-                className={`text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 transition-all duration-500 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-                style={{ transitionDelay: "0.1s" }}
-              >
-                Bestsellers
-              </h2>
-              <p
-                className={`text-sm sm:text-base text-gray-600 transition-all duration-500 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-                style={{ transitionDelay: "0.2s" }}
-              >
-                Most popular products near you!
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-              {bestsellerProducts.map((product, index) => {
-                const isVisible = visibleProducts.has(product.id) || mounted;
-                return (
-                  <div
-                    key={`bestseller-${product.id}-${product.price}-${
-                      (product as any).original_price || ""
-                    }`}
-                    className={`transition-all duration-500 ${
-                      isVisible
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 translate-y-8 scale-95"
-                    }`}
-                    style={{ transitionDelay: `${index * 0.05}s` }}
-                  >
-                    <ProductCard
-                      product={product}
-                      isBestseller={true}
-                      onAddToCart={addToCart}
-                      onUpdateQuantity={updateQuantity}
-                      getStockStatus={getStockStatus}
-                      getWeightQuantity={getWeightQuantity}
-                      index={index}
-                    />
-                  </div>
-                );
-              })}
+    <div id="products" className="py-12 sm:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
+          <div className="animate-slide-up">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-chicken-wood mb-3 sm:mb-4 tracking-tight">
+              Our Fresh Collection
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base max-w-2xl leading-relaxed">
+              Premium cuts, delivered fresh to your doorstep. NO antibiotics, NO preservatives.
+            </p>
+          </div>
+
+          {/* Animated Search & Filter Group */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-slide-up stagger-1 w-full md:w-auto">
+            <div className="relative group w-full sm:w-64">
+              <input
+                type="text"
+                placeholder="Search for chicken..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none transition-all duration-300 bg-gray-50/50 focus:bg-white"
+              />
+              <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors duration-300 h-5 w-5" />
             </div>
           </div>
-        )}
+        </div>
 
-        {/* All Products Section - Only show if there are other products and no filters */}
-        {otherProducts.length > 0 && selectedQuickFilter === "all" && selectedCategory === "all" && !searchTerm && (
-          <div
-            className={`transition-all duration-500 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-            }`}
-          >
-            <div
-              className={`text-center mb-6 sm:mb-10 md:mb-12 transition-all duration-500 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-              }`}
-            >
-              <h2
-                className={`text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 transition-all duration-500 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-                style={{ transitionDelay: "0.1s" }}
-              >
-                All Products
-              </h2>
-              <p
-                className={`text-sm sm:text-base text-gray-600 max-w-2xl mx-auto transition-all duration-500 ${
-                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-                style={{ transitionDelay: "0.2s" }}
-              >
-                Fresh, premium quality chicken delivered to your door
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-              {otherProducts.map((product, index) => {
-                const isVisible = visibleProducts.has(product.id) || mounted;
-                return (
-                  <div
-                    key={`product-${product.id}-${product.price}-${
-                      (product as any).original_price || ""
-                    }`}
-                    className={`transition-all duration-500 ${
-                      isVisible
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 translate-y-8 scale-95"
-                    }`}
-                    style={{ transitionDelay: `${index * 0.05}s` }}
-                  >
-                    <ProductCard
-                      product={product}
-                      isBestseller={false}
-                      onAddToCart={addToCart}
-                      onUpdateQuantity={updateQuantity}
-                      getStockStatus={getStockStatus}
-                      getWeightQuantity={getWeightQuantity}
-                      index={index + bestsellerProducts.length}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+        {/* Animated Category Filters - Removed as per request */}
+        {/* Filters and sorting */}
+        {/* Filters and sorting - Removed Quick Filters as per request for cleaner UI */}
+
+        {/* Product Grid with AnimatePresence */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 rounded-2xl h-80 animate-pulse border border-gray-100"
+              />
+            ))}
           </div>
-        )}
-
-        {/* Filtered Products with Sidebar - Show when filters are applied */}
-        {(selectedQuickFilter !== "all" || selectedCategory !== "all" || searchTerm) && (
-          <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-4 sm:gap-6 lg:gap-8 items-start">
-          {/* Sidebar */}
-          <aside
-            className={`space-y-4 sm:space-y-6 transition-all duration-700 ${
-              mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
-            }`}
-            style={{ transitionDelay: "0.4s" }}
+        ) : filteredProducts.length > 0 ? (
+          <motion.div
+            layout
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 min-h-[400px]"
           >
-            <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300">
-              <p className="text-xs sm:text-sm font-semibold text-gray-700">
-                Search our catalog
-              </p>
-              <div className="relative mt-2 sm:mt-3">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:scale-110" />
-                <input
-                  type="text"
-                  placeholder="Chicken wings, curry cut..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-400 text-sm sm:text-base bg-white transition-all duration-300 hover:border-orange-300"
-                />
-              </div>
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProductCard
+                    product={product}
+                    index={index}
+                    isBestseller={bestsellerIds.includes(product.id)}
+                    getStockStatus={getStockStatus}
+                    getWeightQuantity={getWeightQuantity}
+                    onAddToCart={addToCart}
+                    onUpdateQuantity={updateQuantity}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200"
+          >
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-50 rounded-full mb-4">
+              <Search className="h-8 w-8 text-orange-400" />
             </div>
-
-            {categories.length > 1 && (
-              <div className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <p className="text-xs sm:text-sm font-semibold text-gray-700">
-                    Browse by category
-                  </p>
-                  <span className="text-xs text-gray-500">
-                    {categories.length - 1}
-                  </span>
-                </div>
-                <div className="space-y-1.5 sm:space-y-2">
-                  {categories.map((category, index) => {
-                    const isActive = selectedCategory === category;
-                    const label =
-                      category === "all"
-                        ? "All Products"
-                        : category.charAt(0).toUpperCase() + category.slice(1);
-                    const count =
-                      category === "all"
-                        ? products.length
-                        : categoryCounts[category] || 0;
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`w-full flex items-center justify-between rounded-lg sm:rounded-xl border px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs sm:text-sm font-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-95 ${
-                          isActive
-                            ? "border-orange-300 bg-orange-50 text-orange-700 shadow-sm"
-                            : "border-gray-100 bg-white text-gray-700 hover:border-orange-200 hover:bg-orange-50/60"
-                        }`}
-                      >
-                        <span>{label}</span>
-                        <span className="text-xs text-gray-500">{count}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            <div
-              className={`bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg space-y-3 sm:space-y-4 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${
-                mounted
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: "0.5s" }}
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No chicken found!
+            </h3>
+            <p className="text-gray-500 max-w-sm mx-auto">
+              We couldn't find any products matching your search. Try adjusting
+              your filters or search term.
+            </p>
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setSelectedCategory("all");
+                setSelectedQuickFilter("all");
+              }}
+              className="mt-6 px-6 py-2 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
             >
-              <div>
-                <p className="text-xs uppercase tracking-wide opacity-80">
-                  Need a hand?
-                </p>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">Talk to butcher-in-chief</h3>
-              </div>
-              <p className="text-xs sm:text-sm text-orange-50/90 leading-relaxed">
-                Unsure about portions or cuts? Call us and we'll portion it for
-                your recipe, just like at the store.
-              </p>
-              <button
-                onClick={() => (window.location.href = "tel:+918484978622")}
-                className="w-full inline-flex items-center justify-center gap-2 bg-white/15 border border-white/30 rounded-lg sm:rounded-xl py-2.5 sm:py-3 text-xs sm:text-sm font-semibold backdrop-blur transition-all duration-300 hover:bg-white/25 transform hover:scale-105 active:scale-95"
-              >
-                <PhoneCall className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
-                +91 84849 78622
-              </button>
-              {deliveryEnabled && (
-                <div className="flex items-center gap-2 text-xs text-orange-50/80">
-                  <Truck className="h-4 w-4" />
-                  Same-day chilled delivery across Pune
-                </div>
-              )}
-              {!deliveryEnabled && (
-                <div className="flex items-center gap-2 text-xs text-orange-50/80">
-                  <Store className="h-4 w-4" />
-                  Available for pickup at store
-                </div>
-              )}
-            </div>
-          </aside>
-
-            {/* Main content */}
-            <div
-              className={`space-y-8 transition-all duration-700 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: "0.6s" }}
-            >
-              <div className="flex flex-wrap gap-3">
-                {quickFilterOptions.map((filter, index) => (
-                  <button
-                    key={filter.id}
-                    onClick={() => setSelectedQuickFilter(filter.id)}
-                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 border transform hover:scale-105 active:scale-95 ${
-                      selectedQuickFilter === filter.id
-                        ? "bg-gray-900 text-white border-gray-900 shadow-md"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                    }`}
-                    style={{ transitionDelay: `${0.7 + index * 0.1}s` }}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-                {filteredProducts.map((product, index) => {
-                  const isVisible = visibleProducts.has(product.id) || mounted;
-                  return (
-                    <div
-                      key={`product-${product.id}-${product.price}-${
-                        (product as any).original_price || ""
-                      }`}
-                      className={`transition-all duration-500 ${
-                        isVisible
-                          ? "opacity-100 translate-y-0 scale-100"
-                          : "opacity-0 translate-y-8 scale-95"
-                      }`}
-                      style={{ transitionDelay: `${index * 0.05}s` }}
-                    >
-                      <ProductCard
-                        product={product}
-                        isBestseller={bestsellerIds.includes(product.id)}
-                        onAddToCart={addToCart}
-                        onUpdateQuantity={updateQuantity}
-                        getStockStatus={getStockStatus}
-                        getWeightQuantity={getWeightQuantity}
-                        index={index}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-
-              {filteredProducts.length === 0 && !loading && (
-                <div className="text-center py-16 animate-bounce-in">
-                  <div className="bg-white border border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-sm hover:shadow-md transition-all duration-300">
-                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Search className="h-8 w-8 text-orange-600" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      No products found
-                    </h3>
-                    <p className="text-gray-600 mb-6 text-sm">
-                      We couldn't find any products matching your search.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setSearchTerm("");
-                        setSelectedQuickFilter("all");
-                        setSelectedCategory("all");
-                      }}
-                      className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg"
-                    >
-                      Clear filters
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+              Clear Filters
+            </button>
+          </motion.div>
         )}
-
       </div>
-    </section>
+    </div>
   );
 }
-
