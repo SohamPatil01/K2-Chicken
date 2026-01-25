@@ -213,6 +213,21 @@ function ProductCard({
 
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
 
+  // Product Schema for SEO
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.image_url,
+    offers: {
+      "@type": "Offer",
+      price: currentPrice,
+      priceCurrency: "INR",
+      availability: stockStatus.status === "in" || stockStatus.status === "low" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    },
+  };
+
   // Swipe handlers
   const minSwipeDistance = 50;
 
@@ -332,401 +347,407 @@ function ProductCard({
   };
 
   return (
-    <div
-      className="group relative bg-white border border-gray-100/80 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl shadow-sm"
-      onMouseEnter={() => {
-        // Only use hover on desktop (non-mobile)
-        if (!isMobile) {
-          setShowInfo(true);
-          setIsHovered(true);
-        }
-      }}
-      onMouseLeave={() => {
-        // Only use hover on desktop (non-mobile)
-        if (!isMobile) {
-          setShowInfo(false);
-          setIsHovered(false);
-          setSwipePage(0); // Reset to image when leaving
-        }
-      }}
-      onClick={handleCardClick}
-    >
-      {/* Discount Badge */}
-      {hasDiscount && (
-        <div className="absolute top-0.5 left-0.5 sm:top-2 sm:left-2 z-10 bg-gradient-to-r from-orange-400 to-orange-600 text-white px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-semibold sm:font-bold flex items-center gap-0.5 sm:gap-1 shadow-md">
-          <Sparkles className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
-          <span>{discountPercent}% OFF</span>
-        </div>
-      )}
-
-      {/* Bestseller Badge - Licious Style */}
-      {isBestseller && !hasDiscount && (
-        <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg border border-orange-200 flex items-center gap-1 sm:gap-1.5">
-          <span className="text-[8px] sm:text-[10px] font-bold text-gray-800">
-            INDIA'S JUICIEST CHICKEN
-          </span>
-          <span className="text-xs sm:text-sm">🍗</span>
-        </div>
-      )}
-
-      {/* Stock Badge - Only show if out of stock */}
-      {stockStatus.status === "out" && (
-        <div className="absolute top-0.5 right-0.5 sm:top-2 sm:right-2 z-10 bg-red-100 text-red-700 px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-medium sm:font-semibold flex items-center gap-0.5 sm:gap-1 border border-red-200 shadow-sm backdrop-blur-sm bg-white/90">
-          <XCircle className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
-          <span>Out</span>
-        </div>
-      )}
-
-      {/* Swipeable Product Container */}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <div
-        className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden rounded-t-lg"
-        style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
+        className="group relative bg-white border border-gray-100/80 rounded-2xl overflow-hidden hover:border-orange-200 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl shadow-sm"
+        onMouseEnter={() => {
+          // Only use hover on desktop (non-mobile)
+          if (!isMobile) {
+            setShowInfo(true);
+            setIsHovered(true);
+          }
+        }}
+        onMouseLeave={() => {
+          // Only use hover on desktop (non-mobile)
+          if (!isMobile) {
+            setShowInfo(false);
+            setIsHovered(false);
+            setSwipePage(0); // Reset to image when leaving
+          }
+        }}
+        onClick={handleCardClick}
       >
+        {/* Discount Badge */}
+        {hasDiscount && (
+          <div className="absolute top-0.5 left-0.5 sm:top-2 sm:left-2 z-10 bg-gradient-to-r from-orange-400 to-orange-600 text-white px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-semibold sm:font-bold flex items-center gap-0.5 sm:gap-1 shadow-md">
+            <Sparkles className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
+            <span>{discountPercent}% OFF</span>
+          </div>
+        )}
+
+        {/* Bestseller Badge - Licious Style */}
+        {isBestseller && !hasDiscount && (
+          <div className="absolute bottom-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg border border-orange-200 flex items-center gap-1 sm:gap-1.5">
+            <span className="text-[8px] sm:text-[10px] font-bold text-gray-800">
+              INDIA'S JUICIEST CHICKEN
+            </span>
+            <span className="text-xs sm:text-sm">🍗</span>
+          </div>
+        )}
+
+        {/* Stock Badge - Only show if out of stock */}
+        {stockStatus.status === "out" && (
+          <div className="absolute top-0.5 right-0.5 sm:top-2 sm:right-2 z-10 bg-red-100 text-red-700 px-1 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-medium sm:font-semibold flex items-center gap-0.5 sm:gap-1 border border-red-200 shadow-sm backdrop-blur-sm bg-white/90">
+            <XCircle className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
+            <span>Out</span>
+          </div>
+        )}
+
+        {/* Swipeable Product Container */}
         <div
-          ref={swipeContainerRef}
-          className="swipeable-container relative w-full h-full flex select-none"
-          style={{
-            transform: `translateX(${containerWidth > 0
-              ? swipePage === 0
-                ? `${(-swipeOffset / containerWidth) * 100}%`
-                : `${-100 + (swipeOffset / containerWidth) * 100}%`
-              : swipePage === 0
-                ? '0%'
-                : '-100%'
-              })`,
-            transition: swipeOffset === 0 && !isSwiping ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-            willChange: 'transform',
-            userSelect: 'none',
-          }}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          onTouchCancel={() => {
-            setTouchStart(null);
-            setSwipeOffset(0);
-            setIsSwiping(false);
-          }}
+          className="relative w-full h-20 sm:h-36 md:h-40 bg-white overflow-hidden rounded-t-lg"
+          style={{ touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}
         >
-          {/* Page 1: Product Image */}
-          <div className="min-w-full h-full relative bg-white">
-            {product.image_url ? (
-              <Image
-                src={product.image_url}
-                alt={product.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                quality={95}
-                priority={index < 6}
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  target.style.display = "none";
-                  const fallback = target.parentElement
-                    ?.nextElementSibling as HTMLElement | null;
-                  if (fallback) {
-                    fallback.style.display = "flex";
-                  }
-                }}
-              />
-            ) : null}
-            <div
-              className={`absolute inset-0 w-full h-full ${product.image_url ? "hidden" : "flex"
-                } bg-gray-50 items-center justify-center`}
-            >
-              <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
-                🍗
-              </span>
+          <div
+            ref={swipeContainerRef}
+            className="swipeable-container relative w-full h-full flex select-none"
+            style={{
+              transform: `translateX(${containerWidth > 0
+                ? swipePage === 0
+                  ? `${(-swipeOffset / containerWidth) * 100}%`
+                  : `${-100 + (swipeOffset / containerWidth) * 100}%`
+                : swipePage === 0
+                  ? '0%'
+                  : '-100%'
+                })`,
+              transition: swipeOffset === 0 && !isSwiping ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+              willChange: 'transform',
+              userSelect: 'none',
+            }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={() => {
+              setTouchStart(null);
+              setSwipeOffset(0);
+              setIsSwiping(false);
+            }}
+          >
+            {/* Page 1: Product Image */}
+            <div className="min-w-full h-full relative bg-white">
+              {product.image_url ? (
+                <Image
+                  src={product.image_url}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                  quality={95}
+                  priority={index < 6}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = "none";
+                    const fallback = target.parentElement
+                      ?.nextElementSibling as HTMLElement | null;
+                    if (fallback) {
+                      fallback.style.display = "flex";
+                    }
+                  }}
+                />
+              ) : null}
+              <div
+                className={`absolute inset-0 w-full h-full ${product.image_url ? "hidden" : "flex"
+                  } bg-gray-50 items-center justify-center`}
+              >
+                <span className="text-xl sm:text-3xl transform transition-transform duration-300 group-hover:scale-110">
+                  🍗
+                </span>
+              </div>
+            </div>
+
+            {/* Page 2: Product Information */}
+            <div className="min-w-full h-full bg-chicken-cream border-t border-dashed border-gray-200 p-3 sm:p-4 flex flex-col justify-center">
+              <div className="text-center">
+                <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3">
+                  {product.name}
+                </h4>
+                <p className="text-[10px] sm:text-xs text-gray-700 leading-relaxed mb-3 sm:mb-4 px-1">
+                  {product.description ||
+                    "Fresh and delicious premium quality chicken, carefully selected and prepared to ensure the best taste and nutrition for your family."}
+                </p>
+                <div className="space-y-2 sm:space-y-2.5">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                    <span className="text-[10px] sm:text-xs text-gray-700">
+                      Premium quality, fresh daily
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                    <span className="text-[10px] sm:text-xs text-gray-700">
+                      Rich in protein and nutrients
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
+                    <span className="text-[10px] sm:text-xs text-gray-700">
+                      Perfect for all your recipes
+                    </span>
+                  </div>
+                  {hasDiscount && (
+                    <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-orange-200">
+                      <span className="text-green-600 text-xs sm:text-sm font-bold flex-shrink-0">🎉</span>
+                      <span className="text-[10px] sm:text-xs text-green-700 font-semibold">
+                        Save {discountPercent}% - Limited time offer!
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Page 2: Product Information */}
-          <div className="min-w-full h-full bg-chicken-cream border-t border-dashed border-gray-200 p-3 sm:p-4 flex flex-col justify-center">
-            <div className="text-center">
-              <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3">
+          {/* Swipe Indicator Dots */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
+            <div
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 0
+                ? "bg-orange-600 w-4"
+                : "bg-white/60 w-1.5"
+                }`}
+            />
+            <div
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 1
+                ? "bg-orange-600 w-4"
+                : "bg-white/60 w-1.5"
+                }`}
+            />
+          </div>
+        </div>
+
+        {/* Product Info - Sliding Panel */}
+        <div className="relative overflow-hidden bg-white">
+          {/* Basic Info (Always Visible) */}
+          <div className="p-1.5 sm:p-2.5 pb-1.5 sm:pb-2">
+            <div className="mb-0.5 sm:mb-1.5">
+              <h3 className="text-[10px] sm:text-sm font-medium sm:font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-0.5 sm:mb-1 line-clamp-2">
                 {product.name}
-              </h4>
-              <p className="text-[10px] sm:text-xs text-gray-700 leading-relaxed mb-3 sm:mb-4 px-1">
-                {product.description ||
-                  "Fresh and delicious premium quality chicken, carefully selected and prepared to ensure the best taste and nutrition for your family."}
-              </p>
-              <div className="space-y-2 sm:space-y-2.5">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
-                  <span className="text-[10px] sm:text-xs text-gray-700">
-                    Premium quality, fresh daily
-                  </span>
-                </div>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
-                  <span className="text-[10px] sm:text-xs text-gray-700">
-                    Rich in protein and nutrients
-                  </span>
-                </div>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">✓</span>
-                  <span className="text-[10px] sm:text-xs text-gray-700">
-                    Perfect for all your recipes
-                  </span>
-                </div>
-                {hasDiscount && (
-                  <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-orange-200">
-                    <span className="text-green-600 text-xs sm:text-sm font-bold flex-shrink-0">🎉</span>
-                    <span className="text-[10px] sm:text-xs text-green-700 font-semibold">
-                      Save {discountPercent}% - Limited time offer!
+              </h3>
+              {/* Category label removed as per request */}
+            </div>
+
+            {/* Price Section with Discount */}
+            <div className="flex flex-col gap-0.5 mb-1 sm:mb-2">
+              <div className="flex items-baseline gap-0.5 sm:gap-1.5 flex-wrap">
+                {hasDiscount ? (
+                  <>
+                    <span className="text-sm sm:text-lg font-semibold sm:font-bold text-orange-600">
+                      ₹{currentPrice.toFixed(0)}
                     </span>
+                    <span className="text-[10px] sm:text-sm text-gray-400 line-through font-normal sm:font-medium">
+                      ₹{originalPrice.toFixed(0)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm sm:text-lg font-semibold sm:font-bold text-gray-900">
+                    ₹{currentPrice.toFixed(0)}
+                  </span>
+                )}
+                {activeWeight && !isWholeChicken && (
+                  <span className="text-[9px] sm:text-xs text-gray-500 font-normal sm:font-medium">
+                    / {activeWeight.weight}
+                    {activeWeight.weight_unit}
+                  </span>
+                )}
+              </div>
+              {hasDiscount && (
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] sm:text-xs font-medium sm:font-semibold text-green-600 bg-green-50 px-1 sm:px-1.5 py-0.5 rounded">
+                    Save ₹{(originalPrice - currentPrice).toFixed(0)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sliding Info Panel */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${showInfo ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+              }`}
+          >
+            <div className="px-3 pb-2 space-y-2 border-t border-gray-100 pt-2">
+              {/* Description */}
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-0.5">
+                  Description
+                </p>
+                <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
+                  {product.description ||
+                    "Fresh and delicious premium quality chicken."}
+                </p>
+              </div>
+
+              {/* Weight Options Selector */}
+              {product.weightOptions && product.weightOptions.length > 1 && !isWholeChicken && (
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-500">
+                    Select Weight:
+                  </label>
+                  <div className="flex flex-wrap gap-1">
+                    {product.weightOptions.map((weight) => (
+                      <button
+                        key={weight.id || weight.weight}
+                        onClick={() => {
+                          setSelectedWeight(weight);
+                          setCustomWeightEnabled(false);
+                        }}
+                        className={`px-1.5 py-0.5 rounded text-xs font-medium transition-all duration-200 ${selectedWeight?.weight === weight.weight
+                          ? "bg-orange-100 text-orange-700 border border-orange-200"
+                          : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
+                          }`}
+                      >
+                        {weight.weight}
+                        {weight.weight_unit}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Cart Controls */}
+              <div className="pt-1">
+                {!isWholeChicken && (
+                  <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
+                    <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
+                      <span>Custom Weight</span>
+                      <button
+                        onClick={() => setCustomWeightEnabled((prev) => !prev)}
+                        className="text-orange-600"
+                      >
+                        {customWeightEnabled ? "Disable" : "Enable"}
+                      </button>
+                    </div>
+                    {customWeightEnabled && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={100}
+                            max={5000}
+                            step={50}
+                            value={customWeight}
+                            onChange={(e) =>
+                              setCustomWeight(
+                                normalizeWeight(Number(e.target.value)).toString()
+                              )
+                            }
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                          />
+                          <span className="text-xs text-gray-500">grams</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                          <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
+                          <span className="font-semibold text-gray-900">
+                            ₹{customPrice.toFixed(0)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {stockStatus.status === "out" ? (
+                  <button
+                    disabled
+                    className="w-full bg-gray-100 text-gray-400 font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed text-sm min-h-[48px]"
+                  >
+                    Out of Stock
+                  </button>
+                ) : currentWeightQuantity === 0 ? (
+                  <button
+                    onClick={() =>
+                      onAddToCart(
+                        product,
+                        isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
+                      )
+                    }
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-orange-200 active:scale-95 text-sm min-h-[48px]"
+                  >
+                    <ShoppingBag
+                      size={16}
+                      className="transform transition-transform duration-200"
+                    />
+                    <span>Add to Cart</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-1">
+                      <button
+                        onClick={() =>
+                          onUpdateQuantity(
+                            product.id,
+                            currentWeightQuantity - 1,
+                            isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
+                          )
+                        }
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg active:bg-gray-100 transition-colors shadow-sm"
+                      >
+                        <Minus size={18} className="text-gray-700" />
+                      </button>
+                      <div className="min-w-[40px] text-center">
+                        <span className="font-bold text-gray-900 text-base">
+                          {currentWeightQuantity}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() =>
+                          onUpdateQuantity(
+                            product.id,
+                            currentWeightQuantity + 1,
+                            isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
+                          )
+                        }
+                        disabled={stockStatus.status === "out"}
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-orange-600 active:bg-orange-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                      >
+                        <Plus size={18} />
+                      </button>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-base font-bold text-gray-900">
+                        ₹
+                        {(
+                          Number(
+                            isWholeChicken
+                              ? product.price
+                              : ((customWeightEnabled
+                                ? activeWeight?.price
+                                : selectedWeight?.price) || product.price)
+                          ) * currentWeightQuantity
+                        ).toFixed(0)}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Swipe Indicator Dots */}
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
-          <div
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 0
-              ? "bg-orange-600 w-4"
-              : "bg-white/60 w-1.5"
-              }`}
-          />
-          <div
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${swipePage === 1
-              ? "bg-orange-600 w-4"
-              : "bg-white/60 w-1.5"
-              }`}
-          />
-        </div>
-      </div>
-
-      {/* Product Info - Sliding Panel */}
-      <div className="relative overflow-hidden bg-white">
-        {/* Basic Info (Always Visible) */}
-        <div className="p-1.5 sm:p-2.5 pb-1.5 sm:pb-2">
-          <div className="mb-0.5 sm:mb-1.5">
-            <h3 className="text-[10px] sm:text-sm font-medium sm:font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-0.5 sm:mb-1 line-clamp-2">
-              {product.name}
-            </h3>
-            {/* Category label removed as per request */}
-          </div>
-
-          {/* Price Section with Discount */}
-          <div className="flex flex-col gap-0.5 mb-1 sm:mb-2">
-            <div className="flex items-baseline gap-0.5 sm:gap-1.5 flex-wrap">
-              {hasDiscount ? (
-                <>
-                  <span className="text-sm sm:text-lg font-semibold sm:font-bold text-orange-600">
-                    ₹{currentPrice.toFixed(0)}
-                  </span>
-                  <span className="text-[10px] sm:text-sm text-gray-400 line-through font-normal sm:font-medium">
-                    ₹{originalPrice.toFixed(0)}
-                  </span>
-                </>
-              ) : (
-                <span className="text-sm sm:text-lg font-semibold sm:font-bold text-gray-900">
-                  ₹{currentPrice.toFixed(0)}
-                </span>
-              )}
-              {activeWeight && !isWholeChicken && (
-                <span className="text-[9px] sm:text-xs text-gray-500 font-normal sm:font-medium">
-                  / {activeWeight.weight}
-                  {activeWeight.weight_unit}
-                </span>
-              )}
-            </div>
-            {hasDiscount && (
-              <div className="flex items-center gap-1">
-                <span className="text-[9px] sm:text-xs font-medium sm:font-semibold text-green-600 bg-green-50 px-1 sm:px-1.5 py-0.5 rounded">
-                  Save ₹{(originalPrice - currentPrice).toFixed(0)}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Sliding Info Panel */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${showInfo ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-        >
-          <div className="px-3 pb-2 space-y-2 border-t border-gray-100 pt-2">
-            {/* Description */}
-            <div>
-              <p className="text-xs font-medium text-gray-500 mb-0.5">
-                Description
-              </p>
-              <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
-                {product.description ||
-                  "Fresh and delicious premium quality chicken."}
-              </p>
-            </div>
-
-            {/* Weight Options Selector */}
-            {product.weightOptions && product.weightOptions.length > 1 && !isWholeChicken && (
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">
-                  Select Weight:
-                </label>
-                <div className="flex flex-wrap gap-1">
-                  {product.weightOptions.map((weight) => (
-                    <button
-                      key={weight.id || weight.weight}
-                      onClick={() => {
-                        setSelectedWeight(weight);
-                        setCustomWeightEnabled(false);
-                      }}
-                      className={`px-1.5 py-0.5 rounded text-xs font-medium transition-all duration-200 ${selectedWeight?.weight === weight.weight
-                        ? "bg-orange-100 text-orange-700 border border-orange-200"
-                        : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
-                        }`}
-                    >
-                      {weight.weight}
-                      {weight.weight_unit}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Cart Controls */}
-            <div className="pt-1">
-              {!isWholeChicken && (
-                <div className="mb-3 border border-gray-100 rounded-lg p-2 bg-gray-50/80">
-                  <div className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-2">
-                    <span>Custom Weight</span>
-                    <button
-                      onClick={() => setCustomWeightEnabled((prev) => !prev)}
-                      className="text-orange-600"
-                    >
-                      {customWeightEnabled ? "Disable" : "Enable"}
-                    </button>
-                  </div>
-                  {customWeightEnabled && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min={100}
-                          max={5000}
-                          step={50}
-                          value={customWeight}
-                          onChange={(e) =>
-                            setCustomWeight(
-                              normalizeWeight(Number(e.target.value)).toString()
-                            )
-                          }
-                          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        />
-                        <span className="text-xs text-gray-500">grams</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span>{(customWeightValue / 1000).toFixed(2)} kg</span>
-                        <span className="font-semibold text-gray-900">
-                          ₹{customPrice.toFixed(0)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              {stockStatus.status === "out" ? (
+          {/* Quick Add Button (Visible when info is hidden) - Licious Style */}
+          {!showInfo &&
+            currentWeightQuantity === 0 &&
+            stockStatus.status !== "out" && (
+              <div className="absolute bottom-2 right-2 z-10">
                 <button
-                  disabled
-                  className="w-full bg-gray-100 text-gray-400 font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed text-sm min-h-[48px]"
-                >
-                  Out of Stock
-                </button>
-              ) : currentWeightQuantity === 0 ? (
-                <button
-                  onClick={() =>
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onAddToCart(
                       product,
                       isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
-                    )
-                  }
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-orange-200 active:scale-95 text-sm min-h-[48px]"
+                    );
+                  }}
+                  className="bg-white hover:bg-orange-50 text-orange-600 hover:text-orange-700 rounded-lg p-2 sm:p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-gray-100 hover:border-orange-200"
+                  aria-label="Add to cart"
                 >
-                  <ShoppingBag
-                    size={16}
-                    className="transform transition-transform duration-200"
-                  />
-                  <span>Add to Cart</span>
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
-              ) : (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-1">
-                    <button
-                      onClick={() =>
-                        onUpdateQuantity(
-                          product.id,
-                          currentWeightQuantity - 1,
-                          isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
-                        )
-                      }
-                      className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg active:bg-gray-100 transition-colors shadow-sm"
-                    >
-                      <Minus size={18} className="text-gray-700" />
-                    </button>
-                    <div className="min-w-[40px] text-center">
-                      <span className="font-bold text-gray-900 text-base">
-                        {currentWeightQuantity}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() =>
-                        onUpdateQuantity(
-                          product.id,
-                          currentWeightQuantity + 1,
-                          isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
-                        )
-                      }
-                      disabled={stockStatus.status === "out"}
-                      className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-orange-600 active:bg-orange-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                    >
-                      <Plus size={18} />
-                    </button>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-base font-bold text-gray-900">
-                      ₹
-                      {(
-                        Number(
-                          isWholeChicken
-                            ? product.price
-                            : ((customWeightEnabled
-                              ? activeWeight?.price
-                              : selectedWeight?.price) || product.price)
-                        ) * currentWeightQuantity
-                      ).toFixed(0)}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
         </div>
-
-        {/* Quick Add Button (Visible when info is hidden) - Licious Style */}
-        {!showInfo &&
-          currentWeightQuantity === 0 &&
-          stockStatus.status !== "out" && (
-            <div className="absolute bottom-2 right-2 z-10">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAddToCart(
-                    product,
-                    isWholeChicken ? undefined : (customWeightEnabled ? activeWeight : selectedWeight)
-                  );
-                }}
-                className="bg-white hover:bg-orange-50 text-orange-600 hover:text-orange-700 rounded-lg p-2 sm:p-2.5 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-gray-100 hover:border-orange-200"
-                aria-label="Add to cart"
-              >
-                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
-              </button>
-            </div>
-          )}
       </div>
-    </div>
+    </>
   );
 }
 
