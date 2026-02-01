@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Clock, Users, ChefHat, ArrowLeft } from "lucide-react";
 import pool from "@/lib/db";
 import { unstable_cache } from "next/cache";
+import type { Metadata } from "next";
 
 interface Recipe {
   id: number;
@@ -38,6 +39,40 @@ const getRecipes = unstable_cache(
   { revalidate: 300 }
 );
 
+export const metadata: Metadata = {
+  title: "Chicken Recipes | K2 Chicken Recipe Cookbook",
+  description:
+    "Master the art of cooking delicious chicken dishes at home with K2 Chicken's recipe cookbook. Step-by-step instructions, ingredients, prep time, and serving sizes for premium chicken recipes.",
+  keywords: [
+    "chicken recipes",
+    "chicken cooking recipes",
+    "chicken dishes bidar",
+    "how to cook chicken",
+    "chicken recipe ideas",
+    "K2 chicken recipes",
+    "premium chicken recipes",
+  ],
+  openGraph: {
+    title: "Chicken Recipes | K2 Chicken Recipe Cookbook",
+    description:
+      "Master the art of cooking delicious chicken dishes at home with step-by-step recipes from K2 Chicken.",
+    url: "https://k2-chicken.vercel.app/recipes",
+    siteName: "K2 Chicken",
+    images: [
+      {
+        url: "/hero-fresh-simple.png",
+        width: 1200,
+        height: 630,
+        alt: "K2 Chicken Recipe Cookbook",
+      },
+    ],
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://k2-chicken.vercel.app/recipes",
+  },
+};
+
 export default async function RecipesPage() {
   const recipes = await getRecipes();
 
@@ -65,8 +100,44 @@ export default async function RecipesPage() {
     );
   }
 
+  // Generate structured data for recipes page
+  const recipesStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "K2 Chicken Recipe Cookbook",
+    description: "Master the art of cooking delicious chicken dishes at home",
+    url: "https://k2-chicken.vercel.app/recipes",
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: recipes.map((recipe: Recipe, index: number) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Recipe",
+          name: recipe.title,
+          description: recipe.description,
+          image: recipe.image_url,
+          prepTime: `PT${recipe.prep_time}M`,
+          cookTime: `PT${recipe.cook_time}M`,
+          recipeYield: recipe.servings.toString(),
+          recipeIngredient: recipe.ingredients,
+          recipeInstructions: recipe.instructions.map((instruction: string, idx: number) => ({
+            "@type": "HowToStep",
+            position: idx + 1,
+            text: instruction,
+          })),
+        },
+      })),
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-orange-50/20 to-gray-50 py-16">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipesStructuredData) }}
+      />
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 via-orange-50/20 to-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 animate-slide-down">
           <Link
@@ -162,6 +233,7 @@ export default async function RecipesPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

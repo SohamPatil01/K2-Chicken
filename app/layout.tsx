@@ -97,12 +97,29 @@ const jsonLd = {
   "@type": "LocalBusiness",
   name: "K2 Chicken",
   image: "https://k2-chicken.vercel.app/logo.png",
+  logo: "https://k2-chicken.vercel.app/logo.png",
+  description:
+    "Fresh, premium quality chicken delivery in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-8484978622",
     contactType: "customer service",
     areaServed: "IN",
-    availableLanguage: "en",
+    availableLanguage: ["en", "hi"],
+    hoursAvailable: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "08:00",
+      closes: "22:00",
+    },
   },
   address: {
     "@type": "PostalAddress",
@@ -112,9 +129,17 @@ const jsonLd = {
     postalCode: "585401",
     addressCountry: "IN",
   },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: "17.9133",
+    longitude: "77.5300",
+  },
   url: "https://k2-chicken.vercel.app",
   telephone: "+918484978622",
   priceRange: "₹₹",
+  servesCuisine: "Indian",
+  paymentAccepted: "Cash, Credit Card, Debit Card, UPI",
+  currenciesAccepted: "INR",
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -131,6 +156,13 @@ const jsonLd = {
       closes: "22:00",
     },
   ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    reviewCount: "150",
+    bestRating: "5",
+    worstRating: "1",
+  },
   sameAs: [
     "https://facebook.com/k2chicken",
     "https://instagram.com/k2chicken",

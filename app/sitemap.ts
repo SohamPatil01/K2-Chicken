@@ -1,27 +1,12 @@
 import { MetadataRoute } from 'next'
-
-// In a real implementation you would import your DB client here to fetch dynamic product IDs
-// import pool from '@/lib/db'
+import pool from '@/lib/db'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://k2-chicken.vercel.app'
+    const routes: MetadataRoute.Sitemap = []
 
-    // Fetch products for dynamic routes (Example logic)
-    /*
-    const client = await pool.connect()
-    const { rows } = await client.query('SELECT id FROM products WHERE is_available = true')
-    client.release()
-    
-    const products = rows.map((product) => ({
-      url: `${baseUrl}/product/${product.id}`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    }))
-    */
-
-    // Manual routes
-    const routes: MetadataRoute.Sitemap = [
+    // Static routes
+    routes.push(
         {
             url: baseUrl,
             lastModified: new Date(),
@@ -32,6 +17,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             url: `${baseUrl}/recipes`,
             lastModified: new Date(),
             changeFrequency: 'weekly',
+            priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/cart`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/checkout`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
             priority: 0.8,
         },
         {
@@ -39,9 +36,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.5,
-        },
-        // Add other static pages here as they are created (e.g., /about, /contact)
-    ]
+        }
+    )
 
-    return [...routes]
+    // Fetch recipes for dynamic routes
+    try {
+        const client = await pool.connect()
+        try {
+            const recipesResult = await client.query(
+                'SELECT id, updated_at FROM recipes ORDER BY updated_at DESC'
+            )
+            
+            const recipeRoutes = recipesResult.rows.map((recipe: any) => ({
+                url: `${baseUrl}/recipes/${recipe.id}`,
+                lastModified: recipe.updated_at ? new Date(recipe.updated_at) : new Date(),
+                changeFrequency: 'weekly' as const,
+                priority: 0.7,
+            }))
+            
+            routes.push(...recipeRoutes)
+        } finally {
+            client.release()
+        }
+    } catch (error) {
+        console.error('Error fetching recipes for sitemap:', error)
+    }
+
+    return routes
 }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from "lucide-react";
 import pool from "@/lib/db";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 interface Recipe {
   id: number;
@@ -38,19 +39,148 @@ async function getRecipe(id: string): Promise<Recipe | null> {
   }
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const recipe = await getRecipe(id);
+
+  if (!recipe) {
+    return {
+      title: "Recipe Not Found | K2 Chicken",
+    };
+  }
+
+  return {
+    title: `${recipe.title} | K2 Chicken Recipe`,
+    description: `${recipe.description} - Prep time: ${recipe.prep_time} min, Cook time: ${recipe.cook_time} min, Serves: ${recipe.servings} people. Step-by-step instructions included.`,
+    keywords: [
+      recipe.title.toLowerCase(),
+      "chicken recipe",
+      "how to cook chicken",
+      "chicken dish",
+      "K2 chicken recipe",
+      ...recipe.ingredients.slice(0, 5).map((ing: string) => ing.toLowerCase()),
+    ],
+    openGraph: {
+      title: `${recipe.title} | K2 Chicken Recipe`,
+      description: recipe.description,
+      url: `https://k2-chicken.vercel.app/recipes/${id}`,
+      siteName: "K2 Chicken",
+      images: recipe.image_url
+        ? [
+            {
+              url: recipe.image_url,
+              width: 1200,
+              height: 630,
+              alt: recipe.title,
+            },
+          ]
+        : [
+            {
+              url: "/hero-fresh-simple.png",
+              width: 1200,
+              height: 630,
+              alt: recipe.title,
+            },
+          ],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${recipe.title} | K2 Chicken Recipe`,
+      description: recipe.description,
+      images: recipe.image_url ? [recipe.image_url] : ["/hero-fresh-simple.png"],
+    },
+    alternates: {
+      canonical: `https://k2-chicken.vercel.app/recipes/${params.id}`,
+    },
+  };
+}
+
 export default async function RecipeDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const recipe = await getRecipe(params.id);
+  const { id } = await params;
+  const recipe = await getRecipe(id);
 
   if (!recipe) {
     notFound();
   }
 
+  // Generate structured data for recipe
+  const recipeStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: recipe.title,
+    description: recipe.description,
+    image: recipe.image_url || "https://k2-chicken.vercel.app/hero-fresh-simple.png",
+    prepTime: `PT${recipe.prep_time}M`,
+    cookTime: `PT${recipe.cook_time}M`,
+    totalTime: `PT${recipe.prep_time + recipe.cook_time}M`,
+    recipeYield: recipe.servings.toString(),
+    recipeIngredient: recipe.ingredients,
+    recipeInstructions: recipe.instructions.map((instruction: string, index: number) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      text: instruction,
+    })),
+    author: {
+      "@type": "Organization",
+      name: "K2 Chicken",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "K2 Chicken",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://k2-chicken.vercel.app/logo.png",
+      },
+    },
+    datePublished: new Date().toISOString(),
+    dateModified: new Date().toISOString(),
+  };
+
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://k2-chicken.vercel.app",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Recipes",
+        item: "https://k2-chicken.vercel.app/recipes",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: recipe.title,
+        item: `https://k2-chicken.vercel.app/recipes/${id}`,
+      },
+    ],
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <Link
@@ -216,6 +346,7 @@ export default async function RecipeDetailPage({
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import MotionSection from "@/components/MotionSection";
 import pool from "@/lib/db";
+import type { Metadata } from "next";
 
 // Lazy load heavy components for better performance
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
@@ -23,6 +24,10 @@ const RecipeSection = dynamic(() => import("@/components/RecipeSection"), {
 });
 
 const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"), {
+  ssr: true,
+});
+
+const CategoryRail = dynamic(() => import("@/components/CategoryRail"), {
   ssr: true,
 });
 
@@ -76,6 +81,51 @@ async function checkOriginalPriceColumn(client: any): Promise<boolean> {
 // Revalidate every 10 seconds to balance freshness and performance
 export const revalidate = 10; // Cache for 10 seconds
 
+export const metadata: Metadata = {
+  title: "Fresh & Premium Chicken Delivery in Bidar | K2 Chicken",
+  description:
+    "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
+  keywords: [
+    "chicken delivery bidar",
+    "fresh chicken online bidar",
+    "halal chicken bidar",
+    "raw chicken delivery",
+    "K2 chicken bidar",
+    "premium chicken delivery",
+    "meat delivery app bidar",
+    "chicken cuts bidar",
+    "marinated chicken bidar",
+    "farm fresh chicken",
+  ],
+  openGraph: {
+    title: "K2 Chicken | Fresh & Premium Chicken Delivery in Bidar",
+    description:
+      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+    url: "https://k2-chicken.vercel.app",
+    siteName: "K2 Chicken",
+    images: [
+      {
+        url: "/hero-fresh-simple.png",
+        width: 1200,
+        height: 630,
+        alt: "K2 Chicken - Fresh & Premium Quality Chicken Delivery",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "K2 Chicken | Fresh & Premium Chicken Delivery",
+    description:
+      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep.",
+    images: ["/hero-fresh-simple.png"],
+  },
+  alternates: {
+    canonical: "https://k2-chicken.vercel.app",
+  },
+};
+
 async function getHomePageData() {
   const client = await pool.connect();
   try {
@@ -89,7 +139,7 @@ async function getHomePageData() {
         SELECT id, name, description, price, ${hasOriginalPrice
             ? "COALESCE(original_price, price) as original_price"
             : "price as original_price"
-          }, image_url, category, is_available,
+        }, image_url, category, is_available,
                COALESCE(stock_quantity, 100) as stock_quantity,
                COALESCE(low_stock_threshold, 10) as low_stock_threshold,
                COALESCE(in_stock, true) as in_stock
@@ -191,11 +241,120 @@ export default async function Home() {
   const { products, recipes, promotions, reviews, deliveryEnabled } =
     await getHomePageData();
 
+  // Generate structured data for homepage
+  const homepageStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "K2 Chicken",
+    url: "https://k2-chicken.vercel.app",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: "https://k2-chicken.vercel.app/?search={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const itemListStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: products.slice(0, 10).map((product: any, index: number) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Product",
+        name: product.name,
+        description: product.description,
+        image: product.image_url,
+        offers: {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: "INR",
+          availability: product.is_available
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        },
+      },
+    })),
+  };
+
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How fast is the delivery?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We offer fast delivery in 30-45 minutes for orders in Bidar. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is the chicken halal?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, all our chicken is 100% Halal certified. We follow strict halal guidelines in sourcing and preparation.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is the minimum order for free delivery?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Free delivery is available for orders above ₹500 within our delivery radius. Orders below ₹500 may incur a delivery charge.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What payment methods do you accept?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We accept multiple payment methods including UPI, credit cards, debit cards, and cash on delivery for your convenience.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is the chicken fresh?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we guarantee 100% fresh, farm-fresh chicken. All our products are sourced daily and delivered fresh to your doorstep. We do not use any chemicals or preservatives.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What are your operating hours?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We are open from 8:00 AM to 10:00 PM, Monday through Sunday. You can place orders anytime during these hours.",
+        },
+      },
+    ],
+  };
+
   return (
-    <div>
-      <InauguralDiscountFlyer />
-      <PromotionsFlyer initialPromotions={promotions} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+      />
+      <div className="bg-gray-50 min-h-screen">
+      {/* Top Banner specific components removed for cleaner Licious look, standard Hero used */}
       <Hero deliveryEnabled={deliveryEnabled} />
+
+      {/* Shop By Category Rail */}
+      <CategoryRail />
 
       <MotionSection delay={0.2} id="products">
         <ProductCatalog
@@ -204,25 +363,25 @@ export default async function Home() {
         />
       </MotionSection>
 
+      {/* Trust Badges Section (Why K2) */}
       <MotionSection delay={0.3}>
-        <AboutSection />
-      </MotionSection>
-
-      <MotionSection delay={0.4}>
-        <RecipeSection initialRecipes={recipes} />
-      </MotionSection>
-
-      <MotionSection delay={0.5}>
-        <ReviewsSection initialReviews={reviews} />
-      </MotionSection>
-
-      <MotionSection delay={0.6}>
         <WhyChooseUs />
       </MotionSection>
 
-      <MotionSection delay={0.7}>
-        <ContactSection />
+      <MotionSection delay={0.4}>
+        <ReviewsSection initialReviews={reviews} />
       </MotionSection>
-    </div>
+
+      <MotionSection delay={0.5}>
+      <RecipeSection initialRecipes={recipes} />
+      </MotionSection>
+
+      <MotionSection delay={0.6}>
+      <ContactSection />
+      </MotionSection>
+
+      {/* About Section moved to bottom or separate page access via footer */}
+      </div>
+    </>
   );
 }
