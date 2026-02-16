@@ -14,7 +14,9 @@ const nextConfig = {
     // Allow local images
     unoptimized: false,
     // Remote patterns if needed (for external images)
-    remotePatterns: [],
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+    ],
   },
 
   // Enable compression
@@ -28,9 +30,12 @@ const nextConfig = {
 
   // Compiler options
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
-    } : false,
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? {
+            exclude: ["error", "warn"],
+          }
+        : false,
   },
 };
 

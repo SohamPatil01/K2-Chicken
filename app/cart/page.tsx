@@ -75,7 +75,7 @@ function RecommendationCard({
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -483,7 +483,7 @@ export default function CartPage() {
                             <img
                               src={item.product.image_url}
                               alt={item.product.name}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                               onError={(e) => {
                                 e.currentTarget.style.display = "none";
                                 const fallback = e.currentTarget

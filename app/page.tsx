@@ -56,6 +56,10 @@ const InauguralDiscountFlyer = dynamic(
   }
 );
 
+const FAQSection = dynamic(() => import("@/components/FAQSection"), {
+  ssr: true,
+});
+
 // Cache column existence check (only check once, reuse result)
 let hasOriginalPriceColumn: boolean | null = null;
 
@@ -136,7 +140,8 @@ async function getHomePageData() {
     const [productsResult, recipesResult, promotionsResult, reviewsResult] =
       await Promise.all([
         client.query(`
-        SELECT id, name, description, price, ${hasOriginalPrice
+        SELECT id, name, description, price, ${
+          hasOriginalPrice
             ? "COALESCE(original_price, price) as original_price"
             : "price as original_price"
         }, image_url, category, is_available,
@@ -350,37 +355,38 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
       <div className="bg-gray-50 min-h-screen">
-      {/* Top Banner specific components removed for cleaner Licious look, standard Hero used */}
-      <Hero deliveryEnabled={deliveryEnabled} />
+        <InauguralDiscountFlyer />
+        <PromotionsFlyer initialPromotions={promotions} />
+        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={500} />
 
-      {/* Shop By Category Rail */}
-      <CategoryRail />
+        <CategoryRail />
 
-      <MotionSection delay={0.2} id="products">
-        <ProductCatalog
-          initialProducts={products}
-          deliveryEnabled={deliveryEnabled}
-        />
-      </MotionSection>
+        <MotionSection delay={0.2} id="products">
+          <ProductCatalog
+            initialProducts={products}
+            deliveryEnabled={deliveryEnabled}
+          />
+        </MotionSection>
 
-      {/* Trust Badges Section (Why K2) */}
-      <MotionSection delay={0.3}>
-        <WhyChooseUs />
-      </MotionSection>
+        <MotionSection delay={0.3}>
+          <WhyChooseUs />
+        </MotionSection>
 
-      <MotionSection delay={0.4}>
-        <ReviewsSection initialReviews={reviews} />
-      </MotionSection>
+        <MotionSection delay={0.4}>
+          <ReviewsSection initialReviews={reviews} />
+        </MotionSection>
 
-      <MotionSection delay={0.5}>
-      <RecipeSection initialRecipes={recipes} />
-      </MotionSection>
+        <MotionSection delay={0.5}>
+          <RecipeSection initialRecipes={recipes} />
+        </MotionSection>
 
-      <MotionSection delay={0.6}>
-      <ContactSection />
-      </MotionSection>
+        <MotionSection delay={0.7}>
+          <FAQSection />
+        </MotionSection>
 
-      {/* About Section moved to bottom or separate page access via footer */}
+        <MotionSection delay={0.8}>
+          <ContactSection />
+        </MotionSection>
       </div>
     </>
   );

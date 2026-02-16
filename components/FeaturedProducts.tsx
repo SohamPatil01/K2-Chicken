@@ -52,7 +52,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           <img
             src={product.image_url}
             alt={product.name}
-            className={`w-full h-full object-cover transition-transform duration-300 ${
+            className={`w-full h-full object-contain transition-transform duration-300 ${
               isHovered ? "scale-105" : "scale-100"
             }`}
             onError={(e) => {

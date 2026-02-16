@@ -1,132 +1,188 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, ChevronLeft } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  Star,
+  Clock,
+  Shield,
+  Sparkles,
+  Phone,
+  CheckCircle2,
+} from "lucide-react";
 
-const banners = [
-  {
-    id: 1,
-    title: "Freshness You Can Taste",
-    subtitle: "Farm-fresh chicken delivered in 45 mins",
-    image: "/hero-fresh-simple.png", // Using existing asset
-    cta: "Shop Now",
-    link: "/#products",
-    bg: "bg-orange-50",
-  },
-  {
-    id: 2,
-    title: "Sunday Special Offer",
-    subtitle: "Get flat 15% OFF on Curry Cuts",
-    image: "/hero-fresh-simple.png", // Reusing for demo, ideally would be different
-    cta: "Order Today",
-    link: "/#products",
-    bg: "bg-red-50",
-  },
-];
+// Import CinematicBackground
+import CinematicBackground from "./CinematicBackground";
 
-export default function Hero({ deliveryEnabled = true }: { deliveryEnabled?: boolean }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
+interface HeroProps {
+  deliveryEnabled?: boolean;
+  freeDeliveryAbove?: number;
+}
+
+export default function Hero({
+  deliveryEnabled = true,
+  freeDeliveryAbove = 500,
+}: HeroProps) {
+  const [mounted, setMounted] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+
+  const typewriterText = "Finger Lickin'";
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    setMounted(true);
+
+    // Typewriter effect
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex < typewriterText.length) {
+        setDisplayedText(typewriterText.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        clearInterval(typingInterval);
+      }
+    }, 100);
+
+    return () => clearInterval(typingInterval);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % banners.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
-
   return (
-    <section className="relative w-full overflow-hidden bg-white pt-4 pb-2">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative w-full aspect-[21/9] md:aspect-[21/8] lg:aspect-[21/7] min-h-[200px] md:min-h-[300px] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className={`absolute inset-0 w-full h-full flex items-center ${banners[currentSlide].bg}`}
+    <section className="relative w-full h-[85vh] min-h-[400px] sm:min-h-[500px] md:min-h-[600px] overflow-hidden flex items-center justify-center">
+      {/* Cinematic Background */}
+      <CinematicBackground />
+
+      {/* Main Content - Centered */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+        <div className="text-center space-y-4 sm:space-y-8 md:space-y-10 bg-white/60 backdrop-blur-md rounded-2xl sm:rounded-[2.5rem] px-4 sm:px-10 md:px-14 py-6 sm:py-14 shadow-2xl shadow-orange-100/50 border border-white/40 max-w-5xl w-full mx-2 sm:mx-auto">
+          <div
+            className={`inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-orange-500 to-orange-600 backdrop-blur-md border border-orange-100/20 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-orange-500/30 hover:scale-105 ${
+              mounted ? "animate-fade-up" : "opacity-0"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
+            <span className="uppercase tracking-wider">
+              Fresh Daily • Premium Quality
+            </span>
+          </div>
+
+          {/* Main Heading */}
+          <div className="space-y-2 sm:space-y-4 max-w-4xl mx-auto">
+            <h1
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight tracking-tight ${
+                mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+              style={{ animationDelay: "0.2s" }}
             >
-              {/* Content Side */}
-              <div className="w-1/2 h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 z-10">
-                <motion.h2
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight mb-2 md:mb-4"
-                >
-                  {banners[currentSlide].title}
-                </motion.h2>
-                <motion.p
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-xs md:text-lg text-gray-600 mb-4 md:mb-6 font-medium"
-                >
-                  {banners[currentSlide].subtitle}
-                </motion.p>
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <Link
-                    href={banners[currentSlide].link}
-                    className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white text-xs md:text-sm font-bold px-4 py-2 md:px-6 md:py-3 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95"
-                  >
-                    {banners[currentSlide].cta}
-                    <ChevronRight size={16} />
-                  </Link>
-                </motion.div>
-              </div>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500 pb-2">
+                {displayedText}
+                {isTyping && (
+                  <span className="animate-pulse text-orange-600">|</span>
+                )}
+              </span>
+              <span className="block text-chicken-wood mt-2 text-2xl sm:text-3xl md:text-5xl font-bold tracking-normal opacity-100">
+                Good Chicken
+              </span>
+            </h1>
 
-              {/* Image Side - Simple Absolute Position */}
-              <div className="absolute right-0 top-0 w-3/5 h-full">
-                <div className="relative w-full h-full">
-                  {/* Gradient Overlay for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent z-10 w-1/3"></div>
-                  <Image
-                    src={banners[currentSlide].image}
-                    alt={banners[currentSlide].title}
-                    fill
-                    className="object-cover object-center"
-                    priority
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+            {/* Value Proposition */}
+            <p
+              className={`text-lg sm:text-xl md:text-2xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed ${
+                mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+              style={{ animationDelay: "0.4s" }}
+            >
+              The crispiest, juiciest chicken in town.
+              <span className="block mt-2 text-base sm:text-lg opacity-80 font-normal">
+                {deliveryEnabled
+                  ? "Fast delivery to your doorstep."
+                  : "Ready for quick pickup."}
+              </span>
+              {deliveryEnabled && freeDeliveryAbove > 0 && (
+                <span className="block mt-1 text-sm sm:text-base text-orange-600 font-semibold">
+                  Free delivery above ₹{freeDeliveryAbove}
+                </span>
+              )}
+            </p>
+          </div>
 
-          {/* Navigation Buttons */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md backdrop-blur-sm z-20 transition-all active:scale-90"
+          {/* CTA Buttons */}
+          <div
+            className={`flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 ${
+              mounted ? "animate-fade-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.6s" }}
           >
-            <ChevronLeft size={20} className="text-gray-800" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md backdrop-blur-sm z-20 transition-all active:scale-90"
-          >
-            <ChevronRight size={20} className="text-gray-800" />
-          </button>
+            <Link href="/#products" className="group w-full sm:w-auto">
+              <button className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 hover:shadow-orange-400/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 border border-transparent">
+                <span>Order Now</span>
+                <ArrowRight className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </Link>
+            <Link href="tel:+918484978622" className="group w-full sm:w-auto">
+              <button className="w-full sm:w-auto bg-white/50 backdrop-blur-md text-gray-800 px-10 py-5 rounded-2xl font-bold text-lg border border-gray-200 hover:bg-white/80 hover:border-orange-200 shadow-lg shadow-gray-100 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+                <Phone className="h-5 w-5 fill-current text-gray-700" />
+                <span>Call Now</span>
+              </button>
+            </Link>
+          </div>
 
-          {/* Indicators */}
-          <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-orange-600 w-6" : "bg-gray-300"
-                  }`}
-              />
-            ))}
+          {/* Trust strip: Halal, No antibiotics, Fresh daily */}
+          <div
+            className={`flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-6 border-t border-gray-200/60 mt-6 ${
+              mounted ? "animate-fade-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.7s" }}
+          >
+            <div className="flex items-center gap-2 text-gray-700">
+              <Shield className="w-5 h-5 text-green-600 flex-shrink-0" />
+              <span className="text-sm font-medium">100% Halal</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              <span className="text-sm font-medium">No antibiotics</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <Sparkles className="w-5 h-5 text-orange-500 flex-shrink-0" />
+              <span className="text-sm font-medium">Fresh daily</span>
+            </div>
+          </div>
+
+          {/* Trust Indicators - Glassmorphism */}
+          <div
+            className={`grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-gray-200/60 mt-8 ${
+              mounted ? "animate-fade-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.8s" }}
+          >
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-yellow-500 font-bold text-2xl flex items-center gap-1">
+                4.8 <Star className="fill-yellow-400 w-5 h-5 text-yellow-400" />
+              </div>
+              <div className="text-gray-600 text-sm font-medium">
+                500+ Reviews
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-orange-600 font-bold text-2xl flex items-center gap-1">
+                {deliveryEnabled ? "30m" : "15m"} <Clock className="w-5 h-5" />
+              </div>
+              <div className="text-gray-600 text-sm font-medium">
+                {deliveryEnabled ? "Fast Delivery" : "Quick Pickup"}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-white/60 hover:bg-white/80 transition-colors shadow-sm">
+              <div className="text-blue-600 font-bold text-2xl flex items-center gap-1">
+                100% <Shield className="w-5 h-5" />
+              </div>
+              <div className="text-gray-600 text-sm font-medium">
+                Halal Certified
+              </div>
+            </div>
           </div>
         </div>
       </div>

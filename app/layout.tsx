@@ -26,6 +26,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
@@ -163,10 +164,7 @@ const jsonLd = {
     bestRating: "5",
     worstRating: "1",
   },
-  sameAs: [
-    "https://facebook.com/k2chicken",
-    "https://instagram.com/k2chicken",
-  ],
+  sameAs: ["https://facebook.com/k2chicken", "https://instagram.com/k2chicken"],
 };
 
 export default function RootLayout({

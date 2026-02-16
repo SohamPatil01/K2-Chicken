@@ -513,7 +513,7 @@ export default function ProductManagement() {
                       <img
                         src={formData.image_url}
                         alt="Preview"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                           const nextSibling = e.currentTarget
@@ -597,7 +597,7 @@ export default function ProductManagement() {
                     <img
                       src={product.image_url}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                         const nextSibling = e.currentTarget
