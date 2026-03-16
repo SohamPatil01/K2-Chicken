@@ -2,18 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import {
-  Phone,
   Mail,
-  MapPin,
-  Clock,
   Send,
   MessageCircle,
   PhoneCall,
   MapPin as MapPinIcon,
-  Sparkles,
+  Clock,
   CheckCircle,
   Zap,
 } from "lucide-react";
+import SectionHeader from "./SectionHeader";
 const SHOP_LOCATION = {
   lat: 18.578073140740553,
   lng: 73.78656665952684,
@@ -194,56 +192,18 @@ export default function ContactSection() {
   ];
 
   return (
-    <section
-      id="contact"
-      className="py-20 sm:py-24 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden"
-    >
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-20"></div>
-      </div>
+    <section id="contact" className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          eyebrow="We're here to help"
+          title="Get in touch"
+          subtitle="Have questions about our products or need help with your order? We're just a call or message away."
+          icon={MessageCircle}
+        />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <div
-            className={`inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-sm font-semibold text-orange-700 mb-4 ${
-              mounted ? "animate-slide-down" : "opacity-0"
-            }`}
-          >
-            <Sparkles className="w-4 h-4 text-orange-500" />
-            <span>We're Here to Help</span>
-          </div>
-          <h2
-            className={`text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-4 ${
-              mounted ? "animate-slide-up" : "opacity-0"
-            }`}
-          >
-            Get in{" "}
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Touch
-            </span>
-          </h2>
-          <p
-            className={`text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto ${
-              mounted ? "animate-slide-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.2s" }}
-          >
-            Have questions about our products? Need help with your order? We're
-            just a call or message away!
-          </p>
-        </div>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Contact Form */}
-          <div
-            className={`bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 ${
-              mounted ? "animate-slide-in-from-left" : "opacity-0"
-            }`}
-          >
+          <div className="bg-white rounded-card p-6 sm:p-8 shadow-soft border border-gray-100">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
                 Send us a Message
@@ -255,7 +215,7 @@ export default function ContactSection() {
             </div>
 
             {submitSuccess && (
-              <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3 animate-scale-in">
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-card flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-green-800">
@@ -286,7 +246,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -309,7 +269,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -332,7 +292,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("phone")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -355,7 +315,7 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("address")}
                   onBlur={() => setFocusedField(null)}
                   rows={3}
-                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none resize-none"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth resize-none bg-white"
                   placeholder="Enter your delivery address for faster service..."
                 />
                 <p className="text-xs text-gray-500 mt-1 ml-1">
@@ -381,7 +341,7 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("message")}
                   onBlur={() => setFocusedField(null)}
                   rows={5}
-                  className="w-full pt-6 pb-2 px-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 outline-none resize-none"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth resize-none bg-white"
                   required
                 />
               </div>
@@ -390,10 +350,10 @@ export default function ContactSection() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-4 px-6 rounded-xl border border-orange-200 hover:border-orange-300 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-6 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? "Sending..." : "Send message"}
                 </button>
 
                 <div className="relative">
@@ -408,7 +368,7 @@ export default function ContactSection() {
                 <button
                   type="button"
                   onClick={handleWhatsAppClick}
-                  className="w-full bg-orange-50 hover:bg-orange-100 text-orange-700 font-semibold py-4 px-6 rounded-xl border border-orange-200 hover:border-orange-300 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-orange-50 text-orange-700 font-semibold py-4 px-6 rounded-button border border-orange-200 hover:border-orange-300 transition-all duration-smooth flex items-center justify-center gap-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   Chat on WhatsApp
@@ -418,14 +378,10 @@ export default function ContactSection() {
           </div>
 
           {/* Map and Contact Info */}
-          <div
-            className={`space-y-6 ${
-              mounted ? "animate-slide-in-from-right" : "opacity-0"
-            }`}
-          >
+          <div className="space-y-6">
             {/* Map */}
-            <div className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-gray-100 relative group h-64 sm:h-80">
-              <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg border border-gray-200">
+            <div className="bg-white rounded-card overflow-hidden shadow-soft border border-gray-100 relative h-64 sm:h-80">
+              <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-button px-4 py-2 shadow-soft border border-gray-200">
                 <div className="flex items-center gap-2">
                   <MapPinIcon className="w-4 h-4 text-orange-600" />
                   <span className="text-xs font-semibold text-gray-900">
@@ -439,7 +395,7 @@ export default function ContactSection() {
                   href={`https://www.google.com/maps/search/?api=1&query=${SHOP_LOCATION.lat},${SHOP_LOCATION.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-orange-600 px-4 py-2 rounded-lg text-xs font-medium border border-orange-200 hover:border-orange-300 transition-all duration-300 flex items-center gap-2 shadow-sm"
+                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-orange-600 px-4 py-2 rounded-button text-xs font-medium border border-orange-200 hover:border-orange-300 transition-all duration-smooth flex items-center gap-2 shadow-soft"
                 >
                   <MapPinIcon className="w-3 h-3" />
                   Open in Maps
@@ -451,7 +407,7 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 gap-3 mb-6">
               <a
                 href="tel:+918484978622"
-                className="bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-2xl p-5 border border-orange-200 hover:border-orange-300 transition-all duration-300 group flex items-center justify-between"
+                className="bg-white hover:bg-orange-50 text-orange-700 rounded-card p-5 border border-gray-100 hover:border-orange-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
@@ -467,7 +423,7 @@ export default function ContactSection() {
 
               <button
                 onClick={handleWhatsAppClick}
-                className="bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-2xl p-5 border border-orange-200 hover:border-orange-300 transition-all duration-300 group flex items-center justify-between"
+                className="bg-white hover:bg-orange-50 text-orange-700 rounded-card p-5 border border-gray-100 hover:border-orange-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
@@ -488,7 +444,7 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <a
                 href="mailto:k2foodindia@gmail.com"
-                className="bg-white border-2 border-gray-200 rounded-2xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 transform hover:scale-105 group"
+                className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-orange-200 hover:shadow-card transition-all duration-smooth group"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
                   <Mail className="w-6 h-6 text-blue-600" />
@@ -497,7 +453,7 @@ export default function ContactSection() {
                 <p className="text-gray-600 text-sm">k2foodindia@gmail.com</p>
               </a>
 
-              <div className="bg-white border-2 border-gray-200 rounded-2xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 group">
+              <div className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-orange-200 transition-all duration-smooth group">
                 <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-200 transition-colors">
                   <MapPinIcon className="w-6 h-6 text-orange-600" />
                 </div>
@@ -509,7 +465,7 @@ export default function ContactSection() {
             </div>
 
             {/* Operating Hours */}
-            <div className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-2xl p-6 shadow-lg">
+            <div className="bg-orange-50 border border-orange-200 rounded-card p-6 shadow-soft">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-md">
                   <Clock className="w-6 h-6 text-white" />

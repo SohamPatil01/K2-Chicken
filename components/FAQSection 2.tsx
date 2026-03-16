@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
-import SectionHeader from "./SectionHeader";
 
 const FAQ_ITEMS = [
   {
@@ -41,42 +40,52 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-16 sm:py-20 bg-white border-t border-gray-200/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="FAQ"
-          title="Frequently asked questions"
-          subtitle="Quick answers about delivery, quality, and ordering."
-          icon={HelpCircle}
-        />
+    <section id="faq" className="py-12 sm:py-16 bg-gray-50">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 text-orange-600 mb-3">
+            <HelpCircle className="w-5 h-5" />
+            <span className="text-sm font-semibold uppercase tracking-wide">
+              FAQ
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
+            Quick answers about delivery, quality, and ordering.
+          </p>
+        </div>
 
-        <div className="max-w-3xl mx-auto space-y-2">
+        <div className="space-y-2">
           {FAQ_ITEMS.map((item, index) => (
             <div
               key={index}
-              className="bg-white rounded-card border border-gray-100 shadow-soft overflow-hidden hover:border-orange-200 transition-colors duration-smooth"
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
             >
               <button
                 type="button"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-gray-50/80 transition-colors duration-smooth"
+                className="w-full flex items-center justify-between gap-4 px-4 py-4 sm:px-5 sm:py-4 text-left hover:bg-gray-50/80 transition-colors"
                 aria-expanded={openIndex === index}
               >
                 <span className="font-semibold text-gray-900 text-sm sm:text-base">
                   {item.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 flex-shrink-0 text-gray-500 transition-transform duration-smooth ${
+                  className={`w-5 h-5 flex-shrink-0 text-gray-500 transition-transform duration-200 ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-smooth ${
-                  openIndex === index ? "max-h-[320px] opacity-100" : "max-h-0 opacity-0"
+                className={`overflow-hidden transition-all duration-200 ${
+                  openIndex === index
+                    ? "max-h-48 opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="px-5 pb-5 pt-0 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-gray-100">
+                <p className="px-4 pb-4 pt-0 sm:px-5 sm:pb-5 sm:pt-0 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-gray-100">
                   {item.answer}
                 </p>
               </div>

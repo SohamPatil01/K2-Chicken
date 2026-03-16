@@ -22,11 +22,11 @@ export default function StickyCart() {
 
   return (
     <div
-      className="fixed left-0 right-0 z-[45] p-3 pb-safe md:hidden"
-      style={{ bottom: "max(5rem, calc(5rem + env(safe-area-inset-bottom)))" }}
+      className="fixed left-0 right-0 z-[45] p-3 md:hidden safe-bottom"
+      style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
-      <Link href="/cart" className="block touch-target min-h-[48px]">
-        <div className="bg-orange-600 text-white rounded-xl shadow-2xl shadow-orange-200 p-4 flex items-center justify-between animate-slide-up active:scale-[0.98]">
+      <Link href="/cart" className="block min-h-[48px] rounded-card">
+        <div className="bg-orange-600 text-white rounded-card shadow-card p-4 flex items-center justify-between animate-slide-up active:scale-[0.98] min-h-[52px]">
           <div className="flex flex-col">
             <span className="text-xs font-medium opacity-90">
               {totalItems} Items

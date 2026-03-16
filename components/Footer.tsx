@@ -37,7 +37,7 @@ export default function Footer() {
             </a>
             <Link
               href="/#products"
-              className="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-3 rounded-xl transition-colors shadow-md min-h-[44px] w-full sm:w-auto active:scale-95"
+              className="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-3 rounded-button transition-all duration-smooth shadow-soft hover:shadow-card min-h-[44px] w-full sm:w-auto active:scale-95"
             >
               <ShoppingBag className="w-4 h-4" />
               Order Now
@@ -199,9 +199,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8 animate-slide-up stagger-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-gray-400 text-sm text-center sm:text-left">
-              &copy; 2024 K2 Chicken. All rights reserved. Made with{" "}
-              <span className="text-red-400">❤️</span> and lots of{" "}
-              <span className="text-orange-400">🐔</span>
+              &copy; 2024 K2 Chicken. All rights reserved.
             </p>
             <Link
               href="/admin"

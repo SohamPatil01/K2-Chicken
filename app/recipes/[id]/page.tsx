@@ -92,10 +92,12 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${recipe.title} | K2 Chicken Recipe`,
       description: recipe.description,
-      images: recipe.image_url ? [recipe.image_url] : ["/hero-fresh-simple.png"],
+      images: recipe.image_url
+        ? [recipe.image_url]
+        : ["/hero-fresh-simple.png"],
     },
     alternates: {
-      canonical: `https://k2-chicken.vercel.app/recipes/${params.id}`,
+      canonical: `https://k2-chicken.vercel.app/recipes/${id}`,
     },
   };
 }
@@ -118,17 +120,20 @@ export default async function RecipeDetailPage({
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description,
-    image: recipe.image_url || "https://k2-chicken.vercel.app/hero-fresh-simple.png",
+    image:
+      recipe.image_url || "https://k2-chicken.vercel.app/hero-fresh-simple.png",
     prepTime: `PT${recipe.prep_time}M`,
     cookTime: `PT${recipe.cook_time}M`,
     totalTime: `PT${recipe.prep_time + recipe.cook_time}M`,
     recipeYield: recipe.servings.toString(),
     recipeIngredient: recipe.ingredients,
-    recipeInstructions: recipe.instructions.map((instruction: string, index: number) => ({
-      "@type": "HowToStep",
-      position: index + 1,
-      text: instruction,
-    })),
+    recipeInstructions: recipe.instructions.map(
+      (instruction: string, index: number) => ({
+        "@type": "HowToStep",
+        position: index + 1,
+        text: instruction,
+      })
+    ),
     author: {
       "@type": "Organization",
       name: "K2 Chicken",
@@ -174,178 +179,182 @@ export default async function RecipeDetailPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeStructuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(recipeStructuredData),
+        }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
       />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
-        <Link
-          href="/recipes"
-          className="inline-flex items-center text-chicken-red hover:text-red-700 mb-6 font-semibold transition-colors"
-        >
-          <ArrowLeft size={20} className="mr-2" />
-          Back to Recipes
-        </Link>
-
-        {/* Recipe Header */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden mb-8">
-          {/* Recipe Image */}
-          <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500">
-            {recipe.image_url ? (
-              <Image
-                src={recipe.image_url}
-                alt={recipe.title}
-                fill
-                className="object-cover"
-                sizes="100vw"
-                priority
-                quality={85}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-            ) : null}
-            {!recipe.image_url && (
-              <div className="w-full h-full flex items-center justify-center">
-                <ChefHat size={80} className="text-white opacity-80" />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-                {recipe.title}
-              </h1>
-              <p className="text-xl text-white/90">{recipe.description}</p>
-            </div>
-          </div>
-
-          {/* Recipe Info Cards */}
-          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center space-x-3 p-4 bg-orange-50 rounded-xl">
-              <div className="p-3 bg-orange-500 rounded-lg">
-                <Clock className="text-white" size={24} />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Prep Time</p>
-                <p className="text-xl font-bold text-gray-900">
-                  {recipe.prep_time} min
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl">
-              <div className="p-3 bg-red-500 rounded-lg">
-                <Clock className="text-white" size={24} />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Cook Time</p>
-                <p className="text-xl font-bold text-gray-900">
-                  {recipe.cook_time} min
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-4 bg-yellow-50 rounded-xl">
-              <div className="p-3 bg-yellow-500 rounded-lg">
-                <Users className="text-white" size={24} />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Servings</p>
-                <p className="text-xl font-bold text-gray-900">
-                  {recipe.servings} people
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Baramati Agro Notice */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 mb-8 shadow-lg">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                <CheckCircle className="text-white" size={24} />
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-green-900 mb-2">
-                🌾 Premium Quality Ingredients
-              </h3>
-              <p className="text-green-800 leading-relaxed">
-                We proudly use{" "}
-                <strong className="font-semibold">Baramati Agro</strong>{" "}
-                products in our recipes. All our Baramati agro chicken products
-                are sourced from Baramati Agro, ensuring premium quality,
-                freshness, and the best taste for your family. Experience the
-                difference that quality ingredients make!
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Ingredients */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <ChefHat className="mr-3 text-chicken-red" size={28} />
-              Ingredients
-            </h2>
-            <ul className="space-y-3">
-              {recipe.ingredients.map((ingredient, index) => {
-                // Replace "chicken" with "Baramati agro chicken" (case-insensitive)
-                const processedIngredient = ingredient.replace(
-                  /\bchicken\b/gi,
-                  "Baramati agro chicken"
-                );
-                return (
-                  <li key={index} className="flex items-start space-x-3">
-                    <CheckCircle
-                      className="text-green-500 mt-1 flex-shrink-0"
-                      size={20}
-                    />
-                    <span className="text-gray-700 text-lg">
-                      {processedIngredient}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <ChefHat className="mr-3 text-chicken-orange" size={28} />
-              Instructions
-            </h2>
-            <ol className="space-y-4">
-              {recipe.instructions.map((instruction, index) => (
-                <li key={index} className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {index + 1}
-                  </div>
-                  <p className="text-gray-700 text-lg leading-relaxed pt-1">
-                    {instruction}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="mt-8 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Back Button */}
           <Link
-            href="/"
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+            href="/recipes"
+            className="inline-flex items-center text-chicken-red hover:text-red-700 mb-6 font-semibold transition-colors"
           >
-            <ChefHat size={20} className="mr-2" />
-            Order Fresh Ingredients
+            <ArrowLeft size={20} className="mr-2" />
+            Back to Recipes
           </Link>
+
+          {/* Recipe Header */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden mb-8">
+            {/* Recipe Image */}
+            <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500">
+              {recipe.image_url ? (
+                <Image
+                  src={recipe.image_url}
+                  alt={recipe.title}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                  priority
+                  quality={85}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : null}
+              {!recipe.image_url && (
+                <div className="w-full h-full flex items-center justify-center">
+                  <ChefHat size={80} className="text-white opacity-80" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
+                  {recipe.title}
+                </h1>
+                <p className="text-xl text-white/90">{recipe.description}</p>
+              </div>
+            </div>
+
+            {/* Recipe Info Cards */}
+            <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center space-x-3 p-4 bg-orange-50 rounded-xl">
+                <div className="p-3 bg-orange-500 rounded-lg">
+                  <Clock className="text-white" size={24} />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Prep Time</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {recipe.prep_time} min
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl">
+                <div className="p-3 bg-red-500 rounded-lg">
+                  <Clock className="text-white" size={24} />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Cook Time</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {recipe.cook_time} min
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 p-4 bg-yellow-50 rounded-xl">
+                <div className="p-3 bg-yellow-500 rounded-lg">
+                  <Users className="text-white" size={24} />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Servings</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {recipe.servings} people
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Baramati Agro Notice */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 mb-8 shadow-lg">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                  <CheckCircle className="text-white" size={24} />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-green-900 mb-2">
+                  🌾 Premium Quality Ingredients
+                </h3>
+                <p className="text-green-800 leading-relaxed">
+                  We proudly use{" "}
+                  <strong className="font-semibold">Baramati Agro</strong>{" "}
+                  products in our recipes. All our Baramati agro chicken
+                  products are sourced from Baramati Agro, ensuring premium
+                  quality, freshness, and the best taste for your family.
+                  Experience the difference that quality ingredients make!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Ingredients */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <ChefHat className="mr-3 text-chicken-red" size={28} />
+                Ingredients
+              </h2>
+              <ul className="space-y-3">
+                {recipe.ingredients.map((ingredient, index) => {
+                  // Replace "chicken" with "Baramati agro chicken" (case-insensitive)
+                  const processedIngredient = ingredient.replace(
+                    /\bchicken\b/gi,
+                    "Baramati agro chicken"
+                  );
+                  return (
+                    <li key={index} className="flex items-start space-x-3">
+                      <CheckCircle
+                        className="text-green-500 mt-1 flex-shrink-0"
+                        size={20}
+                      />
+                      <span className="text-gray-700 text-lg">
+                        {processedIngredient}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Instructions */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <ChefHat className="mr-3 text-chicken-orange" size={28} />
+                Instructions
+              </h2>
+              <ol className="space-y-4">
+                {recipe.instructions.map((instruction, index) => (
+                  <li key={index} className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {index + 1}
+                    </div>
+                    <p className="text-gray-700 text-lg leading-relaxed pt-1">
+                      {instruction}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="mt-8 text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              <ChefHat size={20} className="mr-2" />
+              Order Fresh Ingredients
+            </Link>
+          </div>
         </div>
-      </div>
       </div>
     </>
   );

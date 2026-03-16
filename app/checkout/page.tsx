@@ -854,6 +854,33 @@ export default function CheckoutPage() {
           <p className="text-gray-600 text-sm sm:text-base md:text-lg animate-slide-up stagger-1">
             Complete your order in just a few steps
           </p>
+          {/* Step indicator */}
+          <div className="mt-6 flex items-center justify-center gap-2 sm:gap-4">
+            {[
+              { num: 1, label: "Cart" },
+              { num: 2, label: "Address" },
+              { num: 3, label: "Payment" },
+              { num: 4, label: "Confirmation" },
+            ].map((step) => (
+              <div key={step.num} className="flex items-center gap-2">
+                <div
+                  className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-sm font-bold transition-all duration-smooth ${
+                    step.num <= 2
+                      ? "bg-orange-600 text-white shadow-soft"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  {step.num}
+                </div>
+                <span className={`hidden sm:inline text-sm font-medium ${step.num <= 2 ? "text-gray-900" : "text-gray-500"}`}>
+                  {step.label}
+                </span>
+                {step.num < 4 && (
+                  <div className="w-4 sm:w-8 h-0.5 bg-gray-200 rounded" />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Login Prompt */}

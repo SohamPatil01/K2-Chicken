@@ -413,9 +413,9 @@ function ProductCard({
             </div>
           )}
 
-          {/* Swipeable Product Container */}
+          {/* Swipeable Product Container - rectangular to fit images */}
           <div
-            className="relative w-full h-16 sm:h-28 md:h-32 bg-white overflow-hidden rounded-t-lg"
+            className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden rounded-t-lg flex-shrink-0"
             style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch" }}
           >
             <div
@@ -833,8 +833,12 @@ export default function ProductCatalog({
   const [searchTerm, setSearchTerm] = useState(
     searchParams?.get("search") || ""
   );
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    () => searchParams?.get("category") || "all"
+  );
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string>("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [sortBy, setSortBy] = useState<
     "popular" | "price_low" | "price_high" | "name"
   >("popular");
@@ -951,6 +955,16 @@ export default function ProductCatalog({
       );
     }
 
+    // Filter by price range
+    const min = minPrice ? parseFloat(minPrice) : NaN;
+    const max = maxPrice ? parseFloat(maxPrice) : NaN;
+    if (!Number.isNaN(min)) {
+      filtered = filtered.filter((p) => Number(p.price) >= min);
+    }
+    if (!Number.isNaN(max)) {
+      filtered = filtered.filter((p) => Number(p.price) <= max);
+    }
+
     // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(
@@ -1007,7 +1021,7 @@ export default function ProductCatalog({
   useEffect(() => {
     filterAndSortProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products, searchTerm, selectedCategory, selectedQuickFilter, sortBy]);
+  }, [products, searchTerm, selectedCategory, selectedQuickFilter, sortBy, minPrice, maxPrice]);
 
   const getStockStatus = (product: Product) => {
     if (!product.in_stock || (product.stock_quantity ?? 0) === 0) {
@@ -1184,7 +1198,7 @@ export default function ProductCatalog({
             )}
           </div>
 
-          {/* Search, popular chips, and sort */}
+          {/* Search, filters, and sort */}
           <div className="flex flex-col gap-3 animate-slide-up stagger-1 w-full md:w-auto">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="relative group w-full sm:w-64">
@@ -1196,6 +1210,37 @@ export default function ProductCatalog({
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none transition-all duration-300 bg-gray-50/50 focus:bg-white"
                 />
                 <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors duration-300 h-5 w-5" />
+              </div>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full sm:w-40 px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm font-medium text-gray-700"
+              >
+                <option value="all">All categories</option>
+                {categories.filter((c) => c !== "all").map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="number"
+                  placeholder="Min ₹"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  min={0}
+                  step={10}
+                  className="w-24 px-3 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm"
+                />
+                <span className="text-gray-400">–</span>
+                <input
+                  type="number"
+                  placeholder="Max ₹"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  min={0}
+                  step={10}
+                  className="w-24 px-3 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm"
+                />
               </div>
               <select
                 value={sortBy}
@@ -1216,9 +1261,26 @@ export default function ProductCatalog({
                 <option value="name">Name A–Z</option>
               </select>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <span className="text-xs font-medium text-gray-500 self-center mr-1">
-                Popular:
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-xs font-medium text-gray-500 mr-1">
+                Quick:
+              </span>
+              {quickFilterOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setSelectedQuickFilter(opt.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    selectedQuickFilter === opt.id
+                      ? "bg-orange-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-700"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+              <span className="text-xs font-medium text-gray-500 ml-2 mr-1">
+                Search:
               </span>
               {popularSearches.map((item) => (
                 <button
@@ -1329,6 +1391,8 @@ export default function ProductCatalog({
                 setSearchTerm("");
                 setSelectedCategory("all");
                 setSelectedQuickFilter("all");
+                setMinPrice("");
+                setMaxPrice("");
               }}
               className="mt-6 px-6 py-2 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
             >

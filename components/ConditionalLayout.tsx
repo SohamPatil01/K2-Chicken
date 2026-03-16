@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Header from "./Header";
+import Navbar from "./Navbar";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 
@@ -28,7 +28,7 @@ export default function ConditionalLayout({
   // For regular pages, render the normal layout
   return (
     <>
-      <Header />
+      <Navbar />
       <main className="flex-grow pb-24 md:pb-0 min-h-screen main-mobile-pad">
         {children}
       </main>

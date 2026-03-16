@@ -8,19 +8,52 @@ export async function GET(
 ) {
   try {
     const client = await pool.connect()
-    
+
     try {
-      const result = await client.query(`
-        SELECT id, name, description, price, COALESCE(original_price, price) as original_price, image_url, category, is_available
-        FROM products 
-        WHERE id = $1
-      `, [params.id])
-      
+      const result = await client.query(
+        `SELECT id, name, description, price, COALESCE(original_price, price) as original_price, image_url, category, is_available
+         FROM products
+         WHERE id = $1`,
+        [params.id]
+      )
+
       if (result.rows.length === 0) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
-      
-      return NextResponse.json(result.rows[0])
+
+      const product = result.rows[0]
+
+      let weightOptions: { id: number | null; weight: number; weight_unit: string; price: number; is_default: boolean }[] = []
+      try {
+        const weightResult = await client.query(
+          `SELECT id, weight, weight_unit, price, COALESCE(is_default, false) as is_default
+           FROM product_weight_options
+           WHERE product_id = $1
+           ORDER BY weight`,
+          [params.id]
+        )
+        weightOptions = weightResult.rows.map((row: any) => ({
+          id: row.id,
+          weight: parseFloat(row.weight) || row.weight,
+          weight_unit: row.weight_unit || 'g',
+          price: parseFloat(row.price) || row.price,
+          is_default: !!row.is_default,
+        }))
+      } catch {
+        // table may not exist
+      }
+
+      if (weightOptions.length === 0) {
+        weightOptions = [{
+          id: null,
+          weight: 500,
+          weight_unit: 'g',
+          price: parseFloat(product.price) || product.price,
+          is_default: true,
+        }]
+      }
+
+      return NextResponse.json({ ...product, weightOptions })
     } finally {
       client.release()
     }

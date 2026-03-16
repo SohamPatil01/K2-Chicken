@@ -9,7 +9,6 @@ import {
   ShoppingBag,
   ArrowRight,
   Sparkles,
-  X,
   ShoppingCart,
   Package,
   Shield,
@@ -21,6 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import CartItem from "@/components/CartItem";
 
 // Recommendation Card Component
 function RecommendationCard({
@@ -456,143 +456,21 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {state.items.map((item, index) => {
-              const itemPrice =
-                item.selectedWeight?.price || item.product.price;
-              const totalPrice = Number(itemPrice) * item.quantity;
               const itemKey = `${item.product.id}-${
                 item.selectedWeight?.weight ?? "default"
               }-${item.selectedWeight?.id ?? "base"}`;
-
               const isVisible = visibleItems.has(itemKey) || mounted;
               return (
                 <div
                   key={itemKey}
-                  className={`group bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden border-2 border-transparent hover:border-orange-200 ${
-                    isVisible
-                      ? "opacity-100 translate-x-0 scale-100"
-                      : "opacity-0 -translate-x-8 scale-95"
-                  }`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
+                  className={isVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 -translate-x-8 scale-95"}
+                  style={{ transition: "all 0.3s ease", transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className="p-5 sm:p-6">
-                    <div className="flex gap-5">
-                      {/* Product Image */}
-                      <div className="relative flex-shrink-0">
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-100 group-hover:border-orange-300 transition-all duration-300 shadow-sm group-hover:shadow-md">
-                          {item.product.image_url ? (
-                            <img
-                              src={item.product.image_url}
-                              alt={item.product.name}
-                              className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
-                              onError={(e) => {
-                                e.currentTarget.style.display = "none";
-                                const fallback = e.currentTarget
-                                  .nextElementSibling as HTMLElement;
-                                if (fallback) fallback.style.display = "flex";
-                              }}
-                            />
-                          ) : null}
-                          <div
-                            className={`w-full h-full ${
-                              item.product.image_url ? "hidden" : "flex"
-                            } items-center justify-center group-hover:scale-110 transition-transform duration-500`}
-                          >
-                            <span className="text-3xl">🍗</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Product Info */}
-                      <div className="flex-grow min-w-0">
-                        <div className="flex items-start justify-between gap-4 mb-3">
-                          <div className="flex-grow min-w-0">
-                            <h3 className="text-xl sm:text-2xl font-semibold text-gray-700 group-hover:text-orange-600 transition-colors mb-2">
-                              {item.product.name}
-                            </h3>
-                            {item.selectedWeight && (
-                              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-orange-50 to-red-50 text-orange-700 rounded-lg text-xs font-semibold mb-2 border border-orange-200">
-                                <Package className="w-3 h-3" />
-                                <span>
-                                  {item.selectedWeight.weight}
-                                  {item.selectedWeight.weight_unit}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex items-baseline gap-2 mb-3">
-                              <span className="text-sm text-gray-500">
-                                Unit Price:
-                              </span>
-                              <span className="text-lg font-semibold text-orange-600">
-                                ₹{Number(itemPrice).toFixed(0)}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Remove Button */}
-                          <button
-                            onClick={() =>
-                              removeItem(item.product.id, item.selectedWeight)
-                            }
-                            className="flex-shrink-0 p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-transparent hover:border-red-200"
-                            title="Remove item"
-                          >
-                            <X
-                              size={20}
-                              className="transition-transform duration-300 hover:rotate-90"
-                            />
-                          </button>
-                        </div>
-
-                        {/* Quantity Controls & Total */}
-                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                          <div className="flex items-center gap-2 bg-gradient-to-r from-gray-50 to-orange-50/30 rounded-2xl p-1.5 border border-gray-200">
-                            <button
-                              onClick={() =>
-                                updateQuantity(
-                                  item.product.id,
-                                  item.quantity - 1,
-                                  item.selectedWeight
-                                )
-                              }
-                              className="w-10 h-10 flex items-center justify-center bg-white hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-110 active:scale-95"
-                            >
-                              <Minus size={18} />
-                            </button>
-                            <div className="w-14 text-center">
-                              <span className="text-lg font-medium text-gray-700">
-                                {item.quantity}
-                              </span>
-                            </div>
-                            <button
-                              onClick={() =>
-                                updateQuantity(
-                                  item.product.id,
-                                  item.quantity + 1,
-                                  item.selectedWeight
-                                )
-                              }
-                              className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-110 active:scale-95"
-                            >
-                              <Plus
-                                size={18}
-                                className="transition-transform duration-300 hover:rotate-90"
-                              />
-                            </button>
-                          </div>
-
-                          {/* Item Total */}
-                          <div className="text-right">
-                            <p className="text-xs text-gray-500 mb-1 font-medium">
-                              Item Total
-                            </p>
-                            <p className="text-2xl font-bold text-orange-600">
-                              ₹{totalPrice.toFixed(0)}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <CartItem
+                    item={item}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={removeItem}
+                  />
                 </div>
               );
             })}

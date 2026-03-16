@@ -60,6 +60,11 @@ const FAQSection = dynamic(() => import("@/components/FAQSection"), {
   ssr: true,
 });
 
+const HomeOffersSection = dynamic(
+  () => import("@/components/HomeOffersSection"),
+  { ssr: true }
+);
+
 // Cache column existence check (only check once, reuse result)
 let hasOriginalPriceColumn: boolean | null = null;
 
@@ -256,7 +261,8 @@ export default async function Home() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://k2-chicken.vercel.app/?search={search_term_string}",
+        urlTemplate:
+          "https://k2-chicken.vercel.app/?search={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
@@ -265,24 +271,26 @@ export default async function Home() {
   const itemListStructuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    itemListElement: products.slice(0, 10).map((product: any, index: number) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "Product",
-        name: product.name,
-        description: product.description,
-        image: product.image_url,
-        offers: {
-          "@type": "Offer",
-          price: product.price,
-          priceCurrency: "INR",
-          availability: product.is_available
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
+    itemListElement: products
+      .slice(0, 10)
+      .map((product: any, index: number) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Product",
+          name: product.name,
+          description: product.description,
+          image: product.image_url,
+          offers: {
+            "@type": "Offer",
+            price: product.price,
+            priceCurrency: "INR",
+            availability: product.is_available
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          },
         },
-      },
-    })),
+      })),
   };
 
   const faqStructuredData = {
@@ -310,7 +318,7 @@ export default async function Home() {
         name: "What is the minimum order for free delivery?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Free delivery is available for orders above ₹500 within our delivery radius. Orders below ₹500 may incur a delivery charge.",
+          text: "Free delivery is available for orders above ₹350 within our delivery radius. Orders below ₹350 may incur a delivery charge.",
         },
       },
       {
@@ -334,7 +342,7 @@ export default async function Home() {
         name: "What are your operating hours?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "We are open from 8:00 AM to 10:00 PM, Monday through Sunday. You can place orders anytime during these hours.",
+          text: "We are open from 8:00 AM to 8:00 PM, Monday through Sunday. You can place orders anytime during these hours.",
         },
       },
     ],
@@ -344,11 +352,15 @@ export default async function Home() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageStructuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homepageStructuredData),
+        }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListStructuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(itemListStructuredData),
+        }}
       />
       <script
         type="application/ld+json"
@@ -369,6 +381,10 @@ export default async function Home() {
         </MotionSection>
 
         <MotionSection delay={0.3}>
+          <HomeOffersSection promotions={promotions} />
+        </MotionSection>
+
+        <MotionSection delay={0.35}>
           <WhyChooseUs />
         </MotionSection>
 

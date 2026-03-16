@@ -12,8 +12,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-// Import CinematicBackground
 import CinematicBackground from "./CinematicBackground";
+import DeliveryChecker from "./DeliveryChecker";
 
 interface HeroProps {
   deliveryEnabled?: boolean;
@@ -25,32 +25,13 @@ export default function Hero({
   freeDeliveryAbove = 500,
 }: HeroProps) {
   const [mounted, setMounted] = useState(false);
-  const [textIndex, setTextIndex] = useState(0);
-
-  const typewriterText = "Finger Lickin'";
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
     setMounted(true);
-
-    // Typewriter effect
-    let currentIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (currentIndex < typewriterText.length) {
-        setDisplayedText(typewriterText.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        setIsTyping(false);
-        clearInterval(typingInterval);
-      }
-    }, 100);
-
-    return () => clearInterval(typingInterval);
   }, []);
 
   return (
-    <section className="relative w-full h-[85vh] min-h-[400px] sm:min-h-[500px] md:min-h-[600px] overflow-hidden flex items-center justify-center">
+    <section className="relative w-full h-[85vh] min-h-[400px] sm:min-h-[500px] md:min-h-[600px] overflow-hidden flex items-center justify-center pt-16 sm:pt-20 safe-top">
       {/* Cinematic Background */}
       <CinematicBackground />
 
@@ -71,19 +52,13 @@ export default function Hero({
           {/* Main Heading */}
           <div className="space-y-2 sm:space-y-4 max-w-4xl mx-auto">
             <h1
-              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight tracking-tight ${
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-balance ${
                 mounted ? "animate-fade-up" : "opacity-0"
               }`}
               style={{ animationDelay: "0.2s" }}
             >
-              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500 pb-2">
-                {displayedText}
-                {isTyping && (
-                  <span className="animate-pulse text-orange-600">|</span>
-                )}
-              </span>
-              <span className="block text-chicken-wood mt-2 text-2xl sm:text-3xl md:text-5xl font-bold tracking-normal opacity-100">
-                Good Chicken
+              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500">
+                Fresh Halal Chicken Delivered Today
               </span>
             </h1>
 
@@ -108,6 +83,18 @@ export default function Hero({
             </p>
           </div>
 
+          {/* Delivery area checker */}
+          {deliveryEnabled && (
+            <div
+              className={`pt-4 ${
+                mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+              style={{ animationDelay: "0.5s" }}
+            >
+              <DeliveryChecker />
+            </div>
+          )}
+
           {/* CTA Buttons */}
           <div
             className={`flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 ${
@@ -116,13 +103,13 @@ export default function Hero({
             style={{ animationDelay: "0.6s" }}
           >
             <Link href="/#products" className="group w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 hover:shadow-orange-400/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 border border-transparent">
+              <button className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-button font-bold text-lg shadow-card hover:shadow-card-hover hover:scale-105 active:scale-95 transition-all duration-smooth flex items-center justify-center gap-3 border border-transparent">
                 <span>Order Now</span>
-                <ArrowRight className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="h-6 w-6 transition-transform duration-smooth group-hover:translate-x-1" />
               </button>
             </Link>
             <Link href="tel:+918484978622" className="group w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-white/50 backdrop-blur-md text-gray-800 px-10 py-5 rounded-2xl font-bold text-lg border border-gray-200 hover:bg-white/80 hover:border-orange-200 shadow-lg shadow-gray-100 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+              <button className="w-full sm:w-auto bg-white/50 backdrop-blur-md text-gray-800 px-10 py-5 rounded-button font-bold text-lg border border-gray-200 hover:bg-white/80 hover:border-orange-200 shadow-soft active:scale-95 transition-all duration-smooth flex items-center justify-center gap-3">
                 <Phone className="h-5 w-5 fill-current text-gray-700" />
                 <span>Call Now</span>
               </button>

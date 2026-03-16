@@ -50,6 +50,10 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  .text-balance {
+    text-wrap: balance;
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;
