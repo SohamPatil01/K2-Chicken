@@ -14,8 +14,6 @@ import {
   Users,
   MessageCircle,
 } from "lucide-react";
-import LocationSelector from "./LocationSelector";
-
 export type NavbarViewProps = {
   bannerClass: string;
   isMenuOpen: boolean;
@@ -84,10 +82,6 @@ export default function NavbarView({
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            <div className="hidden lg:block">
-              <LocationSelector />
-            </div>
-
             {!authLoading && (
               <>
                 {isAuthenticated ? (
@@ -150,9 +144,6 @@ export default function NavbarView({
         }`}
       >
         <div className="py-4 px-4 border-t border-gray-100 bg-white">
-          <div className="mb-4">
-            <LocationSelector />
-          </div>
           <nav className="flex flex-col gap-1">
             <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium" onClick={onMenuClose}>
               <Home className="w-5 h-5" /> Home

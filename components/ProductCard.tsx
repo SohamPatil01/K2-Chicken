@@ -81,7 +81,7 @@ export default function ProductCard({
   const outOfStock = stockStatus?.status === "out" || (product.stock_quantity ?? 0) === 0;
 
   return (
-    <div className="group flex flex-col bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-orange-200 h-full">
+    <div className="group flex flex-col bg-white rounded-card border border-gray-200 hover:border-orange-200 transition-all duration-smooth overflow-hidden h-full">
       <Link href={`/products/${product.id}`} className="block flex-shrink-0">
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
           {product.image_url ? (

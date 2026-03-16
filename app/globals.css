@@ -208,12 +208,12 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold px-6 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-200 transform active:scale-95 min-h-[56px];
+    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold px-6 py-4 rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-200 transform active:scale-95 min-h-[56px];
   }
 
   /* Mobile-optimized card */
   .mobile-card {
-    @apply bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-200 active:scale-[0.98];
+    @apply bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden transition-all duration-200 active:scale-[0.98];
   }
 
   /* Mobile-optimized button */
@@ -252,6 +252,6 @@
 
   /* Mobile bottom nav style */
   .mobile-bottom-nav {
-    @apply bg-white/98 backdrop-blur-xl border-t border-gray-200/50 shadow-2xl;
+    @apply bg-white/98 backdrop-blur-xl border-t border-gray-200/50 shadow-card;
   }
 }

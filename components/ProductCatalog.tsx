@@ -369,7 +369,7 @@ function ProductCard({
         animate={true}
       >
         <div
-          className="group relative bg-white rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg shadow-sm"
+          className="group relative bg-white rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 border border-gray-200 hover:border-orange-200"
           onMouseEnter={() => {
             // Only use hover on desktop (non-mobile)
             if (!isMobile) {

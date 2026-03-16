@@ -4,6 +4,7 @@ import { Clock, Users, ChefHat, ArrowLeft, CheckCircle } from "lucide-react";
 import pool from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getRecipeImageUrl } from "@/lib/recipeImages";
 
 interface Recipe {
   id: number;
@@ -53,6 +54,10 @@ export async function generateMetadata({
     };
   }
 
+  const imageUrl =
+    getRecipeImageUrl(recipe.title, recipe.image_url) ||
+    "https://k2-chicken.vercel.app/hero-fresh-simple.png";
+
   return {
     title: `${recipe.title} | K2 Chicken Recipe`,
     description: `${recipe.description} - Prep time: ${recipe.prep_time} min, Cook time: ${recipe.cook_time} min, Serves: ${recipe.servings} people. Step-by-step instructions included.`,
@@ -69,32 +74,21 @@ export async function generateMetadata({
       description: recipe.description,
       url: `https://k2-chicken.vercel.app/recipes/${id}`,
       siteName: "K2 Chicken",
-      images: recipe.image_url
-        ? [
-            {
-              url: recipe.image_url,
-              width: 1200,
-              height: 630,
-              alt: recipe.title,
-            },
-          ]
-        : [
-            {
-              url: "/hero-fresh-simple.png",
-              width: 1200,
-              height: 630,
-              alt: recipe.title,
-            },
-          ],
+      images: [
+        {
+          url: imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`,
+          width: 1200,
+          height: 630,
+          alt: recipe.title,
+        },
+      ],
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
       title: `${recipe.title} | K2 Chicken Recipe`,
       description: recipe.description,
-      images: recipe.image_url
-        ? [recipe.image_url]
-        : ["/hero-fresh-simple.png"],
+      images: [imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`],
     },
     alternates: {
       canonical: `https://k2-chicken.vercel.app/recipes/${id}`,
@@ -114,14 +108,17 @@ export default async function RecipeDetailPage({
     notFound();
   }
 
+  const imageUrl =
+    getRecipeImageUrl(recipe.title, recipe.image_url) ||
+    "https://k2-chicken.vercel.app/hero-fresh-simple.png";
+
   // Generate structured data for recipe
   const recipeStructuredData = {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description,
-    image:
-      recipe.image_url || "https://k2-chicken.vercel.app/hero-fresh-simple.png",
+    image: imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`,
     prepTime: `PT${recipe.prep_time}M`,
     cookTime: `PT${recipe.cook_time}M`,
     totalTime: `PT${recipe.prep_time + recipe.cook_time}M`,
@@ -204,21 +201,18 @@ export default async function RecipeDetailPage({
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden mb-8">
             {/* Recipe Image */}
             <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500">
-              {recipe.image_url ? (
+              {imageUrl ? (
                 <Image
-                  src={recipe.image_url}
+                  src={imageUrl}
                   alt={recipe.title}
                   fill
                   className="object-cover"
                   sizes="100vw"
                   priority
                   quality={85}
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
                 />
               ) : null}
-              {!recipe.image_url && (
+              {!imageUrl && (
                 <div className="w-full h-full flex items-center justify-center">
                   <ChefHat size={80} className="text-white opacity-80" />
                 </div>

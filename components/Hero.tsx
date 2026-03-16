@@ -50,7 +50,7 @@ export default function Hero({
           </div>
 
           {/* Main Heading */}
-          <div className="space-y-2 sm:space-y-4 max-w-4xl mx-auto">
+          <div className="space-y-2 sm:space-y-4 max-w-4xl mx-auto text-center">
             <h1
               className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-balance ${
                 mounted ? "animate-fade-up" : "opacity-0"
@@ -64,7 +64,7 @@ export default function Hero({
 
             {/* Value Proposition */}
             <p
-              className={`text-lg sm:text-xl md:text-2xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed ${
+              className={`text-lg sm:text-xl md:text-2xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed text-center ${
                 mounted ? "animate-fade-up" : "opacity-0"
               }`}
               style={{ animationDelay: "0.4s" }}

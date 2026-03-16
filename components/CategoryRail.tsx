@@ -50,9 +50,9 @@ const categories = [
 
 export default function CategoryRail() {
     return (
-        <div className="bg-white py-6 border-b border-gray-100">
+        <div className="bg-white pt-8 sm:pt-10 pb-6 sm:pb-8 rounded-t-2xl sm:rounded-t-3xl border-t border-b border-gray-100 shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Shop by Category</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-5">Shop by Category</h2>
 
                 <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
                     {categories.map((cat) => {

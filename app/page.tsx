@@ -371,7 +371,9 @@ export default async function Home() {
         <PromotionsFlyer initialPromotions={promotions} />
         <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={500} />
 
-        <CategoryRail />
+        <div className="mt-4 sm:mt-6">
+          <CategoryRail />
+        </div>
 
         <MotionSection delay={0.2} id="products">
           <ProductCatalog

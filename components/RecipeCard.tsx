@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Users, ChefHat, ArrowRight } from "lucide-react";
+import { getRecipeImageUrl, RECIPE_IMAGES } from "@/lib/recipeImages";
 
 export interface Recipe {
   id: number;
@@ -30,8 +31,8 @@ export default function RecipeCard({
   featured = false,
 }: RecipeCardProps) {
   const totalTime = (recipe.prep_time || 0) + (recipe.cook_time || 0);
-  const imageUrl = recipe.image_url || PLACEHOLDER_IMAGE;
-  const hasRealImage = !!recipe.image_url;
+  const imageUrl = getRecipeImageUrl(recipe.title, recipe.image_url) || PLACEHOLDER_IMAGE;
+  const hasRealImage = !!(recipe.image_url || RECIPE_IMAGES[recipe.title]);
 
   if (featured) {
     return (
