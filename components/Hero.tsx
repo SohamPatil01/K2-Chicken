@@ -36,7 +36,7 @@ export default function Hero({
       <CinematicBackground />
 
       {/* Main Content - Centered */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
         <div className="text-center space-y-4 sm:space-y-8 md:space-y-10 bg-white/60 backdrop-blur-md rounded-2xl sm:rounded-[2.5rem] px-4 sm:px-10 md:px-14 py-6 sm:py-14 shadow-2xl shadow-orange-100/50 border border-white/40 max-w-5xl w-full mx-2 sm:mx-auto">
           <div
             className={`inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-orange-500 to-orange-600 backdrop-blur-md border border-orange-100/20 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-orange-500/30 hover:scale-105 ${

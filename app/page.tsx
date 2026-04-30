@@ -366,7 +366,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen w-full max-w-[100vw] overflow-x-hidden">
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
         <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={500} />

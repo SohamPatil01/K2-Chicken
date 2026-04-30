@@ -44,12 +44,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const client = await pool.connect()
         try {
             const recipesResult = await client.query(
-                'SELECT id, updated_at FROM recipes ORDER BY updated_at DESC'
+                'SELECT id, created_at FROM recipes ORDER BY COALESCE(created_at, CURRENT_TIMESTAMP) DESC'
             )
             
             const recipeRoutes = recipesResult.rows.map((recipe: any) => ({
                 url: `${baseUrl}/recipes/${recipe.id}`,
-                lastModified: recipe.updated_at ? new Date(recipe.updated_at) : new Date(),
+                lastModified: recipe.created_at ? new Date(recipe.created_at) : new Date(),
                 changeFrequency: 'weekly' as const,
                 priority: 0.7,
             }))

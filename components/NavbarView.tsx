@@ -46,7 +46,7 @@ export default function NavbarView({
       role="banner"
       className={"sticky top-0 z-50 w-full transition-all duration-smooth safe-top " + bannerClass}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between min-h-14 h-14 sm:min-h-16 sm:h-16 gap-2 sm:gap-4 flex-nowrap">
           <Link href="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 group min-w-0">
             <img

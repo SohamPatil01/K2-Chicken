@@ -23,7 +23,7 @@ export default function MotionSection({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay, ease: "easeOut" }}
-            className={className}
+            className={["w-full max-w-full", className].filter(Boolean).join(" ")}
         >
             {children}
         </motion.div>

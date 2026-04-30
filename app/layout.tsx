@@ -29,6 +29,7 @@ export const viewport = {
   viewportFit: "cover",
 };
 
+// Tab favicon: app/icon.png (Next.js file convention). Apple shortcut uses /logo.png below.
 export const metadata: Metadata = {
   metadataBase: new URL("https://k2-chicken.vercel.app"),
   title: {
@@ -86,9 +87,8 @@ export const metadata: Metadata = {
     creator: "@k2chicken",
   },
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
+    apple: [{ url: "/logo.png", type: "image/png", sizes: "180x180" }],
+    shortcut: "/logo.png",
   },
   manifest: "/manifest.json",
 };

@@ -1179,8 +1179,8 @@ export default function ProductCatalog({
   }
 
   return (
-    <div id="products" className="py-12 sm:py-20 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <div id="products" className="py-12 sm:py-20 bg-white w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
           <div className="animate-slide-up">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-chicken-wood mb-3 sm:mb-4 tracking-tight">
@@ -1308,7 +1308,7 @@ export default function ProductCatalog({
             <h3 className="text-xl font-bold text-gray-900 mb-4">
               Best Sellers
             </h3>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide">
+            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
               {bestsellerProducts.map((product, index) => (
                 <motion.div
                   key={product.id}

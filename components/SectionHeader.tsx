@@ -19,7 +19,7 @@ export default function SectionHeader({
   accentBar = true,
 }: SectionHeaderProps) {
   return (
-    <div className="text-center mb-10 sm:mb-12">
+    <div className="w-full text-center mb-10 sm:mb-12">
       <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium text-orange-700 mb-4 shadow-soft">
         {Icon && <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
         <span>{eyebrow}</span>
