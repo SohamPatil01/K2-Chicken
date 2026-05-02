@@ -47,12 +47,16 @@ export default function NavbarView({
       className={"sticky top-0 z-50 w-full transition-all duration-smooth safe-top " + bannerClass}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between min-h-14 h-14 sm:min-h-16 sm:h-16 gap-2 sm:gap-4 flex-nowrap">
-          <Link href="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 group min-w-0">
+        {/* Mobile: logo | actions. Desktop: equal side columns so nav is truly centered */}
+        <div className="flex items-center justify-between gap-3 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:justify-items-stretch min-h-14 py-2 sm:min-h-16 sm:py-2">
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 sm:gap-2 shrink-0 justify-self-start group min-w-0 max-w-[55%] sm:max-w-none"
+          >
             <img
               src="/logo.png"
               alt="K2 Chicken"
-              className="h-8 sm:h-9 w-auto rounded-button transition-transform duration-smooth group-hover:scale-105 flex-shrink-0"
+              className="h-8 sm:h-9 w-auto rounded-button transition-transform duration-smooth group-hover:scale-105 shrink-0"
               onError={(e) => {
                 const t = e.currentTarget;
                 t.src = "/logo.svg";
@@ -63,25 +67,28 @@ export default function NavbarView({
             </span>
           </Link>
 
-          <nav className="hidden md:flex flex-1 items-center justify-center gap-0.5 sm:gap-1 mx-2 sm:mx-4 min-w-0 flex-shrink">
-            <Link href="/" className={isActive("/") ? "text-orange-600 bg-orange-50 border border-orange-200 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium whitespace-nowrap" : "text-gray-600 hover:text-orange-600 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium hover:bg-orange-50/50 whitespace-nowrap"}>
+          <nav
+            className="hidden md:flex items-center justify-center gap-1 lg:gap-1.5 justify-self-center whitespace-nowrap px-2"
+            aria-label="Primary"
+          >
+            <Link href="/" className={isActive("/") ? "text-orange-600 bg-orange-50 border border-orange-200 px-3 py-2 rounded-button text-sm font-medium" : "text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50"}>
               Home
             </Link>
-            <button type="button" onClick={() => scrollToSection("products")} className="text-gray-600 hover:text-orange-600 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium hover:bg-orange-50/50 whitespace-nowrap">
+            <button type="button" onClick={() => scrollToSection("products")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
               Products
             </button>
-            <Link href="/recipes" className={isActive("/recipes") ? "text-orange-600 bg-orange-50 border border-orange-200 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium whitespace-nowrap" : "text-gray-600 hover:text-orange-600 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium hover:bg-orange-50/50 whitespace-nowrap"}>
+            <Link href="/recipes" className={isActive("/recipes") ? "text-orange-600 bg-orange-50 border border-orange-200 px-3 py-2 rounded-button text-sm font-medium" : "text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50"}>
               Recipes
             </Link>
-            <button type="button" onClick={() => scrollToSection("about")} className="text-gray-600 hover:text-orange-600 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium hover:bg-orange-50/50 whitespace-nowrap">
+            <button type="button" onClick={() => scrollToSection("about")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
               About
             </button>
-            <button type="button" onClick={() => scrollToSection("contact")} className="text-gray-600 hover:text-orange-600 px-2.5 sm:px-3 py-1.5 rounded-button text-xs sm:text-sm font-medium hover:bg-orange-50/50 whitespace-nowrap">
+            <button type="button" onClick={() => scrollToSection("contact")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
               Contact
             </button>
           </nav>
 
-          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0 justify-self-end">
             {!authLoading && (
               <>
                 {isAuthenticated ? (
@@ -143,7 +150,7 @@ export default function NavbarView({
           isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="py-4 px-4 border-t border-gray-100 bg-white">
+        <div className="py-4 px-4 sm:px-6 border-t border-gray-100 bg-white max-w-7xl mx-auto w-full">
           <nav className="flex flex-col gap-1">
             <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium" onClick={onMenuClose}>
               <Home className="w-5 h-5" /> Home

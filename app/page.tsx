@@ -386,7 +386,11 @@ export default async function Home() {
           <HomeOffersSection promotions={promotions} />
         </MotionSection>
 
-        <MotionSection delay={0.35}>
+        <MotionSection
+          delay={0.35}
+          id="about"
+          className="scroll-mt-[4.5rem] sm:scroll-mt-20"
+        >
           <WhyChooseUs />
         </MotionSection>
 

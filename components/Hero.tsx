@@ -31,12 +31,12 @@ export default function Hero({
   }, []);
 
   return (
-    <section className="relative w-full h-[85vh] min-h-[400px] sm:min-h-[500px] md:min-h-[600px] overflow-hidden flex items-center justify-center pt-16 sm:pt-20 safe-top">
-      {/* Cinematic Background */}
+    <section className="relative w-full min-h-[max(85vh,28rem)] sm:min-h-[max(82vh,32rem)] overflow-x-hidden flex flex-col items-center justify-center pt-16 sm:pt-20 pb-10 sm:pb-14 md:pb-16 safe-top">
+      {/* Cinematic Background — fills section height (grows with content) */}
       <CinematicBackground />
 
-      {/* Main Content - Centered */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+      {/* Main Content — bottom padding on section prevents stat row from being cropped */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center py-4 sm:py-6">
         <div className="text-center space-y-5 sm:space-y-7 md:space-y-8 bg-white/85 backdrop-blur-md rounded-2xl sm:rounded-[2.5rem] px-4 sm:px-10 md:px-14 pt-6 sm:pt-12 pb-8 sm:pb-12 border border-white/60 max-w-5xl w-full mx-2 sm:mx-auto shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
           <div
             className={`inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-orange-500 to-orange-600 backdrop-blur-md border border-orange-100/20 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold text-white shadow-sm transition-all duration-300 hover:scale-[1.02] ${

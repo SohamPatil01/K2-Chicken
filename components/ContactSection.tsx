@@ -192,7 +192,10 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
+    <section
+      id="contact"
+      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-16 sm:py-20 bg-gray-50 border-t border-gray-100"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="We're here to help"

@@ -1179,7 +1179,10 @@ export default function ProductCatalog({
   }
 
   return (
-    <div id="products" className="py-12 sm:py-20 bg-white w-full overflow-hidden">
+    <div
+      id="products"
+      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-12 sm:py-20 bg-white w-full overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
           <div className="animate-slide-up">
