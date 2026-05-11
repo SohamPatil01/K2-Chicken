@@ -3,6 +3,9 @@ import { Clock, Users, ChefHat, ArrowLeft } from "lucide-react";
 import pool from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
+import { getSiteUrl } from "@/lib/siteUrl";
+
+const siteUrl = getSiteUrl();
 
 interface Recipe {
   id: number;
@@ -56,7 +59,7 @@ export const metadata: Metadata = {
     title: "Chicken Recipes | K2 Chicken Recipe Cookbook",
     description:
       "Master the art of cooking delicious chicken dishes at home with step-by-step recipes from K2 Chicken.",
-    url: "https://k2-chicken.vercel.app/recipes",
+    url: `${siteUrl}/recipes`,
     siteName: "K2 Chicken",
     images: [
       {
@@ -69,7 +72,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   alternates: {
-    canonical: "https://k2-chicken.vercel.app/recipes",
+    canonical: `${siteUrl}/recipes`,
   },
 };
 
@@ -106,7 +109,7 @@ export default async function RecipesPage() {
     "@type": "CollectionPage",
     name: "K2 Chicken Recipe Cookbook",
     description: "Master the art of cooking delicious chicken dishes at home",
-    url: "https://k2-chicken.vercel.app/recipes",
+    url: `${siteUrl}/recipes`,
     mainEntity: {
       "@type": "ItemList",
       itemListElement: recipes.map((recipe: Recipe, index: number) => ({

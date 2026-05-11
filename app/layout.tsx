@@ -6,6 +6,9 @@ import { AuthProvider } from "@/context/AuthContext";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getSiteUrl } from "@/lib/siteUrl";
+
+const siteUrl = getSiteUrl();
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,7 +34,7 @@ export const viewport = {
 
 // Tab favicon: app/icon.png (Next.js file convention). Apple shortcut uses /logo.png below.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://k2-chicken.vercel.app"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     template: "%s | K2 Chicken",
@@ -66,7 +69,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://k2-chicken.vercel.app",
+    url: siteUrl,
     siteName: "K2 Chicken",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
@@ -100,8 +103,8 @@ const jsonLd = {
   "@type": "LocalBusiness",
   name: "K2 Chicken",
   alternateName: ["K2Chicken", "k2chicken", "K2 Chicken Pune"],
-  image: "https://k2-chicken.vercel.app/logo.png",
-  logo: "https://k2-chicken.vercel.app/logo.png",
+  image: `${siteUrl}/logo.png`,
+  logo: `${siteUrl}/logo.png`,
   description:
     "Fresh, premium quality chicken delivery in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
   contactPoint: {
@@ -139,7 +142,7 @@ const jsonLd = {
     latitude: "18.6292",
     longitude: "73.7995",
   },
-  url: "https://k2-chicken.vercel.app",
+  url: siteUrl,
   telephone: "+918484978622",
   priceRange: "₹₹",
   servesCuisine: "Indian",
@@ -171,6 +174,24 @@ const jsonLd = {
   sameAs: ["https://facebook.com/k2chicken", "https://instagram.com/k2chicken"],
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "K2 Chicken",
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
+  description:
+    "Fresh, premium quality halal chicken delivery in Pune and Pimpri-Chinchwad.",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+91-8484978622",
+    contactType: "customer service",
+    areaServed: "IN",
+    availableLanguage: ["English", "Hindi"],
+  },
+  sameAs: ["https://facebook.com/k2chicken", "https://instagram.com/k2chicken"],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -194,6 +215,12 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
         />
       </body>
     </html>

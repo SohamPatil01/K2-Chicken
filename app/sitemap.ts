@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next'
 import pool from '@/lib/db'
+import { getSiteUrl } from '@/lib/siteUrl'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://k2-chicken.vercel.app'
+    const baseUrl = getSiteUrl()
     const routes: MetadataRoute.Sitemap = []
 
     // Static routes
@@ -18,6 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/shop`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.95,
         },
         // /cart and /checkout omitted — blocked in robots.txt (no utility in listing them for crawlers)
         {
@@ -42,8 +49,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 changeFrequency: 'weekly' as const,
                 priority: 0.7,
             }))
+
+            const productsResult = await client.query(
+                `SELECT id, COALESCE(updated_at, created_at, CURRENT_TIMESTAMP) AS lm
+                 FROM products WHERE is_available = true ORDER BY id ASC`
+            )
+
+            const productRoutes = productsResult.rows.map((row: { id: number; lm: Date }) => ({
+                url: `${baseUrl}/products/${row.id}`,
+                lastModified: row.lm ? new Date(row.lm) : new Date(),
+                changeFrequency: 'weekly' as const,
+                priority: 0.85,
+            }))
             
-            routes.push(...recipeRoutes)
+            routes.push(...recipeRoutes, ...productRoutes)
         } finally {
             client.release()
         }

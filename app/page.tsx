@@ -3,6 +3,9 @@ import Hero from "@/components/Hero";
 import MotionSection from "@/components/MotionSection";
 import pool from "@/lib/db";
 import type { Metadata } from "next";
+import { getSiteUrl } from "@/lib/siteUrl";
+
+const siteUrl = getSiteUrl();
 
 // Lazy load heavy components for better performance
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
@@ -112,7 +115,7 @@ export const metadata: Metadata = {
     title: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     description:
       "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
-    url: "https://k2-chicken.vercel.app",
+    url: siteUrl,
     siteName: "K2 Chicken",
     images: [
       {
@@ -133,7 +136,7 @@ export const metadata: Metadata = {
     images: ["/hero-fresh-simple.png"],
   },
   alternates: {
-    canonical: "https://k2-chicken.vercel.app",
+    canonical: siteUrl,
   },
 };
 
@@ -258,13 +261,12 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "K2 Chicken",
-    url: "https://k2-chicken.vercel.app",
+    url: siteUrl,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate:
-          "https://k2-chicken.vercel.app/?search={search_term_string}",
+        urlTemplate: `${siteUrl}/?search={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

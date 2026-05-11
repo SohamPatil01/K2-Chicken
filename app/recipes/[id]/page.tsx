@@ -5,6 +5,7 @@ import pool from "@/lib/db";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getRecipeImageUrl } from "@/lib/recipeImages";
+import { absoluteUrl, getSiteUrl } from "@/lib/siteUrl";
 
 interface Recipe {
   id: number;
@@ -54,9 +55,10 @@ export async function generateMetadata({
     };
   }
 
+  const siteUrl = getSiteUrl();
   const imageUrl =
     getRecipeImageUrl(recipe.title, recipe.image_url) ||
-    "https://k2-chicken.vercel.app/hero-fresh-simple.png";
+    `${siteUrl}/hero-fresh-simple.png`;
 
   return {
     title: `${recipe.title} | K2 Chicken Recipe`,
@@ -72,11 +74,11 @@ export async function generateMetadata({
     openGraph: {
       title: `${recipe.title} | K2 Chicken Recipe`,
       description: recipe.description,
-      url: `https://k2-chicken.vercel.app/recipes/${id}`,
+      url: `${siteUrl}/recipes/${id}`,
       siteName: "K2 Chicken",
       images: [
         {
-          url: imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`,
+          url: absoluteUrl(imageUrl),
           width: 1200,
           height: 630,
           alt: recipe.title,
@@ -88,10 +90,10 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${recipe.title} | K2 Chicken Recipe`,
       description: recipe.description,
-      images: [imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`],
+      images: [absoluteUrl(imageUrl)],
     },
     alternates: {
-      canonical: `https://k2-chicken.vercel.app/recipes/${id}`,
+      canonical: `${siteUrl}/recipes/${id}`,
     },
   };
 }
@@ -108,9 +110,10 @@ export default async function RecipeDetailPage({
     notFound();
   }
 
+  const siteUrl = getSiteUrl();
   const imageUrl =
     getRecipeImageUrl(recipe.title, recipe.image_url) ||
-    "https://k2-chicken.vercel.app/hero-fresh-simple.png";
+    `${siteUrl}/hero-fresh-simple.png`;
 
   // Generate structured data for recipe
   const recipeStructuredData = {
@@ -118,7 +121,7 @@ export default async function RecipeDetailPage({
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.description,
-    image: imageUrl.startsWith("http") ? imageUrl : `https://k2-chicken.vercel.app${imageUrl}`,
+    image: absoluteUrl(imageUrl),
     prepTime: `PT${recipe.prep_time}M`,
     cookTime: `PT${recipe.cook_time}M`,
     totalTime: `PT${recipe.prep_time + recipe.cook_time}M`,
@@ -140,7 +143,7 @@ export default async function RecipeDetailPage({
       name: "K2 Chicken",
       logo: {
         "@type": "ImageObject",
-        url: "https://k2-chicken.vercel.app/logo.png",
+        url: `${siteUrl}/logo.png`,
       },
     },
     datePublished: new Date().toISOString(),
@@ -155,19 +158,19 @@ export default async function RecipeDetailPage({
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://k2-chicken.vercel.app",
+        item: siteUrl,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Recipes",
-        item: "https://k2-chicken.vercel.app/recipes",
+        item: `${siteUrl}/recipes`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: recipe.title,
-        item: `https://k2-chicken.vercel.app/recipes/${id}`,
+        item: `${siteUrl}/recipes/${id}`,
       },
     ],
   };

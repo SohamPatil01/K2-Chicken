@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
+import { getSiteUrl } from '@/lib/siteUrl'
 
 export default function robots(): MetadataRoute.Robots {
+    const siteUrl = getSiteUrl()
     return {
         rules: [
             {
@@ -19,6 +21,6 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders'],
             },
         ],
-        sitemap: 'https://k2-chicken.vercel.app/sitemap.xml',
+        sitemap: `${siteUrl}/sitemap.xml`,
     }
 }

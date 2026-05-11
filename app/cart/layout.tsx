@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { getSiteUrl } from "@/lib/siteUrl";
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: "Shopping Cart | K2 Chicken - Your Fresh Chicken Order",
@@ -15,7 +18,7 @@ export const metadata: Metadata = {
     title: "Shopping Cart | K2 Chicken",
     description:
       "Review your cart items before checkout. Add more fresh chicken products and proceed to secure checkout.",
-    url: "https://k2-chicken.vercel.app/cart",
+    url: `${siteUrl}/cart`,
     siteName: "K2 Chicken",
     type: "website",
   },
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://k2-chicken.vercel.app/cart",
+    canonical: `${siteUrl}/cart`,
   },
 };
 
