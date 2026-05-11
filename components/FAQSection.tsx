@@ -8,7 +8,7 @@ const FAQ_ITEMS = [
   {
     question: "How fast is the delivery?",
     answer:
-      "We offer fast delivery in 30-45 minutes for orders in Bidar. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
+      "We offer fast delivery in 30-45 minutes for orders in Pune. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
   },
   {
     question: "Is the chicken halal?",

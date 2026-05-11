@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
     return {
         name: 'K2 Chicken - Fresh Delivery',
         short_name: 'K2 Chicken',
-        description: 'Order fresh, premium quality chicken online in Bidar.',
+        description: 'Order fresh, premium quality chicken online in Pune.',
         start_url: '/',
         display: 'standalone',
         background_color: '#FFFAF5', // chicken-cream

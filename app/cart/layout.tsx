@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Shopping Cart | K2 Chicken - Your Fresh Chicken Order",
   description:
-    "Review your cart items before checkout. Add more fresh chicken products, adjust quantities, and proceed to secure checkout for fast delivery in Bidar.",
+    "Review your cart items before checkout. Add more fresh chicken products, adjust quantities, and proceed to secure checkout for fast delivery in Pune.",
   keywords: [
     "chicken cart",
     "shopping cart",
-    "chicken order bidar",
+    "chicken order pune",
     "cart items",
     "K2 chicken cart",
   ],

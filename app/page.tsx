@@ -91,25 +91,27 @@ async function checkOriginalPriceColumn(client: any): Promise<boolean> {
 export const revalidate = 10; // Cache for 10 seconds
 
 export const metadata: Metadata = {
-  title: "Fresh & Premium Chicken Delivery in Bidar | K2 Chicken",
+  title: "Fresh & Premium Chicken Delivery in Pune | K2 Chicken",
   description:
-    "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
+    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
   keywords: [
-    "chicken delivery bidar",
-    "fresh chicken online bidar",
-    "halal chicken bidar",
+    "chicken delivery pune",
+    "fresh chicken online pune",
+    "halal chicken pune",
     "raw chicken delivery",
-    "K2 chicken bidar",
+    "K2 chicken pune",
+    "K2Chicken",
+    "k2chicken",
     "premium chicken delivery",
-    "meat delivery app bidar",
-    "chicken cuts bidar",
-    "marinated chicken bidar",
+    "meat delivery app pune",
+    "chicken cuts pune",
+    "marinated chicken pune",
     "farm fresh chicken",
   ],
   openGraph: {
-    title: "K2 Chicken | Fresh & Premium Chicken Delivery in Bidar",
+    title: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     description:
-      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
     url: "https://k2-chicken.vercel.app",
     siteName: "K2 Chicken",
     images: [
@@ -127,7 +129,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep.",
     images: ["/hero-fresh-simple.png"],
   },
   alternates: {
@@ -302,7 +304,7 @@ export default async function Home() {
         name: "How fast is the delivery?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "We offer fast delivery in 30-45 minutes for orders in Bidar. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
+          text: "We offer fast delivery in 30-45 minutes for orders in Pune. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
         },
       },
       {

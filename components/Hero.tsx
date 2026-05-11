@@ -49,8 +49,16 @@ export default function Hero({
             </span>
           </div>
 
-          {/* Main Heading */}
+          {/* Main Heading — include brand in visible copy for branded searches (e.g. “k2chicken”) */}
           <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto text-center">
+            <p
+              className={`text-lg sm:text-xl md:text-2xl font-extrabold text-orange-800 tracking-tight ${
+                mounted ? "animate-fade-up" : "opacity-0"
+              }`}
+              style={{ animationDelay: "0.15s" }}
+            >
+              K2 Chicken
+            </p>
             <h1
               className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] sm:leading-tight tracking-tight ${
                 mounted ? "animate-fade-up" : "opacity-0"

@@ -33,17 +33,19 @@ export const viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://k2-chicken.vercel.app"),
   title: {
-    default: "K2 Chicken | Fresh & Premium Chicken Delivery in Bidar",
+    default: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     template: "%s | K2 Chicken",
   },
   description:
-    "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Order now!",
+    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Order now!",
   keywords: [
-    "chicken delivery bidar",
-    "fresh chicken online",
-    "halal chicken bidar",
+    "chicken delivery pune",
+    "fresh chicken online pune",
+    "halal chicken pune",
     "raw chicken delivery",
     "K2 chicken",
+    "K2Chicken",
+    "k2chicken",
     "premium chicken",
     "meat delivery app",
   ],
@@ -68,7 +70,7 @@ export const metadata: Metadata = {
     siteName: "K2 Chicken",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
     images: [
       {
         url: "/hero-fresh-simple.png",
@@ -82,7 +84,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
     images: ["/hero-fresh-simple.png"],
     creator: "@k2chicken",
   },
@@ -97,10 +99,11 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "K2 Chicken",
+  alternateName: ["K2Chicken", "k2chicken", "K2 Chicken Pune"],
   image: "https://k2-chicken.vercel.app/logo.png",
   logo: "https://k2-chicken.vercel.app/logo.png",
   description:
-    "Fresh, premium quality chicken delivery in Bidar. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+    "Fresh, premium quality chicken delivery in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-8484978622",
@@ -124,16 +127,17 @@ const jsonLd = {
   },
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Main Road",
-    addressLocality: "Bidar",
-    addressRegion: "Karnataka",
-    postalCode: "585401",
+    streetAddress:
+      "Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad",
+    addressLocality: "Pune",
+    addressRegion: "Maharashtra",
+    postalCode: "411027",
     addressCountry: "IN",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: "17.9133",
-    longitude: "77.5300",
+    latitude: "18.6292",
+    longitude: "73.7995",
   },
   url: "https://k2-chicken.vercel.app",
   telephone: "+918484978622",

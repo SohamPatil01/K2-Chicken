@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function LocationSelector() {
     const [isOpen, setIsOpen] = useState(false);
-    const location = "Bidar, Karnataka"; // Static for now as per plan
+    const location = "Pune, Maharashtra"; // Service area
 
     return (
         <div className="relative z-50">
@@ -30,7 +30,7 @@ export default function LocationSelector() {
                         <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-100 cursor-pointer">
                             <MapPin className="w-5 h-5 text-orange-600 mt-0.5" />
                             <div>
-                                <p className="text-sm font-bold text-gray-900">Bidar</p>
+                                <p className="text-sm font-bold text-gray-900">Pune</p>
                                 <p className="text-xs text-gray-600 mt-0.5">Delivery available in 30-45 mins</p>
                             </div>
                             <div className="ml-auto w-2 h-2 rounded-full bg-green-500 mt-2"></div>

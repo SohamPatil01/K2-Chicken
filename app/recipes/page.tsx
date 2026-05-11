@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   keywords: [
     "chicken recipes",
     "chicken cooking recipes",
-    "chicken dishes bidar",
+    "chicken dishes pune",
     "how to cook chicken",
     "chicken recipe ideas",
     "K2 chicken recipes",

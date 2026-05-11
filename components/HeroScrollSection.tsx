@@ -32,7 +32,7 @@ export function HeroScrollSection() {
       >
         <Image
           src={HERO_IMAGE}
-          alt="Fresh premium chicken - K2 Chicken Bidar"
+          alt="Fresh premium chicken - K2 Chicken Pune"
           height={720}
           width={1400}
           className="mx-auto rounded-2xl object-cover h-full object-center"
