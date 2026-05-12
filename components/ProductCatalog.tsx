@@ -101,6 +101,7 @@ function ProductCard({
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover object-center"
             priority={index < 8}
+            unoptimized={product.image_url.startsWith("http")}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-4xl">🍗</div>

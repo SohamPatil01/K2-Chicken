@@ -32,6 +32,7 @@ const nextConfig = {
     // Remote patterns if needed (for external images)
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      { protocol: "https", hostname: "kimi-web-img.moonshot.cn", pathname: "/**" },
     ],
   },
 
