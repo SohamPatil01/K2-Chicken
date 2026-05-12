@@ -77,17 +77,17 @@ export default function ReviewsSection({ initialReviews }: ReviewsSectionProps =
         ) : (
           <div className="grid md:grid-cols-3 gap-8 stagger-children">
             {displayed.map((review) => (
-              <div key={review.id} className="testimonial-card p-8 hover:shadow-lg transition-shadow">
+              <div key={review.id} className="testimonial-card p-8 hover:shadow-lg transition-shadow min-w-0">
                 <StarRating rating={review.rating} />
-                <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                <p className="text-gray-600 mb-6 leading-relaxed text-sm break-words">
                   &ldquo;{review.comment}&rdquo;
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm flex-shrink-0">
                     {review.user_name.charAt(0).toUpperCase()}
                   </div>
-                  <div>
-                    <h4 className="text-gray-900 font-semibold text-sm">{review.user_name}</h4>
+                  <div className="min-w-0">
+                    <h4 className="text-gray-900 font-semibold text-sm break-words">{review.user_name}</h4>
                     <p className="text-gray-400 text-xs">Verified Customer</p>
                   </div>
                 </div>

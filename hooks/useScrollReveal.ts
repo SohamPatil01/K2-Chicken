@@ -19,6 +19,15 @@ export function useScrollReveal(
     const elements = document.querySelectorAll<HTMLElement>(selector);
     if (!elements.length) return;
 
+    const shouldDisable =
+      window.matchMedia("(max-width: 768px), (prefers-reduced-motion: reduce)")
+        .matches;
+
+    if (shouldDisable) {
+      elements.forEach((el) => el.classList.add("in-view"));
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

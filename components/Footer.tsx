@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm shrink-0">
                 <Image src="/logo.png" alt="K2 Chicken" width={40} height={40} className="w-full h-full object-cover" />
               </div>
-              <span className="text-2xl font-serif font-bold">K2 Chicken</span>
+              <span className="text-2xl font-serif font-bold break-words">K2 Chicken</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Pune's trusted source for 100% fresh, raw, Halal-certified chicken. Sourced daily, cut to order, delivered fresh. No frozen stock, no compromises.
@@ -42,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-gray-400">
               {["Chicken Breast (Boneless)", "Chicken Curry Cut", "Chicken Drumsticks", "Chicken Mince / Keema", "Whole Chicken", "Liver & Gizzard"].map((item) => (
                 <li key={item}>
-                  <Link href="/#products" className="hover:text-brand-red transition-colors">{item}</Link>
+                  <Link href="/#products" className="hover:text-brand-red transition-colors break-words">{item}</Link>
                 </li>
               ))}
             </ul>
@@ -71,7 +71,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-brand-red mt-0.5 flex-shrink-0" />
-                <span>Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune 411027</span>
+                <span className="break-words">Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune 411027</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-brand-red flex-shrink-0" />
@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-brand-red flex-shrink-0" />
-                <a href="mailto:k2foodindia@gmail.com" className="hover:text-brand-red transition-colors">k2foodindia@gmail.com</a>
+                <a href="mailto:k2foodindia@gmail.com" className="hover:text-brand-red transition-colors break-all">k2foodindia@gmail.com</a>
               </li>
               <li className="flex items-center gap-3">
                 <Clock className="w-4 h-4 text-brand-red flex-shrink-0" />
@@ -91,8 +91,8 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">© 2026 K2 Chicken. All rights reserved. FSSAI Licensed.</p>
-          <div className="flex items-center gap-6 text-sm text-gray-500">
+          <p className="text-gray-500 text-sm text-center md:text-left break-words">© 2026 K2 Chicken. All rights reserved. FSSAI Licensed.</p>
+          <div className="flex items-center gap-4 md:gap-6 text-sm text-gray-500 flex-wrap justify-center">
             <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> Secure Payments</span>
             <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> SSL Encrypted</span>
             <span className="flex items-center gap-1.5"><BadgeCheck className="w-3.5 h-3.5" /> FSSAI Certified</span>

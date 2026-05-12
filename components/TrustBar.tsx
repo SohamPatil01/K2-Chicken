@@ -41,14 +41,14 @@ export default function TrustBar() {
             return (
               <div
                 key={item.title}
-                className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default"
+                className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-default min-w-0"
               >
                 <div className={`w-12 h-12 rounded-full ${item.bg} flex items-center justify-center ${item.iconColor} flex-shrink-0`}>
                   <Icon className="w-5 h-5" />
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
-                  <p className="text-xs text-gray-500">{item.sub}</p>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-gray-900 text-sm break-words">{item.title}</h4>
+                  <p className="text-xs text-gray-500 break-words">{item.sub}</p>
                 </div>
               </div>
             );

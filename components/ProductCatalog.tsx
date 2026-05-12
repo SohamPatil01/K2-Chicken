@@ -68,6 +68,18 @@ function matchesBoneFilter(product: Product, filter: string): boolean {
   return false;
 }
 
+function normalizeSelectedCategory(category?: string | null): string {
+  if (!category) return "all";
+  if (category === "withbone" || category === "with-bone") return "with-bone";
+  if (category === "boneless" || category === "without-bone")
+    return "without-bone";
+  return category;
+}
+
+function shouldHideRawCategory(category?: string | null): boolean {
+  return category === "withbone" || category === "boneless";
+}
+
 function ProductCard({
   product,
   isBestseller,
@@ -161,12 +173,16 @@ function ProductCard({
       </div>
 
       {/* Card body */}
-      <div className="p-5">
+      <div className="p-5 min-w-0">
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-base font-serif font-semibold text-gray-900 group-hover:text-brand-red transition-colors mb-1.5 leading-tight">{product.name}</h3>
+          <h3 className="text-base font-serif font-semibold text-gray-900 group-hover:text-brand-red transition-colors mb-1.5 leading-tight break-words">
+            {product.name}
+          </h3>
         </Link>
         {product.description && (
-          <p className="text-gray-500 text-sm mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+          <p className="text-gray-500 text-sm mb-3 line-clamp-2 leading-relaxed break-words">
+            {product.description}
+          </p>
         )}
 
         {/* Weight options */}
@@ -254,7 +270,9 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts || []);
   const [loading, setLoading] = useState(!initialProducts);
   const [searchTerm, setSearchTerm] = useState(searchParams?.get("search") || "");
-  const [selectedCategory, setSelectedCategory] = useState<string>(() => searchParams?.get("category") || "all");
+  const [selectedCategory, setSelectedCategory] = useState<string>(() =>
+    normalizeSelectedCategory(searchParams?.get("category"))
+  );
   const [sortBy, setSortBy] = useState<"popular" | "price_low" | "price_high" | "name">("popular");
   const { state, dispatch } = useCart();
 
@@ -264,10 +282,12 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
     { value: "all", label: "All Cuts" },
     { value: "with-bone", label: "With Bone" },
     { value: "without-bone", label: "Without Bone" },
-    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))).map((category) => ({
-      value: category as string,
-      label: String(category).replace(/[_-]/g, " "),
-    })),
+    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))
+      .filter((category) => !shouldHideRawCategory(category as string))
+      .map((category) => ({
+        value: category as string,
+        label: String(category).replace(/[_-]/g, " "),
+      })),
   ].filter(
     (filter, index, arr) =>
       arr.findIndex((item) => item.value === filter.value) === index
@@ -283,6 +303,8 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
     }
     const urlSearch = searchParams?.get("search");
     if (urlSearch) setSearchTerm(urlSearch);
+    const urlCategory = searchParams?.get("category");
+    if (urlCategory) setSelectedCategory(normalizeSelectedCategory(urlCategory));
   }, []);
 
   useEffect(() => {
