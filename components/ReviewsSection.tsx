@@ -75,7 +75,7 @@ export default function ReviewsSection({ initialReviews }: ReviewsSectionProps =
             <p>Be the first to share your experience!</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 stagger-children">
             {displayed.map((review) => (
               <div key={review.id} className="testimonial-card p-8 hover:shadow-lg transition-shadow">
                 <StarRating rating={review.rating} />

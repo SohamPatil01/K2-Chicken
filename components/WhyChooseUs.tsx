@@ -65,7 +65,7 @@ export default function WhyChooseUs() {
               raw chicken. Every cut tells a story of quality, hygiene, and uncompromising freshness.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-6 stagger-children">
               {features.map((f) => {
                 const Icon = f.icon;
                 return (

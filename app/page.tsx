@@ -375,9 +375,9 @@ export default async function Home() {
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
         <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} heroProducts={products.slice(0, 3)} />
-        <TrustBar />
+        <div className="reveal-up"><TrustBar /></div>
 
-        <div id="products" className="scroll-mt-20">
+        <div id="products" className="scroll-mt-20 reveal-up">
           <CategoryRail />
         </div>
 
