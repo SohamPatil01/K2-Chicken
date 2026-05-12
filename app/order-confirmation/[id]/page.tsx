@@ -155,10 +155,10 @@ export default function OrderConfirmationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red mx-auto"></div>
             <p className="mt-6 text-lg text-gray-600 font-medium">
               Loading order details...
             </p>
@@ -170,10 +170,10 @@ export default function OrderConfirmationPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16 flex items-center">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-brand-red-hover rounded-full flex items-center justify-center mx-auto mb-6">
               <Package className="h-10 w-10 text-red-500" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -184,7 +184,7 @@ export default function OrderConfirmationPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Home className="h-5 w-5" />
               <span>Back to Home</span>
@@ -221,7 +221,7 @@ export default function OrderConfirmationPage() {
       case "cancelled":
         return "from-red-500 to-rose-500";
       case "preparing":
-        return "from-orange-500 to-amber-500";
+        return "from-brand-red to-amber-500";
       case "ready":
       case "ready_for_pickup":
         return "from-blue-500 to-cyan-500";
@@ -254,7 +254,7 @@ export default function OrderConfirmationPage() {
   const currentStatusDisplay = currentStatus || order.status;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header with Subtle Animation */}
         <div className="text-center mb-8 sm:mb-10 no-print relative">
@@ -393,8 +393,8 @@ export default function OrderConfirmationPage() {
             style={{ transitionDelay: "1s" }}
           >
             <div className="flex items-center gap-2 mb-5">
-              <div className="p-2 bg-orange-50 rounded-lg">
-                <Receipt className="h-5 w-5 text-orange-600" />
+              <div className="p-2 bg-red-50 rounded-lg">
+                <Receipt className="h-5 w-5 text-brand-red" />
               </div>
               <h2 className="text-lg font-semibold text-gray-800">
                 Order Info
@@ -402,7 +402,7 @@ export default function OrderConfirmationPage() {
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 bg-orange-50/50 rounded-lg border border-orange-100">
+              <div className="p-3 bg-red-50/50 rounded-lg border border-red-100">
                 <p className="text-xs font-medium text-gray-500 mb-1">
                   Order Number
                 </p>
@@ -425,7 +425,7 @@ export default function OrderConfirmationPage() {
 
               <div className="p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Clock className="h-4 w-4 text-orange-500" />
+                  <Clock className="h-4 w-4 text-brand-red" />
                   <p className="text-xs font-medium text-gray-500">
                     Estimated{" "}
                     {order.delivery_type === "pickup" ? "Pickup" : "Delivery"}
@@ -441,7 +441,7 @@ export default function OrderConfirmationPage() {
                   currentStatusDisplay === "delivered"
                     ? "bg-green-50 border-green-200"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-orange-50 border-orange-200"
+                    ? "bg-red-50 border-red-200"
                     : currentStatusDisplay === "ready" ||
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-50 border-blue-200"
@@ -456,7 +456,7 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "delivered"
                       ? "text-green-700"
                       : currentStatusDisplay === "preparing"
-                      ? "text-orange-700"
+                      ? "text-brand-red"
                       : currentStatusDisplay === "ready" ||
                         currentStatusDisplay === "ready_for_pickup"
                       ? "text-blue-700"
@@ -663,7 +663,7 @@ export default function OrderConfirmationPage() {
                   <span className="text-base font-semibold text-gray-900">
                     Total Amount
                   </span>
-                  <span className="text-2xl font-bold text-orange-600">
+                  <span className="text-2xl font-bold text-brand-red">
                     ₹{Number(order.total_amount).toFixed(0)}
                   </span>
                 </div>
@@ -682,7 +682,7 @@ export default function OrderConfirmationPage() {
           style={{ transitionDelay: "1.6s" }}
         >
           <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
-            <ChefHat className="h-5 w-5 text-orange-500" />
+            <ChefHat className="h-5 w-5 text-brand-red" />
             Order Progress
           </h3>
 
@@ -697,7 +697,7 @@ export default function OrderConfirmationPage() {
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-400 h-3/4"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-orange-400 h-1/2"
+                    ? "bg-red-50 h-1/2"
                     : "bg-gray-300 h-1/4"
                 }`}
                 style={{
@@ -760,7 +760,7 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "ready" ||
                     currentStatusDisplay === "ready_for_pickup" ||
                     currentStatusDisplay === "delivered"
-                      ? "bg-orange-50 border-orange-300"
+                      ? "bg-red-50 border-red-200"
                       : "bg-gray-100 border-gray-300"
                   }`}
                 >
@@ -770,7 +770,7 @@ export default function OrderConfirmationPage() {
                       currentStatusDisplay === "ready" ||
                       currentStatusDisplay === "ready_for_pickup" ||
                       currentStatusDisplay === "delivered"
-                        ? "text-orange-600"
+                        ? "text-brand-red"
                         : "text-gray-400"
                     }`}
                   />
@@ -859,7 +859,7 @@ export default function OrderConfirmationPage() {
                   currentStatusDisplay === "delivered"
                     ? "bg-green-50 border-green-200 text-green-700"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-orange-50 border-orange-200 text-orange-700"
+                    ? "bg-red-50 border-red-200 text-brand-red"
                     : currentStatusDisplay === "ready" ||
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-50 border-blue-200 text-blue-700"
@@ -871,7 +871,7 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "delivered"
                       ? "bg-green-500"
                       : currentStatusDisplay === "preparing"
-                      ? "bg-orange-500"
+                      ? "bg-brand-red"
                       : currentStatusDisplay === "ready" ||
                         currentStatusDisplay === "ready_for_pickup"
                       ? "bg-blue-500"
@@ -897,7 +897,7 @@ export default function OrderConfirmationPage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-lg font-medium hover:from-orange-700 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red text-white px-6 py-3 rounded-lg font-medium hover:bg-brand-red-hover transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <ShoppingBag className="h-4 w-4" />
             <span>Order More</span>

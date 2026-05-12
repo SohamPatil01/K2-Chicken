@@ -51,14 +51,14 @@ export default function DeliveryChecker() {
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCheck()}
             placeholder="Enter pincode"
-            className="w-full pl-10 pr-4 py-3 rounded-button border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 shadow-soft"
+            className="w-full pl-10 pr-4 py-3 rounded-button border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-red-200 shadow-soft"
           />
         </div>
         <button
           type="button"
           onClick={handleCheck}
           disabled={status === "checking" || !pincode.trim()}
-          className="px-4 py-3 rounded-button bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-soft disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-smooth min-h-[48px]"
+          className="px-4 py-3 rounded-button bg-brand-red hover:bg-brand-red-hover text-white font-semibold shadow-soft disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-smooth min-h-[48px]"
         >
           {status === "checking" ? "..." : "Check"}
         </button>

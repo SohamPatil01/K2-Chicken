@@ -159,13 +159,13 @@ export default function PromotionsFlyer({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gradient-to-br from-orange-50 via-orange-100/50 to-orange-50"
+      className="relative w-full overflow-hidden bg-gradient-to-br from-brand-red via-gray-50 to-brand-red-hover"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Subtle animated gradient background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 via-orange-200/30 to-orange-100/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 via-gray-50 to-brand-red-hover/50"></div>
       </div>
 
       {/* Subtle animated overlay pattern */}
@@ -185,7 +185,7 @@ export default function PromotionsFlyer({
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-orange-200/30 rounded-full blur-sm"
+            className="absolute w-2 h-2 bg-red-50/30 rounded-full blur-sm"
             style={{
               left: `${15 + i * 20}%`,
               top: `${20 + (i % 2) * 40}%`,
@@ -203,17 +203,17 @@ export default function PromotionsFlyer({
             <>
               <button
                 onClick={goToPrevious}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-orange-200 hover:bg-white hover:border-orange-300 transition-all duration-300 hover:scale-105 shadow-sm group"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-red-200 hover:bg-white hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-sm group"
                 aria-label="Previous promotion"
               >
-                <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-orange-600 group-hover:translate-x-[-2px] transition-transform" />
+                <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-brand-red group-hover:translate-x-[-2px] transition-transform" />
               </button>
               <button
                 onClick={goToNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-orange-200 hover:bg-white hover:border-orange-300 transition-all duration-300 hover:scale-105 shadow-sm group"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-red-200 hover:bg-white hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-sm group"
                 aria-label="Next promotion"
               >
-                <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-orange-600 group-hover:translate-x-[2px] transition-transform" />
+                <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-brand-red group-hover:translate-x-[2px] transition-transform" />
               </button>
             </>
           )}
@@ -222,14 +222,14 @@ export default function PromotionsFlyer({
             {/* Left side - Animated Discount Badge */}
             <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 animate-slide-in-from-left">
               <div className="relative group">
-                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-orange-200 shadow-md transform group-hover:scale-105 transition-all duration-300">
+                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-red-200 shadow-md transform group-hover:scale-105 transition-all duration-300">
                   <div className="relative">
-                    <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
+                    <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-brand-red" />
                   </div>
                 </div>
               </div>
               <div className="transform transition-all duration-500">
-                <div className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-orange-700/80 mb-1 animate-fade-in">
+                <div className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-brand-red/80 mb-1 animate-fade-in">
                   Special Offer
                 </div>
                 <div
@@ -238,12 +238,12 @@ export default function PromotionsFlyer({
                       : "opacity-100 scale-100"
                     }`}
                 >
-                  <span className="text-orange-700">
+                  <span className="text-brand-red">
                     {formatDiscount(currentPromo)}
                   </span>
                   {(currentPromo.discount_type === "percentage" ||
                     currentPromo.discount_type === "fixed") && (
-                      <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-orange-900/70 font-medium">
+                      <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-brand-red/70 font-medium">
                         OFF
                       </span>
                     )}
@@ -264,11 +264,11 @@ export default function PromotionsFlyer({
                 }`}
             >
               <div className="inline-flex items-center space-x-2 mb-2 animate-scale-in">
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
-                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-orange-700/80 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-orange-200">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-brand-red" />
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-brand-red/80 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-red-200">
                   Limited Time
                 </span>
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-brand-red" />
               </div>
 
               <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight text-gray-900">
@@ -294,7 +294,7 @@ export default function PromotionsFlyer({
                       router.push("/checkout");
                     }
                   }}
-                  className="mt-3 inline-flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-orange-200 transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:shadow-orange-300"
+                  className="mt-3 inline-flex items-center space-x-2 bg-gradient-to-r from-brand-red to-brand-red-hover px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-brand-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:shadow-brand-sm"
                 >
                   <span className="text-xs sm:text-sm font-semibold text-white/90">
                     Use Code:
@@ -335,13 +335,13 @@ export default function PromotionsFlyer({
                     onClick={() => goToSlide(index)}
                     className={`relative transition-all duration-300 group ${index === currentIndex ? "w-2.5 h-8 lg:h-10" : "w-2 h-2"
                       } rounded-full ${index === currentIndex
-                        ? "bg-orange-600 shadow-md"
-                        : "bg-orange-300/50 hover:bg-orange-300"
+                        ? "bg-brand-red shadow-md"
+                        : "bg-red-50/50 hover:bg-red-50"
                       }`}
                     aria-label={`Go to promotion ${index + 1}`}
                   >
                     {index === currentIndex && (
-                      <div className="absolute inset-0 bg-orange-600 rounded-full opacity-75"></div>
+                      <div className="absolute inset-0 bg-brand-red rounded-full opacity-75"></div>
                     )}
                   </button>
                 ))}

@@ -42,7 +42,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-orange-300 transition-all duration-300"
+      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-red-200 transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -90,7 +90,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         >
           <button
             onClick={addToCart}
-            className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:from-orange-700 hover:to-red-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            className="w-full bg-gradient-to-r from-brand-red to-red-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:from-brand-red hover:to-red-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
           >
             <ShoppingCart size={20} />
             Add to Cart
@@ -101,7 +101,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       {/* Product Info */}
       <div className="p-6">
         {/* Product Name */}
-        <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-orange-600 transition-colors duration-300">
+        <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-brand-red transition-colors duration-300">
           {product.name}
         </h3>
 
@@ -129,12 +129,12 @@ const ProductCard = ({ product }: { product: Product }) => {
               >
                 <Minus size={16} className="text-gray-700" />
               </button>
-              <div className="w-10 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-9 bg-red-50 rounded-lg flex items-center justify-center">
                 <span className="font-bold text-gray-900">{cartQuantity}</span>
               </div>
               <button
                 onClick={() => updateQuantity(cartQuantity + 1)}
-                className="w-9 h-9 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red hover:to-red-700 text-white rounded-lg flex items-center justify-center transition-colors"
               >
                 <Plus size={16} />
               </button>
@@ -148,7 +148,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         ) : (
           <button
             onClick={addToCart}
-            className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
           >
             <Plus size={18} />
             <span>Add to Cart</span>
@@ -227,15 +227,15 @@ export default function FeaturedProducts({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 rounded-full px-4 py-2 mb-6">
-            <Zap className="text-orange-600" size={18} />
-            <span className="text-sm font-semibold text-orange-700">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-red to-red-100 border border-red-200 rounded-full px-4 py-2 mb-6">
+            <Zap className="text-brand-red" size={18} />
+            <span className="text-sm font-semibold text-brand-red">
               Featured Products
             </span>
           </div>
           <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
             Our{" "}
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-red to-red-600 bg-clip-text text-transparent">
               Best Sellers
             </span>
           </h2>
@@ -255,7 +255,7 @@ export default function FeaturedProducts({
         {/* CTA Section */}
         <div className="text-center">
           <Link href="/#products">
-            <button className="group bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto">
+            <button className="group bg-gradient-to-r from-brand-red to-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-brand-red hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto">
               View All Products
               <ArrowRight
                 className="group-hover:translate-x-1 transition-transform duration-300"
@@ -277,7 +277,7 @@ export default function FeaturedProducts({
               key={index}
               className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border border-gray-100"
             >
-              <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+              <div className="text-3xl font-bold bg-gradient-to-r from-brand-red to-red-600 bg-clip-text text-transparent mb-2">
                 {stat.number}
               </div>
               <div className="text-gray-600 font-medium text-sm">

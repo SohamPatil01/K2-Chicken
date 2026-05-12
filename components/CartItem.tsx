@@ -25,7 +25,7 @@ export default function CartItem({
 
   return (
     <div
-      className={`group bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-orange-200 ${className}`}
+      className={`group bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200 ${className}`}
     >
       <div className="p-4 sm:p-5">
         <div className="flex gap-4">
@@ -55,11 +55,11 @@ export default function CartItem({
           <div className="flex-grow min-w-0">
             <div className="flex items-start justify-between gap-2 mb-2">
               <div>
-                <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-smooth line-clamp-2">
+                <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth line-clamp-2">
                   {item.product.name}
                 </h3>
                 {item.selectedWeight && (
-                  <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 bg-orange-50 text-orange-700 rounded-button text-xs font-medium border border-orange-100">
+                  <div className="inline-flex items-center gap-1.5 mt-1 px-2.5 py-1 bg-red-50 text-brand-red rounded-button text-xs font-medium border border-red-100">
                     <Package className="w-3.5 h-3.5" />
                     {item.selectedWeight.weight}
                     {item.selectedWeight.weight_unit}
@@ -91,7 +91,7 @@ export default function CartItem({
                       item.selectedWeight
                     )
                   }
-                  className="w-10 h-10 flex items-center justify-center bg-white hover:bg-orange-50 text-gray-700 hover:text-orange-600 rounded-button shadow-soft transition-all duration-smooth min-w-[44px] min-h-[44px]"
+                  className="w-10 h-10 flex items-center justify-center bg-white hover:bg-red-50 text-gray-700 hover:text-brand-red rounded-button shadow-soft transition-all duration-smooth min-w-[44px] min-h-[44px]"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="w-4 h-4" />
@@ -108,13 +108,13 @@ export default function CartItem({
                       item.selectedWeight
                     )
                   }
-                  className="w-10 h-10 flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white rounded-button shadow-soft transition-all duration-smooth min-w-[44px] min-h-[44px]"
+                  className="w-10 h-10 flex items-center justify-center bg-brand-red hover:bg-brand-red-hover text-white rounded-button shadow-soft transition-all duration-smooth min-w-[44px] min-h-[44px]"
                   aria-label="Increase quantity"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-lg font-bold text-orange-600">
+              <p className="text-lg font-bold text-brand-red">
                 ₹{totalPrice.toFixed(0)}
               </p>
             </div>

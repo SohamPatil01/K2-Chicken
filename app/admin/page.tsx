@@ -600,7 +600,7 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-white flex items-center justify-center px-4">
         <div className="text-center">
           <div className="flex flex-col items-center mb-4 sm:mb-6">
             <div className="relative inline-block">
@@ -617,7 +617,7 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
           <p className="text-gray-600 font-semibold text-sm sm:text-base">
             Loading Admin Dashboard...
           </p>
@@ -642,7 +642,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/20 to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Audio Enable Notice - Show if audio not enabled */}
       {!audioEnabled && user && (
         <div className="fixed top-4 right-4 z-50 bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 shadow-lg max-w-sm">
@@ -683,7 +683,7 @@ export default function AdminPage() {
           role="alert"
           aria-live="assertive"
         >
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[350px] animate-pulse border-4 border-white">
+          <div className="bg-gradient-to-r bg-brand-red text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 min-w-[350px] animate-pulse border-4 border-white">
             <div className="text-4xl animate-bounce">🔔</div>
             <div className="flex-1">
               <div className="font-bold text-xl text-white">
@@ -728,13 +728,11 @@ export default function AdminPage() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Admin Console
-                </h1>
-              </div>
-              <div className="hidden md:block text-sm text-gray-600">
-                K2 Chicken Management System
+                <div className="w-8 h-8 bg-brand-red rounded-full flex items-center justify-center text-white font-serif font-bold text-sm shadow-brand-sm flex-shrink-0">K2</div>
+                <div>
+                  <h1 className="text-base font-serif font-bold text-gray-900">Admin Console</h1>
+                  <p className="text-xs text-gray-500 hidden md:block">K2 Chicken Management System</p>
+                </div>
               </div>
             </div>
             <div
@@ -743,7 +741,7 @@ export default function AdminPage() {
               }`}
             >
               <div className="flex items-center space-x-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-200">
-                <User className="h-4 w-4 text-orange-600" />
+                <User className="h-4 w-4 text-brand-red" />
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wide">
                     User
@@ -802,7 +800,7 @@ export default function AdminPage() {
               const Icon = stat.icon;
               const colorClasses = {
                 blue: "bg-blue-50 text-blue-600 border-blue-200",
-                orange: "bg-orange-50 text-orange-600 border-orange-200",
+                orange: "bg-red-50 text-brand-red border-red-200",
                 green: "bg-green-50 text-green-600 border-green-200",
                 yellow: "bg-yellow-50 text-yellow-600 border-yellow-200",
               };
@@ -867,8 +865,8 @@ export default function AdminPage() {
                       mounted ? "animate-slide-up" : "opacity-0"
                     } ${
                       activeTab === tab.id
-                        ? "bg-orange-500 text-white shadow-md"
-                        : "bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-600 border border-gray-200"
+                        ? "bg-brand-red text-white shadow-md"
+                        : "bg-gray-50 text-gray-700 hover:bg-red-50 hover:text-brand-red border border-gray-200"
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >

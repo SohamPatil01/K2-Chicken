@@ -14,13 +14,13 @@ export function HeroScrollSection() {
         titleComponent={
           <>
             <h2 className="text-3xl md:text-4xl font-semibold text-black dark:text-white flex items-center justify-center gap-2">
-              <Sparkles className="h-8 w-8 text-orange-500" aria-hidden />
+              <Sparkles className="h-8 w-8 text-brand-red" aria-hidden />
               Freshness you can taste
             </h2>
             <h1 className="text-4xl md:text-[5rem] font-bold mt-2 leading-none text-black dark:text-white">
               Premium Chicken
               <br />
-              <span className="text-orange-600 dark:text-orange-400">
+              <span className="text-brand-red dark:text-brand-red/70">
                 Delivered to You
               </span>
             </h1>

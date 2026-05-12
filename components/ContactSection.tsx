@@ -194,7 +194,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-16 sm:py-20 bg-gray-50 border-t border-gray-100"
+      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-16 sm:py-20 section-alt border-t border-gray-100"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
@@ -236,7 +236,7 @@ export default function ContactSection() {
                 <label
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "name" || formData.name
-                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      ? "top-2 text-xs text-brand-red font-semibold"
                       : "top-4 text-sm text-gray-500"
                   }`}
                 >
@@ -249,7 +249,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -259,7 +259,7 @@ export default function ContactSection() {
                 <label
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "email" || formData.email
-                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      ? "top-2 text-xs text-brand-red font-semibold"
                       : "top-4 text-sm text-gray-500"
                   }`}
                 >
@@ -272,7 +272,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -282,7 +282,7 @@ export default function ContactSection() {
                 <label
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "phone" || formData.phone
-                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      ? "top-2 text-xs text-brand-red font-semibold"
                       : "top-4 text-sm text-gray-500"
                   }`}
                 >
@@ -295,7 +295,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("phone")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -305,7 +305,7 @@ export default function ContactSection() {
                 <label
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "address" || formData.address
-                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      ? "top-2 text-xs text-brand-red font-semibold"
                       : "top-4 text-sm text-gray-500"
                   }`}
                 >
@@ -318,7 +318,7 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("address")}
                   onBlur={() => setFocusedField(null)}
                   rows={3}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth resize-none bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth resize-none bg-white"
                   placeholder="Enter your delivery address for faster service..."
                 />
                 <p className="text-xs text-gray-500 mt-1 ml-1">
@@ -331,7 +331,7 @@ export default function ContactSection() {
                 <label
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "message" || formData.message
-                      ? "top-2 text-xs text-orange-600 font-semibold"
+                      ? "top-2 text-xs text-brand-red font-semibold"
                       : "top-4 text-sm text-gray-500"
                   }`}
                 >
@@ -344,7 +344,7 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("message")}
                   onBlur={() => setFocusedField(null)}
                   rows={5}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all duration-smooth resize-none bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth resize-none bg-white"
                   required
                 />
               </div>
@@ -353,7 +353,7 @@ export default function ContactSection() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-6 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-brand-red hover:bg-brand-red-hover text-white font-semibold py-4 px-6 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
                   {isSubmitting ? "Sending..." : "Send message"}
@@ -371,7 +371,7 @@ export default function ContactSection() {
                 <button
                   type="button"
                   onClick={handleWhatsAppClick}
-                  className="w-full bg-white hover:bg-orange-50 text-orange-700 font-semibold py-4 px-6 rounded-button border border-orange-200 hover:border-orange-300 transition-all duration-smooth flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-red-50 text-brand-red font-semibold py-4 px-6 rounded-button border border-red-200 hover:border-red-300 transition-all duration-smooth flex items-center justify-center gap-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   Chat on WhatsApp
@@ -386,7 +386,7 @@ export default function ContactSection() {
             <div className="bg-white rounded-card overflow-hidden shadow-soft border border-gray-100 relative h-64 sm:h-80">
               <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-button px-4 py-2 shadow-soft border border-gray-200">
                 <div className="flex items-center gap-2">
-                  <MapPinIcon className="w-4 h-4 text-orange-600" />
+                  <MapPinIcon className="w-4 h-4 text-brand-red" />
                   <span className="text-xs font-semibold text-gray-900">
                     Our Location
                   </span>
@@ -398,7 +398,7 @@ export default function ContactSection() {
                   href={`https://www.google.com/maps/search/?api=1&query=${SHOP_LOCATION.lat},${SHOP_LOCATION.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-orange-600 px-4 py-2 rounded-button text-xs font-medium border border-orange-200 hover:border-orange-300 transition-all duration-smooth flex items-center gap-2 shadow-soft"
+                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-brand-red px-4 py-2 rounded-button text-xs font-medium border border-red-200 hover:border-red-300 transition-all duration-smooth flex items-center gap-2 shadow-soft"
                 >
                   <MapPinIcon className="w-3 h-3" />
                   Open in Maps
@@ -410,36 +410,36 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 gap-3 mb-6">
               <a
                 href="tel:+918484978622"
-                className="bg-white hover:bg-orange-50 text-orange-700 rounded-card p-5 border border-gray-100 hover:border-orange-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
+                className="bg-white hover:bg-red-50 text-brand-red rounded-card p-5 border border-gray-100 hover:border-red-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                    <PhoneCall className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-50 transition-colors">
+                    <PhoneCall className="w-6 h-6 text-brand-red" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-base mb-0.5">Call Now</h4>
-                    <p className="text-sm text-orange-600">+91 84849 78622</p>
+                    <p className="text-sm text-brand-red">+91 84849 78622</p>
                   </div>
                 </div>
-                <Zap className="w-5 h-5 text-orange-500 opacity-60 group-hover:opacity-100" />
+                <Zap className="w-5 h-5 text-brand-red opacity-60 group-hover:opacity-100" />
               </a>
 
               <button
                 onClick={handleWhatsAppClick}
-                className="bg-white hover:bg-orange-50 text-orange-700 rounded-card p-5 border border-gray-100 hover:border-orange-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
+                className="bg-white hover:bg-red-50 text-brand-red rounded-card p-5 border border-gray-100 hover:border-red-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                    <MessageCircle className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-50 transition-colors">
+                    <MessageCircle className="w-6 h-6 text-brand-red" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-base mb-0.5">
                       WhatsApp Us
                     </h4>
-                    <p className="text-sm text-orange-600">Instant response</p>
+                    <p className="text-sm text-brand-red">Instant response</p>
                   </div>
                 </div>
-                <Zap className="w-5 h-5 text-orange-500 opacity-60 group-hover:opacity-100" />
+                <Zap className="w-5 h-5 text-brand-red opacity-60 group-hover:opacity-100" />
               </button>
             </div>
 
@@ -447,7 +447,7 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <a
                 href="mailto:k2foodindia@gmail.com"
-                className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-orange-200 hover:shadow-card transition-all duration-smooth group"
+                className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-red-200 hover:shadow-card transition-all duration-smooth group"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
                   <Mail className="w-6 h-6 text-blue-600" />
@@ -456,9 +456,9 @@ export default function ContactSection() {
                 <p className="text-gray-600 text-sm">k2foodindia@gmail.com</p>
               </a>
 
-              <div className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-orange-200 transition-all duration-smooth group">
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-200 transition-colors">
-                  <MapPinIcon className="w-6 h-6 text-orange-600" />
+              <div className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-red-200 transition-all duration-smooth group">
+                <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-red-50 transition-colors">
+                  <MapPinIcon className="w-6 h-6 text-brand-red" />
                 </div>
                 <h4 className="font-bold text-gray-900 mb-1">Visit Us</h4>
                 <p className="text-gray-600 text-xs leading-relaxed">
@@ -468,9 +468,9 @@ export default function ContactSection() {
             </div>
 
             {/* Operating Hours */}
-            <div className="bg-orange-50 border border-orange-200 rounded-card p-6 shadow-soft">
+            <div className="bg-red-50 border border-red-200 rounded-card p-6 shadow-soft">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-md">
+                <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center shadow-md">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -486,7 +486,7 @@ export default function ContactSection() {
                 {operatingHours.map((schedule, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-orange-100"
+                    className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-red-100"
                   >
                     <span className="text-gray-800 font-semibold text-sm">
                       {schedule.day}
@@ -497,9 +497,9 @@ export default function ContactSection() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-orange-200">
+              <div className="mt-4 pt-4 border-t border-red-200">
                 <p className="text-xs text-gray-600 flex items-center gap-2">
-                  <Zap className="w-3 h-3 text-orange-500" />
+                  <Zap className="w-3 h-3 text-brand-red" />
                   <span>
                     Same-day delivery available for orders placed before 6 PM
                   </span>

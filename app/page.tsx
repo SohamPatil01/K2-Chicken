@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
+import TrustBar from "@/components/TrustBar";
 import MotionSection from "@/components/MotionSection";
 import pool from "@/lib/db";
 import type { Metadata } from "next";
@@ -11,7 +12,7 @@ const siteUrl = getSiteUrl();
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
   loading: () => (
     <div className="min-h-[400px] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-500"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-brand-red"></div>
     </div>
   ),
   ssr: true,
@@ -20,7 +21,7 @@ const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
 const RecipeSection = dynamic(() => import("@/components/RecipeSection"), {
   loading: () => (
     <div className="min-h-[300px] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-10 w-10 border-4 border-orange-200 border-t-orange-500"></div>
+      <div className="animate-spin rounded-full h-10 w-10 border-4 border-red-200 border-t-brand-red"></div>
     </div>
   ),
   ssr: true,
@@ -370,16 +371,17 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
-      <div className="bg-gray-50 min-h-screen w-full max-w-[100vw] overflow-x-hidden">
+      <div className="bg-white min-h-screen w-full max-w-[100vw] overflow-x-hidden">
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
-        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={500} />
+        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} />
+        <TrustBar />
 
-        <div className="mt-4 sm:mt-6">
+        <div id="products" className="scroll-mt-20">
           <CategoryRail />
         </div>
 
-        <MotionSection delay={0.2} id="products">
+        <MotionSection delay={0.2}>
           <ProductCatalog
             initialProducts={products}
             deliveryEnabled={deliveryEnabled}

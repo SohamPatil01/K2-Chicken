@@ -39,7 +39,7 @@ export default function MobileBottomNav() {
                 <div
                   className={`flex flex-col items-center justify-center rounded-2xl transition-all duration-200 ${
                     isActive
-                      ? "text-orange-600"
+                      ? "text-brand-red"
                       : "text-gray-500 active:text-gray-700"
                   }`}
                 >
@@ -47,7 +47,7 @@ export default function MobileBottomNav() {
                     <div
                       className={`absolute inset-0 rounded-full transition-all duration-200 ${
                         isActive
-                          ? "bg-orange-100 scale-150"
+                          ? "bg-red-50 scale-150"
                           : "bg-transparent scale-0"
                       }`}
                     ></div>
@@ -58,14 +58,14 @@ export default function MobileBottomNav() {
                       strokeWidth={isActive ? 2.5 : 2}
                     />
                     {item.label === "Cart" && totalItems > 0 && (
-                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-600 to-red-600 text-white text-[10px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
+                      <div className="absolute -top-2 -right-2 bg-brand-red text-white text-[10px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
                         {totalItems > 99 ? "99+" : totalItems}
                       </div>
                     )}
                   </div>
                   <span
                     className={`text-[11px] font-bold transition-colors duration-200 ${
-                      isActive ? "text-orange-600" : "text-gray-500"
+                      isActive ? "text-brand-red" : "text-gray-500"
                     }`}
                   >
                     {item.label}

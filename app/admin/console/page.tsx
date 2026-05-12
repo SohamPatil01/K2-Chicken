@@ -12,9 +12,9 @@ export default function AdminConsole() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
         <p className="text-gray-700 font-semibold">Redirecting...</p>
       </div>
     </div>

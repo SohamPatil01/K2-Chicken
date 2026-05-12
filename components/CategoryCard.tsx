@@ -21,9 +21,9 @@ export default function CategoryCard({
   return (
     <Link
       href={href}
-      className="group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-orange-200"
+      className="group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200"
     >
-      <div className="aspect-square sm:aspect-[4/3] relative bg-gradient-to-br from-orange-50 to-red-50 overflow-hidden">
+      <div className="aspect-square sm:aspect-[4/3] relative bg-gradient-to-br from-brand-red to-red-50 overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -32,7 +32,7 @@ export default function CategoryCard({
           />
         ) : Icon ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Icon className="w-12 h-12 sm:w-16 sm:h-16 text-orange-500 group-hover:text-orange-600 group-hover:scale-110 transition-all duration-smooth" />
+            <Icon className="w-12 h-12 sm:w-16 sm:h-16 text-brand-red group-hover:text-brand-red group-hover:scale-110 transition-all duration-smooth" />
           </div>
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-smooth">
@@ -41,7 +41,7 @@ export default function CategoryCard({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-smooth text-balance">
+        <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth text-balance">
           {label}
         </h3>
         {description && (

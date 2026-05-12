@@ -23,7 +23,7 @@ interface WhatsAppOrder {
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
   received: 'bg-blue-100 text-blue-800',
-  preparing: 'bg-orange-100 text-orange-800',
+  preparing: 'bg-red-50 text-brand-red',
   ready_for_pickup: 'bg-purple-100 text-purple-800',
   out_for_delivery: 'bg-indigo-100 text-indigo-800',
   delivered: 'bg-green-100 text-green-800',

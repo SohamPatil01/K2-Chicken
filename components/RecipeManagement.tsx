@@ -307,7 +307,7 @@ export default function RecipeManagement() {
         {recipes.map((recipe) => (
           <div key={recipe.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-chicken-orange rounded-lg flex items-center justify-center">
+              <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center">
                 <span className="text-2xl">👨‍🍳</span>
               </div>
               <div>

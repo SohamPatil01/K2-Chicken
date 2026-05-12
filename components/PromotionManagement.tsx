@@ -195,7 +195,7 @@ export default function PromotionManagement() {
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-4 border-orange-200 border-t-orange-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
         <p className="text-gray-600">Loading promotions...</p>
       </div>
     );
@@ -207,7 +207,7 @@ export default function PromotionManagement() {
         <h2 className="text-2xl font-bold text-gray-900">Promotion Flyers</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold"
+          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-brand-red to-red-500 text-white rounded-lg hover:from-brand-red hover:to-red-600 transition-all duration-300 font-semibold"
         >
           <Plus className="h-5 w-5" />
           <span>{showForm ? "Cancel" : "Add Promotion"}</span>
@@ -230,7 +230,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
                 required
               />
             </div>
@@ -244,7 +244,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div>
@@ -259,7 +259,7 @@ export default function PromotionManagement() {
                     discount_type: e.target.value as any,
                   })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               >
                 <option value="percentage">Percentage Off</option>
                 <option value="fixed">Fixed Amount Off</option>
@@ -282,7 +282,7 @@ export default function PromotionManagement() {
                     discount_value: isNaN(value) ? 0 : value,
                   });
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div>
@@ -295,7 +295,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, promo_code: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div>
@@ -308,7 +308,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, image_url: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -322,7 +322,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, start_date: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div>
@@ -335,7 +335,7 @@ export default function PromotionManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, end_date: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div>
@@ -352,7 +352,7 @@ export default function PromotionManagement() {
                     display_order: isNaN(value) ? 0 : value,
                   });
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
               />
             </div>
             <div className="flex items-center space-x-4">
@@ -363,7 +363,7 @@ export default function PromotionManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, is_active: e.target.checked })
                   }
-                  className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-brand-red border-gray-300 rounded focus:ring-red-100"
                 />
                 <span className="text-sm font-semibold text-gray-700">
                   Active
@@ -381,7 +381,7 @@ export default function PromotionManagement() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold"
+              className="px-4 py-2 bg-gradient-to-r from-brand-red to-red-500 text-white rounded-lg hover:from-brand-red hover:to-red-600 transition-all duration-300 font-semibold"
             >
               {editingId ? "Update" : "Create"} Promotion
             </button>
@@ -395,7 +395,7 @@ export default function PromotionManagement() {
             key={promo.id}
             className={`bg-white rounded-lg border-2 overflow-hidden shadow-lg ${
               promo.is_active
-                ? "border-orange-500"
+                ? "border-red-200"
                 : "border-gray-300 opacity-60"
             }`}
           >
@@ -432,7 +432,7 @@ export default function PromotionManagement() {
                 </p>
               )}
               <div className="flex items-center justify-between mb-3">
-                <span className="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-bold rounded">
+                <span className="px-3 py-1 bg-gradient-to-r from-brand-red to-red-500 text-white text-sm font-bold rounded">
                   {formatDiscount(promo)}
                 </span>
                 {promo.promo_code && (
@@ -453,7 +453,7 @@ export default function PromotionManagement() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleEdit(promo)}
-                  className="flex-1 px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-semibold"
+                  className="flex-1 px-3 py-2 bg-brand-red text-white rounded-lg hover:bg-brand-red transition-colors text-sm font-semibold"
                 >
                   <Edit className="h-4 w-4 inline mr-1" />
                   Edit

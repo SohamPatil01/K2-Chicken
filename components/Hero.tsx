@@ -2,18 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Star,
-  Clock,
-  Shield,
-  Sparkles,
-  Phone,
-  CheckCircle2,
-} from "lucide-react";
-
-import CinematicBackground from "./CinematicBackground";
-import DeliveryChecker from "./DeliveryChecker";
 
 interface HeroProps {
   deliveryEnabled?: boolean;
@@ -22,164 +10,140 @@ interface HeroProps {
 
 export default function Hero({
   deliveryEnabled = true,
-  freeDeliveryAbove = 500,
+  freeDeliveryAbove = 350,
 }: HeroProps) {
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   return (
-    <section className="relative w-full min-h-[max(85vh,28rem)] sm:min-h-[max(82vh,32rem)] overflow-x-hidden flex flex-col items-center justify-center pt-16 sm:pt-20 pb-10 sm:pb-14 md:pb-16 safe-top">
-      {/* Cinematic Background — fills section height (grows with content) */}
-      <CinematicBackground />
+    <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-white">
+      {/* Background image with heavy white overlay */}
+      <div className="absolute inset-0 z-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1606728035253-49e8a23146de?q=80&w=2070&auto=format&fit=crop"
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover opacity-15"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/40" />
+      </div>
 
-      {/* Main Content — bottom padding on section prevents stat row from being cropped */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center py-4 sm:py-6">
-        <div className="text-center space-y-5 sm:space-y-7 md:space-y-8 bg-white/85 backdrop-blur-md rounded-2xl sm:rounded-[2.5rem] px-4 sm:px-10 md:px-14 pt-6 sm:pt-12 pb-8 sm:pb-12 border border-white/60 max-w-5xl w-full mx-2 sm:mx-auto shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
-          <div
-            className={`inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-orange-500 to-orange-600 backdrop-blur-md border border-orange-100/20 rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold text-white shadow-sm transition-all duration-300 hover:scale-[1.02] ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300" />
-            <span className="uppercase tracking-wider">
-              Fresh Daily • Premium Quality
-            </span>
-          </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left text column */}
+          <div className="space-y-6">
+            {/* Fresh badge */}
+            <div className={`inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-700 text-sm font-semibold ${mounted ? "hero-text-reveal" : "opacity-0"}`}>
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              100% Fresh Raw Chicken — Never Frozen, Never Cooked
+            </div>
 
-          {/* Main Heading — include brand in visible copy for branded searches (e.g. “k2chicken”) */}
-          <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto text-center">
-            <p
-              className={`text-lg sm:text-xl md:text-2xl font-extrabold text-orange-800 tracking-tight ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
-              style={{ animationDelay: "0.15s" }}
-            >
-              K2 Chicken
-            </p>
-            <h1
-              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] sm:leading-tight tracking-tight ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
-              style={{ animationDelay: "0.2s" }}
-            >
-              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500">
-                Fresh Halal Chicken
-              </span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-orange-700 via-orange-600 to-orange-500 mt-1 sm:mt-2">
-                Delivered Today
-              </span>
+            {/* Headline */}
+            <h1 className={`text-5xl md:text-6xl font-serif font-bold text-gray-900 leading-[1.1] ${mounted ? "hero-text-reveal stagger-1" : "opacity-0"}`}>
+              Farm Fresh <br />
+              <span className="text-brand-red italic">Raw Chicken</span><br />
+              Delivered Daily
             </h1>
 
-            {/* Value Proposition */}
-            <p
-              className={`text-lg sm:text-xl md:text-2xl text-gray-700 font-medium max-w-3xl mx-auto leading-relaxed text-center space-y-2 ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
-              style={{ animationDelay: "0.4s" }}
-            >
-              <span className="block">The crispiest, juiciest chicken in town.</span>
-              <span className="block text-base sm:text-lg opacity-80 font-normal">
-                {deliveryEnabled
-                  ? "Fast delivery to your doorstep."
-                  : "Ready for quick pickup."}
-              </span>
+            {/* Sub */}
+            <p className={`text-lg text-gray-600 max-w-lg leading-relaxed ${mounted ? "hero-text-reveal stagger-2" : "opacity-0"}`}>
+              Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to your kitchen in Pune.
               {deliveryEnabled && freeDeliveryAbove > 0 && (
-                <span className="block pt-1 text-sm sm:text-base text-orange-600 font-semibold">
-                  Free delivery above ₹{freeDeliveryAbove}
-                </span>
+                <span className="block mt-2 font-semibold text-brand-red">Free delivery above ₹{freeDeliveryAbove}</span>
               )}
             </p>
-          </div>
 
-          {/* Delivery area checker */}
-          {deliveryEnabled && (
-            <div
-              className={`pt-4 ${
-                mounted ? "animate-fade-up" : "opacity-0"
-              }`}
-              style={{ animationDelay: "0.5s" }}
-            >
-              <DeliveryChecker />
-            </div>
-          )}
-
-          {/* CTA Buttons */}
-          <div
-            className={`flex flex-col sm:flex-row gap-4 justify-center items-center pt-6 ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.6s" }}
-          >
-            <Link href="/#products" className="group w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 text-white px-10 py-5 rounded-button font-bold text-lg hover:brightness-[1.03] active:scale-[0.98] transition-all duration-smooth flex items-center justify-center gap-3 border border-orange-500/30">
-                <span>Order Now</span>
-                <ArrowRight className="h-6 w-6 transition-transform duration-smooth group-hover:translate-x-1" />
+            {/* CTA buttons */}
+            <div className={`flex flex-wrap gap-4 ${mounted ? "hero-text-reveal stagger-3" : "opacity-0"}`}>
+              <Link
+                href="/#products"
+                className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center gap-3"
+              >
+                Shop Fresh Cuts
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById("process");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="px-8 py-4 rounded-full border-2 border-gray-300 text-gray-700 font-semibold hover:border-brand-red hover:text-brand-red transition-all text-lg flex items-center gap-3"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                </svg>
+                Our Process
               </button>
-            </Link>
-            <Link href="tel:+918484978622" className="group w-full sm:w-auto">
-              <button className="w-full sm:w-auto bg-white/90 backdrop-blur-sm text-gray-800 px-10 py-5 rounded-button font-bold text-lg border border-gray-200 hover:bg-white hover:border-orange-200 active:scale-95 transition-all duration-smooth flex items-center justify-center gap-3">
-                <Phone className="h-5 w-5 fill-current text-gray-700" />
-                <span>Call Now</span>
-              </button>
-            </Link>
-          </div>
+            </div>
 
-          {/* Trust strip: Halal, No antibiotics, Fresh daily */}
-          <div
-            className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-6 border-t border-gray-200/70 ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.7s" }}
-          >
-            <div className="flex items-center gap-2.5 text-gray-700">
-              <Shield className="w-6 h-6 text-green-600 flex-shrink-0" aria-hidden />
-              <span className="text-sm sm:text-base font-medium">100% Halal</span>
-            </div>
-            <div className="flex items-center gap-2.5 text-gray-700">
-              <CheckCircle2 className="w-6 h-6 text-blue-600 flex-shrink-0" aria-hidden />
-              <span className="text-sm sm:text-base font-medium">No antibiotics</span>
-            </div>
-            <div className="flex items-center gap-2.5 text-gray-700">
-              <Sparkles className="w-6 h-6 text-orange-500 flex-shrink-0" aria-hidden />
-              <span className="text-sm sm:text-base font-medium">Fresh daily</span>
+            {/* Social proof */}
+            <div className={`flex items-center gap-6 pt-2 ${mounted ? "hero-text-reveal stagger-4" : "opacity-0"}`}>
+              <div className="flex -space-x-3">
+                {["photo-1507003211169-0a1dd7228f2d", "photo-1494790108377-be9c29b29330", "photo-1500648767791-00dcc994a43e"].map((id, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={i} src={`https://images.unsplash.com/${id}?w=100&h=100&fit=crop`} className="w-10 h-10 rounded-full border-2 border-white object-cover" alt="Customer" />
+                ))}
+                <div className="w-10 h-10 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">+2k</div>
+              </div>
+              <div className="text-sm text-gray-500"><span className="text-gray-900 font-bold">4.9/5</span> from 2,000+ home chefs</div>
             </div>
           </div>
 
-          {/* Trust stats — solid tiles inside the panel (no split / heavy shadow) */}
-          <div
-            className={`grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-8 border-t border-gray-200/70 ${
-              mounted ? "animate-fade-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.8s" }}
-          >
-            <div className="flex flex-col items-center gap-2 p-4 sm:p-5 rounded-2xl bg-white border border-gray-200/90 hover:border-orange-200/80 transition-colors">
-              <div className="text-yellow-500 font-bold text-2xl flex items-center gap-1.5">
-                4.8 <Star className="fill-yellow-400 w-6 h-6 text-yellow-400" aria-hidden />
+          {/* Right floating product cards (desktop only) */}
+          <div className="hidden lg:block relative h-[500px]">
+            {/* Card 1 */}
+            <div className="absolute top-0 right-0 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg"
+                className="w-full h-36 object-cover rounded-xl mb-3"
+                alt="Chicken Breast"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
+              />
+              <div className="flex items-center gap-2 mb-1">
+                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
+                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">BONELESS</span>
               </div>
-              <div className="text-gray-600 text-sm font-medium">
-                500+ Reviews
-              </div>
+              <h3 className="font-serif text-sm text-gray-900 font-semibold">Chicken Breast</h3>
+              <p className="price-tag text-base">₹289 <span className="text-xs text-gray-400 font-normal">/500g</span></p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 p-4 sm:p-5 rounded-2xl bg-white border border-gray-200/90 hover:border-orange-200/80 transition-colors">
-              <div className="text-orange-600 font-bold text-2xl flex items-center gap-1.5">
-                {deliveryEnabled ? "30m" : "15m"} <Clock className="w-6 h-6" aria-hidden />
+            {/* Card 2 */}
+            <div className="absolute top-36 left-0 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float" style={{ animationDelay: "2s" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png"
+                className="w-full h-36 object-cover rounded-xl mb-3"
+                alt="Whole Chicken"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
+              />
+              <div className="flex items-center gap-2 mb-1">
+                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
+                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">WHOLE BIRD</span>
               </div>
-              <div className="text-gray-600 text-sm font-medium">
-                {deliveryEnabled ? "Fast Delivery" : "Quick Pickup"}
-              </div>
+              <h3 className="font-serif text-sm text-gray-900 font-semibold">Whole Chicken</h3>
+              <p className="price-tag text-base">₹259 <span className="text-xs text-gray-400 font-normal">/kg</span></p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 p-4 sm:p-5 rounded-2xl bg-white border border-gray-200/90 hover:border-orange-200/80 transition-colors">
-              <div className="text-blue-600 font-bold text-2xl flex items-center gap-1.5">
-                100% <Shield className="w-6 h-6" aria-hidden />
+            {/* Card 3 */}
+            <div className="absolute bottom-8 right-8 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float" style={{ animationDelay: "4s" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://kimi-web-img.moonshot.cn/img/assets.tendercuts.in/5fa64d1ab650743d25f21156c24dd0bef06a8edf.jpg"
+                className="w-full h-36 object-cover rounded-xl mb-3"
+                alt="Chicken Drumsticks"
+                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
+              />
+              <div className="flex items-center gap-2 mb-1">
+                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
+                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">WITH BONE</span>
               </div>
-              <div className="text-gray-600 text-sm font-medium">
-                Halal Certified
-              </div>
+              <h3 className="font-serif text-sm text-gray-900 font-semibold">Chicken Drumsticks</h3>
+              <p className="price-tag text-base">₹249 <span className="text-xs text-gray-400 font-normal">/500g</span></p>
             </div>
           </div>
         </div>

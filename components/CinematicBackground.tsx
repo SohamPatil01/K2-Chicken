@@ -61,7 +61,7 @@ export default function CinematicBackground() {
         {particles.map((p) => (
           <motion.div
             key={p.id}
-            className="absolute rounded-full bg-orange-400/30 blur-[1px]"
+            className="absolute rounded-full bg-red-50/30 blur-[1px]"
             style={{
               left: `${p.x}%`,
               top: `${p.y}%`,

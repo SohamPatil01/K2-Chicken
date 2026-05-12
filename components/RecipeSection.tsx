@@ -116,7 +116,7 @@ export default function RecipeSection({
         <div className="text-center mt-10 sm:mt-12">
           <Link
             href="/recipes"
-            className="inline-flex items-center gap-2 bg-white border border-orange-200 hover:border-orange-300 text-orange-700 font-semibold px-6 sm:px-8 py-3 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth"
+            className="inline-flex items-center gap-2 bg-white border border-red-200 hover:border-red-200 text-brand-red font-semibold px-6 sm:px-8 py-3 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth"
           >
             View all recipes
           </Link>

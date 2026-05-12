@@ -1,116 +1,176 @@
 "use client";
 
-import { Award, Clock, Heart, Shield, Sparkles } from "lucide-react";
-import SectionHeader from "./SectionHeader";
+import { Award, Scissors, Package, ShieldCheck } from "lucide-react";
+
+const features = [
+  {
+    icon: Award,
+    title: "Premium Farm Sources",
+    desc: "Partnered with certified farms that raise chickens naturally without antibiotics or growth hormones.",
+  },
+  {
+    icon: Scissors,
+    title: "Master Butcher Cuts",
+    desc: "Hand-cut by experienced butchers to your exact preference — curry cut, biryani cut, or custom portions.",
+  },
+  {
+    icon: Package,
+    title: "Hygienic Vacuum Packing",
+    desc: "Sealed in food-grade vacuum packs to lock in freshness and prevent contamination during transit.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "100% Safe & Traceable",
+    desc: "Batch-coded packaging for full traceability. Strict FSSAI compliance and regular lab testing.",
+  },
+];
+
+const images = [
+  {
+    src: "https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg",
+    alt: "Fresh chicken breast",
+    cls: "h-64",
+  },
+  {
+    src: "https://kimi-web-img.moonshot.cn/img/rollingwoodfarms.com/bf703c09d3970f00266fa9480f7bd35adecce33f.jpg",
+    alt: "Chicken drumsticks",
+    cls: "h-48",
+  },
+  {
+    src: "https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png",
+    alt: "Whole chicken",
+    cls: "h-48",
+  },
+  {
+    src: "https://kimi-web-img.moonshot.cn/img/onestophalal.com/f26ae8db86477b04ea6cf7f3a30ec4f1175fb252.jpg",
+    alt: "Chicken wings",
+    cls: "h-64",
+  },
+];
 
 export default function WhyChooseUs() {
-  const features = [
-    {
-      icon: Award,
-      title: "Premium Quality",
-      description:
-        "We use only the freshest, highest quality chicken and ingredients in all our dishes.",
-      color: "from-yellow-100 to-orange-100",
-      iconColor: "text-yellow-600",
-      borderColor: "border-yellow-200",
-    },
-    {
-      icon: Clock,
-      title: "Fast Delivery",
-      description:
-        "Get your delicious chicken delivered hot and fresh in 30-45 minutes or less.",
-      color: "from-green-100 to-emerald-100",
-      iconColor: "text-green-600",
-      borderColor: "border-green-200",
-    },
-    {
-      icon: Heart,
-      title: "Made with Love",
-      description:
-        "Every dish is prepared with care and passion by our experienced chefs.",
-      color: "from-pink-100 to-red-100",
-      iconColor: "text-pink-600",
-      borderColor: "border-pink-200",
-    },
-    {
-      icon: Shield,
-      title: "100% Safe",
-      description:
-        "We follow strict food safety standards and hygiene practices in our kitchen.",
-      color: "from-blue-100 to-blue-200",
-      iconColor: "text-blue-600",
-      borderColor: "border-blue-200",
-    },
-  ];
-
   return (
-    <section className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
+    <section className="py-20 bg-white" id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="Why choose us"
-          title="Why Choose K2 Chicken?"
-          subtitle="We're not just another chicken shop — we're your neighborhood's favorite for a reason."
-          icon={Sparkles}
-        />
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Text column */}
+          <div>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">
+              Why K2 Chicken{" "}
+              <br />
+              <span className="text-brand-red">Stands Apart</span>
+            </h2>
+            <p className="text-gray-500 text-lg mb-10 leading-relaxed">
+              We&apos;re not just another chicken shop &mdash; we&apos;re your trusted source for premium
+              raw chicken. Every cut tells a story of quality, hygiene, and uncompromising freshness.
+            </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={index}
-                className="group relative bg-white border border-gray-100 rounded-card shadow-soft hover:shadow-card-hover hover:border-orange-200 p-6 sm:p-7 transition-all duration-smooth transform hover:-translate-y-0.5 text-center"
-              >
-                <div className="relative mb-5 sm:mb-6">
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-smooth`}
-                  />
-                  <div
-                    className={`relative w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center border-2 ${feature.borderColor} mx-auto group-hover:scale-110 transition-all duration-smooth shadow-soft`}
-                  >
-                    <Icon size={28} className={`${feature.iconColor} sm:w-8 sm:h-8`} />
+            <div className="space-y-6">
+              {features.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div key={f.title} className="flex gap-5 group">
+                    <div className="trust-icon w-14 h-14 rounded-2xl flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-1">{f.title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Image mosaic */}
+          <div className="relative hidden md:block">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4 mt-8">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="rounded-2xl overflow-hidden h-64 shadow-lg">
+                  <img src={images[0].src} className="w-full h-full object-cover" alt={images[0].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2.5 group-hover:text-orange-600 transition-colors duration-smooth">
-                  {feature.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="rounded-2xl overflow-hidden h-48 shadow-lg">
+                  <img src={images[1].src} className="w-full h-full object-cover" alt={images[1].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
+                </div>
               </div>
-            );
-          })}
+              <div className="space-y-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="rounded-2xl overflow-hidden h-48 shadow-lg">
+                  <img src={images[2].src} className="w-full h-full object-cover" alt={images[2].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="rounded-2xl overflow-hidden h-64 shadow-lg">
+                  <img src={images[3].src} className="w-full h-full object-cover" alt={images[3].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
+                </div>
+              </div>
+            </div>
+            {/* Floating badge */}
+            <div className="absolute -bottom-6 -left-6 bg-brand-red text-white p-6 rounded-2xl shadow-xl">
+              <div className="text-3xl font-bold">8+</div>
+              <div className="text-sm opacity-90">Years of Freshness</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Process section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24" id="process">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">From Farm to Your Kitchen</h2>
+          <p className="text-gray-500">Our 4-step freshness guarantee</p>
         </div>
 
-        <div className="mt-12 sm:mt-14">
-          <div className="bg-white border border-gray-100 rounded-card shadow-soft p-8 sm:p-10">
-            <div className="text-center mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium text-orange-700 mb-4">
-                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span>Customer trust</span>
+        <div className="grid md:grid-cols-4 gap-8 relative">
+          <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-0.5 process-line" />
+
+          {[
+            { num: 1, label: "Farm Sourcing", desc: "Daily morning procurement from certified local farms within 50km radius." },
+            { num: 2, label: "Master Cutting", desc: "Hand-cut by expert butchers in our FSSAI-approved processing unit." },
+            { num: 3, label: "Vacuum Packing", desc: "Hygienically packed in temperature-controlled environment with ice gel packs." },
+            { num: 4, label: "Swift Delivery", desc: "Insulated delivery bags ensure your chicken arrives at 0–4°C freshness." },
+          ].map((step) => (
+            <div key={step.num} className="relative text-center group">
+              <div className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center text-brand-red text-2xl font-bold font-serif mb-6 border-2 border-gray-200 group-hover:border-brand-red transition-colors relative z-10 shadow-sm">
+                {step.num}
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                &ldquo;Finger Lickin&apos; Good!&rdquo;
-              </h3>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Join thousands of satisfied customers who choose K2 Chicken for the best chicken
-                experience in town.
-              </p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{step.num}. {step.label}</h3>
+              <p className="text-gray-500 text-sm">{step.desc}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-              <div className="text-center bg-gray-50 border border-gray-100 rounded-card p-5 sm:p-6">
-                <div className="text-3xl sm:text-4xl font-bold text-orange-600 mb-2">10,000+</div>
-                <div className="text-sm text-gray-600 font-medium">Happy Customers</div>
+          ))}
+        </div>
+
+        {/* Stats bar */}
+        <div className="mt-20 bg-white border border-gray-200 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm section-alt">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-brand-green text-xl">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l14 9-14 9V3z" /></svg>
               </div>
-              <div className="text-center bg-gray-50 border border-gray-100 rounded-card p-5 sm:p-6">
-                <div className="text-3xl sm:text-4xl font-bold text-orange-600 mb-2">4.9★</div>
-                <div className="text-sm text-gray-600 font-medium">Average Rating</div>
-              </div>
-              <div className="text-center bg-gray-50 border border-gray-100 rounded-card p-5 sm:p-6">
-                <div className="text-3xl sm:text-4xl font-bold text-orange-600 mb-2">30min</div>
-                <div className="text-sm text-gray-600 font-medium">Average Delivery</div>
-              </div>
+              <span className="text-brand-green font-semibold text-sm uppercase tracking-wider">Cold Chain Maintained</span>
             </div>
+            <h3 className="text-3xl font-serif font-bold text-gray-900 mb-3">Freshness You Can Trust</h3>
+            <p className="text-gray-500 leading-relaxed max-w-xl">
+              Every cut is sourced daily from certified farms, processed in our hygienic facility, and
+              delivered in temperature-controlled packaging. We never freeze, never stockpile.
+            </p>
+          </div>
+          <div className="flex gap-8 text-center flex-wrap justify-center">
+            {[
+              { val: "0–4°C", label: "Storage Temp" },
+              { val: "12h", label: "Farm to Door" },
+              { val: "100%", label: "Halal Cut" },
+            ].map((stat, i) => (
+              <div key={stat.label} className="flex items-center gap-8">
+                {i > 0 && <div className="w-px h-12 bg-gray-200 hidden sm:block" />}
+                <div>
+                  <div className="text-4xl font-bold text-brand-red mb-1">{stat.val}</div>
+                  <div className="text-sm text-gray-500">{stat.label}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

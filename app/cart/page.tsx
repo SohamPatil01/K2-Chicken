@@ -61,16 +61,16 @@ function RecommendationCard({
     : currentPrice;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-orange-200 group relative">
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-red-200 group relative">
       {/* Discount Badge */}
       {hasDiscount && (
-        <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1 shadow-md">
+        <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-red-500 to-brand-red-hover text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1 shadow-md">
           <Sparkles className="h-2.5 w-2.5" />
           <span>{discountPercent}% OFF</span>
         </div>
       )}
 
-      <div className="relative h-28 bg-gradient-to-br from-orange-50 to-red-50 overflow-hidden">
+      <div className="relative h-28 bg-gradient-to-br from-brand-red to-red-50 overflow-hidden">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -106,7 +106,7 @@ function RecommendationCard({
                         onClick={() => setSelectedWeight(weight)}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
                           selectedWeight?.weight === weight.weight
-                            ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-md"
+                            ? "bg-gradient-to-r bg-brand-red text-white shadow-md"
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                         }`}
                       >
@@ -142,7 +142,7 @@ function RecommendationCard({
               </div>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-orange-600">
+              <span className="text-lg font-bold text-brand-red">
                 ₹{currentPrice.toFixed(0)}
               </span>
               {selectedWeight && (
@@ -155,7 +155,7 @@ function RecommendationCard({
           </div>
           <button
             onClick={() => onAdd(product, selectedWeight)}
-            className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             Add
@@ -348,7 +348,7 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-20">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div
@@ -358,7 +358,7 @@ export default function CartPage() {
                   : "opacity-0 scale-90 translate-y-10"
               }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
               <ShoppingBag
                 size={120}
                 className="relative text-gray-300 mx-auto animate-bounce"
@@ -366,7 +366,7 @@ export default function CartPage() {
               />
             </div>
             <h1
-              className={`text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent transition-all duration-700 ${
+              className={`text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r bg-brand-red bg-clip-text text-transparent transition-all duration-700 ${
                 mounted
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
@@ -388,7 +388,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/"
-              className={`inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 ${
+              className={`inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 ${
                 mounted
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
@@ -406,10 +406,10 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-orange-50/20 to-white py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-20"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-20"></div>
       </div>
 
@@ -422,7 +422,7 @@ export default function CartPage() {
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-brand-red to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
                 <ShoppingCart className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -479,7 +479,7 @@ export default function CartPage() {
             {recommendations.length > 0 && (
               <div className="mt-8">
                 <div className="flex items-center gap-3 mb-4">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
+                  <TrendingUp className="w-6 h-6 text-brand-red" />
                   <h2 className="text-2xl font-semibold text-gray-800">
                     You May Also Like
                   </h2>
@@ -509,7 +509,7 @@ export default function CartPage() {
                   {favoriteOrders.slice(0, 3).map((order) => (
                     <div
                       key={order.id}
-                      className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-orange-200 p-4"
+                      className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-red-200 p-4"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div>
@@ -523,7 +523,7 @@ export default function CartPage() {
                         </div>
                         <button
                           onClick={() => handleQuickReorder(order)}
-                          className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                          className="px-4 py-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
                         >
                           <ShoppingCart className="w-4 h-4" />
                           Reorder
@@ -553,7 +553,7 @@ export default function CartPage() {
                 </div>
                 <Link
                   href="/orders"
-                  className="mt-4 inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold text-sm"
+                  className="mt-4 inline-flex items-center gap-2 text-brand-red hover:text-brand-red font-semibold text-sm"
                 >
                   View All Orders
                   <ArrowRight className="w-4 h-4" />
@@ -573,7 +573,7 @@ export default function CartPage() {
           >
             <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden sticky top-8 hover:shadow-2xl transition-all duration-300">
               {/* Summary Header */}
-              <div className="bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 p-6 text-white relative overflow-hidden">
+              <div className="bg-gradient-to-br from-brand-red via-gray-50 to-red-600 p-6 text-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.1),transparent)]"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-2">
@@ -582,7 +582,7 @@ export default function CartPage() {
                     </div>
                     <h2 className="text-2xl font-semibold">Order Summary</h2>
                   </div>
-                  <p className="text-orange-100 text-sm flex items-center gap-2">
+                  <p className="text-brand-red text-sm flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" />
                     {state.items.length}{" "}
                     {state.items.length === 1 ? "item" : "items"} in cart
@@ -644,9 +644,9 @@ export default function CartPage() {
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
-                  <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-3 border border-orange-200">
+                  <div className="bg-gradient-to-r from-brand-red to-red-50 rounded-xl p-3 border border-red-200">
                     <p className="text-xs text-gray-600 mb-1 flex items-center gap-2">
-                      <Truck className="w-3 h-3 text-orange-600" />
+                      <Truck className="w-3 h-3 text-brand-red" />
                       Delivery charges calculated at checkout
                     </p>
                   </div>
@@ -654,7 +654,7 @@ export default function CartPage() {
                     <span className="text-xl font-semibold text-gray-800">
                       Total Amount
                     </span>
-                    <span className="text-3xl font-bold text-orange-600">
+                    <span className="text-3xl font-bold text-brand-red">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
@@ -664,7 +664,7 @@ export default function CartPage() {
                 <div className="space-y-3">
                   <Link
                     href="/checkout"
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-2xl active:scale-95 group min-h-[56px] text-base sm:text-lg"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-2xl active:scale-95 group min-h-[56px] text-base sm:text-lg"
                   >
                     <Shield className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span>Proceed to Checkout</span>
@@ -696,7 +696,7 @@ export default function CartPage() {
                       </span>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
-                      <CheckCircle className="w-5 h-5 text-orange-600" />
+                      <CheckCircle className="w-5 h-5 text-brand-red" />
                       <span className="text-xs font-semibold text-gray-700">
                         Fresh
                       </span>

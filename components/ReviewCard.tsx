@@ -32,7 +32,7 @@ export default function ReviewCard({ review, className = "" }: ReviewCardProps) 
           />
         ))}
       </div>
-      <Quote className="h-8 w-8 text-orange-100 mb-2" />
+      <Quote className="h-8 w-8 text-brand-red mb-2" />
       <p className="text-gray-700 leading-relaxed mb-4 line-clamp-4">
         {review.comment}
       </p>

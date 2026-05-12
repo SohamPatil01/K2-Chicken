@@ -1,19 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ShoppingCart,
-  Menu,
-  X,
-  User,
-  LogOut,
-  LogIn,
-  Home,
-  Package,
-  ChefHat,
-  Users,
-  MessageCircle,
-} from "lucide-react";
+import { ShoppingBag, Menu, X, User, LogOut, LogIn, Search, MapPin, ChevronDown, Home, Package, ChefHat, Users, MessageCircle } from "lucide-react";
+
 export type NavbarViewProps = {
   bannerClass: string;
   isMenuOpen: boolean;
@@ -42,150 +31,170 @@ export default function NavbarView({
   mounted,
 }: NavbarViewProps) {
   return (
-    <div
-      role="banner"
-      className={"sticky top-0 z-50 w-full transition-all duration-smooth safe-top " + bannerClass}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Mobile: logo | actions. Desktop: equal side columns so nav is truly centered */}
-        <div className="flex items-center justify-between gap-3 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:justify-items-stretch min-h-14 py-2 sm:min-h-16 sm:py-2">
-          <Link
-            href="/"
-            className="flex items-center gap-1.5 sm:gap-2 shrink-0 justify-self-start group min-w-0 max-w-[55%] sm:max-w-none"
-          >
-            <img
-              src="/logo.png"
-              alt="K2 Chicken"
-              className="h-8 sm:h-9 w-auto rounded-button transition-transform duration-smooth group-hover:scale-105 shrink-0"
-              onError={(e) => {
-                const t = e.currentTarget;
-                t.src = "/logo.svg";
-              }}
-            />
-            <span className="hidden sm:block text-base font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-smooth truncate">
-              K2 Chicken
-            </span>
-          </Link>
+    <div role="banner" className="sticky top-0 z-50 w-full">
+      {/* Promo top bar */}
+      <div className="bg-brand-red text-white text-xs py-2 px-4 text-center font-semibold tracking-wide">
+        <span className="inline-flex items-center gap-2">
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h3.05a2.5 2.5 0 014.9 0H19a1 1 0 001-1v-5a1 1 0 00-.293-.707l-3-3A1 1 0 0016 4H3z"/>
+          </svg>
+          FREE DELIVERY on orders above ₹350 &nbsp;|&nbsp; Fresh chicken delivered in 90 mins across Pune
+        </span>
+      </div>
 
-          <nav
-            className="hidden md:flex items-center justify-center gap-1 lg:gap-1.5 justify-self-center whitespace-nowrap px-2"
-            aria-label="Primary"
-          >
-            <Link href="/" className={isActive("/") ? "text-orange-600 bg-orange-50 border border-orange-200 px-3 py-2 rounded-button text-sm font-medium" : "text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50"}>
-              Home
-            </Link>
-            <button type="button" onClick={() => scrollToSection("products")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
-              Products
-            </button>
-            <Link href="/recipes" className={isActive("/recipes") ? "text-orange-600 bg-orange-50 border border-orange-200 px-3 py-2 rounded-button text-sm font-medium" : "text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50"}>
-              Recipes
-            </Link>
-            <button type="button" onClick={() => scrollToSection("about")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
-              About
-            </button>
-            <button type="button" onClick={() => scrollToSection("contact")} className="text-gray-600 hover:text-orange-600 px-3 py-2 rounded-button text-sm font-medium hover:bg-orange-50/50">
-              Contact
-            </button>
-          </nav>
+      {/* Main nav */}
+      <nav className="glass-nav w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-4">
 
-          <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0 justify-self-end">
-            {!authLoading && (
-              <>
-                {isAuthenticated ? (
-                  <div className="hidden md:flex items-center gap-1">
-                    <Link
-                      href="/orders"
-                      className="p-2.5 rounded-button text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all duration-smooth"
-                      title="My Orders"
-                    >
-                      <User className="w-5 h-5" />
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-base font-serif bg-brand-red shadow-brand-sm shrink-0">
+                K2
+              </div>
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="text-xl font-serif font-bold text-gray-900 group-hover:text-brand-red transition-colors tracking-tight">K2 Chicken</span>
+                <span className="text-[9px] text-gray-400 uppercase tracking-widest">Only Fresh, Never Frozen</span>
+              </div>
+            </Link>
+
+            {/* Desktop search */}
+            <div className="hidden md:flex flex-1 max-w-md mx-4">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search chicken cuts, mince, whole bird..."
+                  className="w-full bg-gray-100 text-gray-900 pl-11 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      const val = (e.target as HTMLInputElement).value.trim();
+                      if (val) window.location.href = `/?search=${encodeURIComponent(val)}#products`;
+                    }
+                  }}
+                />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </div>
+            </div>
+
+            {/* Desktop right actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Location indicator */}
+              <div className="hidden lg:flex items-center gap-1.5 bg-gray-100 px-3 py-2 rounded-full text-sm text-gray-600 border border-gray-200 cursor-default select-none">
+                <MapPin className="w-3.5 h-3.5 text-brand-red" />
+                <span>Pune</span>
+                <ChevronDown className="w-3 h-3" />
+              </div>
+
+              {/* Desktop nav links */}
+              <nav className="hidden md:flex items-center gap-0.5">
+                <Link href="/" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/") ? "text-brand-red" : "text-gray-600 hover:text-brand-red hover:bg-gray-50"}`}>Home</Link>
+                <button type="button" onClick={() => scrollToSection("products")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">Products</button>
+                <Link href="/recipes" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/recipes") ? "text-brand-red" : "text-gray-600 hover:text-brand-red hover:bg-gray-50"}`}>Recipes</Link>
+                <button type="button" onClick={() => scrollToSection("about")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">About</button>
+                <button type="button" onClick={() => scrollToSection("contact")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">Contact</button>
+              </nav>
+
+              {/* Auth */}
+              {!authLoading && (
+                <>
+                  {isAuthenticated ? (
+                    <div className="hidden md:flex items-center gap-1">
+                      <Link href="/orders" title="My Orders" className="p-2 rounded-lg text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">
+                        <User className="w-5 h-5" />
+                      </Link>
+                      <button type="button" onClick={handleLogout} title="Logout" className="p-2 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <LogOut className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <Link href="/login" className="hidden md:block px-5 py-2 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-700 transition-all text-sm">
+                      Sign In
                     </Link>
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="p-2.5 rounded-button text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-smooth"
-                      title="Logout"
-                    >
-                      <LogOut className="w-5 h-5" />
-                    </button>
-                  </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-button bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold transition-all duration-smooth shadow-soft hover:shadow-card"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    Login
-                  </Link>
-                )}
-              </>
-            )}
-
-            <Link
-              href="/cart"
-              className="relative p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-button text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-all duration-smooth"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              {mounted && totalItems > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-xs font-bold rounded-full h-5 min-w-[20px] flex items-center justify-center">
-                  {totalItems > 99 ? "99+" : totalItems}
-                </span>
+                  )}
+                </>
               )}
-            </Link>
 
-            <button
-              type="button"
-              className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-button text-gray-700 hover:bg-gray-100 transition-all duration-smooth"
-              onClick={onMenuToggle}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+              {/* Cart */}
+              <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <ShoppingBag className="w-5 h-5 text-gray-800" />
+                {mounted && totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-brand-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center badge-glow">
+                    {totalItems > 99 ? "99+" : totalItems}
+                  </span>
+                )}
+              </Link>
+
+              {/* Mobile menu toggle */}
+              <button
+                type="button"
+                className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                onClick={onMenuToggle}
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile search bar */}
+          <div className="md:hidden pb-3">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search chicken cuts..."
+                className="w-full bg-gray-100 text-gray-900 pl-10 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const val = (e.target as HTMLInputElement).value.trim();
+                    if (val) window.location.href = `/?search=${encodeURIComponent(val)}#products`;
+                  }
+                }}
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-smooth ${
-          isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="py-4 px-4 sm:px-6 border-t border-gray-100 bg-white max-w-7xl mx-auto w-full">
-          <nav className="flex flex-col gap-1">
-            <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium" onClick={onMenuClose}>
-              <Home className="w-5 h-5" /> Home
-            </Link>
-            <button type="button" onClick={() => { scrollToSection("products"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium w-full text-left">
-              <Package className="w-5 h-5" /> Products
-            </button>
-            <Link href="/recipes" className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium" onClick={onMenuClose}>
-              <ChefHat className="w-5 h-5" /> Recipes
-            </Link>
-            <button type="button" onClick={() => { scrollToSection("about"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium w-full text-left">
-              <Users className="w-5 h-5" /> About
-            </button>
-            <button type="button" onClick={() => { scrollToSection("contact"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 hover:text-orange-600 font-medium w-full text-left">
-              <MessageCircle className="w-5 h-5" /> Contact
-            </button>
-            {!authLoading && (
-              isAuthenticated ? (
-                <>
-                  <Link href="/orders" className="flex items-center gap-3 px-4 py-3 rounded-button text-gray-800 hover:bg-orange-50 font-medium" onClick={onMenuClose}>
-                    <User className="w-5 h-5" /> My Orders
+        {/* Mobile menu */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}>
+          <div className="py-3 px-4 border-t border-gray-100 bg-white">
+            <nav className="flex flex-col gap-0.5">
+              <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium" onClick={onMenuClose}>
+                <Home className="w-5 h-5" /> Home
+              </Link>
+              <button type="button" onClick={() => { scrollToSection("products"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
+                <Package className="w-5 h-5" /> Products
+              </button>
+              <Link href="/recipes" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium" onClick={onMenuClose}>
+                <ChefHat className="w-5 h-5" /> Recipes
+              </Link>
+              <button type="button" onClick={() => { scrollToSection("about"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
+                <Users className="w-5 h-5" /> About
+              </button>
+              <button type="button" onClick={() => { scrollToSection("contact"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
+                <MessageCircle className="w-5 h-5" /> Contact
+              </button>
+              {!authLoading && (
+                isAuthenticated ? (
+                  <>
+                    <Link href="/orders" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 font-medium" onClick={onMenuClose}>
+                      <User className="w-5 h-5" /> My Orders
+                    </Link>
+                    <button type="button" onClick={() => { onMenuClose(); handleLogout(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-medium w-full text-left">
+                      <LogOut className="w-5 h-5" /> Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link href="/login" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900 text-white font-semibold mt-2" onClick={onMenuClose}>
+                    <LogIn className="w-5 h-5" /> Sign In
                   </Link>
-                  <button type="button" onClick={() => { onMenuClose(); handleLogout(); }} className="flex items-center gap-3 px-4 py-3 rounded-button text-red-600 hover:bg-red-50 font-medium w-full text-left">
-                    <LogOut className="w-5 h-5" /> Logout
-                  </button>
-                </>
-              ) : (
-                <Link href="/login" className="flex items-center gap-3 px-4 py-3 rounded-button bg-orange-600 text-white font-semibold mt-2" onClick={onMenuClose}>
-                  <LogIn className="w-5 h-5" /> Login
-                </Link>
-              )
-            )}
-          </nav>
+                )
+              )}
+            </nav>
+          </div>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

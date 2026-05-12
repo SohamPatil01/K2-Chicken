@@ -339,7 +339,7 @@ export default function ProductManagement() {
         </div>
         <button
           onClick={() => setIsAdding(true)}
-          className="flex items-center space-x-1.5 px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors text-sm font-medium"
+          className="flex items-center space-x-1.5 px-3 py-1.5 bg-brand-red text-white rounded-md hover:bg-brand-red-hover transition-colors text-sm font-medium"
         >
           <Plus size={16} />
           <span>Add</span>
@@ -375,7 +375,7 @@ export default function ProductManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm"
                 required
               />
             </div>
@@ -389,7 +389,7 @@ export default function ProductManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, category: e.target.value })
                 }
-                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm"
                 required
               >
                 <option value="">Select Category</option>
@@ -411,7 +411,7 @@ export default function ProductManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, price: e.target.value })
                 }
-                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm"
                 required
                 placeholder="e.g., 249"
               />
@@ -442,7 +442,7 @@ export default function ProductManagement() {
 
                   setFormData({ ...formData, original_price: value });
                 }}
-                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm"
                 placeholder="e.g., 299 (for discount)"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -482,7 +482,7 @@ export default function ProductManagement() {
                         ? "opacity-50 cursor-not-allowed border-gray-300"
                         : formData.image_url
                         ? "border-green-300 bg-green-50"
-                        : "border-gray-300 hover:border-orange-400"
+                        : "border-gray-300 hover:border-red-200"
                     }`}
                   >
                     {uploadingImage
@@ -499,7 +499,7 @@ export default function ProductManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, image_url: e.target.value })
                   }
-                  className={`w-full px-2.5 py-1.5 border rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm ${
+                  className={`w-full px-2.5 py-1.5 border rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm ${
                     formData.image_url
                       ? "border-green-300 bg-green-50"
                       : "border-gray-300"
@@ -542,7 +542,7 @@ export default function ProductManagement() {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 rows={2}
-                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm"
+                className="w-full px-2.5 py-1.5 border border-gray-300 rounded-md focus:ring-1 focus:ring-red-100 focus:border-transparent text-sm"
                 required
               />
             </div>
@@ -555,7 +555,7 @@ export default function ProductManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, is_available: e.target.checked })
                   }
-                  className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                  className="w-4 h-4 text-brand-red border-gray-300 rounded focus:ring-red-100"
                 />
                 <span className="text-xs font-medium text-gray-700">
                   Available
@@ -573,7 +573,7 @@ export default function ProductManagement() {
               </button>
               <button
                 type="submit"
-                className="px-3 py-1.5 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors text-sm font-medium flex items-center space-x-1.5"
+                className="px-3 py-1.5 bg-brand-red text-white rounded-md hover:bg-brand-red-hover transition-colors text-sm font-medium flex items-center space-x-1.5"
               >
                 <Save size={14} />
                 <span>{editingProduct ? "Update" : "Create"}</span>
@@ -611,7 +611,7 @@ export default function ProductManagement() {
                   <div
                     className={`w-full h-full ${
                       product.image_url ? "hidden" : "flex"
-                    } bg-orange-50 items-center justify-center`}
+                    } bg-red-50 items-center justify-center`}
                   >
                     <span className="text-lg">🍗</span>
                   </div>
@@ -677,7 +677,7 @@ export default function ProductManagement() {
                               });
                             }
                           }}
-                          className="w-20 px-1.5 py-0.5 text-xs border border-orange-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+                          className="w-20 px-1.5 py-0.5 text-xs border border-red-200 rounded focus:ring-1 focus:ring-red-100 focus:border-red-200 bg-white"
                           placeholder="Price"
                           autoFocus
                         />
@@ -714,7 +714,7 @@ export default function ProductManagement() {
                               });
                             }
                           }}
-                          className="w-20 px-1.5 py-0.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+                          className="w-20 px-1.5 py-0.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-red-100 focus:border-red-200 bg-white"
                           placeholder="Original"
                         />
                       </div>
@@ -723,7 +723,7 @@ export default function ProductManagement() {
                       </div>
                       <div className="flex items-center space-x-1">
                         {updatingPrices.includes(product.id) ? (
-                          <RefreshCw className="h-3 w-3 text-orange-600 animate-spin" />
+                          <RefreshCw className="h-3 w-3 text-brand-red animate-spin" />
                         ) : (
                           <>
                             <button
@@ -786,7 +786,7 @@ export default function ProductManagement() {
                               },
                             }));
                           }}
-                          className="p-0.5 text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                          className="p-0.5 text-brand-red hover:bg-red-50 rounded transition-colors"
                           title="Edit Prices"
                         >
                           <Edit size={12} />

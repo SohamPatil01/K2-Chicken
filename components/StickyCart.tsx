@@ -26,7 +26,7 @@ export default function StickyCart() {
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
       <Link href="/cart" className="block min-h-[48px] rounded-card">
-        <div className="bg-orange-600 text-white rounded-card shadow-card p-4 flex items-center justify-between animate-slide-up active:scale-[0.98] min-h-[52px]">
+        <div className="bg-brand-red text-white rounded-card shadow-card p-4 flex items-center justify-between animate-slide-up active:scale-[0.98] min-h-[52px]">
           <div className="flex flex-col">
             <span className="text-xs font-medium opacity-90">
               {totalItems} Items

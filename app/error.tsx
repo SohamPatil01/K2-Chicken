@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-red to-red-50 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
         <div className="mb-6">
           <div className="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
@@ -32,7 +32,7 @@ export default function Error({
         <div className="space-y-3">
           <button
             onClick={reset}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="w-full bg-brand-red hover:bg-brand-red text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Try Again
           </button>

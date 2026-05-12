@@ -1,218 +1,100 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Home,
-  Package,
-  ChefHat,
-  ShoppingBag,
-  Phone,
-  Mail,
-  MapPin,
-  Sparkles,
-  MessageCircle,
-  Users,
-} from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Lock, ShieldCheck, BadgeCheck } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 border-t border-gray-800 text-white relative overflow-hidden">
-      {/* Prominent contact strip - phone, email, Order Now CTA */}
-      <div className="bg-gray-800/80 border-b border-gray-700 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-sm">
-            <a
-              href="tel:+918484978622"
-              className="flex items-center gap-2 text-gray-200 hover:text-orange-400 transition-colors min-h-[44px] justify-center sm:justify-start"
-            >
-              <Phone className="w-4 h-4 flex-shrink-0" />
-              <span className="font-semibold">+91 84849 78622</span>
-            </a>
-            <a
-              href="mailto:k2foodindia@gmail.com"
-              className="flex items-center gap-2 text-gray-200 hover:text-orange-400 transition-colors min-h-[44px] justify-center sm:justify-start break-all sm:break-normal text-center sm:text-left"
-            >
-              <Mail className="w-4 h-4 flex-shrink-0" />
-              <span>k2foodindia@gmail.com</span>
-            </a>
-            <Link
-              href="/#products"
-              className="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-3 rounded-button transition-all duration-smooth shadow-soft hover:shadow-card min-h-[44px] w-full sm:w-auto active:scale-95"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              Order Now
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Subtle background decoration */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, #ea580c 1px, transparent 0)`,
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
-          {/* Brand */}
-          <div className="col-span-1 lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6 animate-slide-down">
-              <img
-                src="/logo.png"
-                alt="K2 Chicken - Baramati Agro"
-                className="h-14 w-auto rounded-2xl"
-                onError={(e) => {
-                  // Fallback to SVG if PNG doesn't exist
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.src = "/logo.svg";
-                }}
-              />
+    <footer className="bg-gray-900 text-white pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+          {/* Brand column */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-brand-red flex items-center justify-center text-white font-bold text-lg font-serif shadow-brand-sm">
+                K2
+              </div>
+              <span className="text-2xl font-serif font-bold">K2 Chicken</span>
             </div>
-            <p className="text-gray-400 mb-5 leading-relaxed max-w-md text-sm sm:text-base animate-slide-up stagger-1">
-              The best chicken in town! We serve crispy, juicy, and absolutely
-              delicious chicken that will make your taste buds dance with joy.
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              Pune's trusted source for 100% fresh, raw, Halal-certified chicken. Sourced daily, cut to order, delivered fresh. No frozen stock, no compromises.
             </p>
-            <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-2 text-orange-400 font-medium text-sm sm:text-base animate-slide-up stagger-2">
-              <Sparkles className="w-4 h-4" />
-              <span>"Finger Lickin' Good!"</span>
+            <div className="flex gap-3">
+              <a href="https://facebook.com/k2chicken" target="_blank" rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-brand-red hover:text-white transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+              </a>
+              <a href="https://instagram.com/k2chicken" target="_blank" rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-brand-red hover:text-white transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="none" stroke="currentColor" strokeWidth="2"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </a>
+              <a href="https://wa.me/918484978622" target="_blank" rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-brand-red hover:text-white transition-all">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+              </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="animate-slide-up stagger-3">
-            <h4 className="text-base sm:text-lg font-semibold mb-5 sm:mb-6 text-white flex items-center gap-2">
-              <span className="w-1 h-6 bg-gradient-to-b from-orange-500 to-red-500 rounded-full"></span>
-              Quick Links
-            </h4>
-            <ul className="space-y-3">
+          {/* Fresh Cuts */}
+          <div>
+            <h4 className="text-white font-semibold mb-6">Fresh Cuts</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              {["Chicken Breast (Boneless)", "Chicken Curry Cut", "Chicken Drumsticks", "Chicken Mince / Keema", "Whole Chicken", "Liver & Gizzard"].map((item) => (
+                <li key={item}>
+                  <Link href="/#products" className="hover:text-brand-red transition-colors">{item}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="text-white font-semibold mb-6">Customer Service</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link href="/#products" className="hover:text-brand-red transition-colors">How to Order</Link></li>
+              <li><Link href="/#contact" className="hover:text-brand-red transition-colors">Delivery Areas</Link></li>
+              <li><Link href="/recipes" className="hover:text-brand-red transition-colors">Recipes & Tips</Link></li>
+              <li><Link href="/orders" className="hover:text-brand-red transition-colors">My Orders</Link></li>
+              <li><Link href="/login" className="hover:text-brand-red transition-colors">Sign In</Link></li>
               <li>
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <Home className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#products"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <Package className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Products</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/recipes"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <ChefHat className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Recipes</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#about"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <Users className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>About Us</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#contact"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Contact</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/orders"
-                  className="flex items-center gap-2 text-gray-400 hover:text-orange-400 transition-all duration-300 group"
-                >
-                  <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                  <span>My Orders</span>
+                <Link href="/admin" className="hover:text-brand-red transition-colors opacity-50 hover:opacity-100">
+                  Admin Console
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Info */}
-          <div className="animate-slide-up stagger-4">
-            <h4 className="text-base sm:text-lg font-semibold mb-5 sm:mb-6 text-white flex items-center gap-2">
-              <span className="w-1 h-6 bg-gradient-to-b from-orange-500 to-red-500 rounded-full"></span>
-              Contact Us
-            </h4>
-            <div className="space-y-3.5 text-gray-400">
-              <a
-                href="tel:+918484978622"
-                className="flex items-center gap-3 hover:text-orange-400 transition-all duration-300 group"
-              >
-                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-orange-500/20 transition-colors duration-300">
-                  <Phone className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <span className="text-sm sm:text-base">+91 84849 78622</span>
-              </a>
-              <a
-                href="mailto:k2foodindia@gmail.com"
-                className="flex items-center gap-3 hover:text-orange-400 transition-all duration-300 group"
-              >
-                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-orange-500/20 transition-colors duration-300">
-                  <Mail className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <span className="text-sm sm:text-base">
-                  k2foodindia@gmail.com
-                </span>
-              </a>
-              <div className="flex items-start gap-3 pt-1">
-                <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <p className="text-xs sm:text-sm leading-relaxed">
-                  Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar,
-                  Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027
-                </p>
-              </div>
-            </div>
+          {/* Contact */}
+          <div>
+            <h4 className="text-white font-semibold mb-6">Contact</h4>
+            <ul className="space-y-4 text-sm text-gray-400">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-brand-red mt-0.5 flex-shrink-0" />
+                <span>Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune 411027</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-brand-red flex-shrink-0" />
+                <a href="tel:+918484978622" className="hover:text-brand-red transition-colors">+91 84849 78622</a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-brand-red flex-shrink-0" />
+                <a href="mailto:k2foodindia@gmail.com" className="hover:text-brand-red transition-colors">k2foodindia@gmail.com</a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-brand-red flex-shrink-0" />
+                <span>8:00 AM – 8:00 PM Daily</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Satisfaction guarantee */}
-        <div className="border-t border-gray-800 mt-12 pt-8 animate-slide-up stagger-5">
-          <p className="text-gray-400 text-sm text-center mb-6 flex items-center justify-center gap-2 flex-wrap">
-            <Sparkles className="h-4 w-4 text-orange-400 flex-shrink-0" />
-            <span>100% satisfaction or replace/refund — we guarantee it.</span>
-          </p>
-        </div>
-
-        {/* Copyright */}
-        <div className="border-t border-gray-800 pt-8 animate-slide-up stagger-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 text-sm text-center sm:text-left">
-              &copy; 2024 K2 Chicken. All rights reserved.
-            </p>
-            <Link
-              href="/admin"
-              className="group flex items-center gap-2 text-gray-500 hover:text-orange-400 transition-all duration-300 text-sm"
-              title="Click to access Admin Console"
-            >
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Admin Console
-              </span>
-              <span className="text-xs bg-gray-800 px-2 py-1 rounded border border-gray-700 group-hover:border-orange-500/50 transition-colors duration-300">
-                🔐
-              </span>
-            </Link>
+        {/* Bottom bar */}
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">© 2026 K2 Chicken. All rights reserved. FSSAI Licensed.</p>
+          <div className="flex items-center gap-6 text-sm text-gray-500">
+            <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> Secure Payments</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /> SSL Encrypted</span>
+            <span className="flex items-center gap-1.5"><BadgeCheck className="w-3.5 h-3.5" /> FSSAI Certified</span>
           </div>
         </div>
       </div>

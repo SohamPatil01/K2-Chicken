@@ -43,8 +43,8 @@ export default function OfferBanner({
         </div>
       )}
       {!imageUrl && (
-        <div className="w-full sm:w-24 flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50 p-4 flex-shrink-0">
-          <Icon className="w-10 h-10 text-orange-500" />
+        <div className="w-full sm:w-24 flex items-center justify-center bg-gradient-to-br from-brand-red to-red-50 p-4 flex-shrink-0">
+          <Icon className="w-10 h-10 text-brand-red" />
         </div>
       )}
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center">
@@ -56,14 +56,14 @@ export default function OfferBanner({
         )}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {promoCode && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-100 text-orange-800 rounded-button text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-brand-red rounded-button text-xs font-semibold">
               <Tag className="w-3.5 h-3.5" />
               {promoCode}
             </span>
           )}
           <Link
             href={link}
-            className="inline-flex items-center text-orange-600 font-medium text-sm hover:text-orange-700 transition-colors duration-smooth"
+            className="inline-flex items-center text-brand-red font-medium text-sm hover:text-brand-red transition-colors duration-smooth"
           >
             {linkLabel}
           </Link>

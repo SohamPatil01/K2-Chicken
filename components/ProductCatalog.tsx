@@ -3,41 +3,25 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Product, WeightOption } from "@/context/CartContext";
 import {
   Plus,
   Minus,
   Search,
-  Star,
   CheckCircle,
   AlertCircle,
   XCircle,
-  Sparkles,
   ShoppingBag,
-  Truck,
-  ChevronRight,
-  PhoneCall,
-  Store,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 interface ProductCardProps {
   product: Product;
   isBestseller: boolean;
   onAddToCart: (product: Product, weight?: WeightOption) => void;
-  onUpdateQuantity: (
-    productId: number,
-    quantity: number,
-    weight?: WeightOption
-  ) => void;
-  getStockStatus: (product: Product) => {
-    status: string;
-    label: string;
-    color: string;
-    icon: any;
-  };
+  onUpdateQuantity: (productId: number, quantity: number, weight?: WeightOption) => void;
+  getStockStatus: (product: Product) => { status: string; label: string; color: string; icon: any };
   getWeightQuantity: (productId: number, weight?: WeightOption) => number;
   index?: number;
 }
@@ -52,766 +36,164 @@ function ProductCard({
   index = 0,
 }: ProductCardProps) {
   const stockStatus = getStockStatus(product);
-  const StockIcon = stockStatus.icon;
-  const defaultWeight =
-    product.weightOptions?.find((w) => w.is_default) ||
-    product.weightOptions?.[0];
-  const [selectedWeight, setSelectedWeight] = useState<
-    WeightOption | undefined
-  >(defaultWeight);
-  const [showInfo, setShowInfo] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const defaultWeight = product.weightOptions?.find((w) => w.is_default) || product.weightOptions?.[0];
+  const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>(defaultWeight);
   const [customWeightEnabled, setCustomWeightEnabled] = useState(false);
-  const [customWeight, setCustomWeight] = useState<string>(
-    (defaultWeight?.weight || 500).toString()
-  );
+  const [customWeight, setCustomWeight] = useState<string>((defaultWeight?.weight || 500).toString());
 
-  // Swipe state
-  const [swipePage, setSwipePage] = useState(0); // 0 = image, 1 = info
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [swipeOffset, setSwipeOffset] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isSwiping, setIsSwiping] = useState(false);
-  const swipeContainerRef = useRef<HTMLDivElement>(null);
-
-  // Update container width when component mounts or resizes
   useEffect(() => {
-    const updateWidth = () => {
-      if (swipeContainerRef.current) {
-        setContainerWidth(swipeContainerRef.current.offsetWidth);
-      }
-    };
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
-
-  // Auto-rotate between image and info (only on desktop when hovered, not when swiping)
-  useEffect(() => {
-    if (isMobile || !isHovered || isSwiping) {
-      // Reset to image page when not hovered (only on desktop)
-      if (!isHovered && !isMobile) {
-        setSwipePage(0);
-      }
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setSwipePage((prev) => (prev === 0 ? 1 : 0));
-    }, 4000); // Switch every 4 seconds
-
-    return () => clearInterval(interval);
-  }, [isMobile, isHovered, isSwiping]);
-
-  // Detect if device is mobile/touch
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640 || "ontouchstart" in window);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Update selectedWeight only when product ID changes (new product)
-  // Don't reset when price or weightOptions update - preserve user's selection
-  useEffect(() => {
-    // Only set default weight if we don't have a selected weight yet
-    // or if this is a different product (check by comparing weight values)
     const currentWeightValue = selectedWeight?.weight;
-    const matchingWeight = product.weightOptions?.find(
-      (w) => w.weight === currentWeightValue
-    );
-
+    const matchingWeight = product.weightOptions?.find((w) => w.weight === currentWeightValue);
     if (!selectedWeight || !matchingWeight) {
-      // No selection yet or selected weight doesn't exist - use default
-      const newDefaultWeight =
-        product.weightOptions?.find((w) => w.is_default) ||
-        product.weightOptions?.[0];
-      if (newDefaultWeight) {
-        setSelectedWeight(newDefaultWeight);
-      }
+      const newDefault = product.weightOptions?.find((w) => w.is_default) || product.weightOptions?.[0];
+      if (newDefault) setSelectedWeight(newDefault);
     } else {
-      // Product updated but same product - update the weight option with new price data
-      // but keep the same weight selection (preserve user's choice)
       setSelectedWeight(matchingWeight);
     }
-  }, [product.id]); // Only depend on product.id, not price or weightOptions
+  }, [product.id]);
 
-  // Force re-render when product price changes
-  useEffect(() => {
-    // This effect will run whenever product.price changes
-    // Component will automatically re-render when price changes
-  }, [product.price, (product as any).original_price]);
-
-  // Calculate discount if original_price exists
-  // Base product prices (for 1kg or default weight)
   const baseProductPrice = Number(product.price);
-  const baseOriginalPrice = Number(
-    (product as any).original_price || product.price
-  );
-
-  // Calculate price per gram from base price
-  const referenceWeight =
-    selectedWeight?.weight || defaultWeight?.weight || 1000;
-  const referencePrice = Number(
-    selectedWeight?.price || defaultWeight?.price || product.price
-  );
-  const pricePerGram =
-    referenceWeight > 0 ? referencePrice / referenceWeight : referencePrice;
-
-  // Calculate original price per gram (if discount exists)
-  const originalPricePerGram =
-    baseOriginalPrice > baseProductPrice
-      ? baseOriginalPrice / referenceWeight
-      : pricePerGram;
-
-  const normalizeWeight = (value: number) => {
-    if (Number.isNaN(value)) return 500;
-    return Math.max(100, Math.min(5000, value));
-  };
-  const customWeightValue = normalizeWeight(parseFloat(customWeight));
-  const customPrice = Math.round(pricePerGram * customWeightValue);
-  const customOriginalPrice = Math.round(
-    originalPricePerGram * customWeightValue
-  );
-  const customWeightOption: WeightOption = {
-    id: customWeightValue,
-    weight: customWeightValue,
-    weight_unit: selectedWeight?.weight_unit || "g",
-    price: customPrice,
-    is_default: false,
-  };
-  // Check if this is Whole Chicken product - hide weight options
+  const baseOriginalPrice = Number((product as any).original_price || product.price);
   const isWholeChicken = product.name.toLowerCase().includes("whole chicken");
 
-  const activeWeight = isWholeChicken
-    ? undefined
-    : customWeightEnabled
-    ? customWeightOption
-    : selectedWeight;
-  const currentPrice = isWholeChicken
-    ? Number(product.price)
-    : Number(activeWeight?.price || product.price);
+  const referenceWeight = selectedWeight?.weight || defaultWeight?.weight || 1000;
+  const referencePrice = Number(selectedWeight?.price || defaultWeight?.price || product.price);
+  const pricePerGram = referenceWeight > 0 ? referencePrice / referenceWeight : referencePrice;
+  const originalPricePerGram = baseOriginalPrice > baseProductPrice ? baseOriginalPrice / referenceWeight : pricePerGram;
 
-  // Calculate original price for current weight
-  const currentWeight = activeWeight?.weight || referenceWeight;
-  const originalPriceForCurrentWeight = customWeightEnabled
-    ? customOriginalPrice
-    : Math.round(originalPricePerGram * currentWeight);
+  const normalizeWeight = (v: number) => Math.max(100, Math.min(5000, isNaN(v) ? 500 : v));
+  const customWeightValue = normalizeWeight(parseFloat(customWeight));
+  const customPrice = Math.round(pricePerGram * customWeightValue);
+  const customWeightOption: WeightOption = { id: customWeightValue, weight: customWeightValue, weight_unit: selectedWeight?.weight_unit || "g", price: customPrice, is_default: false };
 
-  // Calculate discount based on base product price (not weight-specific)
-  // This ensures discount percentage stays constant regardless of weight
+  const activeWeight = isWholeChicken ? undefined : customWeightEnabled ? customWeightOption : selectedWeight;
+  const currentPrice = isWholeChicken ? Number(product.price) : Number(activeWeight?.price || product.price);
   const hasDiscount = baseOriginalPrice > baseProductPrice;
-  const discountPercent = hasDiscount
-    ? Math.round(
-        ((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100
-      )
-    : 0;
-
-  // For display, use the original price for current weight
-  const originalPrice = originalPriceForCurrentWeight;
-
+  const discountPercent = hasDiscount ? Math.round(((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100) : 0;
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
 
-  // Product Schema for SEO
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    image: product.image_url,
-    offers: {
-      "@type": "Offer",
-      price: currentPrice,
-      priceCurrency: "INR",
-      availability:
-        stockStatus.status === "in" || stockStatus.status === "low"
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
-    },
-  };
-
-  // Swipe handlers
-  const minSwipeDistance = 50;
-
-  // Common function to handle swipe end
-  const handleSwipeEnd = (startX: number, endX: number) => {
-    const distance = startX - endX;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && swipePage === 0) {
-      // Swipe left to show info
-      setSwipePage(1);
-    } else if (isRightSwipe && swipePage === 1) {
-      // Swipe right to show image
-      setSwipePage(0);
-    }
-
-    setTouchStart(null);
-    setSwipeOffset(0);
-  };
-
-  // Touch handlers (for mobile swipe) - Improved version
-  const onTouchStart = (e: React.TouchEvent) => {
-    e.stopPropagation();
-    const touch = e.touches[0];
-    if (touch) {
-      setIsSwiping(true);
-      setTouchStart(touch.clientX);
-      setSwipeOffset(0);
-    }
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (touchStart === null) return;
-    const touch = e.touches[0];
-    if (!touch) return;
-
-    const currentTouch = touch.clientX;
-    const distance = touchStart - currentTouch;
-
-    // Only prevent default if we're actually swiping horizontally
-    if (Math.abs(distance) > 5) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    // Calculate swipe offset as percentage of container width
-    if (containerWidth > 0) {
-      const percentage = (distance / containerWidth) * 100;
-      const maxPercentage = 100;
-      const clampedPercentage = Math.max(
-        -maxPercentage,
-        Math.min(maxPercentage, percentage)
-      );
-      setSwipeOffset((clampedPercentage / 100) * containerWidth);
-    } else {
-      // Fallback to pixel-based if container width not available
-      const maxOffset = 200;
-      const clampedDistance = Math.max(
-        -maxOffset,
-        Math.min(maxOffset, distance)
-      );
-      setSwipeOffset(clampedDistance);
-    }
-  };
-
-  const onTouchEnd = (e: React.TouchEvent) => {
-    e.stopPropagation();
-
-    if (touchStart === null) {
-      setSwipeOffset(0);
-      setIsSwiping(false);
-      return;
-    }
-
-    const touch = e.changedTouches[0];
-    if (!touch) {
-      setTouchStart(null);
-      setSwipeOffset(0);
-      setIsSwiping(false);
-      return;
-    }
-
-    const endTouch = touch.clientX;
-    const distance = touchStart - endTouch;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && swipePage === 0) {
-      // Swipe left to show info
-      setSwipePage(1);
-    } else if (isRightSwipe && swipePage === 1) {
-      // Swipe right to show image
-      setSwipePage(0);
-    }
-
-    setTouchStart(null);
-    setSwipeOffset(0);
-    setIsSwiping(false);
-  };
-
-  // Handle click on mobile to toggle info panel (for non-swipeable areas)
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Only handle clicks on mobile devices
-    if (!isMobile) return;
-
-    // Don't toggle if clicking on interactive elements (buttons, inputs, etc.)
-    const target = e.target as HTMLElement;
-    if (
-      target.tagName === "BUTTON" ||
-      target.tagName === "INPUT" ||
-      target.closest("button") ||
-      target.closest("input") ||
-      target.closest("a") ||
-      target.closest(".swipeable-container")
-    ) {
-      return;
-    }
-
-    // Toggle info panel on mobile
-    setShowInfo((prev) => !prev);
-  };
-
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
-      <BackgroundGradient
-        containerClassName="rounded-xl"
-        className="rounded-xl overflow-hidden bg-white"
-        animate={true}
-      >
-        <div
-          className="group relative bg-white rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 border border-gray-200 hover:border-orange-200"
-          onMouseEnter={() => {
-            // Only use hover on desktop (non-mobile)
-            if (!isMobile) {
-              setShowInfo(true);
-              setIsHovered(true);
-            }
-          }}
-          onMouseLeave={() => {
-            // Only use hover on desktop (non-mobile)
-            if (!isMobile) {
-              setShowInfo(false);
-              setIsHovered(false);
-              setSwipePage(0); // Reset to image when leaving
-            }
-          }}
-          onClick={handleCardClick}
-        >
-          {/* Discount Badge */}
-          {hasDiscount && (
-            <div className="absolute top-0.5 left-0.5 sm:top-1 sm:left-1 z-10 bg-gradient-to-r from-orange-400 to-orange-600 text-white px-1 sm:px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-semibold flex items-center gap-0.5 shadow-sm">
-              <Sparkles className="h-1 w-1 sm:h-2 sm:w-2" />
-              <span>{discountPercent}% OFF</span>
-            </div>
-          )}
-
-          {/* Bestseller Badge - Licious Style */}
-          {isBestseller && !hasDiscount && (
-            <div className="absolute bottom-1 left-1 z-10 bg-white/95 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 shadow border border-orange-200 flex items-center gap-0.5 sm:gap-1">
-              <span className="text-[7px] sm:text-[9px] font-bold text-gray-800">
-                INDIA'S JUICIEST CHICKEN
-              </span>
-              <span className="text-[10px] sm:text-xs">🍗</span>
-            </div>
-          )}
-
-          {/* Stock Badge - Only show if out of stock */}
-          {stockStatus.status === "out" && (
-            <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 z-10 bg-red-100 text-red-700 px-1 sm:px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-medium flex items-center gap-0.5 border border-red-200 shadow-sm backdrop-blur-sm bg-white/90">
-              <XCircle className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5" />
-              <span>Out</span>
-            </div>
-          )}
-
-          {/* Swipeable Product Container - rectangular to fit images */}
-          <div
-            className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden rounded-t-lg flex-shrink-0"
-            style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch" }}
-          >
-            <div
-              ref={swipeContainerRef}
-              className="swipeable-container relative w-full h-full flex select-none"
-              style={{
-                transform: `translateX(${
-                  containerWidth > 0
-                    ? swipePage === 0
-                      ? `${(-swipeOffset / containerWidth) * 100}%`
-                      : `${-100 + (swipeOffset / containerWidth) * 100}%`
-                    : swipePage === 0
-                    ? "0%"
-                    : "-100%"
-                })`,
-                transition:
-                  swipeOffset === 0 && !isSwiping
-                    ? "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                    : "none",
-                willChange: "transform",
-                userSelect: "none",
-              }}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-              onTouchCancel={() => {
-                setTouchStart(null);
-                setSwipeOffset(0);
-                setIsSwiping(false);
-              }}
-            >
-              {/* Page 1: Product Image */}
-              <div className="min-w-full h-full relative bg-white">
-                {product.image_url ? (
-                  <Image
-                    src={product.image_url}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover object-center transition-transform duration-300 ease-out group-hover:scale-105"
-                    quality={95}
-                    priority={index < 6}
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = "none";
-                      const fallback = target.parentElement
-                        ?.nextElementSibling as HTMLElement | null;
-                      if (fallback) {
-                        fallback.style.display = "flex";
-                      }
-                    }}
-                  />
-                ) : null}
-                <div
-                  className={`absolute inset-0 w-full h-full ${
-                    product.image_url ? "hidden" : "flex"
-                  } bg-gray-50 items-center justify-center`}
-                >
-                  <span className="text-base sm:text-2xl transform transition-transform duration-300 group-hover:scale-110">
-                    🍗
-                  </span>
-                </div>
-              </div>
-
-              {/* Page 2: Product Information */}
-              <div className="min-w-full h-full bg-chicken-cream border-t border-dashed border-gray-200 p-2 sm:p-3 flex flex-col justify-center">
-                <div className="text-center">
-                  <h4 className="text-[10px] sm:text-xs font-bold text-gray-900 mb-1 sm:mb-2">
-                    {product.name}
-                  </h4>
-                  <p className="text-[9px] sm:text-[10px] text-gray-700 leading-relaxed mb-2 sm:mb-3 px-0.5 line-clamp-2">
-                    {product.description ||
-                      "Fresh and delicious premium quality chicken, carefully selected and prepared to ensure the best taste and nutrition for your family."}
-                  </p>
-                  <div className="space-y-1 sm:space-y-1.5">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">
-                        ✓
-                      </span>
-                      <span className="text-[10px] sm:text-xs text-gray-700">
-                        Premium quality, fresh daily
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">
-                        ✓
-                      </span>
-                      <span className="text-[10px] sm:text-xs text-gray-700">
-                        Rich in protein and nutrients
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-orange-600 text-xs sm:text-sm flex-shrink-0">
-                        ✓
-                      </span>
-                      <span className="text-[10px] sm:text-xs text-gray-700">
-                        Perfect for all your recipes
-                      </span>
-                    </div>
-                    {hasDiscount && (
-                      <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-orange-200">
-                        <span className="text-green-600 text-xs sm:text-sm font-bold flex-shrink-0">
-                          🎉
-                        </span>
-                        <span className="text-[10px] sm:text-xs text-green-700 font-semibold">
-                          Save {discountPercent}% - Limited time offer!
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Swipe Indicator Dots */}
-            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
-              <div
-                className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                  swipePage === 0 ? "bg-orange-600 w-4" : "bg-white/60 w-1.5"
-                }`}
-              />
-              <div
-                className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                  swipePage === 1 ? "bg-orange-600 w-4" : "bg-white/60 w-1.5"
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Product Info - Sliding Panel */}
-          <div className="relative overflow-hidden bg-white">
-            {/* Basic Info (Always Visible) */}
-            <div className="p-1 sm:p-2 pb-1 sm:pb-1.5">
-              <div className="mb-0.5 sm:mb-1">
-                <h3 className="text-[10px] sm:text-xs font-medium sm:font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 leading-tight mb-0.5 line-clamp-2">
-                  {product.name}
-                </h3>
-                {/* Category label removed as per request */}
-              </div>
-
-              {/* Price Section with Discount */}
-              <div className="flex flex-col gap-0.5 mb-1">
-                <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
-                  {hasDiscount ? (
-                    <>
-                      <span className="text-xs sm:text-base font-semibold sm:font-bold text-orange-600">
-                        ₹{currentPrice.toFixed(0)}
-                      </span>
-                      <span className="text-[9px] sm:text-xs text-gray-400 line-through font-normal">
-                        ₹{originalPrice.toFixed(0)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-xs sm:text-base font-semibold sm:font-bold text-gray-900">
-                      ₹{currentPrice.toFixed(0)}
-                    </span>
-                  )}
-                  {activeWeight && !isWholeChicken && (
-                    <span className="text-[9px] sm:text-xs text-gray-500 font-normal sm:font-medium">
-                      / {activeWeight.weight}
-                      {activeWeight.weight_unit}
-                    </span>
-                  )}
-                </div>
-                {activeWeight && !isWholeChicken && activeWeight.weight && (
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 font-normal">
-                    ₹
-                    {(activeWeight.weight_unit === "kg"
-                      ? currentPrice / Number(activeWeight.weight)
-                      : (currentPrice / Number(activeWeight.weight)) * 1000
-                    ).toFixed(0)}
-                    /kg
-                  </p>
-                )}
-                {hasDiscount && (
-                  <div className="flex items-center gap-1">
-                    <span className="text-[8px] sm:text-[10px] font-medium text-green-600 bg-green-50 px-1 py-0.5 rounded">
-                      Save ₹{(originalPrice - currentPrice).toFixed(0)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Sliding Info Panel */}
-            <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                showInfo ? "max-h-[320px] opacity-100" : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="px-2 pb-1.5 space-y-1.5 border-t border-gray-100 pt-1.5">
-                {/* Description */}
-                <div>
-                  <p className="text-xs font-medium text-gray-500 mb-0.5">
-                    Description
-                  </p>
-                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">
-                    {product.description ||
-                      "Fresh and delicious premium quality chicken."}
-                  </p>
-                </div>
-
-                {/* Weight Options Selector */}
-                {product.weightOptions &&
-                  product.weightOptions.length > 1 &&
-                  !isWholeChicken && (
-                    <div className="space-y-1">
-                      <label className="text-xs font-medium text-gray-500">
-                        Select Weight:
-                      </label>
-                      <div className="flex flex-wrap gap-1">
-                        {product.weightOptions.map((weight) => (
-                          <button
-                            key={weight.id || weight.weight}
-                            onClick={() => {
-                              setSelectedWeight(weight);
-                              setCustomWeightEnabled(false);
-                            }}
-                            className={`px-1.5 py-0.5 rounded text-xs font-medium transition-all duration-200 ${
-                              selectedWeight?.weight === weight.weight
-                                ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-100"
-                            }`}
-                          >
-                            {weight.weight}
-                            {weight.weight_unit}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                {/* Cart Controls */}
-                <div className="pt-1">
-                  {!isWholeChicken && (
-                    <div className="mb-2 border border-gray-100 rounded-md p-1.5 bg-gray-50/80">
-                      <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold text-gray-700 mb-1.5">
-                        <span>Custom Weight</span>
-                        <button
-                          onClick={() =>
-                            setCustomWeightEnabled((prev) => !prev)
-                          }
-                          className="text-orange-600"
-                        >
-                          {customWeightEnabled ? "Disable" : "Enable"}
-                        </button>
-                      </div>
-                      {customWeightEnabled && (
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min={100}
-                              max={5000}
-                              step={50}
-                              value={customWeight}
-                              onChange={(e) =>
-                                setCustomWeight(
-                                  normalizeWeight(
-                                    Number(e.target.value)
-                                  ).toString()
-                                )
-                              }
-                              className="w-full border border-gray-200 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400"
-                            />
-                            <span className="text-xs text-gray-500">grams</span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>
-                              {(customWeightValue / 1000).toFixed(2)} kg
-                            </span>
-                            <span className="font-semibold text-gray-900">
-                              ₹{customPrice.toFixed(0)}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {stockStatus.status === "out" ? (
-                    <button
-                      disabled
-                      className="w-full bg-gray-100 text-gray-400 font-semibold py-2.5 px-3 rounded-lg cursor-not-allowed text-xs min-h-[40px]"
-                    >
-                      Out of Stock
-                    </button>
-                  ) : currentWeightQuantity === 0 ? (
-                    <button
-                      onClick={() =>
-                        onAddToCart(
-                          product,
-                          isWholeChicken
-                            ? undefined
-                            : customWeightEnabled
-                            ? activeWeight
-                            : selectedWeight
-                        )
-                      }
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 shadow-md shadow-orange-200 active:scale-95 text-xs min-h-[40px]"
-                    >
-                      <ShoppingBag
-                        size={14}
-                        className="transform transition-transform duration-200"
-                      />
-                      <span>Add to Cart</span>
-                    </button>
-                  ) : (
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 bg-gray-50 rounded-lg p-0.5">
-                        <button
-                          onClick={() =>
-                            onUpdateQuantity(
-                              product.id,
-                              currentWeightQuantity - 1,
-                              isWholeChicken
-                                ? undefined
-                                : customWeightEnabled
-                                ? activeWeight
-                                : selectedWeight
-                            )
-                          }
-                          className="min-w-[36px] min-h-[36px] flex items-center justify-center bg-white rounded-md active:bg-gray-100 transition-colors shadow-sm"
-                        >
-                          <Minus size={14} className="text-gray-700" />
-                        </button>
-                        <div className="min-w-[32px] text-center">
-                          <span className="font-bold text-gray-900 text-sm">
-                            {currentWeightQuantity}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() =>
-                            onUpdateQuantity(
-                              product.id,
-                              currentWeightQuantity + 1,
-                              isWholeChicken
-                                ? undefined
-                                : customWeightEnabled
-                                ? activeWeight
-                                : selectedWeight
-                            )
-                          }
-                          disabled={stockStatus.status === "out"}
-                          className="min-w-[36px] min-h-[36px] flex items-center justify-center bg-orange-600 active:bg-orange-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                        >
-                          <Plus size={14} />
-                        </button>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-gray-900">
-                          ₹
-                          {(
-                            Number(
-                              isWholeChicken
-                                ? product.price
-                                : (customWeightEnabled
-                                    ? activeWeight?.price
-                                    : selectedWeight?.price) || product.price
-                            ) * currentWeightQuantity
-                          ).toFixed(0)}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Add Button (Visible when info is hidden) - Licious Style */}
-            {!showInfo &&
-              currentWeightQuantity === 0 &&
-              stockStatus.status !== "out" && (
-                <div className="absolute bottom-1.5 right-1.5 z-10">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(
-                        product,
-                        isWholeChicken
-                          ? undefined
-                          : customWeightEnabled
-                          ? activeWeight
-                          : selectedWeight
-                      );
-                    }}
-                    className="bg-white hover:bg-orange-50 text-orange-600 hover:text-orange-700 rounded-md p-1.5 sm:p-2 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 border border-gray-100 hover:border-orange-200"
-                    aria-label="Add to cart"
-                  >
-                    <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </button>
-                </div>
-              )}
-          </div>
+    <div className="product-card group relative">
+      {/* Discount / bestseller badge */}
+      {hasDiscount ? (
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-brand-red text-white text-xs font-bold px-3 py-1.5 rounded-full badge-glow">{discountPercent}% OFF</span>
         </div>
-      </BackgroundGradient>
-    </>
+      ) : isBestseller ? (
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-brand-red text-white text-xs font-bold px-3 py-1.5 rounded-full badge-glow">Best Seller</span>
+        </div>
+      ) : null}
+
+      {stockStatus.status === "out" && (
+        <div className="absolute top-4 right-4 z-10">
+          <span className="bg-gray-700 text-white text-xs font-medium px-2 py-1 rounded-full">Out of Stock</span>
+        </div>
+      )}
+
+      {/* Product image */}
+      <div className="image-hover-zoom relative h-52 bg-gray-100">
+        {product.image_url ? (
+          <Image
+            src={product.image_url}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover object-center"
+            priority={index < 8}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-4xl">🍗</div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-50" />
+        <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap">
+          <span className="fresh-tag text-white text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
+          {product.category && (
+            <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">{product.category.toUpperCase()}</span>
+          )}
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="p-5">
+        <Link href={`/products/${product.id}`}>
+          <h3 className="text-base font-serif font-semibold text-gray-900 group-hover:text-brand-red transition-colors mb-1.5 leading-tight">{product.name}</h3>
+        </Link>
+        {product.description && (
+          <p className="text-gray-500 text-sm mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+        )}
+
+        {/* Weight options */}
+        {!isWholeChicken && product.weightOptions && product.weightOptions.length > 1 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {product.weightOptions.map((w) => (
+              <button
+                key={w.id || w.weight}
+                type="button"
+                onClick={() => { setSelectedWeight(w); setCustomWeightEnabled(false); }}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+                  selectedWeight?.weight === w.weight && !customWeightEnabled
+                    ? "bg-brand-red text-white border-brand-red"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-brand-red hover:text-brand-red"
+                }`}
+              >
+                {w.weight}{w.weight_unit}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Price + Add */}
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <span className="text-xl font-bold price-tag">
+              ₹{currentPrice.toFixed(0)}
+            </span>
+            {activeWeight && !isWholeChicken && (
+              <span className="text-gray-400 text-xs ml-1">/{activeWeight.weight}{activeWeight.weight_unit}</span>
+            )}
+            {hasDiscount && (
+              <span className="ml-2 text-xs line-through text-gray-400">
+                ₹{Math.round(originalPricePerGram * referenceWeight)}
+              </span>
+            )}
+          </div>
+
+          {stockStatus.status === "out" ? (
+            <button disabled className="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm font-semibold cursor-not-allowed">
+              Out of Stock
+            </button>
+          ) : currentWeightQuantity === 0 ? (
+            <button
+              type="button"
+              onClick={() => onAddToCart(product, isWholeChicken ? undefined : activeWeight)}
+              className="btn-primary px-5 py-2 rounded-full text-white text-sm font-semibold flex items-center gap-2"
+            >
+              <Plus className="w-3.5 h-3.5" /> Add
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1">
+              <button
+                type="button"
+                onClick={() => onUpdateQuantity(product.id, currentWeightQuantity - 1, isWholeChicken ? undefined : activeWeight)}
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-700 hover:bg-brand-red hover:text-white transition-colors border border-gray-200"
+              >
+                <Minus className="w-3 h-3" />
+              </button>
+              <span className="text-gray-900 font-semibold w-6 text-center text-sm">{currentWeightQuantity}</span>
+              <button
+                type="button"
+                onClick={() => onUpdateQuantity(product.id, currentWeightQuantity + 1, isWholeChicken ? undefined : activeWeight)}
+                disabled={stockStatus.status === "out"}
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-700 hover:bg-brand-red hover:text-white transition-colors border border-gray-200 disabled:opacity-50"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -820,99 +202,20 @@ interface ProductCatalogProps {
   deliveryEnabled?: boolean;
 }
 
-export default function ProductCatalog({
-  initialProducts,
-  deliveryEnabled = true,
-}: ProductCatalogProps = {}) {
+export default function ProductCatalog({ initialProducts, deliveryEnabled = true }: ProductCatalogProps = {}) {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(
-    initialProducts || []
-  );
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts || []);
   const [loading, setLoading] = useState(!initialProducts);
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams?.get("search") || ""
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    () => searchParams?.get("category") || "all"
-  );
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string>("all");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [sortBy, setSortBy] = useState<
-    "popular" | "price_low" | "price_high" | "name"
-  >("popular");
-  const [mounted, setMounted] = useState(false);
-  const [visibleProducts, setVisibleProducts] = useState<Set<number>>(
-    new Set()
-  );
+  const [searchTerm, setSearchTerm] = useState(searchParams?.get("search") || "");
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => searchParams?.get("category") || "all");
+  const [sortBy, setSortBy] = useState<"popular" | "price_low" | "price_high" | "name">("popular");
   const { state, dispatch } = useCart();
 
-  // Bestseller products (you can make this dynamic based on order data)
-  const bestsellerIds = [1, 2, 3]; // Chicken Breast, Chicken Curry Cut, Chicken Wings
-  const bestsellerProducts = products.filter((p) =>
-    bestsellerIds.includes(p.id)
-  );
+  const bestsellerIds = [1, 2, 3];
 
-  // Popular search chips
-  const popularSearches = [
-    { label: "Boneless", query: "boneless" },
-    { label: "Curry cut", query: "curry" },
-    { label: "Whole chicken", query: "whole" },
-    { label: "Drumstick", query: "drumstick" },
-    { label: "Wings", query: "wings" },
-  ];
+  const categories = ["all", ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
 
-  // Get unique categories
-  const categories = [
-    "all",
-    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))),
-  ];
-
-  const quickFilterOptions = [
-    { id: "all", label: "Show All" },
-    { id: "bestsellers", label: "Best Sellers" },
-    { id: "in_stock", label: "In Stock" },
-    { id: "offers", label: "On Offer" },
-  ];
-
-  const categoryCounts = products.reduce<Record<string, number>>(
-    (acc, product) => {
-      const group = product.category || "Other";
-      acc[group] = (acc[group] || 0) + 1;
-      return acc;
-    },
-    {}
-  );
-
-  const totalInStock = products.filter(
-    (product) => product.in_stock && (product.stock_quantity ?? 0) > 0
-  ).length;
-
-  const totalDiscounted = products.filter((product) => {
-    const base = Number((product as any).original_price);
-    return base && base > Number(product.price);
-  }).length;
-
-  useEffect(() => {
-    setMounted(true);
-    // Staggered animation for products
-    if (filteredProducts.length > 0) {
-      const timeouts: NodeJS.Timeout[] = [];
-      filteredProducts.forEach((product, index) => {
-        const timeout = setTimeout(() => {
-          setVisibleProducts((prev) => new Set(prev).add(product.id));
-        }, index * 50);
-        timeouts.push(timeout);
-      });
-
-      return () => {
-        timeouts.forEach((timeout) => clearTimeout(timeout));
-      };
-    }
-  }, [filteredProducts]);
-
-  // Initialize with server-side data only once on mount
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
       setProducts(initialProducts);
@@ -921,254 +224,89 @@ export default function ProductCatalog({
     } else if (!initialProducts) {
       fetchProducts();
     }
-    // Read search query from URL
     const urlSearch = searchParams?.get("search");
-    if (urlSearch) {
-      setSearchTerm(urlSearch);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run once on mount
+    if (urlSearch) setSearchTerm(urlSearch);
+  }, []);
 
-  // Set up periodic refresh - only if no initial products provided
-  // Refresh every 30 seconds instead of 2 seconds for better performance
   useEffect(() => {
-    // Only set up refresh if we don't have initial products
     if (!initialProducts || initialProducts.length === 0) {
-      const refreshInterval = setInterval(() => {
-        fetchProducts();
-      }, 30000); // Refresh every 30 seconds instead of 2 seconds
-
-      return () => {
-        clearInterval(refreshInterval);
-      };
+      const interval = setInterval(fetchProducts, 30000);
+      return () => clearInterval(interval);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialProducts]); // Only set up once on mount
+  }, [initialProducts]);
 
   const filterAndSortProducts = () => {
     let filtered = products;
+    if (selectedCategory !== "all") filtered = filtered.filter((p) => p.category === selectedCategory);
+    if (searchTerm) filtered = filtered.filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.description?.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    // Filter by category
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    // Filter by price range
-    const min = minPrice ? parseFloat(minPrice) : NaN;
-    const max = maxPrice ? parseFloat(maxPrice) : NaN;
-    if (!Number.isNaN(min)) {
-      filtered = filtered.filter((p) => Number(p.price) >= min);
-    }
-    if (!Number.isNaN(max)) {
-      filtered = filtered.filter((p) => Number(p.price) <= max);
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Sort
-    if (sortBy === "price_low") {
-      filtered = [...filtered].sort(
-        (a, b) => Number(a.price) - Number(b.price)
-      );
-    } else if (sortBy === "price_high") {
-      filtered = [...filtered].sort(
-        (a, b) => Number(b.price) - Number(a.price)
-      );
-    } else if (sortBy === "name") {
-      filtered = [...filtered].sort((a, b) =>
-        (a.name || "").localeCompare(b.name || "")
-      );
-    } else {
-      // popular: bestsellers first, then rest
-      filtered = [...filtered].sort((a, b) => {
-        const aBest = bestsellerIds.indexOf(a.id);
-        const bBest = bestsellerIds.indexOf(b.id);
-        if (aBest !== -1 && bBest !== -1) return aBest - bBest;
-        if (aBest !== -1) return -1;
-        if (bBest !== -1) return 1;
-        return 0;
-      });
-    }
-
-    // Quick filter logic
-    if (selectedQuickFilter === "bestsellers") {
-      filtered = filtered.filter((product) =>
-        bestsellerIds.includes(product.id)
-      );
-    } else if (selectedQuickFilter === "in_stock") {
-      filtered = filtered.filter(
-        (product) => product.in_stock && (product.stock_quantity ?? 0) > 0
-      );
-    } else if (selectedQuickFilter === "offers") {
-      filtered = filtered.filter((product) => {
-        const base = Number((product as any).original_price);
-        return base && base > Number(product.price);
-      });
-    }
+    if (sortBy === "price_low") filtered = [...filtered].sort((a, b) => Number(a.price) - Number(b.price));
+    else if (sortBy === "price_high") filtered = [...filtered].sort((a, b) => Number(b.price) - Number(a.price));
+    else if (sortBy === "name") filtered = [...filtered].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    else filtered = [...filtered].sort((a, b) => { const ai = bestsellerIds.indexOf(a.id), bi = bestsellerIds.indexOf(b.id); if (ai !== -1 && bi !== -1) return ai - bi; if (ai !== -1) return -1; if (bi !== -1) return 1; return 0; });
 
     setFilteredProducts(filtered);
   };
 
-  useEffect(() => {
-    filterAndSortProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products, searchTerm, selectedCategory, selectedQuickFilter, sortBy, minPrice, maxPrice]);
+  useEffect(() => { filterAndSortProducts(); }, [products, searchTerm, selectedCategory, sortBy]);
 
   const getStockStatus = (product: Product) => {
-    if (!product.in_stock || (product.stock_quantity ?? 0) === 0) {
-      return {
-        status: "out",
-        label: "Out of Stock",
-        color: "bg-red-100 text-red-700 border-red-200",
-        icon: XCircle,
-      };
-    }
-    if (
-      (product.stock_quantity ?? 100) <= (product.low_stock_threshold ?? 10)
-    ) {
-      return {
-        status: "low",
-        label: "Low Stock",
-        color: "bg-yellow-100 text-yellow-700 border-yellow-200",
-        icon: AlertCircle,
-      };
-    }
-    return {
-      status: "in",
-      label: "In Stock",
-      color: "bg-green-100 text-green-700 border-green-200",
-      icon: CheckCircle,
-    };
+    if (!product.in_stock || (product.stock_quantity ?? 0) === 0) return { status: "out", label: "Out of Stock", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle };
+    if ((product.stock_quantity ?? 100) <= (product.low_stock_threshold ?? 10)) return { status: "low", label: "Low Stock", color: "bg-yellow-100 text-yellow-700 border-yellow-200", icon: AlertCircle };
+    return { status: "in", label: "In Stock", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle };
   };
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`/api/products`, {
-        next: { revalidate: 10 }, // Cache for 10 seconds
-      });
-      if (!response.ok) {
-        // Don't clear products on error, keep existing ones
-        return;
-      }
-      const data = await response.json();
+      const res = await fetch("/api/products");
+      if (!res.ok) return;
+      const data = await res.json();
       const newProducts = Array.isArray(data) ? data : [];
-
-      // Only update if products actually changed (compare by ID and price)
-      if (products.length === 0) {
-        // First load - always set
-        setProducts(newProducts);
-      } else {
-        // Create a map for efficient comparison
-        const oldProductMap = new Map(products.map((p) => [p.id, p]));
-        const hasChanged =
-          products.length !== newProducts.length ||
-          newProducts.some((newProduct) => {
-            const oldProduct = oldProductMap.get(newProduct.id);
-            return (
-              !oldProduct ||
-              oldProduct.price !== newProduct.price ||
-              (oldProduct as any).original_price !==
-                (newProduct as any).original_price ||
-              oldProduct.stock_quantity !== newProduct.stock_quantity ||
-              oldProduct.in_stock !== newProduct.in_stock
-            );
-          });
-
-        if (hasChanged) {
-          // Only update state if products actually changed
-          setProducts(newProducts);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      // Don't clear products on error, keep existing ones
-    } finally {
-      setLoading(false);
-    }
+      setProducts((prev) => {
+        if (prev.length === 0) return newProducts;
+        const oldMap = new Map(prev.map((p) => [p.id, p]));
+        const changed = prev.length !== newProducts.length || newProducts.some((np) => {
+          const op = oldMap.get(np.id);
+          return !op || op.price !== np.price || (op as any).original_price !== (np as any).original_price || op.stock_quantity !== np.stock_quantity || op.in_stock !== np.in_stock;
+        });
+        return changed ? newProducts : prev;
+      });
+    } catch {}
+    finally { setLoading(false); }
   };
 
   const addToCart = (product: Product, selectedWeight?: WeightOption) => {
-    const productToAdd = selectedWeight
-      ? { ...product, price: selectedWeight.price }
-      : product;
-
-    dispatch({
-      type: "ADD_ITEM",
-      payload: {
-        product: productToAdd,
-        quantity: 1,
-        selectedWeight:
-          selectedWeight ||
-          product.weightOptions?.find((w) => w.is_default) ||
-          undefined,
-      },
-    });
-
-    // Add haptic feedback for mobile
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
-    }
+    const productToAdd = selectedWeight ? { ...product, price: selectedWeight.price } : product;
+    dispatch({ type: "ADD_ITEM", payload: { product: productToAdd, quantity: 1, selectedWeight: selectedWeight || product.weightOptions?.find((w) => w.is_default) || undefined } });
+    if (navigator.vibrate) navigator.vibrate(50);
   };
 
-  const updateQuantity = (
-    productId: number,
-    quantity: number,
-    selectedWeight?: WeightOption
-  ) => {
-    dispatch({
-      type: "UPDATE_QUANTITY",
-      payload: { productId, quantity, selectedWeight },
-    });
+  const updateQuantity = (productId: number, quantity: number, selectedWeight?: WeightOption) => {
+    dispatch({ type: "UPDATE_QUANTITY", payload: { productId, quantity, selectedWeight } });
   };
 
-  const isSameWeightOption = (a?: WeightOption, b?: WeightOption): boolean => {
+  const isSameWeightOption = (a?: WeightOption, b?: WeightOption) => {
     if (!a && !b) return true;
     if (!a || !b) return false;
-    return (
-      a.weight === b.weight && a.weight_unit === b.weight_unit && a.id === b.id
-    );
+    return a.weight === b.weight && a.weight_unit === b.weight_unit && a.id === b.id;
   };
 
-  const getWeightQuantity = (
-    productId: number,
-    weightOption?: WeightOption
-  ) => {
-    const item = state.items.find(
-      (item) =>
-        item.product.id === productId &&
-        isSameWeightOption(item.selectedWeight, weightOption)
-    );
+  const getWeightQuantity = (productId: number, weightOption?: WeightOption) => {
+    const item = state.items.find((i) => i.product.id === productId && isSameWeightOption(i.selectedWeight, weightOption));
     return item ? item.quantity : 0;
   };
 
   if (loading && !products.length) {
     return (
-      <section className="py-20 bg-white min-h-[500px]">
+      <section className="pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Fresh Collection
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white border border-gray-200 rounded-2xl h-80 overflow-hidden animate-pulse"
-              >
-                <div className="bg-gray-200 h-48 w-full"></div>
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div key={i} className="bg-white border border-gray-200 rounded-2xl h-80 animate-pulse">
+                <div className="bg-gray-100 h-52 w-full" />
+                <div className="p-5 space-y-3">
+                  <div className="h-4 bg-gray-100 rounded w-3/4" />
+                  <div className="h-4 bg-gray-100 rounded w-1/2" />
                 </div>
               </div>
             ))}
@@ -1179,229 +317,82 @@ export default function ProductCatalog({
   }
 
   return (
-    <div
-      id="products"
-      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-12 sm:py-20 bg-white w-full overflow-hidden"
-    >
+    <div className="pb-20 bg-white w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4">
-          <div className="animate-slide-up">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-chicken-wood mb-3 sm:mb-4 tracking-tight">
-              Our Fresh Collection
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base max-w-2xl leading-relaxed">
-              Premium cuts, delivered fresh to your doorstep. NO antibiotics, NO
-              preservatives.
-            </p>
-            {deliveryEnabled && (
-              <p className="text-orange-600/90 text-xs sm:text-sm font-medium mt-2">
-                Free delivery above ₹500 • Earliest delivery: Tomorrow 9 AM–12
-                PM
-              </p>
-            )}
-          </div>
-
-          {/* Search, filters, and sort */}
-          <div className="flex flex-col gap-3 animate-slide-up stagger-1 w-full md:w-auto">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="relative group w-full sm:w-64">
-                <input
-                  type="text"
-                  placeholder="Search for chicken..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none transition-all duration-300 bg-gray-50/50 focus:bg-white"
-                />
-                <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors duration-300 h-5 w-5" />
-              </div>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full sm:w-40 px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm font-medium text-gray-700"
-              >
-                <option value="all">All categories</option>
-                {categories.filter((c) => c !== "all").map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              <div className="flex gap-2 items-center">
-                <input
-                  type="number"
-                  placeholder="Min ₹"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  min={0}
-                  step={10}
-                  className="w-24 px-3 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm"
-                />
-                <span className="text-gray-400">–</span>
-                <input
-                  type="number"
-                  placeholder="Max ₹"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  min={0}
-                  step={10}
-                  className="w-24 px-3 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm"
-                />
-              </div>
-              <select
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(
-                    e.target.value as
-                      | "popular"
-                      | "price_low"
-                      | "price_high"
-                      | "name"
-                  )
-                }
-                className="w-full sm:w-44 px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 bg-gray-50/50 focus:bg-white text-sm font-medium text-gray-700"
-              >
-                <option value="popular">Popular</option>
-                <option value="price_low">Price: Low to High</option>
-                <option value="price_high">Price: High to Low</option>
-                <option value="name">Name A–Z</option>
-              </select>
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-xs font-medium text-gray-500 mr-1">
-                Quick:
-              </span>
-              {quickFilterOptions.map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => setSelectedQuickFilter(opt.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                    selectedQuickFilter === opt.id
-                      ? "bg-orange-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-700"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-              <span className="text-xs font-medium text-gray-500 ml-2 mr-1">
-                Search:
-              </span>
-              {popularSearches.map((item) => (
-                <button
-                  key={item.query}
-                  type="button"
-                  onClick={() =>
-                    setSearchTerm(searchTerm === item.query ? "" : item.query)
-                  }
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                    searchTerm === item.query
-                      ? "bg-orange-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-700"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Category filter pills */}
+        <div className="flex gap-3 overflow-x-auto scroll-hidden pb-4 justify-start md:justify-center mb-8">
+          <button
+            type="button"
+            onClick={() => setSelectedCategory("all")}
+            className={`category-pill px-5 py-2.5 rounded-full ${selectedCategory === "all" ? "active" : ""}`}
+          >
+            All Cuts
+          </button>
+          {categories.filter((c) => c !== "all").map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`category-pill px-5 py-2.5 rounded-full capitalize ${selectedCategory === cat ? "active" : ""}`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
-        {/* Best Sellers row */}
-        {!loading && bestsellerProducts.length > 0 && (
-          <div className="mb-10">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
-              Best Sellers
-            </h3>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-              {bestsellerProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="flex-shrink-0 w-[180px] sm:w-[200px]"
-                >
-                  <ProductCard
-                    product={product}
-                    index={index}
-                    isBestseller={true}
-                    getStockStatus={getStockStatus}
-                    getWeightQuantity={getWeightQuantity}
-                    onAddToCart={addToCart}
-                    onUpdateQuantity={updateQuantity}
-                  />
-                </motion.div>
-              ))}
-            </div>
+        {/* Search + sort */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-8">
+          <div className="relative flex-1 max-w-md">
+            <input
+              type="text"
+              placeholder="Search chicken cuts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-gray-100 text-gray-900 pl-11 pr-4 py-3 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           </div>
-        )}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="px-4 py-3 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none search-glow"
+          >
+            <option value="popular">Popular</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
 
-        {/* Product Grid with AnimatePresence */}
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-gray-50 rounded-2xl h-80 animate-pulse border border-gray-100"
+        {/* Products grid */}
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product, index) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                index={index}
+                isBestseller={bestsellerIds.includes(product.id)}
+                getStockStatus={getStockStatus}
+                getWeightQuantity={getWeightQuantity}
+                onAddToCart={addToCart}
+                onUpdateQuantity={updateQuantity}
               />
             ))}
           </div>
-        ) : filteredProducts.length > 0 ? (
-          <motion.div
-            layout
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 min-h-[400px]"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProductCard
-                    product={product}
-                    index={index}
-                    isBestseller={bestsellerIds.includes(product.id)}
-                    getStockStatus={getStockStatus}
-                    getWeightQuantity={getWeightQuantity}
-                    onAddToCart={addToCart}
-                    onUpdateQuantity={updateQuantity}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-50 rounded-full mb-4">
-              <Search className="h-8 w-8 text-orange-400" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              No chicken found!
-            </h3>
-            <p className="text-gray-500 max-w-sm mx-auto">
-              We couldn't find any products matching your search. Try adjusting
-              your filters or search term.
-            </p>
+          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+            <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
+            <p className="text-gray-500 text-sm mb-6">Try a different search term or category filter.</p>
             <button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("all");
-                setSelectedQuickFilter("all");
-                setMinPrice("");
-                setMaxPrice("");
-              }}
-              className="mt-6 px-6 py-2 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+              type="button"
+              onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }}
+              className="btn-primary px-6 py-2.5 rounded-full text-white font-semibold text-sm"
             >
               Clear Filters
             </button>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

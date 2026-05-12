@@ -140,12 +140,12 @@ export default async function RecipesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(recipesStructuredData) }}
       />
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 via-orange-50/20 to-gray-50 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-50 to-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 animate-slide-down">
           <Link
             href="/"
-            className="inline-flex items-center text-orange-600 hover:text-orange-700 mb-4 transform transition-all duration-300 hover:translate-x-[-4px]"
+            className="inline-flex items-center text-brand-red hover:text-brand-red mb-4 transform transition-all duration-300 hover:translate-x-[-4px]"
           >
             <ArrowLeft
               size={20}
@@ -171,11 +171,11 @@ export default async function RecipesPage() {
           {recipes.map((recipe, index) => (
             <div
               key={recipe.id}
-              className="card hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:border-orange-200 animate-slide-up"
+              className="card hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:border-red-200 animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="aspect-w-16 aspect-h-9 mb-4 overflow-hidden rounded-lg group/image">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center transform transition-transform duration-500 group-hover/image:scale-110">
+                <div className="w-full h-48 bg-gradient-to-br from-brand-red to-red-500 rounded-lg flex items-center justify-center transform transition-transform duration-500 group-hover/image:scale-110">
                   <ChefHat
                     size={48}
                     className="text-white transform transition-transform duration-300 group-hover/image:rotate-12"
@@ -183,7 +183,7 @@ export default async function RecipesPage() {
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-red transition-colors duration-300">
                 {recipe.title}
               </h3>
               <p className="text-gray-600 mb-4 line-clamp-2">

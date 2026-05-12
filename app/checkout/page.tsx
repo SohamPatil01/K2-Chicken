@@ -775,17 +775,17 @@ export default function CheckoutPage() {
   // Don't show empty cart if we're redirecting to order confirmation
   if (state.items.length === 0 && !redirectingToOrder) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-20">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="relative inline-block mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
               <ShoppingBag
                 size={120}
                 className="relative text-gray-300 mx-auto"
               />
             </div>
-            <h1 className="text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
               Your Cart is Empty
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-md mx-auto">
@@ -793,7 +793,7 @@ export default function CheckoutPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
             >
               <Sparkles className="h-5 w-5" />
               <span>Start Shopping </span>
@@ -806,14 +806,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-orange-50/30 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
             <div className="relative inline-block mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-2xl opacity-30 animate-pulse"></div>
-              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-30 animate-pulse"></div>
+              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red"></div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Placing Your Order
@@ -823,15 +823,15 @@ export default function CheckoutPage() {
             </p>
             <div className="flex items-center justify-center gap-2">
               <div
-                className="w-2 h-2 bg-orange-600 rounded-full animate-bounce"
+                className="w-2 h-2 bg-brand-red rounded-full animate-bounce"
                 style={{ animationDelay: "0s" }}
               ></div>
               <div
-                className="w-2 h-2 bg-orange-600 rounded-full animate-bounce"
+                className="w-2 h-2 bg-brand-red rounded-full animate-bounce"
                 style={{ animationDelay: "0.2s" }}
               ></div>
               <div
-                className="w-2 h-2 bg-orange-600 rounded-full animate-bounce"
+                className="w-2 h-2 bg-brand-red rounded-full animate-bounce"
                 style={{ animationDelay: "0.4s" }}
               ></div>
             </div>
@@ -843,10 +843,10 @@ export default function CheckoutPage() {
         {/* Header */}
         <div className="mb-4 sm:mb-6 md:mb-8 animate-slide-down">
           <div className="relative inline-block mb-2 sm:mb-3">
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-3xl opacity-30"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-3xl opacity-30"></div>
             <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-1 sm:mb-2">
               Checkout{" "}
-              <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
                 Details
               </span>
             </h1>
@@ -866,7 +866,7 @@ export default function CheckoutPage() {
                 <div
                   className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-sm font-bold transition-all duration-smooth ${
                     step.num <= 2
-                      ? "bg-orange-600 text-white shadow-soft"
+                      ? "bg-brand-red text-white shadow-soft"
                       : "bg-gray-200 text-gray-500"
                   }`}
                 >
@@ -885,11 +885,11 @@ export default function CheckoutPage() {
 
         {/* Login Prompt */}
         {!authLoading && !isAuthenticated && (
-          <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6 animate-scale-in stagger-1 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="mb-6 bg-gradient-to-r from-brand-red to-red-50 border-2 border-red-200 rounded-xl p-6 animate-scale-in stagger-1 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 animate-bounce-in">
                 <div className="p-3 bg-white rounded-full shadow-md">
-                  <User className="h-8 w-8 text-orange-600" />
+                  <User className="h-8 w-8 text-brand-red" />
                 </div>
               </div>
               <div className="flex-1">
@@ -919,7 +919,7 @@ export default function CheckoutPage() {
                 </ul>
                 <Link
                   href="/login?redirect=/checkout"
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold py-2.5 px-6 rounded-lg hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   <LogIn className="h-5 w-5" />
                   Login or Register
@@ -935,8 +935,8 @@ export default function CheckoutPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
               <div className="bg-gray-50/50 px-5 py-3.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-orange-100 rounded-lg">
-                    <Tag className="h-4 w-4 text-orange-600" />
+                  <div className="p-1.5 bg-red-50 rounded-lg">
+                    <Tag className="h-4 w-4 text-brand-red" />
                   </div>
                   <div>
                     <h2 className="text-base font-semibold text-gray-800">
@@ -953,10 +953,10 @@ export default function CheckoutPage() {
                 {deliveryType === "delivery" &&
                   !qualifiesForFreeDelivery &&
                   amountNeededForFreeDelivery > 0 && (
-                    <div className="bg-orange-50/50 border border-orange-100 rounded-lg p-3.5 hover:bg-orange-50 transition-all duration-300 animate-slide-in">
+                    <div className="bg-red-50/50 border border-red-100 rounded-lg p-3.5 hover:bg-red-50 transition-all duration-300 animate-slide-in">
                       <div className="flex items-start gap-2.5">
-                        <div className="p-2 bg-orange-100 rounded-lg flex-shrink-0">
-                          <Truck className="h-4 w-4 text-orange-600" />
+                        <div className="p-2 bg-red-50 rounded-lg flex-shrink-0">
+                          <Truck className="h-4 w-4 text-brand-red" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-gray-800 text-sm mb-0.5">
@@ -964,14 +964,14 @@ export default function CheckoutPage() {
                           </h3>
                           <p className="text-xs text-gray-600 mb-2.5">
                             Add{" "}
-                            <span className="font-semibold text-orange-600">
+                            <span className="font-semibold text-brand-red">
                               ₹{amountNeededForFreeDelivery.toFixed(0)}
                             </span>{" "}
                             more
                           </p>
                           {loadingSuggestions ? (
                             <div className="flex items-center justify-center gap-2 py-2 text-sm text-gray-500">
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-200"></div>
                               Loading suggestions...
                             </div>
                           ) : suggestedProducts.length > 0 ? (
@@ -997,7 +997,7 @@ export default function CheckoutPage() {
                                           },
                                         });
                                       }}
-                                      className="w-full flex items-center gap-2.5 p-2.5 bg-white rounded-lg border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all duration-200 group animate-fade-in"
+                                      className="w-full flex items-center gap-2.5 p-2.5 bg-white rounded-lg border border-gray-200 hover:border-red-200 hover:shadow-sm transition-all duration-200 group animate-fade-in"
                                       style={{
                                         animationDelay: `${idx * 100}ms`,
                                       }}
@@ -1009,16 +1009,16 @@ export default function CheckoutPage() {
                                           className="w-10 h-10 rounded-md object-contain flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
                                         />
                                       ) : (
-                                        <div className="w-10 h-10 rounded-md bg-orange-50 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-md bg-red-50 flex items-center justify-center flex-shrink-0">
                                           <span className="text-lg">🍗</span>
                                         </div>
                                       )}
                                       <div className="flex-1 min-w-0 text-left">
-                                        <p className="text-xs font-medium text-gray-800 truncate group-hover:text-orange-600 transition-colors">
+                                        <p className="text-xs font-medium text-gray-800 truncate group-hover:text-brand-red transition-colors">
                                           {product.name}
                                         </p>
                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                          <p className="text-xs font-semibold text-orange-600">
+                                          <p className="text-xs font-semibold text-brand-red">
                                             ₹{productPrice.toFixed(0)}
                                           </p>
                                           {willQualify && (
@@ -1028,15 +1028,15 @@ export default function CheckoutPage() {
                                           )}
                                         </div>
                                       </div>
-                                      <div className="flex-shrink-0 p-1.5 bg-orange-50 rounded-md group-hover:bg-orange-100 transition-colors">
-                                        <Plus className="h-3.5 w-3.5 text-orange-600 group-hover:rotate-90 transition-transform duration-200" />
+                                      <div className="flex-shrink-0 p-1.5 bg-red-50 rounded-md group-hover:bg-red-50 transition-colors">
+                                        <Plus className="h-3.5 w-3.5 text-brand-red group-hover:rotate-90 transition-transform duration-200" />
                                       </div>
                                     </button>
                                   );
                                 })}
                               <Link
                                 href="/#products"
-                                className="block text-center text-xs text-orange-600 hover:text-orange-700 font-medium py-1 mt-1.5 transition-colors"
+                                className="block text-center text-xs text-brand-red hover:text-brand-red font-medium py-1 mt-1.5 transition-colors"
                               >
                                 View all →
                               </Link>
@@ -1044,7 +1044,7 @@ export default function CheckoutPage() {
                           ) : (
                             <Link
                               href="/#products"
-                              className="block text-center text-sm text-orange-600 hover:text-orange-700 font-semibold bg-white px-3 py-2 rounded-lg border border-orange-200 hover:border-orange-400 transition-all"
+                              className="block text-center text-sm text-brand-red hover:text-brand-red font-semibold bg-white px-3 py-2 rounded-lg border border-red-200 hover:border-red-200 transition-all"
                             >
                               Browse Products →
                             </Link>
@@ -1132,10 +1132,10 @@ export default function CheckoutPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
               {/* Form Header - More Subtle */}
-              <div className="bg-gradient-to-br from-orange-50 via-white to-red-50 p-6 border-b border-gray-200/60">
+              <div className="bg-gradient-to-br from-brand-red via-white to-red-50 p-6 border-b border-gray-200/60">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/60">
-                    <ShoppingBag className="h-5 w-5 text-orange-600" />
+                    <ShoppingBag className="h-5 w-5 text-brand-red" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">
@@ -1171,7 +1171,7 @@ export default function CheckoutPage() {
                         !deliveryEnabled
                           ? "border-gray-200 bg-gray-100/50 cursor-not-allowed opacity-50"
                           : deliveryType === "delivery"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm cursor-pointer"
+                          ? "border-red-200 bg-red-50/50 shadow-sm cursor-pointer"
                           : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50 cursor-pointer"
                       }`}
                     >
@@ -1193,7 +1193,7 @@ export default function CheckoutPage() {
                           !deliveryEnabled
                             ? "text-gray-400"
                             : deliveryType === "delivery"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-400"
                         }`}
                       />
@@ -1202,7 +1202,7 @@ export default function CheckoutPage() {
                           !deliveryEnabled
                             ? "text-gray-500"
                             : deliveryType === "delivery"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-700"
                         }`}
                       >
@@ -1221,7 +1221,7 @@ export default function CheckoutPage() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-5 border rounded-xl cursor-pointer transition-all duration-200 ${
                         deliveryType === "pickup"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm"
+                          ? "border-red-200 bg-red-50/50 shadow-sm"
                           : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
                       }`}
                     >
@@ -1239,14 +1239,14 @@ export default function CheckoutPage() {
                       <Store
                         className={`h-6 w-6 mb-2 transition-colors ${
                           deliveryType === "pickup"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-400"
                         }`}
                       />
                       <div
                         className={`font-semibold text-sm transition-colors ${
                           deliveryType === "pickup"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-700"
                         }`}
                       >
@@ -1273,7 +1273,7 @@ export default function CheckoutPage() {
                     name="customerName"
                     value={formData.customerName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all duration-200 bg-white text-base placeholder:text-gray-400"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-red-200 transition-all duration-200 bg-white text-base placeholder:text-gray-400"
                     placeholder="Enter your full name"
                     required
                   />
@@ -1293,7 +1293,7 @@ export default function CheckoutPage() {
                     name="customerPhone"
                     value={formData.customerPhone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all duration-200 bg-white placeholder:text-gray-400"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-red-200 transition-all duration-200 bg-white placeholder:text-gray-400"
                     placeholder="Enter your phone number"
                     required
                   />
@@ -1323,7 +1323,7 @@ export default function CheckoutPage() {
                               setSelectedCoordinates(null);
                             }
                           }}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200"
                         >
                           <option value="">Select a saved address</option>
                           {savedAddresses.map((address) => (
@@ -1336,7 +1336,7 @@ export default function CheckoutPage() {
                         <button
                           type="button"
                           onClick={() => setShowAddAddress(true)}
-                          className="mt-2 text-sm text-orange-600 hover:text-orange-700 font-medium flex items-center gap-1"
+                          className="mt-2 text-sm text-brand-red hover:text-brand-red font-medium flex items-center gap-1"
                         >
                           <Plus size={14} />
                           Add New Address
@@ -1362,16 +1362,16 @@ export default function CheckoutPage() {
                           value={formData.deliveryAddress}
                           onChange={handleInputChange}
                           rows={4}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 resize-none"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200 resize-none"
                           placeholder="Enter your complete delivery address (street, area, landmark)"
                           required={!selectedAddressId}
                         />
                         <button
                           type="button"
                           onClick={() => setShowMapPicker(true)}
-                          className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-orange-500 hover:bg-orange-50 transition-all duration-200 text-sm font-semibold"
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-red-200 hover:bg-red-50 transition-all duration-200 text-sm font-semibold"
                         >
-                          <MapPin size={18} className="text-orange-600" />
+                          <MapPin size={18} className="text-brand-red" />
                           <span>Pick Address on Map</span>
                         </button>
                         {isAuthenticated &&
@@ -1389,14 +1389,14 @@ export default function CheckoutPage() {
                       </div>
                       {calculatingDelivery && (
                         <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-200"></div>
                           <span>Calculating delivery charge...</span>
                         </div>
                       )}
                       {!calculatingDelivery && deliveryCharge > 0 && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
                           <p className="text-sm text-gray-700">
-                            <span className="text-orange-600 font-semibold">
+                            <span className="text-brand-red font-semibold">
                               Delivery charge: ₹{deliveryCharge}
                             </span>
                           </p>
@@ -1432,7 +1432,7 @@ export default function CheckoutPage() {
                       value={formData.deliveryInstructions}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200 resize-none"
                       placeholder="Add special instructions for delivery (e.g., Gate code: A123, Floor: 3rd, Landmark: Near blue building, Call before delivery, etc.)"
                       maxLength={200}
                     />
@@ -1443,9 +1443,9 @@ export default function CheckoutPage() {
                 )}
 
                 {deliveryType === "pickup" && (
-                  <div className="p-6 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl">
+                  <div className="p-6 bg-gradient-to-br from-brand-red to-red-50 border-2 border-red-200 rounded-xl">
                     <div className="flex items-center gap-3 mb-3">
-                      <Store className="h-6 w-6 text-orange-600" />
+                      <Store className="h-6 w-6 text-brand-red" />
                       <h3 className="font-bold text-gray-900 text-lg">
                         Pickup Information
                       </h3>
@@ -1485,7 +1485,7 @@ export default function CheckoutPage() {
                                 handleApplyPromoCode();
                               }
                             }}
-                            className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                            className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200"
                             placeholder="Enter promo code"
                           />
                         </div>
@@ -1493,7 +1493,7 @@ export default function CheckoutPage() {
                           type="button"
                           onClick={() => handleApplyPromoCode()}
                           disabled={validatingPromo || !promoCode.trim()}
-                          className="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                          className="px-6 py-3 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white rounded-xl transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
                         >
                           {validatingPromo ? "Applying..." : "Apply"}
                         </button>
@@ -1507,7 +1507,7 @@ export default function CheckoutPage() {
                             handleApplyPromoCode("FIRST20");
                           }}
                           disabled={validatingPromo}
-                          className="text-orange-600 font-semibold hover:underline disabled:opacity-50"
+                          className="text-brand-red font-semibold hover:underline disabled:opacity-50"
                         >
                           FIRST20
                         </button>{" "}
@@ -1557,7 +1557,7 @@ export default function CheckoutPage() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "cash"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm"
+                          ? "border-red-200 bg-red-50/50 shadow-sm"
                           : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
                       }`}
                     >
@@ -1576,14 +1576,14 @@ export default function CheckoutPage() {
                       <Wallet
                         className={`h-6 w-6 mb-2 ${
                           paymentMethod === "cash"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-400"
                         }`}
                       />
                       <div
                         className={`font-bold text-sm ${
                           paymentMethod === "cash"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-700"
                         }`}
                       >
@@ -1597,7 +1597,7 @@ export default function CheckoutPage() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "upi"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm"
+                          ? "border-red-200 bg-red-50/50 shadow-sm"
                           : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
                       }`}
                     >
@@ -1616,14 +1616,14 @@ export default function CheckoutPage() {
                       <QrCode
                         className={`h-6 w-6 mb-2 ${
                           paymentMethod === "upi"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-400"
                         }`}
                       />
                       <div
                         className={`font-semibold text-sm ${
                           paymentMethod === "upi"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-700"
                         }`}
                       >
@@ -1637,7 +1637,7 @@ export default function CheckoutPage() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "card"
-                          ? "border-orange-400 bg-orange-50/50 shadow-sm"
+                          ? "border-red-200 bg-red-50/50 shadow-sm"
                           : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
                       }`}
                     >
@@ -1656,14 +1656,14 @@ export default function CheckoutPage() {
                       <CreditCard
                         className={`h-6 w-6 mb-2 ${
                           paymentMethod === "card"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-400"
                         }`}
                       />
                       <div
                         className={`font-semibold text-sm ${
                           paymentMethod === "card"
-                            ? "text-orange-600"
+                            ? "text-brand-red"
                             : "text-gray-700"
                         }`}
                       >
@@ -1681,9 +1681,9 @@ export default function CheckoutPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-red-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-red/20 to-red-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent relative z-10"></div>
@@ -1728,7 +1728,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden sticky top-8">
               {/* Summary Header - Subtle */}
-              <div className="bg-gradient-to-br from-gray-50 to-orange-50/30 p-6 border-b border-gray-200/60">
+              <div className="bg-gradient-to-br from-gray-50 to-brand-red-hover/30 p-6 border-b border-gray-200/60">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-gray-900">
@@ -1740,7 +1740,7 @@ export default function CheckoutPage() {
                     </p>
                   </div>
                   <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/60">
-                    <ShoppingBag className="h-5 w-5 text-orange-600" />
+                    <ShoppingBag className="h-5 w-5 text-brand-red" />
                   </div>
                 </div>
               </div>
@@ -1771,7 +1771,7 @@ export default function CheckoutPage() {
                           <div
                             className={`w-full h-full ${
                               item.product.image_url ? "hidden" : "flex"
-                            } bg-gradient-to-br from-orange-100 to-red-100 items-center justify-center`}
+                            } bg-gradient-to-br from-brand-red to-red-100 items-center justify-center`}
                           >
                             <span className="text-2xl">🍗</span>
                           </div>
@@ -1856,7 +1856,7 @@ export default function CheckoutPage() {
                     <span className="text-xl font-bold text-gray-900">
                       Total
                     </span>
-                    <span className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    <span className="text-3xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
                       ₹
                       {calculatingDelivery
                         ? "..."
@@ -1869,9 +1869,9 @@ export default function CheckoutPage() {
                 <div className="p-4 bg-gray-50/50 border border-gray-200/60 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     {deliveryType === "delivery" ? (
-                      <Truck className="h-4 w-4 text-orange-600" />
+                      <Truck className="h-4 w-4 text-brand-red" />
                     ) : (
-                      <Store className="h-4 w-4 text-orange-600" />
+                      <Store className="h-4 w-4 text-brand-red" />
                     )}
                     <p className="text-sm font-semibold text-gray-900">
                       {deliveryType === "delivery" ? "Delivery" : "Pickup"}
@@ -1928,7 +1928,7 @@ export default function CheckoutPage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-bounce-in">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-2xl overflow-hidden">
+            <div className="sticky top-0 bg-gradient-to-r from-brand-red to-red-500 text-white p-6 rounded-t-2xl overflow-hidden">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg">
@@ -2102,7 +2102,7 @@ export default function CheckoutPage() {
                     <span className="text-base font-bold text-gray-900">
                       Total Amount
                     </span>
-                    <span className="text-2xl font-bold text-orange-600">
+                    <span className="text-2xl font-bold text-brand-red">
                       ₹{(orderTotalAmount || totalWithDelivery).toFixed(0)}
                     </span>
                   </div>
@@ -2155,7 +2155,7 @@ export default function CheckoutPage() {
                 <button
                   onClick={handleUPIPaymentConfirm}
                   disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-xl hover:from-orange-700 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200"
+                  className="w-full px-6 py-4 bg-gradient-to-r bg-brand-red text-white font-semibold rounded-xl hover:bg-brand-red-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -2209,7 +2209,7 @@ export default function CheckoutPage() {
                   href={upiPaymentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center text-sm text-orange-600 hover:text-orange-700 font-medium py-2"
+                  className="block w-full text-center text-sm text-brand-red hover:text-brand-red font-medium py-2"
                 >
                   Or open in UPI app directly →
                 </a>

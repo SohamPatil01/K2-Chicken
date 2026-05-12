@@ -74,7 +74,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
           <div className="flex items-center">
-            <div className="p-3 bg-chicken-red bg-opacity-20 rounded-lg">
+            <div className="p-3 bg-gray-50 bg-opacity-20 rounded-lg">
               <Package className="h-6 w-6 text-chicken-red" />
             </div>
             <div className="ml-4">
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
 
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
           <div className="flex items-center">
-            <div className="p-3 bg-chicken-yellow bg-opacity-20 rounded-lg">
+            <div className="p-3 bg-gray-50 bg-opacity-20 rounded-lg">
               <ChefHat className="h-6 w-6 text-chicken-yellow" />
             </div>
             <div className="ml-4">
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
 
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
           <div className="flex items-center">
-            <div className="p-3 bg-chicken-orange bg-opacity-20 rounded-lg">
+            <div className="p-3 bg-gray-50 bg-opacity-20 rounded-lg">
               <ShoppingCart className="h-6 w-6 text-chicken-orange" />
             </div>
             <div className="ml-4">

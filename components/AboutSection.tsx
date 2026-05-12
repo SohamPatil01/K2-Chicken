@@ -66,7 +66,7 @@ export default function AboutSection() {
       title: "Premium Quality",
       description:
         "Only the finest grade chicken, sourced from trusted farms and delivered fresh",
-      color: "from-yellow-400 to-orange-400",
+      color: "from-yellow-400 to-brand-red-hover",
       borderColor: "border-yellow-300",
     },
     {
@@ -98,14 +98,14 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative py-20 bg-gradient-to-b from-gray-50 via-orange-50/15 to-white overflow-hidden"
+      className="relative py-20 bg-gradient-to-b from-gray-50 via-gray-50 to-white overflow-hidden"
     >
       {/* Radial Gradient Overlay - Matching ProductCatalog */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.15),transparent_45%)] pointer-events-none" />
 
       {/* Decorative Elements - More subtle to match flow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-20"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-15"></div>
       </div>
 
@@ -113,11 +113,11 @@ export default function AboutSection() {
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
           <div
-            className={`inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-orange-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold text-orange-700 mb-5 shadow-sm transition-all duration-300 hover:shadow-md ${
+            className={`inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-red-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold text-brand-red mb-5 shadow-sm transition-all duration-300 hover:shadow-md ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            <Sparkles className="w-4 h-4 text-orange-500" />
+            <Sparkles className="w-4 h-4 text-brand-red" />
             <span>Our Story</span>
           </div>
           <h2
@@ -127,7 +127,7 @@ export default function AboutSection() {
             style={{ animationDelay: "0.2s" }}
           >
             About{" "}
-            <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-red via-gray-50 to-red-600 bg-clip-text text-transparent">
               K2 Chicken
             </span>
           </h2>
@@ -172,13 +172,13 @@ export default function AboutSection() {
             ref={(el) => {
               sectionRefs.current[1] = el;
             }}
-            className={`max-w-5xl mx-auto bg-white rounded-3xl shadow-lg border border-orange-100 overflow-hidden transition-all duration-700 hover:shadow-xl ${
+            className={`max-w-5xl mx-auto bg-white rounded-3xl shadow-lg border border-red-200 overflow-hidden transition-all duration-700 hover:shadow-xl ${
               visibleSections.has(1)
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
             }`}
           >
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 px-6 sm:px-8 py-4">
+            <div className="bg-gradient-to-r from-brand-red to-red-500 px-6 sm:px-8 py-4">
               <h4 className="text-xl sm:text-2xl font-semibold text-white">
                 Now a Franchise Partner of Chicken Vicken – Baramati Agro
               </h4>
@@ -199,10 +199,10 @@ export default function AboutSection() {
                 ].map((point, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 bg-orange-50/50 rounded-xl p-4 transition-all duration-300 hover:bg-orange-50 hover:shadow-md hover:-translate-y-1"
+                    className="flex items-start gap-3 bg-red-50/50 rounded-xl p-4 transition-all duration-300 hover:bg-red-50 hover:shadow-md hover:-translate-y-1"
                     style={{ transitionDelay: `${index * 0.1}s` }}
                   >
-                    <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-brand-red mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700 text-sm sm:text-base">
                       {point}
                     </span>
@@ -265,7 +265,7 @@ export default function AboutSection() {
                   </li>
                 ))}
               </ul>
-              <p className="text-base text-gray-700 leading-relaxed italic border-l-4 border-orange-400 pl-4">
+              <p className="text-base text-gray-700 leading-relaxed italic border-l-4 border-red-200 pl-4">
                 The result? Restaurant-quality chicken, ready for your favorite
                 recipes—juicy, tender, and unbelievably fresh.
               </p>
@@ -283,7 +283,7 @@ export default function AboutSection() {
                 : "opacity-0 scale-95 translate-x-8"
             }`}
           >
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-all duration-500 border border-orange-100 group">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-all duration-500 border border-red-200 group">
               <Image
                 src="/images/Whole-Chicken-5.jpg"
                 alt="Fresh Premium Chicken - K2 Chicken offers the finest quality chicken, expertly cut and prepared for your favorite recipes"
@@ -303,7 +303,7 @@ export default function AboutSection() {
             ref={(el) => {
               sectionRefs.current[4] = el;
             }}
-            className={`max-w-4xl mx-auto bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-2xl transition-all duration-700 hover:shadow-3xl hover:scale-[1.02] ${
+            className={`max-w-4xl mx-auto bg-gradient-to-r from-brand-red via-gray-50 to-red-600 rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-2xl transition-all duration-700 hover:shadow-3xl hover:scale-[1.02] ${
               visibleSections.has(4)
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -320,7 +320,7 @@ export default function AboutSection() {
               ].map((text, index) => (
                 <p
                   key={index}
-                  className="text-lg sm:text-xl font-medium text-orange-50 transition-all duration-500 hover:text-white hover:translate-x-1"
+                  className="text-lg sm:text-xl font-medium text-brand-red transition-all duration-500 hover:text-white hover:translate-x-1"
                   style={{ transitionDelay: `${index * 0.1}s` }}
                 >
                   {text}

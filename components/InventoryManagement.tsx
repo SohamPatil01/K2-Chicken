@@ -1090,7 +1090,7 @@ export default function InventoryManagement() {
                 <div
                   className={`w-full h-full ${
                     item.product_image_url ? "hidden" : "flex"
-                  } bg-orange-50 items-center justify-center`}
+                  } bg-red-50 items-center justify-center`}
                 >
                   <span className="text-lg">🍗</span>
                 </div>
@@ -1132,7 +1132,7 @@ export default function InventoryManagement() {
                             quantity: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="w-16 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-transparent"
+                        className="w-16 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-red-100 focus:border-transparent"
                         min="0"
                         placeholder="Qty"
                       />
@@ -1147,7 +1147,7 @@ export default function InventoryManagement() {
                             minimum_stock_level: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="w-14 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500 focus:border-transparent"
+                        className="w-14 px-1.5 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-red-100 focus:border-transparent"
                         min="0"
                         placeholder="Min"
                       />
@@ -1196,7 +1196,7 @@ export default function InventoryManagement() {
                 <div className="flex items-center space-x-0.5">
                   <button
                     onClick={() => handleEditInventory(item)}
-                    className="p-1.5 text-orange-600 hover:bg-orange-50 rounded transition-colors"
+                    className="p-1.5 text-brand-red hover:bg-red-50 rounded transition-colors"
                     title="Edit Stock"
                   >
                     <TrendingDown size={16} />

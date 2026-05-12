@@ -227,9 +227,9 @@ export default function Header() {
           >
             <div className="relative">
               {/* Animated glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/30 via-red-400/20 to-orange-400/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10 scale-110"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-red/30 via-red-400/20 to-brand-red-hover/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10 scale-110"></div>
               {/* Pulse effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 animate-pulse -z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-red/20 to-red-500/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 animate-pulse -z-10"></div>
 
               <div className="relative transform group-hover:scale-105 transition-all duration-300">
                 <img
@@ -246,7 +246,7 @@ export default function Header() {
 
             <div className="hidden sm:block transform group-hover:translate-x-1 transition-transform duration-300">
               <div
-                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-orange-700 via-orange-600 to-orange-500 bg-clip-text text-transparent leading-tight group-hover:from-orange-800 group-hover:via-orange-700 group-hover:to-orange-600 transition-all duration-300"
+                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-red via-gray-50 to-brand-red-hover bg-clip-text text-transparent leading-tight group-hover:from-brand-red group-hover:via-gray-50 group-hover:to-brand-red-hover transition-all duration-300"
                 style={{
                   fontFamily: "var(--font-poppins), sans-serif",
                   letterSpacing: "0.01em",
@@ -268,8 +268,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/")
-                  ? "text-chicken-wood bg-chicken-cream border border-orange-200"
-                  : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                  ? "text-chicken-wood bg-gray-50 border border-red-200"
+                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
               }`}
               onClick={handleHomeClick}
             >
@@ -278,8 +278,8 @@ export default function Header() {
                   size={16}
                   className={`transition-all duration-300 ${
                     isActive("/")
-                      ? "text-orange-500 scale-110"
-                      : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-400 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 Home
@@ -291,8 +291,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#products")
-                  ? "text-chicken-wood bg-chicken-cream border border-orange-200"
-                  : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                  ? "text-chicken-wood bg-gray-50 border border-red-200"
+                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
               }`}
               onClick={handleProductsClick}
             >
@@ -301,8 +301,8 @@ export default function Header() {
                   size={16}
                   className={`transition-all duration-300 ${
                     isActive("/#products")
-                      ? "text-orange-500 scale-110"
-                      : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-400 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 Products
@@ -314,8 +314,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/recipes")
-                  ? "text-chicken-wood bg-chicken-cream border border-orange-200"
-                  : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                  ? "text-chicken-wood bg-gray-50 border border-red-200"
+                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
               }`}
             >
               <span className="relative z-10 flex items-center gap-2">
@@ -323,8 +323,8 @@ export default function Header() {
                   size={16}
                   className={`transition-all duration-300 ${
                     isActive("/recipes")
-                      ? "text-orange-500 scale-110"
-                      : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-400 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 Recipes
@@ -336,8 +336,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#about")
-                  ? "text-chicken-wood bg-chicken-cream border border-orange-200"
-                  : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                  ? "text-chicken-wood bg-gray-50 border border-red-200"
+                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
               }`}
               onClick={handleAboutClick}
             >
@@ -346,8 +346,8 @@ export default function Header() {
                   size={16}
                   className={`transition-all duration-300 ${
                     isActive("/#about")
-                      ? "text-orange-500 scale-110"
-                      : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-400 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 About Us
@@ -359,8 +359,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#contact")
-                  ? "text-chicken-wood bg-chicken-cream border border-orange-200"
-                  : "text-gray-600 hover:text-orange-600 hover:bg-chicken-cream/50"
+                  ? "text-chicken-wood bg-gray-50 border border-red-200"
+                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
               }`}
               onClick={handleContactClick}
             >
@@ -369,8 +369,8 @@ export default function Header() {
                   size={16}
                   className={`transition-all duration-300 ${
                     isActive("/#contact")
-                      ? "text-orange-500 scale-110"
-                      : "text-gray-400 group-hover:text-orange-500 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-400 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 Contact
@@ -398,7 +398,7 @@ export default function Header() {
                     <Link
                       href="/orders"
                       prefetch={true}
-                      className="relative p-2.5 text-gray-600 hover:text-orange-600 rounded-xl hover:bg-gradient-to-br hover:from-orange-50 hover:to-red-50 transition-all duration-300 group border border-transparent hover:border-orange-200"
+                      className="relative p-2.5 text-gray-600 hover:text-brand-red rounded-xl hover:bg-gradient-to-br hover:from-brand-red hover:to-red-50 transition-all duration-300 group border border-transparent hover:border-red-200"
                       title="My Orders"
                     >
                       <User
@@ -421,7 +421,7 @@ export default function Header() {
                   <Link
                     href="/login"
                     prefetch={true}
-                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group"
+                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-red to-brand-red-hover rounded-xl hover:from-brand-red hover:to-brand-red-hover transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group"
                   >
                     <LogIn
                       size={16}
@@ -445,7 +445,7 @@ export default function Header() {
                   className="transition-transform duration-200"
                 />
                 {totalItems > 0 && mounted && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-orange-600 to-orange-700 text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-brand-red to-brand-red-hover text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
@@ -500,26 +500,26 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
                   isActive("/")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 border border-transparent hover:border-orange-200"
+                    ? "text-brand-red bg-gradient-to-r from-brand-red to-brand-red-hover border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-brand-red-hover border border-transparent hover:border-red-200"
                 }`}
                 onClick={(event) => {
                   handleHomeClick(event);
                   setIsMenuOpen(false);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-orange-200/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-brand-red-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Home
                   size={18}
                   className={`relative z-10 transition-all duration-300 ${
                     isActive("/")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span className="relative z-10">Home</span>
                 {isActive("/") && (
-                  <div className="absolute right-4 w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
               </Link>
 
@@ -528,26 +528,26 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
                   isActive("/#products")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
                 }`}
                 onClick={(event) => {
                   handleProductsClick(event);
                   setIsMenuOpen(false);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Package
                   size={18}
                   className={`relative z-10 transition-all duration-300 ${
                     isActive("/#products")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span className="relative z-10">Products</span>
                 {isActive("/#products") && (
-                  <div className="absolute right-4 w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
               </Link>
 
@@ -556,23 +556,23 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
                   isActive("/recipes")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <ChefHat
                   size={18}
                   className={`relative z-10 transition-all duration-300 ${
                     isActive("/recipes")
-                      ? "text-orange-600 scale-110"
-                      : "text-gray-600 group-hover:text-orange-600 group-hover:scale-110"
+                      ? "text-brand-red scale-110"
+                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span className="relative z-10">Recipes</span>
                 {isActive("/recipes") && (
-                  <div className="absolute right-4 w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
               </Link>
 
@@ -581,8 +581,8 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
                   isActive("/#about")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
                 }`}
                 onClick={(e) => {
                   handleAboutClick(e);
@@ -592,7 +592,7 @@ export default function Header() {
                 <Users size={18} className="relative z-10" />
                 <span className="relative z-10">About Us</span>
                 {isActive("/#about") && (
-                  <div className="absolute right-4 w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
               </Link>
 
@@ -601,8 +601,8 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
                   isActive("/#contact")
-                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200"
-                    : "text-gray-800 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 border border-transparent hover:border-orange-200"
+                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
                 }`}
                 onClick={(e) => {
                   handleContactClick(e);
@@ -612,7 +612,7 @@ export default function Header() {
                 <MessageCircle size={18} className="relative z-10" />
                 <span className="relative z-10">Contact</span>
                 {isActive("/#contact") && (
-                  <div className="absolute right-4 w-2 h-2 bg-orange-600 rounded-full animate-pulse"></div>
+                  <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
               </Link>
 
@@ -623,13 +623,13 @@ export default function Header() {
                       <Link
                         href="/orders"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-orange-600 rounded-xl hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-orange-200 overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-brand-red rounded-xl hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-red-200 overflow-hidden"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <User
                           size={18}
-                          className="relative z-10 text-gray-600 group-hover:text-orange-600 group-hover:scale-110 transition-all duration-300"
+                          className="relative z-10 text-gray-600 group-hover:text-brand-red group-hover:scale-110 transition-all duration-300"
                         />
                         <span className="relative z-10">My Orders</span>
                       </Link>
@@ -666,7 +666,7 @@ export default function Header() {
                       <Link
                         href="/login"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl hover:from-orange-700 hover:to-orange-800 transition-all duration-300 flex items-center gap-3 shadow-md hover:shadow-lg transform hover:scale-[1.02] overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-red to-brand-red-hover rounded-xl hover:from-brand-red hover:to-brand-red-hover transition-all duration-300 flex items-center gap-3 shadow-md hover:shadow-lg transform hover:scale-[1.02] overflow-hidden"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

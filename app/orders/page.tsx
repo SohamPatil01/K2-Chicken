@@ -151,7 +151,7 @@ export default function OrdersPage() {
       case "cancelled":
         return <XCircle className="h-6 w-6 text-red-500" />;
       case "preparing":
-        return <Package className="h-6 w-6 text-orange-500" />;
+        return <Package className="h-6 w-6 text-brand-red" />;
       case "ready":
       case "ready_for_pickup":
         return <AlertCircle className="h-6 w-6 text-blue-500" />;
@@ -167,7 +167,7 @@ export default function OrdersPage() {
       case "cancelled":
         return "bg-gradient-to-r from-red-500 to-rose-500 text-white border-red-300 shadow-lg shadow-red-200";
       case "preparing":
-        return "bg-gradient-to-r from-orange-500 to-amber-500 text-white border-orange-300 shadow-lg shadow-orange-200";
+        return "bg-gradient-to-r from-brand-red to-amber-500 text-white border-red-200 shadow-lg shadow-brand-sm";
       case "ready":
       case "ready_for_pickup":
         return "bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-blue-300 shadow-lg shadow-blue-200";
@@ -218,10 +218,10 @@ export default function OrdersPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red mx-auto"></div>
             <p className="mt-6 text-lg text-gray-600 font-medium">
               Loading your orders...
             </p>
@@ -233,11 +233,11 @@ export default function OrdersPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-16 flex items-center">
+      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShoppingBag className="h-10 w-10 text-orange-600" />
+            <div className="w-20 h-20 bg-gradient-to-br from-brand-red to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <ShoppingBag className="h-10 w-10 text-brand-red" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Please Login
@@ -247,7 +247,7 @@ export default function OrdersPage() {
             </p>
             <Link
               href="/login?redirect=/orders"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span>Login Now</span>
               <ArrowRight className="h-5 w-5" />
@@ -259,15 +259,15 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-orange-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8 sm:mb-12 animate-slide-down">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <div className="relative inline-block mb-2">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-full blur-3xl opacity-30"></div>
-                <h1 className="relative text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-3xl opacity-30"></div>
+                <h1 className="relative text-4xl sm:text-5xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
                   My Orders
                 </h1>
               </div>
@@ -277,7 +277,7 @@ export default function OrdersPage() {
             </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-white border-2 border-orange-200 text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all shadow-sm hover:shadow-md transform hover:scale-105 animate-scale-in stagger-2"
+              className="inline-flex items-center gap-2 bg-white border-2 border-red-200 text-brand-red px-6 py-3 rounded-xl font-semibold hover:bg-red-50 transition-all shadow-sm hover:shadow-md transform hover:scale-105 animate-scale-in stagger-2"
             >
               <ShoppingBag className="h-5 w-5" />
               <span>Continue Shopping</span>
@@ -287,8 +287,8 @@ export default function OrdersPage() {
 
         {orders.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl shadow-xl border-2 border-gray-100 animate-bounce-in">
-            <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Package className="h-12 w-12 text-orange-500" />
+            <div className="w-24 h-24 bg-gradient-to-br from-brand-red to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Package className="h-12 w-12 text-brand-red" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
               No Orders Yet
@@ -299,7 +299,7 @@ export default function OrdersPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <span>Start Shopping</span>
               <ArrowRight className="h-5 w-5" />
@@ -317,7 +317,7 @@ export default function OrdersPage() {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {/* Order Header */}
-                    <div className="bg-gradient-to-r from-gray-50 to-orange-50 p-6 border-b border-gray-200 relative overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-50 to-brand-red-hover p-6 border-b border-gray-200 relative overflow-hidden">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="flex items-start gap-4">
                           <div
@@ -379,7 +379,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-2">
+                          <div className="text-4xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent mb-2">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </div>
                           <div className="flex items-center gap-2 justify-end">
@@ -406,7 +406,7 @@ export default function OrdersPage() {
                             </button>
                             <Link
                               href={`/order-confirmation/${order.id}`}
-                              className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-semibold group px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-300"
+                              className="inline-flex items-center gap-2 text-sm text-brand-red hover:text-brand-red font-semibold group px-4 py-2 rounded-lg hover:bg-red-50 transition-all duration-300"
                             >
                               <span>View Details</span>
                               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -431,7 +431,7 @@ export default function OrdersPage() {
                                     order.status === "ready_for_pickup"
                                   ? "bg-gradient-to-r from-blue-500 to-cyan-500"
                                   : order.status === "preparing"
-                                  ? "bg-gradient-to-r from-orange-500 to-amber-500"
+                                  ? "bg-gradient-to-r from-brand-red to-amber-500"
                                   : "bg-gradient-to-r from-gray-400 to-gray-500"
                               }`}
                               style={{ width: `${progress}%` }}
@@ -457,7 +457,7 @@ export default function OrdersPage() {
                               style={{ animationDelay: `${index * 0.05}s` }}
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-brand-red rounded-full"></div>
                                 <span className="text-sm font-medium text-gray-900">
                                   {item.product_name}
                                 </span>
@@ -546,7 +546,7 @@ export default function OrdersPage() {
                           <span className="text-base font-bold text-gray-900">
                             Total Amount
                           </span>
-                          <span className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          <span className="text-2xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </span>
                         </div>

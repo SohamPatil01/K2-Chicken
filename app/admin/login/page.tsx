@@ -76,27 +76,27 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 bg-red-600 rounded-full flex items-center justify-center">
-            <Lock className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+          <div className="mx-auto w-16 h-16 bg-brand-red rounded-full flex items-center justify-center shadow-brand-sm">
+            <span className="text-white font-serif font-bold text-2xl">K2</span>
           </div>
-          <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-extrabold text-white">
+          <h2 className="mt-6 text-3xl font-serif font-bold text-white">
             Admin Login
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-gray-300">
+          <p className="mt-2 text-sm text-gray-400">
             K2 Chicken Management System
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
-                <AlertCircle className="h-5 w-5 text-red-500 mr-3" />
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-brand-red flex-shrink-0" />
                 <span className="text-red-700 text-sm">{error}</span>
               </div>
             )}
@@ -117,7 +117,7 @@ export default function AdminLoginPage() {
                   required
                   value={credentials.username}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-100 focus:border-brand-red transition-colors text-base outline-none"
                   placeholder="Enter your username"
                 />
               </div>
@@ -139,7 +139,7 @@ export default function AdminLoginPage() {
                   required
                   value={credentials.password}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-12 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-100 focus:border-brand-red transition-colors text-base outline-none"
                   placeholder="Enter your password"
                 />
                 <button
@@ -160,13 +160,13 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 sm:py-3.5 px-4 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-h-[44px]"
+              className="w-full btn-primary py-3 px-4 rounded-full shadow-sm text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
             >
               {isLoading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                   Signing in...
-                </div>
+                </span>
               ) : (
                 'Sign In'
               )}
@@ -176,7 +176,7 @@ export default function AdminLoginPage() {
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             Authorized personnel only. All activities are logged.
           </p>
         </div>

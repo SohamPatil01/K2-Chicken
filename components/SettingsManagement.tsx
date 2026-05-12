@@ -212,7 +212,7 @@ export default function SettingsManagement() {
 
       <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
         {/* Delivery Enable/Disable Toggle */}
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-brand-red to-red-50 border-2 border-red-200 rounded-xl p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div
@@ -248,7 +248,7 @@ export default function SettingsManagement() {
                     : "true";
                 handleChange("delivery_enabled", newValue);
               }}
-              className={`relative inline-flex h-12 w-24 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
+              className={`relative inline-flex h-12 w-24 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-100 focus:ring-offset-2 ${
                 settings.delivery_enabled?.value === "true"
                   ? "bg-green-500"
                   : "bg-gray-300"
@@ -435,7 +435,7 @@ export default function SettingsManagement() {
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="w-full flex items-center justify-center space-x-2 bg-chicken-red text-white py-3 px-6 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+          className="w-full flex items-center justify-center space-x-2 bg-gray-50 text-white py-3 px-6 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
         >
           {isSaving ? (
             <>

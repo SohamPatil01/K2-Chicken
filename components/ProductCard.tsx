@@ -81,7 +81,7 @@ export default function ProductCard({
   const outOfStock = stockStatus?.status === "out" || (product.stock_quantity ?? 0) === 0;
 
   return (
-    <div className="group flex flex-col bg-white rounded-card border border-gray-200 hover:border-orange-200 transition-all duration-smooth overflow-hidden h-full">
+    <div className="group flex flex-col bg-white rounded-card border border-gray-200 hover:border-red-200 transition-all duration-smooth overflow-hidden h-full">
       <Link href={`/products/${product.id}`} className="block flex-shrink-0">
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
           {product.image_url ? (
@@ -98,13 +98,13 @@ export default function ProductCard({
             </div>
           )}
           {hasDiscount && (
-            <div className="absolute top-2 left-2 z-10 bg-orange-500 text-white px-2 py-0.5 rounded-button text-xs font-semibold flex items-center gap-1">
+            <div className="absolute top-2 left-2 z-10 bg-brand-red text-white px-2 py-0.5 rounded-button text-xs font-semibold flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
               {discountPercent}% OFF
             </div>
           )}
           {isBestseller && !hasDiscount && (
-            <div className="absolute top-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-button px-2 py-1 text-xs font-bold text-gray-800 shadow-soft border border-orange-200">
+            <div className="absolute top-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-button px-2 py-1 text-xs font-bold text-gray-800 shadow-soft border border-red-200">
               Best Seller
             </div>
           )}
@@ -122,7 +122,7 @@ export default function ProductCard({
       </Link>
       <div className="p-4 flex-1 flex flex-col min-w-0">
         <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-smooth line-clamp-2 text-balance">
+          <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth line-clamp-2 text-balance">
             {product.name}
           </h3>
         </Link>
@@ -152,7 +152,7 @@ export default function ProductCard({
                   }}
                   className={`px-2.5 py-1 rounded-button text-xs font-medium transition-all duration-smooth ${
                     selectedWeight?.weight === w.weight
-                      ? "bg-orange-600 text-white"
+                      ? "bg-brand-red text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
@@ -164,7 +164,7 @@ export default function ProductCard({
           )}
         <div className="mt-auto pt-3 flex items-center justify-between gap-2">
           <div>
-            <span className="text-lg font-bold text-orange-600">
+            <span className="text-lg font-bold text-brand-red">
               ₹{currentPrice.toFixed(0)}
             </span>
             {activeWeight && (
@@ -188,7 +188,7 @@ export default function ProductCard({
                 onClick={() =>
                   onUpdateQuantity(product.id, currentQty - 1, activeWeight)
                 }
-                className="w-9 h-9 flex items-center justify-center rounded-button bg-white hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors duration-smooth min-w-[44px] min-h-[44px]"
+                className="w-9 h-9 flex items-center justify-center rounded-button bg-white hover:bg-red-50 text-gray-700 hover:text-brand-red transition-colors duration-smooth min-w-[44px] min-h-[44px]"
                 aria-label="Decrease"
               >
                 <Minus className="w-4 h-4" />
@@ -201,7 +201,7 @@ export default function ProductCard({
                 onClick={() =>
                   onUpdateQuantity(product.id, currentQty + 1, activeWeight)
                 }
-                className="w-9 h-9 flex items-center justify-center rounded-button bg-orange-600 hover:bg-orange-700 text-white transition-colors duration-smooth min-w-[44px] min-h-[44px]"
+                className="w-9 h-9 flex items-center justify-center rounded-button bg-brand-red hover:bg-brand-red-hover text-white transition-colors duration-smooth min-w-[44px] min-h-[44px]"
                 aria-label="Increase"
               >
                 <Plus className="w-4 h-4" />
@@ -211,7 +211,7 @@ export default function ProductCard({
             <button
               type="button"
               onClick={() => onAddToCart(product, activeWeight)}
-              className="px-4 py-2 rounded-button bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-all duration-smooth shadow-soft hover:shadow-card min-w-[44px] min-h-[44px]"
+              className="px-4 py-2 rounded-button bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-all duration-smooth shadow-soft hover:shadow-card min-w-[44px] min-h-[44px]"
             >
               <Plus className="w-4 h-4" />
               Add

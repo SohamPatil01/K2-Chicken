@@ -133,7 +133,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-gray-50 py-10 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">Product not found.</p>
-          <Link href="/#products" className="text-orange-600 font-medium hover:underline">
+          <Link href="/#products" className="text-brand-red font-medium hover:underline">
             Back to products
           </Link>
         </div>
@@ -185,7 +185,7 @@ export default function ProductDetailPage() {
               <p className="text-sm text-gray-500 mb-4">{product.category}</p>
             )}
             <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-2xl font-bold text-orange-600">
+              <span className="text-2xl font-bold text-brand-red">
                 ₹{currentPrice.toFixed(0)}
               </span>
               {activeWeight && (
@@ -219,7 +219,7 @@ export default function ProductDetailPage() {
                       onClick={() => setSelectedWeight(w)}
                       className={`px-4 py-2 rounded-button text-sm font-medium transition-all duration-smooth ${
                         selectedWeight?.weight === w.weight
-                          ? "bg-orange-600 text-white"
+                          ? "bg-brand-red text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
@@ -236,7 +236,7 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-10 h-10 flex items-center justify-center rounded-button bg-white hover:bg-orange-50 text-gray-700 hover:text-orange-600 min-w-[44px] min-h-[44px]"
+                  className="w-10 h-10 flex items-center justify-center rounded-button bg-white hover:bg-red-50 text-gray-700 hover:text-brand-red min-w-[44px] min-h-[44px]"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -244,7 +244,7 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="w-10 h-10 flex items-center justify-center rounded-button bg-orange-600 hover:bg-orange-700 text-white min-w-[44px] min-h-[44px]"
+                  className="w-10 h-10 flex items-center justify-center rounded-button bg-brand-red hover:bg-brand-red-hover text-white min-w-[44px] min-h-[44px]"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -256,7 +256,7 @@ export default function ProductDetailPage() {
                 type="button"
                 onClick={handleAddToCart}
                 disabled={outOfStock}
-                className="px-6 py-3 rounded-button bg-orange-600 hover:bg-orange-700 text-white font-semibold flex items-center gap-2 shadow-soft hover:shadow-card transition-all duration-smooth disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
+                className="px-6 py-3 rounded-button bg-brand-red hover:bg-brand-red-hover text-white font-semibold flex items-center gap-2 shadow-soft hover:shadow-card transition-all duration-smooth disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
               >
                 <ShoppingBag className="w-5 h-5" />
                 Add to cart
@@ -265,7 +265,7 @@ export default function ProductDetailPage() {
                 type="button"
                 onClick={handleBuyNow}
                 disabled={outOfStock}
-                className="px-6 py-3 rounded-button bg-white border-2 border-orange-600 text-orange-600 hover:bg-orange-50 font-semibold flex items-center gap-2 transition-all duration-smooth disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
+                className="px-6 py-3 rounded-button bg-white border-2 border-red-200 text-brand-red hover:bg-red-50 font-semibold flex items-center gap-2 transition-all duration-smooth disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
               >
                 Buy now
               </button>
@@ -291,7 +291,7 @@ export default function ProductDetailPage() {
               </p>
               <Link
                 href="/recipes"
-                className="inline-flex items-center gap-2 text-orange-600 font-medium hover:underline"
+                className="inline-flex items-center gap-2 text-brand-red font-medium hover:underline"
               >
                 <ChefHat className="w-4 h-4" />
                 View recipes

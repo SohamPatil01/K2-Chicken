@@ -189,7 +189,7 @@ export default async function RecipeDetailPage({
           __html: JSON.stringify(breadcrumbStructuredData),
         }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/30 to-red-50/20 py-16">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-red-50/20 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <Link
@@ -203,7 +203,7 @@ export default async function RecipeDetailPage({
           {/* Recipe Header */}
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden mb-8">
             {/* Recipe Image */}
-            <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500">
+            <div className="relative h-80 bg-gradient-to-br from-brand-red to-red-500">
               {imageUrl ? (
                 <Image
                   src={imageUrl}
@@ -231,8 +231,8 @@ export default async function RecipeDetailPage({
 
             {/* Recipe Info Cards */}
             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center space-x-3 p-4 bg-orange-50 rounded-xl">
-                <div className="p-3 bg-orange-500 rounded-lg">
+              <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl">
+                <div className="p-3 bg-brand-red rounded-lg">
                   <Clock className="text-white" size={24} />
                 </div>
                 <div>
@@ -329,7 +329,7 @@ export default async function RecipeDetailPage({
               <ol className="space-y-4">
                 {recipe.instructions.map((instruction, index) => (
                   <li key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-brand-red to-red-500 rounded-full flex items-center justify-center text-white font-bold">
                       {index + 1}
                     </div>
                     <p className="text-gray-700 text-lg leading-relaxed pt-1">
@@ -345,7 +345,7 @@ export default async function RecipeDetailPage({
           <div className="mt-8 text-center">
             <Link
               href="/"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-red to-red-500 text-white rounded-xl font-semibold hover:from-brand-red hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <ChefHat size={20} className="mr-2" />
               Order Fresh Ingredients

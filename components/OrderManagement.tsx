@@ -239,7 +239,7 @@ export default function OrderManagement() {
               setLoading(true)
               fetchOrders()
             }}
-            className="px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-semibold"
+            className="px-3 py-1.5 text-sm bg-brand-red hover:bg-brand-red text-white rounded-lg transition-colors font-semibold"
             title="Refresh orders"
           >
             🔄 Refresh
@@ -419,7 +419,7 @@ export default function OrderManagement() {
                 ) : (
                   <button
                     onClick={() => setShowDiscountModal(true)}
-                    className="w-full px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-sm flex items-center justify-center space-x-2"
+                    className="w-full px-3 py-2 bg-gradient-to-r from-brand-red to-red-500 text-white rounded-lg hover:from-brand-red hover:to-red-600 transition-all duration-300 font-semibold text-sm flex items-center justify-center space-x-2"
                   >
                     <Percent className="h-4 w-4" />
                     <span>Apply Discount</span>
@@ -526,7 +526,7 @@ export default function OrderManagement() {
                 value={discountInput}
                 onChange={(e) => setDiscountInput(e.target.value)}
                 placeholder={discountType === 'percentage' ? 'Enter percentage (e.g., 10)' : 'Enter amount (e.g., 50)'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-transparent"
                 min="0"
                 step={discountType === 'percentage' ? '0.1' : '1'}
               />
@@ -549,7 +549,7 @@ export default function OrderManagement() {
               </button>
               <button
                 onClick={applyDiscount}
-                className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold"
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-brand-red to-red-500 text-white rounded-lg hover:from-brand-red hover:to-red-600 transition-all duration-300 font-semibold"
               >
                 Apply Discount
               </button>

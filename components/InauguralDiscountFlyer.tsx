@@ -64,7 +64,7 @@ export default function InauguralDiscountFlyer() {
       {/* Flyer Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="relative bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 rounded-3xl shadow-2xl max-w-md w-full pointer-events-auto animate-scale-in overflow-hidden border-2 border-orange-200"
+          className="relative bg-gradient-to-br from-brand-red via-gray-50 to-brand-red-hover rounded-3xl shadow-2xl max-w-md w-full pointer-events-auto animate-scale-in overflow-hidden border-2 border-red-200"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
@@ -77,16 +77,16 @@ export default function InauguralDiscountFlyer() {
           </button>
 
           {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-orange-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-orange-300/20 to-orange-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-red/20 to-brand-red-hover/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-brand-red/20 to-brand-red-hover/10 rounded-full blur-3xl" />
 
           {/* Content */}
           <div className="relative p-8 sm:p-10">
             {/* Icon */}
             <div className="flex justify-center mb-6">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full blur-xl opacity-50 animate-pulse" />
-                <div className="relative bg-gradient-to-r from-orange-500 to-orange-600 p-4 rounded-full shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-brand-red-hover rounded-full blur-xl opacity-50 animate-pulse" />
+                <div className="relative bg-gradient-to-r from-brand-red to-brand-red-hover p-4 rounded-full shadow-lg">
                   <Gift className="h-12 w-12 text-white" />
                 </div>
                 <div className="absolute -top-1 -right-1">
@@ -96,13 +96,13 @@ export default function InauguralDiscountFlyer() {
             </div>
 
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-3 bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-3 bg-gradient-to-r from-brand-red to-brand-red-hover bg-clip-text text-transparent">
               Welcome Bonus! 🎉
             </h2>
 
             {/* Discount Badge */}
             <div className="flex justify-center mb-6">
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full font-bold text-2xl shadow-lg transform hover:scale-105 transition-transform duration-200">
+              <div className="bg-gradient-to-r from-brand-red to-brand-red-hover text-white px-6 py-3 rounded-full font-bold text-2xl shadow-lg transform hover:scale-105 transition-transform duration-200">
                 10% OFF
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function InauguralDiscountFlyer() {
             {/* Description */}
             <p className="text-center text-gray-700 mb-2 text-lg font-semibold">
               Get{" "}
-              <span className="text-orange-600 font-bold">10% discount</span> on
+              <span className="text-brand-red font-bold">10% discount</span> on
               your first order!
             </p>
             <p className="text-center text-gray-600 mb-6 text-sm">
@@ -144,7 +144,7 @@ export default function InauguralDiscountFlyer() {
             <Link
               href="/login?redirect=/checkout"
               onClick={handleSignUpClick}
-              className="block w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-center group"
+              className="block w-full bg-gradient-to-r from-brand-red to-brand-red-hover hover:from-brand-red hover:to-brand-red-hover text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-center group"
             >
               <span className="flex items-center justify-center gap-2">
                 Sign Up Now
