@@ -14,10 +14,10 @@ Before migrating data, make sure your cloud database has all the tables:
 
 ```bash
 # Run the migration to add missing columns
-curl "https://k2-chicken.vercel.app/api/admin/migrate-db?token=your-token"
+curl "https://www.k2chicken.com/api/admin/migrate-db?token=your-token"
 
 # Or re-run full initialization
-curl "https://k2-chicken.vercel.app/api/admin/init-db?token=your-token"
+curl "https://www.k2chicken.com/api/admin/init-db?token=your-token"
 ```
 
 ## Step 2: Set Up Environment Variables
@@ -95,7 +95,7 @@ If you prefer to migrate specific tables only, you can modify the `tables` array
 ## After Migration
 
 1. **Verify data** in your cloud database
-2. **Test your app** at https://k2-chicken.vercel.app
+2. **Test your app** at https://www.k2chicken.com
 3. **Check products** are showing correctly
 4. **Test order placement** to ensure everything works
 

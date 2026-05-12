@@ -9,7 +9,7 @@ Follow these steps to get your app live on Vercel:
 1. Go to https://neon.tech
 2. Click "Sign Up" → Sign in with GitHub
 3. Click "Create a project"
-4. Name it "k2-chicken" (or any name)
+4. Name it for the current production project, such as "k2chicken"
 5. **Copy the connection string** - it looks like:
    ```
    postgres://user:password@ep-xxx.us-east-2.aws.neon.tech/dbname?sslmode=require
@@ -94,30 +94,30 @@ If you've connected your GitHub repo to Vercel, it will automatically deploy whe
 
 After deployment completes:
 
-1. **Get your app URL** from Vercel dashboard (e.g., `https://k2-chicken.vercel.app`)
+1. **Get your app URL** from Vercel dashboard, preferably your production domain: `https://www.k2chicken.com`
 
 2. **Call the initialization endpoint:**
 
    **Option A: Using curl (Terminal)**
 
    ```bash
-   curl "https://your-app.vercel.app/api/admin/init-db?token=your-db-init-token"
+   curl "https://www.k2chicken.com/api/admin/init-db?token=your-db-init-token"
    ```
 
    **Option B: Using Browser**
 
    - Visit with token:
      ```
-     https://your-app.vercel.app/api/admin/init-db?token=your-db-init-token
+     https://www.k2chicken.com/api/admin/init-db?token=your-db-init-token
      ```
    - If you didn't set `DB_INIT_TOKEN`, use the default:
      ```
-     https://your-app.vercel.app/api/admin/init-db?token=change-this-token
+     https://www.k2chicken.com/api/admin/init-db?token=change-this-token
      ```
    - You should see a success message
 
 3. **Verify it worked:**
-   - Visit your app: `https://your-app.vercel.app`
+   - Visit your app: `https://www.k2chicken.com`
    - You should see products and the homepage loading
 
 ## Step 5: Secure Your App (Important!)
