@@ -27,6 +27,40 @@ interface ProductCardProps {
   index?: number;
 }
 
+function getProductBadges(product: Product): string[] {
+  const text = `${product.name} ${product.description || ""}`.toLowerCase();
+  const badges = ["FRESH"];
+
+  if (
+    /\bboneless\b|fillet|mince|keema|kheema/.test(text) ||
+    product.category === "boneless" ||
+    product.category === "mince"
+  ) {
+    badges.push("BONELESS");
+  } else if (
+    /with bone|bone-in|whole chicken|whole bird|wing|drumstick|leg quarter|biryani cut|curry cut|soup bone|bones/.test(text) ||
+    product.category === "withbone" ||
+    product.category === "whole"
+  ) {
+    badges.push("WITH BONE");
+  }
+
+  if (/skinless/.test(text)) {
+    badges.push("SKINLESS");
+  } else if (/with skin|skin on|wing|drumstick|leg quarter|whole chicken|whole bird/.test(text)) {
+    badges.push("WITH SKIN");
+  }
+
+  if (/curry cut/.test(text)) badges.push("CURRY CUT");
+  else if (/whole chicken|whole bird/.test(text) || product.category === "whole") badges.push("WHOLE BIRD");
+  else if (/biryani cut/.test(text)) badges.push("BIRYANI CUT");
+  else if (/drumstick/.test(text)) badges.push("DRUMSTICKS");
+  else if (/wing/.test(text)) badges.push("WINGS");
+  else if (/mince|keema|kheema/.test(text)) badges.push("MINCE");
+
+  return Array.from(new Set(badges)).slice(0, 3);
+}
+
 function ProductCard({
   product,
   isBestseller,
@@ -72,6 +106,7 @@ function ProductCard({
   const hasDiscount = baseOriginalPrice > baseProductPrice;
   const discountPercent = hasDiscount ? Math.round(((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100) : 0;
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
+  const badges = getProductBadges(product);
 
   return (
     <div className="product-card group relative">
@@ -105,10 +140,16 @@ function ProductCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-50" />
         <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap">
-          <span className="fresh-tag text-white text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
-          {product.category && (
-            <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">{product.category.toUpperCase()}</span>
-          )}
+          {badges.map((badge, badgeIndex) => (
+            <span
+              key={`${product.id}-${badge}-${badgeIndex}`}
+              className={badge === "FRESH"
+                ? "fresh-tag text-white text-[10px] font-bold px-2 py-0.5 rounded-full"
+                : "cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full"}
+            >
+              {badge}
+            </span>
+          ))}
         </div>
       </div>
 

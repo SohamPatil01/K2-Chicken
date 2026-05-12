@@ -119,17 +119,6 @@ export default function Hero({
               </button>
             </div>
 
-            {/* Social proof */}
-            <div className={`flex items-center gap-6 pt-2 ${mounted ? "hero-text-reveal stagger-4" : "opacity-0"}`}>
-              <div className="flex -space-x-3">
-                {["photo-1507003211169-0a1dd7228f2d", "photo-1494790108377-be9c29b29330", "photo-1500648767791-00dcc994a43e"].map((id, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={i} src={`https://images.unsplash.com/${id}?w=100&h=100&fit=crop`} className="w-10 h-10 rounded-full border-2 border-white object-cover" alt="Customer" />
-                ))}
-                <div className="w-10 h-10 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">+2k</div>
-              </div>
-              <div className="text-sm text-gray-500"><span className="text-gray-900 font-bold">4.9/5</span> from 2,000+ home chefs</div>
-            </div>
           </div>
 
           {/* Right floating product cards (desktop only) */}
