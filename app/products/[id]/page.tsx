@@ -22,7 +22,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>();
   const [quantity, setQuantity] = useState(1);
-  const [reviews, setReviews] = useState<{ id: number; user_name: string; rating: number; comment: string }[]>([]);
+  const [reviews, setReviews] = useState<{ id: number; user_name: string; rating: number; comment: string; source?: string; reviewer_avatar_url?: string; review_reply?: string }[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -299,7 +299,7 @@ export default function ProductDetailPage() {
         {reviews.length > 0 && (
           <section className="mt-12">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Customer reviews
+              What Our Customers Say
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {reviews.map((review) => (
