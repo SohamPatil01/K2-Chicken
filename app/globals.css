@@ -142,7 +142,7 @@
     input, select, textarea { font-size: 16px !important; }
 
     html {
-      scroll-behavior: smooth;
+      scroll-behavior: auto;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -150,13 +150,30 @@
 
     .mobile-container { padding-left: 1rem; padding-right: 1rem; }
 
-    .mobile-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    .mobile-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x;
+    }
     .mobile-scroll::-webkit-scrollbar { display: none; }
+
+    .product-card:hover {
+      transform: none;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    }
+    .product-card:hover .image-hover-zoom img { transform: none; }
   }
 
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scroll-hidden  { -ms-overflow-style: none; scrollbar-width: none; }
+  .scroll-hidden  {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
   .scroll-hidden::-webkit-scrollbar { display: none; }
 }
 

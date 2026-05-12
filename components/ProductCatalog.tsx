@@ -61,6 +61,13 @@ function getProductBadges(product: Product): string[] {
   return Array.from(new Set(badges)).slice(0, 3);
 }
 
+function matchesBoneFilter(product: Product, filter: string): boolean {
+  const badges = getProductBadges(product);
+  if (filter === "with-bone") return badges.includes("WITH BONE");
+  if (filter === "without-bone") return badges.includes("BONELESS");
+  return false;
+}
+
 function ProductCard({
   product,
   isBestseller,
@@ -253,7 +260,18 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
 
   const bestsellerIds = [1, 2, 3];
 
-  const categories = ["all", ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
+  const categoryFilters = [
+    { value: "all", label: "All Cuts" },
+    { value: "with-bone", label: "With Bone" },
+    { value: "without-bone", label: "Without Bone" },
+    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))).map((category) => ({
+      value: category as string,
+      label: String(category).replace(/[_-]/g, " "),
+    })),
+  ].filter(
+    (filter, index, arr) =>
+      arr.findIndex((item) => item.value === filter.value) === index
+  );
 
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
@@ -276,7 +294,13 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
 
   const filterAndSortProducts = () => {
     let filtered = products;
-    if (selectedCategory !== "all") filtered = filtered.filter((p) => p.category === selectedCategory);
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((product) =>
+        selectedCategory === "with-bone" || selectedCategory === "without-bone"
+          ? matchesBoneFilter(product, selectedCategory)
+          : product.category === selectedCategory
+      );
+    }
     if (searchTerm) filtered = filtered.filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.description?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     if (sortBy === "price_low") filtered = [...filtered].sort((a, b) => Number(a.price) - Number(b.price));
@@ -359,7 +383,7 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
     <div className="pb-20 bg-white w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Category filter pills */}
-        <div className="flex gap-3 overflow-x-auto scroll-hidden pb-4 justify-start md:justify-center mb-8">
+        <div className="flex gap-3 overflow-x-auto scroll-hidden mobile-scroll touch-pan-x pb-4 pr-4 justify-start md:justify-center mb-8 snap-x snap-proximity">
           <button
             type="button"
             onClick={() => setSelectedCategory("all")}
@@ -367,14 +391,16 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
           >
             All Cuts
           </button>
-          {categories.filter((c) => c !== "all").map((cat) => (
+          {categoryFilters
+            .filter((filter) => filter.value !== "all")
+            .map((filter) => (
             <button
-              key={cat}
+              key={filter.value}
               type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`category-pill px-5 py-2.5 rounded-full capitalize ${selectedCategory === cat ? "active" : ""}`}
+              onClick={() => setSelectedCategory(filter.value)}
+              className={`category-pill px-5 py-2.5 rounded-full capitalize snap-start ${selectedCategory === filter.value ? "active" : ""}`}
             >
-              {cat}
+              {filter.label}
             </button>
           ))}
         </div>
