@@ -7,35 +7,16 @@ export const revalidate = 60;
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const source = searchParams.get("source"); // optional: "google_business_profile" | "internal"
-
     const client = await pool.connect();
     
     try {
-      // Prefer Google-synced reviews (shown first), then internal ones.
-      // Return extra fields so the UI can show avatars / Google badge.
+      // Fetch approved and featured reviews, ordered by display_order and created_at
       const result = await client.query(`
-        SELECT
-          id,
-          user_name,
-          rating,
-          comment,
-          created_at,
-          reviewed_at,
-          source,
-          reviewer_avatar_url,
-          reviewer_profile_url,
-          review_reply
+        SELECT id, user_name, rating, comment, created_at
         FROM reviews
         WHERE is_approved = true
-          ${source ? `AND source = '${source}'` : ""}
-        ORDER BY
-          (source = 'google_business_profile') DESC,
-          is_featured DESC,
-          display_order ASC,
-          COALESCE(reviewed_at, created_at) DESC
-        LIMIT 9
+        ORDER BY is_featured DESC, display_order ASC, created_at DESC
+        LIMIT 6
       `);
 
       return NextResponse.json(result.rows);
@@ -90,4 +71,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

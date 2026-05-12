@@ -366,44 +366,6 @@ export async function initializeDatabase() {
       )
     `);
 
-    // Migrate reviews table to support Google Business Profile sync
-    await client.query(`
-      DO $$
-      BEGIN
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='source') THEN
-          ALTER TABLE reviews ADD COLUMN source VARCHAR(50) DEFAULT 'internal';
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='external_review_id') THEN
-          ALTER TABLE reviews ADD COLUMN external_review_id VARCHAR(255);
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='reviewer_avatar_url') THEN
-          ALTER TABLE reviews ADD COLUMN reviewer_avatar_url TEXT;
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='reviewer_profile_url') THEN
-          ALTER TABLE reviews ADD COLUMN reviewer_profile_url TEXT;
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='review_reply') THEN
-          ALTER TABLE reviews ADD COLUMN review_reply TEXT;
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                       WHERE table_name='reviews' AND column_name='reviewed_at') THEN
-          ALTER TABLE reviews ADD COLUMN reviewed_at TIMESTAMP;
-        END IF;
-      END $$;
-    `);
-
-    // Unique index to prevent duplicate external reviews
-    await client.query(`
-      CREATE UNIQUE INDEX IF NOT EXISTS reviews_external_review_id_idx
-      ON reviews (external_review_id)
-      WHERE external_review_id IS NOT NULL;
-    `);
-
     // Add stock columns to products table if they don't exist
     await client.query(`
       DO $$ 

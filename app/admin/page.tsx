@@ -20,7 +20,6 @@ import {
   TrendingUp,
   Clock,
   DollarSign,
-  Star,
 } from "lucide-react";
 import ProductManagement from "@/components/ProductManagement";
 import RecipeManagement from "@/components/RecipeManagement";
@@ -30,7 +29,6 @@ import InventoryManagement from "@/components/InventoryManagement";
 import SettingsManagement from "@/components/SettingsManagement";
 import PromotionManagement from "@/components/PromotionManagement";
 import WhatsAppOrderManagement from "@/components/WhatsAppOrderManagement";
-import GoogleReviewsManagement from "@/components/GoogleReviewsManagement";
 
 type TabType =
   | "dashboard"
@@ -40,8 +38,7 @@ type TabType =
   | "whatsapp"
   | "inventory"
   | "settings"
-  | "promotions"
-  | "reviews";
+  | "promotions";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
@@ -641,7 +638,6 @@ export default function AdminPage() {
     { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
     { id: "inventory", label: "Inventory", icon: Warehouse },
     { id: "promotions", label: "Promotions", icon: Tag },
-    { id: "reviews", label: "Reviews", icon: Star },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -903,7 +899,6 @@ export default function AdminPage() {
             {activeTab === "whatsapp" && <WhatsAppOrderManagement />}
             {activeTab === "inventory" && <InventoryManagement />}
             {activeTab === "promotions" && <PromotionManagement />}
-            {activeTab === "reviews" && <GoogleReviewsManagement />}
             {activeTab === "settings" && <SettingsManagement />}
           </div>
         </div>
