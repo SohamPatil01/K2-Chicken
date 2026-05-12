@@ -1,164 +1,83 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { X, Gift, Sparkles, ArrowRight } from "lucide-react";
+import { X, Gift } from "lucide-react";
 import Link from "next/link";
 
 export default function InauguralDiscountFlyer() {
   const [isVisible, setIsVisible] = useState(false);
-  const { user, isAuthenticated } = useAuth();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Only show if user is not authenticated
     if (isAuthenticated) {
-      setIsVisible(false);
-      // Mark as shown for this session so it doesn't appear after sign-up
       sessionStorage.setItem("inauguralFlyerShown", "true");
       return;
     }
+    if (sessionStorage.getItem("inauguralFlyerShown") === "true") return;
 
-    // Check if flyer has been shown in this session
-    const hasBeenShown =
-      sessionStorage.getItem("inauguralFlyerShown") === "true";
-    if (hasBeenShown) {
-      setIsVisible(false);
-      return;
-    }
-
-    // Show flyer immediately after a short delay (only once per page reload)
-    const initialTimer = setTimeout(() => {
+    // Slide in after 4 seconds — not intrusive on landing
+    const timer = setTimeout(() => {
       setIsVisible(true);
       sessionStorage.setItem("inauguralFlyerShown", "true");
-    }, 1500);
+    }, 4000);
 
-    return () => {
-      clearTimeout(initialTimer);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
+    return () => clearTimeout(timer);
   }, [isAuthenticated]);
 
   const handleClose = () => {
-    setIsVisible(false);
-    sessionStorage.setItem("inauguralFlyerShown", "true");
-  };
-
-  const handleSignUpClick = () => {
-    setIsVisible(false);
-    sessionStorage.setItem("inauguralFlyerShown", "true");
+    setIsExiting(true);
+    setTimeout(() => setIsVisible(false), 300);
   };
 
   if (!isVisible) return null;
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in"
-        onClick={handleClose}
-      />
-
-      {/* Flyer Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div
-          className="relative bg-gradient-to-br from-brand-red via-gray-50 to-brand-red-hover rounded-3xl shadow-2xl max-w-md w-full pointer-events-auto animate-scale-in overflow-hidden border-2 border-red-200"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Close Button */}
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
-            aria-label="Close"
-          >
-            <X className="h-5 w-5 text-gray-600" />
-          </button>
-
-          {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-red/20 to-brand-red-hover/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-brand-red/20 to-brand-red-hover/10 rounded-full blur-3xl" />
-
-          {/* Content */}
-          <div className="relative p-8 sm:p-10">
-            {/* Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-brand-red-hover rounded-full blur-xl opacity-50 animate-pulse" />
-                <div className="relative bg-gradient-to-r from-brand-red to-brand-red-hover p-4 rounded-full shadow-lg">
-                  <Gift className="h-12 w-12 text-white" />
-                </div>
-                <div className="absolute -top-1 -right-1">
-                  <Sparkles className="h-6 w-6 text-yellow-400 animate-bounce" />
-                </div>
-              </div>
-            </div>
-
-            {/* Title */}
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-3 bg-gradient-to-r from-brand-red to-brand-red-hover bg-clip-text text-transparent">
-              Welcome Bonus! 🎉
-            </h2>
-
-            {/* Discount Badge */}
-            <div className="flex justify-center mb-6">
-              <div className="bg-gradient-to-r from-brand-red to-brand-red-hover text-white px-6 py-3 rounded-full font-bold text-2xl shadow-lg transform hover:scale-105 transition-transform duration-200">
-                10% OFF
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-center text-gray-700 mb-2 text-lg font-semibold">
-              Get{" "}
-              <span className="text-brand-red font-bold">10% discount</span> on
-              your first order!
-            </p>
-            <p className="text-center text-gray-600 mb-6 text-sm">
-              Sign up now and enjoy fresh, premium chicken at amazing prices.
-              Limited time offer for new customers!
-            </p>
-
-            {/* Benefits */}
-            <div className="bg-white/60 rounded-xl p-4 mb-6 backdrop-blur-sm">
-              <ul className="space-y-2 text-sm text-gray-700">
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500 font-bold">✓</span>
-                  <span>10% discount on first order</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500 font-bold">✓</span>
-                  <span>View your order history</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500 font-bold">✓</span>
-                  <span>Exclusive discounts on repeat orders</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500 font-bold">✓</span>
-                  <span>Save delivery addresses</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* CTA Button */}
-            <Link
-              href="/login?redirect=/checkout"
-              onClick={handleSignUpClick}
-              className="block w-full bg-gradient-to-r from-brand-red to-brand-red-hover hover:from-brand-red hover:to-brand-red-hover text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-center group"
-            >
-              <span className="flex items-center justify-center gap-2">
-                Sign Up Now
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-
-            {/* Small print */}
-            <p className="text-center text-xs text-gray-500 mt-4">
-              * Discount applies automatically on your first order after sign up
-            </p>
-          </div>
+    <div
+      className={`fixed bottom-6 right-4 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 ${
+        isExiting
+          ? "opacity-0 translate-y-4 pointer-events-none"
+          : "opacity-100 translate-y-0"
+      }`}
+      style={{
+        animation: isExiting ? undefined : "slideInRight 0.35s cubic-bezier(0.34,1.56,0.64,1) both",
+      }}
+    >
+      {/* Red top bar */}
+      <div className="bg-brand-red px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-white">
+          <Gift className="w-4 h-4 shrink-0" />
+          <span className="text-sm font-bold tracking-wide">Welcome Offer 🎉</span>
         </div>
+        <button
+          onClick={handleClose}
+          className="text-white/80 hover:text-white transition-colors ml-2"
+          aria-label="Close"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
-    </>
+
+      {/* Body */}
+      <div className="px-4 py-3">
+        <p className="text-2xl font-extrabold text-brand-red leading-none mb-0.5">10% OFF</p>
+        <p className="text-sm text-gray-700 font-medium">your first order</p>
+        <p className="text-xs text-gray-500 mt-1 mb-3">Sign up now and save on fresh premium chicken delivered to your door.</p>
+        <Link
+          href="/login?redirect=/checkout"
+          onClick={handleClose}
+          className="block w-full text-center bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+        >
+          Sign Up &amp; Claim Offer
+        </Link>
+        <button
+          onClick={handleClose}
+          className="block w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-2 transition-colors"
+        >
+          No thanks
+        </button>
+      </div>
+    </div>
   );
 }
