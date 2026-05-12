@@ -1,6 +1,14 @@
 "use client";
 
-import { Award, Scissors, Package, ShieldCheck } from "lucide-react";
+import {
+  Award,
+  Package,
+  Scissors,
+  ShieldCheck,
+  Snowflake,
+  Tractor,
+  Truck,
+} from "lucide-react";
 
 const features = [
   {
@@ -45,6 +53,33 @@ const images = [
     src: "https://kimi-web-img.moonshot.cn/img/onestophalal.com/f26ae8db86477b04ea6cf7f3a30ec4f1175fb252.jpg",
     alt: "Chicken wings",
     cls: "h-64",
+  },
+];
+
+const processSteps = [
+  {
+    num: 1,
+    icon: Tractor,
+    label: "Farm Sourcing",
+    desc: "Daily morning procurement from certified local farms within 50km radius.",
+  },
+  {
+    num: 2,
+    icon: Scissors,
+    label: "Master Cutting",
+    desc: "Hand-cut by expert butchers in our FSSAI-approved processing unit.",
+  },
+  {
+    num: 3,
+    icon: Package,
+    label: "Vacuum Packing",
+    desc: "Hygienically packed in temperature-controlled environment with ice gel packs.",
+  },
+  {
+    num: 4,
+    icon: Truck,
+    label: "Swift Delivery",
+    desc: "Insulated delivery bags ensure your chicken arrives at 0-4C freshness.",
   },
 ];
 
@@ -118,56 +153,71 @@ export default function WhyChooseUs() {
 
       {/* Process section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24" id="process">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">From Farm to Your Kitchen</h2>
-          <p className="text-gray-500">Our 4-step freshness guarantee</p>
+        <div className="text-center mb-14 reveal-up">
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-3">
+            From Farm to Your Kitchen
+          </h2>
+          <p className="text-gray-500 text-sm md:text-base">
+            Our 4-step freshness guarantee
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8 relative">
-          <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-0.5 process-line" />
+        <div className="grid md:grid-cols-4 gap-10 relative stagger-children">
+          <div className="hidden md:block absolute top-9 left-[11%] right-[11%] h-px process-line" />
 
-          {[
-            { num: 1, label: "Farm Sourcing", desc: "Daily morning procurement from certified local farms within 50km radius." },
-            { num: 2, label: "Master Cutting", desc: "Hand-cut by expert butchers in our FSSAI-approved processing unit." },
-            { num: 3, label: "Vacuum Packing", desc: "Hygienically packed in temperature-controlled environment with ice gel packs." },
-            { num: 4, label: "Swift Delivery", desc: "Insulated delivery bags ensure your chicken arrives at 0–4°C freshness." },
-          ].map((step) => (
-            <div key={step.num} className="relative text-center group">
-              <div className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center text-brand-red text-2xl font-bold font-serif mb-6 border-2 border-gray-200 group-hover:border-brand-red transition-colors relative z-10 shadow-sm">
-                {step.num}
+          {processSteps.map((step) => {
+            const Icon = step.icon;
+            return (
+              <div key={step.num} className="relative text-center group">
+                <div className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center mb-6 border border-gray-200 group-hover:border-brand-red transition-all duration-300 relative z-10 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                  <Icon className="w-7 h-7 text-brand-red" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {step.num}. {step.label}
+                </h3>
+                <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
+                  {step.desc}
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{step.num}. {step.label}</h3>
-              <p className="text-gray-500 text-sm">{step.desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Stats bar */}
-        <div className="mt-20 bg-white border border-gray-200 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm section-alt">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-brand-green text-xl">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l14 9-14 9V3z" /></svg>
+        <div className="mt-20 bg-white border border-gray-200 rounded-[28px] p-8 md:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 shadow-[0_10px_30px_rgba(0,0,0,0.05)] reveal-up">
+          <div className="flex-1 max-w-2xl">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center text-brand-green">
+                <Snowflake className="w-4 h-4" />
               </div>
-              <span className="text-brand-green font-semibold text-sm uppercase tracking-wider">Cold Chain Maintained</span>
+              <span className="text-brand-green font-semibold text-xs sm:text-sm uppercase tracking-[0.18em]">
+                Cold Chain Maintained
+              </span>
             </div>
-            <h3 className="text-3xl font-serif font-bold text-gray-900 mb-3">Freshness You Can Trust</h3>
-            <p className="text-gray-500 leading-relaxed max-w-xl">
+            <h3 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">
+              Freshness You Can Trust
+            </h3>
+            <p className="text-gray-500 leading-relaxed text-sm md:text-base max-w-xl">
               Every cut is sourced daily from certified farms, processed in our hygienic facility, and
               delivered in temperature-controlled packaging. We never freeze, never stockpile.
             </p>
           </div>
-          <div className="flex gap-8 text-center flex-wrap justify-center">
+
+          <div className="grid grid-cols-3 gap-0 w-full lg:w-auto border border-gray-100 rounded-2xl overflow-hidden">
             {[
-              { val: "0–4°C", label: "Storage Temp" },
+              { val: "0-4C", label: "Storage Temp" },
               { val: "12h", label: "Farm to Door" },
               { val: "100%", label: "Halal Cut" },
             ].map((stat, i) => (
-              <div key={stat.label} className="flex items-center gap-8">
-                {i > 0 && <div className="w-px h-12 bg-gray-200 hidden sm:block" />}
-                <div>
-                  <div className="text-4xl font-bold text-brand-red mb-1">{stat.val}</div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
+              <div
+                key={stat.label}
+                className={`px-6 py-5 text-center bg-white ${i > 0 ? "border-l border-gray-100" : ""}`}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-brand-red mb-1">
+                  {stat.val}
+                </div>
+                <div className="text-xs md:text-sm text-gray-500">
+                  {stat.label}
                 </div>
               </div>
             ))}
