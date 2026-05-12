@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ShoppingBag, Menu, X, User, LogOut, LogIn, Search, MapPin, ChevronDown, Home, Package, ChefHat, Users, MessageCircle } from "lucide-react";
 
 export type NavbarViewProps = {
@@ -50,8 +51,8 @@ export default function NavbarView({
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-base font-serif bg-brand-red shadow-brand-sm shrink-0">
-                K2
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm shrink-0">
+                <Image src="/logo.png" alt="K2 Chicken" width={40} height={40} className="w-full h-full object-cover" />
               </div>
               <div className="hidden sm:flex flex-col leading-tight">
                 <span className="text-xl font-serif font-bold text-gray-900 group-hover:text-brand-red transition-colors tracking-tight">K2 Chicken</span>

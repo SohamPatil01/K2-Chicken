@@ -374,7 +374,7 @@ export default async function Home() {
       <div className="bg-white min-h-screen w-full max-w-[100vw] overflow-x-hidden">
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
-        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} />
+        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} heroProducts={products.slice(0, 3)} />
         <TrustBar />
 
         <div id="products" className="scroll-mt-20">

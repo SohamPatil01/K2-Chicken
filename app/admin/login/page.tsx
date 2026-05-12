@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Lock, User, Eye, EyeOff, AlertCircle } from 'lucide-react'
 
 export default function AdminLoginPage() {
@@ -80,8 +81,8 @@ export default function AdminLoginPage() {
       <div className="max-w-md w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-brand-red rounded-full flex items-center justify-center shadow-brand-sm">
-            <span className="text-white font-serif font-bold text-2xl">K2</span>
+          <div className="mx-auto w-16 h-16 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm">
+            <Image src="/logo.png" alt="K2 Chicken" width={64} height={64} className="w-full h-full object-cover" />
           </div>
           <h2 className="mt-6 text-3xl font-serif font-bold text-white">
             Admin Login

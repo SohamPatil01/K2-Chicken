@@ -2,18 +2,57 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+
+interface HeroProduct {
+  id: number;
+  name: string;
+  price: number;
+  image_url?: string;
+  category?: string;
+  weightOptions?: { weight: string; price: number; is_default?: boolean }[];
+}
 
 interface HeroProps {
   deliveryEnabled?: boolean;
   freeDeliveryAbove?: number;
+  heroProducts?: HeroProduct[];
+}
+
+const FALLBACK_PRODUCTS: HeroProduct[] = [
+  { id: 0, name: "Chicken Breast", price: 289, category: "boneless" },
+  { id: 0, name: "Whole Chicken", price: 259, category: "whole bird" },
+  { id: 0, name: "Chicken Drumsticks", price: 249, category: "with bone" },
+];
+
+const FALLBACK_IMAGES = [
+  "https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg",
+  "https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png",
+  "https://kimi-web-img.moonshot.cn/img/assets.tendercuts.in/5fa64d1ab650743d25f21156c24dd0bef06a8edf.jpg",
+];
+
+function formatPrice(product: HeroProduct) {
+  const defaultWeight = product.weightOptions?.find((w) => w.is_default) ?? product.weightOptions?.[0];
+  const price = defaultWeight ? defaultWeight.price : product.price;
+  const unit = defaultWeight ? `/${defaultWeight.weight}` : "/kg";
+  return { price, unit };
 }
 
 export default function Hero({
   deliveryEnabled = true,
   freeDeliveryAbove = 350,
+  heroProducts,
 }: HeroProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const displayProducts = (heroProducts && heroProducts.length > 0 ? heroProducts : FALLBACK_PRODUCTS).slice(0, 3);
+  const cardPositions = [
+    "absolute top-0 right-0 w-60",
+    "absolute top-36 left-0 w-60",
+    "absolute bottom-8 right-8 w-60",
+  ];
+  const delays = ["0s", "2s", "4s"];
 
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-white">
@@ -95,56 +134,38 @@ export default function Hero({
 
           {/* Right floating product cards (desktop only) */}
           <div className="hidden lg:block relative h-[500px]">
-            {/* Card 1 */}
-            <div className="absolute top-0 right-0 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg"
-                className="w-full h-36 object-cover rounded-xl mb-3"
-                alt="Chicken Breast"
-                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
-              />
-              <div className="flex items-center gap-2 mb-1">
-                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
-                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">BONELESS</span>
-              </div>
-              <h3 className="font-serif text-sm text-gray-900 font-semibold">Chicken Breast</h3>
-              <p className="price-tag text-base">₹289 <span className="text-xs text-gray-400 font-normal">/500g</span></p>
-            </div>
-
-            {/* Card 2 */}
-            <div className="absolute top-36 left-0 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float" style={{ animationDelay: "2s" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png"
-                className="w-full h-36 object-cover rounded-xl mb-3"
-                alt="Whole Chicken"
-                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
-              />
-              <div className="flex items-center gap-2 mb-1">
-                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
-                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">WHOLE BIRD</span>
-              </div>
-              <h3 className="font-serif text-sm text-gray-900 font-semibold">Whole Chicken</h3>
-              <p className="price-tag text-base">₹259 <span className="text-xs text-gray-400 font-normal">/kg</span></p>
-            </div>
-
-            {/* Card 3 */}
-            <div className="absolute bottom-8 right-8 w-60 bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float" style={{ animationDelay: "4s" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://kimi-web-img.moonshot.cn/img/assets.tendercuts.in/5fa64d1ab650743d25f21156c24dd0bef06a8edf.jpg"
-                className="w-full h-36 object-cover rounded-xl mb-3"
-                alt="Chicken Drumsticks"
-                onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
-              />
-              <div className="flex items-center gap-2 mb-1">
-                <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
-                <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full">WITH BONE</span>
-              </div>
-              <h3 className="font-serif text-sm text-gray-900 font-semibold">Chicken Drumsticks</h3>
-              <p className="price-tag text-base">₹249 <span className="text-xs text-gray-400 font-normal">/500g</span></p>
-            </div>
+            {displayProducts.map((product, i) => {
+              const { price, unit } = formatPrice(product);
+              const imgSrc = product.image_url || FALLBACK_IMAGES[i] || "/hero-fresh-simple.png";
+              const tag = product.category
+                ? product.category.replace(/_/g, " ").toUpperCase()
+                : "FRESH CUT";
+              return (
+                <div
+                  key={product.id || i}
+                  className={`${cardPositions[i]} bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float`}
+                  style={{ animationDelay: delays[i] }}
+                >
+                  <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3">
+                    <Image
+                      src={imgSrc}
+                      fill
+                      sizes="240px"
+                      className="object-cover"
+                      alt={product.name}
+                      onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
+                      unoptimized={imgSrc.startsWith("http")}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
+                    <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full capitalize">{tag}</span>
+                  </div>
+                  <h3 className="font-serif text-sm text-gray-900 font-semibold">{product.name}</h3>
+                  <p className="price-tag text-base">₹{price} <span className="text-xs text-gray-400 font-normal">{unit}</span></p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

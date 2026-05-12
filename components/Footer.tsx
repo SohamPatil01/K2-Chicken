@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, Lock, ShieldCheck, BadgeCheck } from "lucide-react";
 
 export default function Footer() {
@@ -11,8 +12,8 @@ export default function Footer() {
           {/* Brand column */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-brand-red flex items-center justify-center text-white font-bold text-lg font-serif shadow-brand-sm">
-                K2
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm shrink-0">
+                <Image src="/logo.png" alt="K2 Chicken" width={40} height={40} className="w-full h-full object-cover" />
               </div>
               <span className="text-2xl font-serif font-bold">K2 Chicken</span>
             </div>
