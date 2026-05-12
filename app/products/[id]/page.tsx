@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Minus, ShoppingBag, ChefHat } from "lucide-react";
+import { getProductFallbackImage } from "@/lib/productImageFallbacks";
 import { useCart } from "@/context/CartContext";
 import type { Product, WeightOption } from "@/context/CartContext";
 import ProductCard from "@/components/ProductCard";
@@ -160,20 +161,15 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           <div className="bg-white rounded-card shadow-soft overflow-hidden">
             <div className="aspect-square relative bg-gray-100">
-              {product.image_url ? (
-                <Image
-                  src={product.image_url}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain object-center"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl">
-                  🍗
-                </div>
-              )}
+              <Image
+                src={product.image_url || getProductFallbackImage(product.name)}
+                alt={product.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain object-center"
+                priority
+                unoptimized
+              />
             </div>
           </div>
 

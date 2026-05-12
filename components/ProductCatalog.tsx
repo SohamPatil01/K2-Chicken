@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Product, WeightOption } from "@/context/CartContext";
+import { getProductFallbackImage } from "@/lib/productImageFallbacks";
 import {
   Plus,
   Minus,
@@ -93,19 +94,15 @@ function ProductCard({
 
       {/* Product image */}
       <div className="image-hover-zoom relative h-52 bg-gray-100">
-        {product.image_url ? (
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover object-center"
-            priority={index < 8}
-            unoptimized={product.image_url.startsWith("http")}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-4xl">🍗</div>
-        )}
+        <Image
+          src={product.image_url || getProductFallbackImage(product.name)}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover object-center"
+          priority={index < 8}
+          unoptimized
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-50" />
         <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap">
           <span className="fresh-tag text-white text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
