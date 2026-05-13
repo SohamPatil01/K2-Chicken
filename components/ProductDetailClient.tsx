@@ -141,7 +141,7 @@ export default function ProductDetailClient({
               <p className="text-sm text-gray-500 mb-4">{product.category}</p>
             )}
             <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-2xl font-bold text-brand-red">
+              <span className="text-2xl font-bold text-gray-900">
                 ₹{currentPrice.toFixed(0)}
               </span>
               {activeWeight && (
@@ -252,7 +252,7 @@ export default function ProductDetailClient({
               </p>
               <Link
                 href="/recipes"
-                className="inline-flex items-center gap-2 text-brand-red font-medium hover:underline"
+                className="inline-flex items-center gap-2 text-gray-700 font-medium hover:text-brand-red transition-colors"
               >
                 <ChefHat className="w-4 h-4" />
                 View recipes

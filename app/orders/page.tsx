@@ -147,32 +147,32 @@ export default function OrdersPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "delivered":
-        return <CheckCircle className="h-6 w-6 text-green-500" />;
+        return <CheckCircle className="h-6 w-6 text-white" />;
       case "cancelled":
-        return <XCircle className="h-6 w-6 text-red-500" />;
+        return <XCircle className="h-6 w-6 text-white" />;
       case "preparing":
-        return <Package className="h-6 w-6 text-brand-red" />;
+        return <Package className="h-6 w-6 text-white" />;
       case "ready":
       case "ready_for_pickup":
-        return <AlertCircle className="h-6 w-6 text-blue-500" />;
+        return <AlertCircle className="h-6 w-6 text-white" />;
       default:
-        return <Clock className="h-6 w-6 text-gray-500" />;
+        return <Clock className="h-6 w-6 text-white" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "delivered":
-        return "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-300 shadow-lg shadow-green-200";
+        return "bg-emerald-600 text-white border-emerald-700 shadow-sm";
       case "cancelled":
-        return "bg-gradient-to-r from-red-500 to-rose-500 text-white border-red-300 shadow-lg shadow-red-200";
+        return "bg-red-600 text-white border-red-700 shadow-sm";
       case "preparing":
-        return "bg-gradient-to-r from-brand-red to-amber-500 text-white border-red-200 shadow-lg shadow-brand-sm";
+        return "bg-brand-red text-white border-red-800 shadow-sm";
       case "ready":
       case "ready_for_pickup":
-        return "bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-blue-300 shadow-lg shadow-blue-200";
+        return "bg-sky-600 text-white border-sky-700 shadow-sm";
       default:
-        return "bg-gradient-to-r from-gray-400 to-gray-500 text-white border-gray-300 shadow-lg shadow-gray-200";
+        return "bg-gray-500 text-white border-gray-600 shadow-sm";
     }
   };
 
@@ -218,7 +218,7 @@ export default function OrdersPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16">
+      <div className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red mx-auto"></div>
@@ -233,10 +233,10 @@ export default function OrdersPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16 flex items-center">
+      <div className="min-h-screen bg-gray-50 py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-brand-red to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
               <ShoppingBag className="h-10 w-10 text-brand-red" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -247,7 +247,7 @@ export default function OrdersPage() {
             </p>
             <Link
               href="/login?redirect=/orders"
-              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white px-8 py-4 rounded-xl font-semibold transition-colors shadow-soft hover:shadow-card"
             >
               <span>Login Now</span>
               <ArrowRight className="h-5 w-5" />
@@ -259,15 +259,14 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-8 sm:py-12">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8 sm:mb-12 animate-slide-down">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-              <div className="relative inline-block mb-2">
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-3xl opacity-30"></div>
-                <h1 className="relative text-4xl sm:text-5xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
+              <div className="inline-block mb-2">
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900">
                   My Orders
                 </h1>
               </div>
@@ -287,7 +286,7 @@ export default function OrdersPage() {
 
         {orders.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl shadow-xl border-2 border-gray-100 animate-bounce-in">
-            <div className="w-24 h-24 bg-gradient-to-br from-brand-red to-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
               <Package className="h-12 w-12 text-brand-red" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
@@ -299,7 +298,7 @@ export default function OrdersPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white px-8 py-4 rounded-xl font-semibold transition-colors shadow-soft hover:shadow-card"
             >
               <span>Start Shopping</span>
               <ArrowRight className="h-5 w-5" />
@@ -317,7 +316,7 @@ export default function OrdersPage() {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {/* Order Header */}
-                    <div className="bg-gradient-to-r from-gray-50 to-brand-red-hover p-6 border-b border-gray-200 relative overflow-hidden">
+                    <div className="bg-gray-50 p-6 border-b border-gray-200">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="flex items-start gap-4">
                           <div
@@ -379,7 +378,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-4xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent mb-2">
+                          <div className="text-4xl font-extrabold text-gray-900 mb-2">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </div>
                           <div className="flex items-center gap-2 justify-end">
@@ -426,13 +425,13 @@ export default function OrdersPage() {
                             <div
                               className={`h-full rounded-full transition-all duration-500 ${
                                 order.status === "delivered"
-                                  ? "bg-gradient-to-r from-green-500 to-emerald-500"
+                                  ? "bg-emerald-500"
                                   : order.status === "ready" ||
                                     order.status === "ready_for_pickup"
-                                  ? "bg-gradient-to-r from-blue-500 to-cyan-500"
+                                  ? "bg-sky-500"
                                   : order.status === "preparing"
-                                  ? "bg-gradient-to-r from-brand-red to-amber-500"
-                                  : "bg-gradient-to-r from-gray-400 to-gray-500"
+                                  ? "bg-brand-red"
+                                  : "bg-gray-400"
                               }`}
                               style={{ width: `${progress}%` }}
                             ></div>
@@ -546,7 +545,7 @@ export default function OrdersPage() {
                           <span className="text-base font-bold text-gray-900">
                             Total Amount
                           </span>
-                          <span className="text-2xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
+                          <span className="text-2xl font-extrabold text-gray-900">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </span>
                         </div>

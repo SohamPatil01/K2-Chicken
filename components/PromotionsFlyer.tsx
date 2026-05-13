@@ -159,43 +159,10 @@ export default function PromotionsFlyer({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-gradient-to-br from-brand-red via-gray-50 to-brand-red-hover"
+      className="relative w-full overflow-hidden bg-red-50 border-y border-red-100"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Subtle animated gradient background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 via-gray-50 to-brand-red-hover/50"></div>
-      </div>
-
-      {/* Subtle animated overlay pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(254, 215, 170, 0.2) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.15) 0%, transparent 50%)`,
-            animation: "float 20s ease-in-out infinite",
-          }}
-        ></div>
-      </div>
-
-      {/* Subtle floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-red-50/30 rounded-full blur-sm"
-            style={{
-              left: `${15 + i * 20}%`,
-              top: `${20 + (i % 2) * 40}%`,
-              animation: `float ${5 + (i % 2)}s ease-in-out infinite`,
-              animationDelay: `${i * 0.5}s`,
-            }}
-          />
-        ))}
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         <div className="relative">
           {/* Navigation Arrows */}
@@ -294,7 +261,7 @@ export default function PromotionsFlyer({
                       router.push("/checkout");
                     }
                   }}
-                  className="mt-3 inline-flex items-center space-x-2 bg-gradient-to-r from-brand-red to-brand-red-hover px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-brand-sm transform hover:scale-105 transition-all duration-300 group cursor-pointer hover:shadow-brand-sm"
+                  className="mt-3 inline-flex items-center space-x-2 bg-brand-red hover:bg-brand-red-hover px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-soft transition-colors duration-300 group cursor-pointer"
                 >
                   <span className="text-xs sm:text-sm font-semibold text-white/90">
                     Use Code:
@@ -341,7 +308,7 @@ export default function PromotionsFlyer({
                     aria-label={`Go to promotion ${index + 1}`}
                   >
                     {index === currentIndex && (
-                      <div className="absolute inset-0 bg-brand-red rounded-full opacity-75"></div>
+                      <div className="absolute inset-0 bg-brand-red/40 rounded-full" />
                     )}
                   </button>
                 ))}

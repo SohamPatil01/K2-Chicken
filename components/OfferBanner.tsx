@@ -43,7 +43,7 @@ export default function OfferBanner({
         </div>
       )}
       {!imageUrl && (
-        <div className="w-full sm:w-24 flex items-center justify-center bg-gradient-to-br from-brand-red to-red-50 p-4 flex-shrink-0">
+        <div className="w-full sm:w-24 flex items-center justify-center bg-red-50 border-r border-red-100 p-4 flex-shrink-0">
           <Icon className="w-10 h-10 text-brand-red" />
         </div>
       )}

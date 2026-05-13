@@ -90,7 +90,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         >
           <button
             onClick={addToCart}
-            className="w-full bg-gradient-to-r from-brand-red to-red-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:from-brand-red hover:to-red-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            className="w-full bg-brand-red hover:bg-brand-red-hover text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors duration-200 shadow-soft"
           >
             <ShoppingCart size={20} />
             Add to Cart
@@ -134,7 +134,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               </div>
               <button
                 onClick={() => updateQuantity(cartQuantity + 1)}
-                className="w-9 h-9 bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red hover:to-red-700 text-white rounded-lg flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-brand-red hover:bg-brand-red-hover text-white rounded-lg flex items-center justify-center transition-colors"
               >
                 <Plus size={16} />
               </button>
@@ -148,7 +148,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         ) : (
           <button
             onClick={addToCart}
-            className="w-full bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-brand-red hover:bg-brand-red-hover text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors duration-200 shadow-soft hover:shadow-card"
           >
             <Plus size={18} />
             <span>Add to Cart</span>
@@ -223,21 +223,18 @@ export default function FeaturedProducts({
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-red to-red-100 border border-red-200 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-2 mb-6">
             <Zap className="text-brand-red" size={18} />
             <span className="text-sm font-semibold text-brand-red">
               Featured Products
             </span>
           </div>
           <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
-            Our{" "}
-            <span className="bg-gradient-to-r from-brand-red to-red-600 bg-clip-text text-transparent">
-              Best Sellers
-            </span>
+            Our <span className="text-brand-red">Best Sellers</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Handpicked selection of premium chicken products with exceptional
@@ -255,7 +252,7 @@ export default function FeaturedProducts({
         {/* CTA Section */}
         <div className="text-center">
           <Link href="/#products">
-            <button className="group bg-gradient-to-r from-brand-red to-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-brand-red hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto">
+            <button className="group bg-brand-red hover:bg-brand-red-hover text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors duration-300 shadow-soft hover:shadow-card flex items-center gap-3 mx-auto">
               View All Products
               <ArrowRight
                 className="group-hover:translate-x-1 transition-transform duration-300"
@@ -277,7 +274,7 @@ export default function FeaturedProducts({
               key={index}
               className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border border-gray-100"
             >
-              <div className="text-3xl font-bold bg-gradient-to-r from-brand-red to-red-600 bg-clip-text text-transparent mb-2">
+              <div className="text-3xl font-bold text-gray-900 mb-2">
                 {stat.number}
               </div>
               <div className="text-gray-600 font-medium text-sm">

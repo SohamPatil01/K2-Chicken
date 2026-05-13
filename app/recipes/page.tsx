@@ -146,7 +146,7 @@ export default async function RecipesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(recipesStructuredData) }}
       />
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-50 to-gray-50 py-16">
+      <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 animate-slide-down">
           <Link
@@ -180,10 +180,10 @@ export default async function RecipesPage() {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="aspect-w-16 aspect-h-9 mb-4 overflow-hidden rounded-lg group/image">
-                <div className="w-full h-48 bg-gradient-to-br from-brand-red to-red-500 rounded-lg flex items-center justify-center transform transition-transform duration-500 group-hover/image:scale-110">
+                <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center transform transition-transform duration-500 group-hover/image:scale-110 border border-gray-200">
                   <ChefHat
                     size={48}
-                    className="text-white transform transition-transform duration-300 group-hover/image:rotate-12"
+                    className="text-gray-500 transform transition-transform duration-300 group-hover/image:rotate-12"
                   />
                 </div>
               </div>

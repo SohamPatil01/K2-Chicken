@@ -212,7 +212,7 @@ export default function SettingsManagement() {
 
       <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
         {/* Delivery Enable/Disable Toggle */}
-        <div className="bg-gradient-to-r from-brand-red to-red-50 border-2 border-red-200 rounded-xl p-6">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div

@@ -775,17 +775,16 @@ function CheckoutPageContent() {
   // Don't show empty cart if we're redirecting to order confirmation
   if (state.items.length === 0 && !redirectingToOrder) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-20">
+      <div className="min-h-screen bg-gray-50 py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="relative inline-block mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
               <ShoppingBag
                 size={120}
                 className="relative text-gray-300 mx-auto"
               />
             </div>
-            <h1 className="text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
+            <h1 className="text-5xl font-extrabold text-gray-900 mb-4">
               Your Cart is Empty
             </h1>
             <p className="text-xl text-gray-600 mb-10 max-w-md mx-auto">
@@ -793,7 +792,7 @@ function CheckoutPageContent() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-colors shadow-soft hover:shadow-card"
             >
               <Sparkles className="h-5 w-5" />
               <span>Start Shopping </span>
@@ -806,14 +805,13 @@ function CheckoutPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
             <div className="relative inline-block mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-30 animate-pulse"></div>
-              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red"></div>
+              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-brand-red"></div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Placing Your Order
@@ -843,12 +841,9 @@ function CheckoutPageContent() {
         {/* Header */}
         <div className="mb-4 sm:mb-6 md:mb-8 animate-slide-down">
           <div className="relative inline-block mb-2 sm:mb-3">
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-3xl opacity-30"></div>
             <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-1 sm:mb-2">
               Checkout{" "}
-              <span className="bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
-                Details
-              </span>
+              <span className="text-brand-red">Details</span>
             </h1>
           </div>
           <p className="text-gray-600 text-sm sm:text-base md:text-lg animate-slide-up stagger-1">
@@ -885,7 +880,7 @@ function CheckoutPageContent() {
 
         {/* Login Prompt */}
         {!authLoading && !isAuthenticated && (
-          <div className="mb-6 bg-gradient-to-r from-brand-red to-red-50 border-2 border-red-200 rounded-xl p-6 animate-scale-in stagger-1 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-6 animate-scale-in stagger-1 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 animate-bounce-in">
                 <div className="p-3 bg-white rounded-full shadow-md">
@@ -919,7 +914,7 @@ function CheckoutPageContent() {
                 </ul>
                 <Link
                   href="/login?redirect=/checkout"
-                  className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-semibold py-2.5 px-6 rounded-lg transition-colors shadow-soft"
                 >
                   <LogIn className="h-5 w-5" />
                   Login or Register
@@ -1132,7 +1127,7 @@ function CheckoutPageContent() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
               {/* Form Header - More Subtle */}
-              <div className="bg-gradient-to-br from-brand-red via-white to-red-50 p-6 border-b border-gray-200/60">
+              <div className="bg-gray-50 p-6 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/60">
                     <ShoppingBag className="h-5 w-5 text-brand-red" />
@@ -1443,7 +1438,7 @@ function CheckoutPageContent() {
                 )}
 
                 {deliveryType === "pickup" && (
-                  <div className="p-6 bg-gradient-to-br from-brand-red to-red-50 border-2 border-red-200 rounded-xl">
+                  <div className="p-6 bg-gray-50 border border-gray-200 rounded-xl">
                     <div className="flex items-center gap-3 mb-3">
                       <Store className="h-6 w-6 text-brand-red" />
                       <h3 className="font-bold text-gray-900 text-lg">
@@ -1493,7 +1488,7 @@ function CheckoutPageContent() {
                           type="button"
                           onClick={() => handleApplyPromoCode()}
                           disabled={validatingPromo || !promoCode.trim()}
-                          className="px-6 py-3 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white rounded-xl transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                          className="px-6 py-3 bg-brand-red hover:bg-brand-red-hover text-white rounded-xl transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-soft"
                         >
                           {validatingPromo ? "Applying..." : "Apply"}
                         </button>
@@ -1515,7 +1510,7 @@ function CheckoutPageContent() {
                       </p>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+                    <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-xl">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-green-500 rounded-full">
                           <Check className="h-5 w-5 text-white" />
@@ -1681,9 +1676,8 @@ function CheckoutPageContent() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+                    className="w-full flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-6 rounded-xl transition-colors shadow-soft hover:shadow-card disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative group"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-red/20 to-red-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent relative z-10"></div>
@@ -1728,7 +1722,7 @@ function CheckoutPageContent() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden sticky top-8">
               {/* Summary Header - Subtle */}
-              <div className="bg-gradient-to-br from-gray-50 to-brand-red-hover/30 p-6 border-b border-gray-200/60">
+              <div className="bg-gray-50 p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-gray-900">
@@ -1771,7 +1765,7 @@ function CheckoutPageContent() {
                           <div
                             className={`w-full h-full ${
                               item.product.image_url ? "hidden" : "flex"
-                            } bg-gradient-to-br from-brand-red to-red-100 items-center justify-center`}
+                            } bg-gray-100 items-center justify-center`}
                           >
                             <span className="text-2xl">🍗</span>
                           </div>
@@ -1856,7 +1850,7 @@ function CheckoutPageContent() {
                     <span className="text-xl font-bold text-gray-900">
                       Total
                     </span>
-                    <span className="text-3xl font-extrabold bg-gradient-to-r bg-brand-red bg-clip-text text-transparent">
+                    <span className="text-3xl font-extrabold text-gray-900">
                       ₹
                       {calculatingDelivery
                         ? "..."
@@ -1928,7 +1922,7 @@ function CheckoutPageContent() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-bounce-in">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-brand-red to-red-500 text-white p-6 rounded-t-2xl overflow-hidden">
+            <div className="sticky top-0 bg-brand-red text-white p-6 rounded-t-2xl overflow-hidden">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg">
@@ -2155,7 +2149,7 @@ function CheckoutPageContent() {
                 <button
                   onClick={handleUPIPaymentConfirm}
                   disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-gradient-to-r bg-brand-red text-white font-semibold rounded-xl hover:bg-brand-red-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] duration-200"
+                  className="w-full px-6 py-4 bg-brand-red hover:bg-brand-red-hover text-white font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-soft hover:shadow-card duration-200"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -2226,7 +2220,7 @@ export default function CheckoutPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
+        <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
             <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center text-gray-600 shadow-sm">
               Loading checkout...

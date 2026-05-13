@@ -74,7 +74,7 @@ export default function RecipeCard({
                 </span>
               )}
             </div>
-            <span className="inline-flex items-center gap-2 mt-3 text-brand-red font-semibold text-sm group-hover:gap-3 transition-all duration-smooth">
+            <span className="inline-flex items-center gap-2 mt-3 text-white font-semibold text-sm underline-offset-4 group-hover:underline group-hover:gap-3 transition-all duration-smooth">
               View recipe
               <ArrowRight className="w-4 h-4" />
             </span>
@@ -104,8 +104,8 @@ export default function RecipeCard({
             }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-red to-amber-50">
-            <ChefHat className="w-16 h-16 text-brand-red" />
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <ChefHat className="w-16 h-16 text-gray-400" />
           </div>
         )}
       </div>

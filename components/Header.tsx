@@ -226,11 +226,6 @@ export default function Header() {
             className="group flex items-center gap-3 relative z-10"
           >
             <div className="relative">
-              {/* Animated glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-red/30 via-red-400/20 to-brand-red-hover/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 -z-10 scale-110"></div>
-              {/* Pulse effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-red/20 to-red-500/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 animate-pulse -z-10"></div>
-
               <div className="relative transform group-hover:scale-105 transition-all duration-300">
                 <img
                   src="/logo.png"
@@ -246,7 +241,7 @@ export default function Header() {
 
             <div className="hidden sm:block transform group-hover:translate-x-1 transition-transform duration-300">
               <div
-                className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-red via-gray-50 to-brand-red-hover bg-clip-text text-transparent leading-tight group-hover:from-brand-red group-hover:via-gray-50 group-hover:to-brand-red-hover transition-all duration-300"
+                className="text-lg sm:text-xl font-semibold text-brand-red leading-tight transition-colors duration-300"
                 style={{
                   fontFamily: "var(--font-poppins), sans-serif",
                   letterSpacing: "0.01em",
@@ -383,7 +378,7 @@ export default function Header() {
             {/* Phone Number - Enhanced */}
             <a
               href="tel:+918484978622"
-              className="hidden lg:flex items-center gap-2 px-4 py-2 text-xs font-medium text-gray-700 hover:text-green-700 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 transition-all duration-300 group border border-transparent hover:border-green-200"
+              className="hidden lg:flex items-center gap-2 px-4 py-2 text-xs font-medium text-gray-700 hover:text-green-800 rounded-xl hover:bg-green-50 transition-all duration-300 group border border-transparent hover:border-green-200"
               title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
@@ -398,7 +393,7 @@ export default function Header() {
                     <Link
                       href="/orders"
                       prefetch={true}
-                      className="relative p-2.5 text-gray-600 hover:text-brand-red rounded-xl hover:bg-gradient-to-br hover:from-brand-red hover:to-red-50 transition-all duration-300 group border border-transparent hover:border-red-200"
+                      className="relative p-2.5 text-gray-600 hover:text-brand-red rounded-xl hover:bg-red-50 transition-all duration-300 group border border-transparent hover:border-red-100"
                       title="My Orders"
                     >
                       <User
@@ -408,7 +403,7 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="relative p-2.5 text-gray-600 hover:text-red-600 rounded-xl hover:bg-gradient-to-br hover:from-red-50 hover:to-pink-50 transition-all duration-300 group border border-transparent hover:border-red-200"
+                      className="relative p-2.5 text-gray-600 hover:text-red-600 rounded-xl hover:bg-red-50 transition-all duration-300 group border border-transparent hover:border-red-100"
                       title="Logout"
                     >
                       <LogOut
@@ -421,7 +416,7 @@ export default function Header() {
                   <Link
                     href="/login"
                     prefetch={true}
-                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-red to-brand-red-hover rounded-xl hover:from-brand-red hover:to-brand-red-hover transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 group"
+                    className="hidden md:flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-brand-red hover:bg-brand-red-hover rounded-xl transition-colors duration-300 shadow-soft hover:shadow-card group"
                   >
                     <LogIn
                       size={16}
@@ -445,7 +440,7 @@ export default function Header() {
                   className="transition-transform duration-200"
                 />
                 {totalItems > 0 && mounted && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-brand-red to-brand-red-hover text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-lg ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-1.5 bg-brand-red text-white text-[11px] font-extrabold rounded-full h-5 w-5 min-w-[20px] flex items-center justify-center shadow-md ring-2 ring-white">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
@@ -455,7 +450,7 @@ export default function Header() {
             {/* Mobile Phone Number - Modern */}
             <a
               href="tel:+918484978622"
-              className="md:hidden flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] text-xs font-bold text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl active:scale-95 transition-all duration-200 shadow-md"
+              className="md:hidden flex items-center justify-center gap-2 px-3 py-2.5 min-h-[44px] text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl active:scale-95 transition-all duration-200 shadow-md"
               title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4" />
@@ -498,26 +493,25 @@ export default function Header() {
               <Link
                 href="/"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/")
-                    ? "text-brand-red bg-gradient-to-r from-brand-red to-brand-red-hover border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-brand-red-hover border border-transparent hover:border-red-200"
+                    ? "text-brand-red bg-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
                 }`}
                 onClick={(event) => {
                   handleHomeClick(event);
                   setIsMenuOpen(false);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-brand-red-hover/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Home
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
+                  className={`transition-all duration-300 ${
                     isActive("/")
                       ? "text-brand-red scale-110"
                       : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
-                <span className="relative z-10">Home</span>
+                <span>Home</span>
                 {isActive("/") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
@@ -526,26 +520,25 @@ export default function Header() {
               <Link
                 href="/#products"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#products")
-                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
+                    ? "text-brand-red bg-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
                 }`}
                 onClick={(event) => {
                   handleProductsClick(event);
                   setIsMenuOpen(false);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <Package
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
+                  className={`transition-all duration-300 ${
                     isActive("/#products")
                       ? "text-brand-red scale-110"
                       : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
-                <span className="relative z-10">Products</span>
+                <span>Products</span>
                 {isActive("/#products") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
@@ -554,23 +547,22 @@ export default function Header() {
               <Link
                 href="/recipes"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/recipes")
-                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
+                    ? "text-brand-red bg-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <ChefHat
                   size={18}
-                  className={`relative z-10 transition-all duration-300 ${
+                  className={`transition-all duration-300 ${
                     isActive("/recipes")
                       ? "text-brand-red scale-110"
                       : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
-                <span className="relative z-10">Recipes</span>
+                <span>Recipes</span>
                 {isActive("/recipes") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
@@ -579,18 +571,18 @@ export default function Header() {
               <Link
                 href="/#about"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#about")
-                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
+                    ? "text-brand-red bg-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
                 }`}
                 onClick={(e) => {
                   handleAboutClick(e);
                   setIsMenuOpen(false);
                 }}
               >
-                <Users size={18} className="relative z-10" />
-                <span className="relative z-10">About Us</span>
+                <Users size={18} className="transition-all duration-300 text-gray-600 group-hover:text-brand-red" />
+                <span>About Us</span>
                 {isActive("/#about") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
@@ -599,18 +591,18 @@ export default function Header() {
               <Link
                 href="/#contact"
                 prefetch={true}
-                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 overflow-hidden ${
+                className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#contact")
-                    ? "text-brand-red bg-gradient-to-r from-brand-red to-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 border border-transparent hover:border-red-200"
+                    ? "text-brand-red bg-red-50 border border-red-200"
+                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
                 }`}
                 onClick={(e) => {
                   handleContactClick(e);
                   setIsMenuOpen(false);
                 }}
               >
-                <MessageCircle size={18} className="relative z-10" />
-                <span className="relative z-10">Contact</span>
+                <MessageCircle size={18} className="transition-all duration-300 text-gray-600 group-hover:text-brand-red" />
+                <span>Contact</span>
                 {isActive("/#contact") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
                 )}
@@ -623,58 +615,55 @@ export default function Header() {
                       <Link
                         href="/orders"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-brand-red rounded-xl hover:bg-gradient-to-r hover:from-brand-red hover:to-red-50 transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-red-200 overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-brand-red rounded-xl hover:bg-gray-50 transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-gray-200"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-brand-red/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <User
                           size={18}
-                          className="relative z-10 text-gray-600 group-hover:text-brand-red group-hover:scale-110 transition-all duration-300"
+                          className="text-gray-600 group-hover:text-brand-red group-hover:scale-110 transition-all duration-300"
                         />
-                        <span className="relative z-10">My Orders</span>
+                        <span>My Orders</span>
                       </Link>
                       <button
                         onClick={() => {
                           setIsMenuOpen(false);
                           handleLogout();
                         }}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-red-600 hover:text-red-700 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all duration-300 flex items-center gap-3 w-full text-left border border-transparent hover:border-red-200 overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-red-600 hover:text-red-700 rounded-xl hover:bg-red-50 transition-all duration-300 flex items-center gap-3 w-full text-left border border-transparent hover:border-red-100"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-pink-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <LogOut
                           size={18}
-                          className="relative z-10 group-hover:scale-110 transition-all duration-300"
+                          className="group-hover:scale-110 transition-all duration-300"
                         />
-                        <span className="relative z-10">Logout</span>
+                        <span>Logout</span>
                       </button>
                     </>
                   ) : (
                     <>
                       <a
                         href="tel:+918484978622"
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-green-700 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3 overflow-hidden"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-green-800 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <Phone
                           size={18}
-                          className="relative z-10 text-green-700 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"
+                          className="text-green-700 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"
                         />
-                        <span className="relative z-10">
+                        <span>
                           Call: +91 84849 78622
                         </span>
                       </a>
                       <Link
                         href="/login"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-brand-red to-brand-red-hover rounded-xl hover:from-brand-red hover:to-brand-red-hover transition-all duration-300 flex items-center gap-3 shadow-md hover:shadow-lg transform hover:scale-[1.02] overflow-hidden"
+                        className="group flex items-center gap-3 px-5 py-3.5 text-sm font-semibold text-white bg-brand-red hover:bg-brand-red-hover rounded-xl transition-colors duration-300 shadow-soft hover:shadow-card"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <LogIn
                           size={18}
-                          className="relative z-10 group-hover:translate-x-0.5 transition-transform duration-300"
+                          className="group-hover:translate-x-0.5 transition-transform duration-300"
                         />
-                        <span className="relative z-10">Login</span>
+                        <span>Login</span>
                       </Link>
                     </>
                   )}

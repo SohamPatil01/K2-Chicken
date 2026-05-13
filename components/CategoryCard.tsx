@@ -23,7 +23,7 @@ export default function CategoryCard({
       href={href}
       className="group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200"
     >
-      <div className="aspect-square sm:aspect-[4/3] relative bg-gradient-to-br from-brand-red to-red-50 overflow-hidden">
+      <div className="aspect-square sm:aspect-[4/3] relative bg-gray-100 overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}

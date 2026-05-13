@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-red to-red-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
         <div className="mb-6">
           <div className="mx-auto w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-4">
@@ -18,7 +18,7 @@ export default function NotFound() {
         <div className="space-y-3">
           <Link
             href="/"
-            className="block w-full bg-brand-red hover:bg-brand-red text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="block w-full bg-brand-red hover:bg-brand-red-hover text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Go Home
           </Link>

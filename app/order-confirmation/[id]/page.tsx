@@ -155,7 +155,7 @@ export default function OrderConfirmationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16">
+      <div className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red mx-auto"></div>
@@ -170,10 +170,10 @@ export default function OrderConfirmationPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-16 flex items-center">
+      <div className="min-h-screen bg-gray-50 py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-brand-red-hover rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
               <Package className="h-10 w-10 text-red-500" />
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -184,7 +184,7 @@ export default function OrderConfirmationPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red text-white px-8 py-4 rounded-xl font-semibold hover:bg-brand-red-hover transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white px-8 py-4 rounded-xl font-semibold transition-colors shadow-soft hover:shadow-card"
             >
               <Home className="h-5 w-5" />
               <span>Back to Home</span>
@@ -214,22 +214,6 @@ export default function OrderConfirmationPage() {
     window.print();
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "delivered":
-        return "from-green-500 to-emerald-500";
-      case "cancelled":
-        return "from-red-500 to-rose-500";
-      case "preparing":
-        return "from-brand-red to-amber-500";
-      case "ready":
-      case "ready_for_pickup":
-        return "from-blue-500 to-cyan-500";
-      default:
-        return "from-gray-400 to-gray-500";
-    }
-  };
-
   const getStatusText = (status: string) => {
     switch (status) {
       case "delivered":
@@ -254,7 +238,7 @@ export default function OrderConfirmationPage() {
   const currentStatusDisplay = currentStatus || order.status;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-8 sm:py-12">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header with Subtle Animation */}
         <div className="text-center mb-8 sm:mb-10 no-print relative">
@@ -897,7 +881,7 @@ export default function OrderConfirmationPage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red text-white px-6 py-3 rounded-lg font-medium hover:bg-brand-red-hover transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-soft hover:shadow-card"
           >
             <ShoppingBag className="h-4 w-4" />
             <span>Order More</span>

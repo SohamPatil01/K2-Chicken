@@ -126,10 +126,7 @@ export default function AboutSection() {
             }`}
             style={{ animationDelay: "0.2s" }}
           >
-            About{" "}
-            <span className="bg-gradient-to-r from-brand-red via-gray-50 to-red-600 bg-clip-text text-transparent">
-              K2 Chicken
-            </span>
+            About <span className="text-brand-red">K2 Chicken</span>
           </h2>
           <p
             className={`text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${
@@ -178,7 +175,7 @@ export default function AboutSection() {
                 : "opacity-0 translate-y-8"
             }`}
           >
-            <div className="bg-gradient-to-r from-brand-red to-red-500 px-6 sm:px-8 py-4">
+            <div className="bg-brand-red px-6 sm:px-8 py-4">
               <h4 className="text-xl sm:text-2xl font-semibold text-white">
                 Trusted Fresh Chicken Standards
               </h4>
@@ -302,7 +299,7 @@ export default function AboutSection() {
             ref={(el) => {
               sectionRefs.current[4] = el;
             }}
-            className={`max-w-4xl mx-auto bg-gradient-to-r from-brand-red via-gray-50 to-red-600 rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-2xl transition-all duration-700 hover:shadow-3xl hover:scale-[1.02] ${
+            className={`max-w-4xl mx-auto bg-brand-red rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-xl transition-all duration-700 hover:shadow-2xl ${
               visibleSections.has(4)
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -319,7 +316,7 @@ export default function AboutSection() {
               ].map((text, index) => (
                 <p
                   key={index}
-                  className="text-lg sm:text-xl font-medium text-brand-red transition-all duration-500 hover:text-white hover:translate-x-1"
+                  className="text-lg sm:text-xl font-medium text-white/95 transition-all duration-500 hover:translate-x-1"
                   style={{ transitionDelay: `${index * 0.1}s` }}
                 >
                   {text}
