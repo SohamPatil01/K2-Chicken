@@ -90,6 +90,16 @@ export default function AdminLoginPage() {
           <p className="mt-2 text-sm text-gray-400">
             K2 Chicken Management System
           </p>
+          {process.env.NODE_ENV === "development" && (
+            <p className="mt-3 text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
+              Local development: if you have not set{" "}
+              <code className="text-gray-300">ADMIN_USERNAME</code> and{" "}
+              <code className="text-gray-300">ADMIN_PASSWORD</code> in{" "}
+              <code className="text-gray-300">.env.local</code>, sign in with{" "}
+              <span className="text-gray-200 font-medium">admin</span> /{" "}
+              <span className="text-gray-200 font-medium">admin</span>.
+            </p>
+          )}
         </div>
 
         {/* Login Form */}

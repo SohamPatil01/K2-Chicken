@@ -4,6 +4,7 @@ import pool from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
+import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 
 const siteUrl = getSiteUrl();
 
@@ -29,7 +30,12 @@ const getRecipes = unstable_cache(
         FROM recipes 
         ORDER BY created_at DESC
       `);
-        return result.rows;
+        return result.rows.map((recipe: Recipe) => ({
+          ...recipe,
+          description: sanitizeRecipeText(recipe.description),
+          ingredients: sanitizeRecipeList(recipe.ingredients),
+          instructions: sanitizeRecipeList(recipe.instructions),
+        }));
       } finally {
         client.release();
       }
@@ -85,7 +91,7 @@ export default async function RecipesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-8">
-              Baramati Agro Chicken Recipe Cookbook
+              K2 Chicken Recipe Cookbook
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, i) => (
@@ -118,13 +124,13 @@ export default async function RecipesPage() {
         item: {
           "@type": "Recipe",
           name: recipe.title,
-          description: recipe.description,
+          description: sanitizeRecipeText(recipe.description),
           image: recipe.image_url,
           prepTime: `PT${recipe.prep_time}M`,
           cookTime: `PT${recipe.cook_time}M`,
           recipeYield: recipe.servings.toString(),
-          recipeIngredient: recipe.ingredients,
-          recipeInstructions: recipe.instructions.map((instruction: string, idx: number) => ({
+          recipeIngredient: sanitizeRecipeList(recipe.ingredients),
+          recipeInstructions: sanitizeRecipeList(recipe.instructions).map((instruction: string, idx: number) => ({
             "@type": "HowToStep",
             position: idx + 1,
             text: instruction,
@@ -154,15 +160,14 @@ export default async function RecipesPage() {
             Back to Home
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2 animate-slide-up stagger-1">
-            Baramati Agro Chicken Recipe Cookbook
+            K2 Chicken Recipe Cookbook
           </h1>
           <p className="text-lg text-gray-600 mt-2 mb-4 animate-slide-up stagger-2">
-            Master the art of cooking delicious Baramati agro chicken dishes at
-            home
+            Master the art of cooking delicious fresh chicken dishes at home
           </p>
           <div className="inline-flex items-center space-x-2 bg-green-50 border-2 border-green-200 rounded-full px-6 py-3 transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-scale-in stagger-3">
             <span className="text-green-700 font-semibold">
-              🌾 Made with Baramati Agro Products
+              Made with K2 Chicken Products
             </span>
           </div>
         </div>
@@ -187,7 +192,7 @@ export default async function RecipesPage() {
                 {recipe.title}
               </h3>
               <p className="text-gray-600 mb-4 line-clamp-2">
-                {recipe.description}
+                {sanitizeRecipeText(recipe.description)}
               </p>
 
               <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
@@ -207,10 +212,10 @@ export default async function RecipesPage() {
                 </h4>
                 <ul className="text-sm text-gray-600 space-y-1">
                   {recipe.ingredients.slice(0, 3).map((ingredient, index) => {
-                    // Replace "chicken" with "Baramati agro chicken" (case-insensitive)
+                    // Reinforce the K2 Chicken brand in recipe snippets.
                     const processedIngredient = ingredient.replace(
                       /\bchicken\b/gi,
-                      "Baramati agro chicken"
+                      "fresh K2 Chicken"
                     );
                     return <li key={index}>• {processedIngredient}</li>;
                   })}

@@ -75,7 +75,14 @@ export default function AdminPage() {
           credentials: "include",
         });
 
-        const userData = await response.json();
+        let userData: { success?: boolean; user?: unknown; error?: string };
+        try {
+          userData = await response.json();
+        } catch {
+          console.error("Admin auth: invalid JSON from /api/admin/me");
+          window.location.href = "/admin/login";
+          return;
+        }
         console.log("Admin auth check response:", {
           status: response.status,
           data: userData,

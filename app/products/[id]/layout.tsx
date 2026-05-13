@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getProductForSeo } from "@/lib/getProductForSeo";
 import { absoluteUrl, getSiteUrl } from "@/lib/siteUrl";
 
+export const dynamic = "force-dynamic";
+
 function truncateMetaDescription(text: string, max = 155): string {
   const t = text.trim().replace(/\s+/g, " ");
   if (t.length <= max) return t;

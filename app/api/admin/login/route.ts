@@ -62,24 +62,34 @@ export async function POST(request: NextRequest) {
 
     const { username, password } = await request.json()
 
-    // Get credentials from environment variables
-    const adminUsername = process.env.ADMIN_USERNAME?.trim()
-    const adminPassword = process.env.ADMIN_PASSWORD?.trim()
+    const isProduction = process.env.NODE_ENV === 'production'
+    // Production must use env vars. In development, fall back so the admin console works out of the box.
+    const envUser = process.env.ADMIN_USERNAME?.trim()
+    const envPass = process.env.ADMIN_PASSWORD?.trim()
+    const adminUsername = envUser || (!isProduction ? 'admin' : undefined)
+    const adminPassword = envPass || (!isProduction ? 'admin' : undefined)
 
-    console.log('Login attempt:', { 
-      providedUsername: username, 
-      envUsername: adminUsername ? 'SET' : 'NOT SET',
-      passwordSet: adminPassword ? 'SET' : 'NOT SET'
+    console.log('Login attempt:', {
+      providedUsername: username,
+      envUsername: envUser ? 'SET' : isProduction ? 'MISSING' : 'DEV_FALLBACK',
+      passwordSet: envPass ? 'SET' : isProduction ? 'MISSING' : 'DEV_FALLBACK',
     })
 
-    // Check if credentials are configured
     if (!adminUsername || !adminPassword) {
       console.error('Admin credentials not configured in environment variables')
-      console.error('ADMIN_USERNAME:', adminUsername ? 'SET' : 'MISSING')
-      console.error('ADMIN_PASSWORD:', adminPassword ? 'SET' : 'MISSING')
       return NextResponse.json(
-        { success: false, error: 'Server configuration error. Please contact administrator.' },
+        {
+          success: false,
+          error:
+            'Admin login is not configured. Set ADMIN_USERNAME and ADMIN_PASSWORD in Vercel (or .env.local), then redeploy.',
+        },
         { status: 500 }
+      )
+    }
+
+    if (!isProduction && (!envUser || !envPass)) {
+      console.warn(
+        '[admin] Using development-only default credentials (admin / admin). Set ADMIN_USERNAME and ADMIN_PASSWORD for production-like local setup.'
       )
     }
 
@@ -118,8 +128,8 @@ export async function POST(request: NextRequest) {
     clearAttempts(clientId)
 
     // Create JWT token
-    const token = await new SignJWT({ 
-      username,
+    const token = await new SignJWT({
+      username: trimmedUsername,
       role: 'admin',
       iat: Math.floor(Date.now() / 1000)
     })
@@ -131,7 +141,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       success: true,
       user: {
-        username,
+        username: trimmedUsername,
         role: 'admin'
       }
     })

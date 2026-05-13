@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getRecipeImageUrl } from "@/lib/recipeImages";
 import { absoluteUrl, getSiteUrl } from "@/lib/siteUrl";
+import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 
 interface Recipe {
   id: number;
@@ -31,7 +32,15 @@ async function getRecipe(id: string): Promise<Recipe | null> {
       `,
         [id]
       );
-      return result.rows[0] || null;
+      const recipe = result.rows[0];
+      if (!recipe) return null;
+
+      return {
+        ...recipe,
+        description: sanitizeRecipeText(recipe.description),
+        ingredients: sanitizeRecipeList(recipe.ingredients),
+        instructions: sanitizeRecipeList(recipe.instructions),
+      };
     } finally {
       client.release();
     }
@@ -267,7 +276,7 @@ export default async function RecipeDetailPage({
             </div>
           </div>
 
-          {/* Baramati Agro Notice */}
+          {/* K2 Chicken quality notice */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 mb-8 shadow-lg">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
@@ -277,15 +286,13 @@ export default async function RecipeDetailPage({
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-green-900 mb-2">
-                  🌾 Premium Quality Ingredients
+                  Premium Quality Ingredients
                 </h3>
                 <p className="text-green-800 leading-relaxed">
-                  We proudly use{" "}
-                  <strong className="font-semibold">Baramati Agro</strong>{" "}
-                  products in our recipes. All our Baramati agro chicken
-                  products are sourced from Baramati Agro, ensuring premium
-                  quality, freshness, and the best taste for your family.
-                  Experience the difference that quality ingredients make!
+                  These recipes are designed for fresh{" "}
+                  <strong className="font-semibold">K2 Chicken</strong>{" "}
+                  products. Use clean, premium cuts from K2 Chicken for better
+                  texture, freshness, and taste in every dish.
                 </p>
               </div>
             </div>
@@ -300,10 +307,10 @@ export default async function RecipeDetailPage({
               </h2>
               <ul className="space-y-3">
                 {recipe.ingredients.map((ingredient, index) => {
-                  // Replace "chicken" with "Baramati agro chicken" (case-insensitive)
+                  // Reinforce the K2 Chicken brand in ingredient lists.
                   const processedIngredient = ingredient.replace(
                     /\bchicken\b/gi,
-                    "Baramati agro chicken"
+                    "fresh K2 Chicken"
                   );
                   return (
                     <li key={index} className="flex items-start space-x-3">

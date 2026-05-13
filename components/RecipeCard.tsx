@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, Users, ChefHat, ArrowRight } from "lucide-react";
 import { getRecipeImageUrl, RECIPE_IMAGES } from "@/lib/recipeImages";
+import { sanitizeRecipeText } from "@/lib/recipeBranding";
 
 export interface Recipe {
   id: number;
@@ -33,6 +34,7 @@ export default function RecipeCard({
   const totalTime = (recipe.prep_time || 0) + (recipe.cook_time || 0);
   const imageUrl = getRecipeImageUrl(recipe.title, recipe.image_url) || PLACEHOLDER_IMAGE;
   const hasRealImage = !!(recipe.image_url || RECIPE_IMAGES[recipe.title]);
+  const description = sanitizeRecipeText(recipe.description);
 
   if (featured) {
     return (
@@ -111,9 +113,9 @@ export default function RecipeCard({
         <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth text-balance line-clamp-2 mb-2">
           {recipe.title}
         </h3>
-        {recipe.description && (
+        {description && (
           <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
-            {recipe.description}
+            {description}
           </p>
         )}
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">

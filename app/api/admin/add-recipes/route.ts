@@ -39,7 +39,7 @@ const recipes = [
       "Add grilled chicken pieces and cook for 10–12 minutes.",
       "Serve hot with naan or rice."
     ],
-    description: "A classic Indian favorite made with premium Baramati Agro Chicken. This creamy, aromatic dish features tender chicken pieces in a rich tomato-based sauce with a perfect blend of spices. The high-quality chicken from Baramati Agro ensures a juicy, flavorful result that's restaurant-quality."
+    description: "A classic Indian favorite made with premium K2 Chicken. This creamy, aromatic dish features tender chicken pieces in a rich tomato-based sauce with a perfect blend of spices. The high-quality chicken from K2 Chicken ensures a juicy, flavorful result that's restaurant-quality."
   },
   {
     name: "Butter Chicken",
@@ -64,7 +64,7 @@ const recipes = [
       "Add cooked chicken and simmer for 10 minutes.",
       "Garnish with kasuri methi."
     ],
-    description: "Indulge in this rich and creamy butter chicken made with fresh Baramati Agro Chicken. The premium quality chicken absorbs the buttery, spiced tomato gravy perfectly, creating a melt-in-your-mouth experience. Perfect for special occasions or when you want to treat yourself to something truly special."
+    description: "Indulge in this rich and creamy butter chicken made with fresh K2 Chicken. The premium quality chicken absorbs the buttery, spiced tomato gravy perfectly, creating a melt-in-your-mouth experience. Perfect for special occasions or when you want to treat yourself to something truly special."
   },
   {
     name: "Chicken Curry (Desi Style)",
@@ -93,7 +93,7 @@ const recipes = [
       "Add water and simmer for 20 minutes.",
       "Serve with rice or roti."
     ],
-    description: "Authentic desi-style chicken curry made with farm-fresh Baramati Agro Chicken. This traditional recipe brings out the natural flavors of the chicken with a perfect balance of spices. The quality of Baramati Agro Chicken ensures tender, succulent pieces that fall off the bone."
+    description: "Authentic desi-style chicken curry made with farm-fresh K2 Chicken. This traditional recipe brings out the natural flavors of the chicken with a perfect balance of spices. The quality of K2 Chicken ensures tender, succulent pieces that fall off the bone."
   },
   {
     name: "Chicken Biryani",
@@ -120,7 +120,7 @@ const recipes = [
       "Dum cook for 25 minutes.",
       "Serve hot."
     ],
-    description: "A royal feast featuring aromatic basmati rice layered with perfectly spiced Baramati Agro Chicken. This biryani is a celebration dish that showcases the premium quality of Baramati Agro Chicken, which stays tender and flavorful even after the slow dum cooking process. Each grain of rice is infused with the rich flavors of the chicken and spices."
+    description: "A royal feast featuring aromatic basmati rice layered with perfectly spiced K2 Chicken. This biryani is a celebration dish that showcases the premium quality of K2 Chicken, which stays tender and flavorful even after the slow dum cooking process. Each grain of rice is infused with the rich flavors of the chicken and spices."
   },
   {
     name: "Chicken 65",
@@ -143,7 +143,7 @@ const recipes = [
       "Temper with curry leaves and chilli.",
       "Serve as starter."
     ],
-    description: "Spicy and crispy chicken starter made with premium Baramati Agro Chicken. The high-quality chicken ensures a perfect crispy exterior while remaining juicy inside. This popular restaurant-style appetizer is made even better with the fresh, tender chicken from Baramati Agro."
+    description: "Spicy and crispy chicken starter made with premium K2 Chicken. The high-quality chicken ensures a perfect crispy exterior while remaining juicy inside. This popular restaurant-style appetizer is made even better with the fresh, tender chicken from K2 Chicken."
   },
   {
     name: "Chicken Chettinad",
@@ -166,7 +166,7 @@ const recipes = [
       "Cook until thick and aromatic.",
       "Serve with dosa or rice."
     ],
-    description: "A fiery South Indian delicacy made with fresh Baramati Agro Chicken. This Chettinad-style preparation features a complex blend of roasted spices that pair beautifully with the premium quality chicken. The robust flavors of the masala are perfectly balanced by the tender, juicy chicken from Baramati Agro."
+    description: "A fiery South Indian delicacy made with fresh K2 Chicken. This Chettinad-style preparation features a complex blend of roasted spices that pair beautifully with the premium quality chicken. The robust flavors of the masala are perfectly balanced by the tender, juicy chicken from K2 Chicken."
   },
   {
     name: "Chicken Korma",
@@ -188,7 +188,7 @@ const recipes = [
       "Add yogurt, cashew paste, and fried onions.",
       "Cook until creamy and soft."
     ],
-    description: "A rich and creamy Mughlai classic made with premium Baramati Agro Chicken. This luxurious dish features a velvety cashew-based gravy that complements the tender chicken perfectly. The high-quality Baramati Agro Chicken absorbs the rich flavors beautifully, creating a dish fit for royalty."
+    description: "A rich and creamy Mughlai classic made with premium K2 Chicken. This luxurious dish features a velvety cashew-based gravy that complements the tender chicken perfectly. The high-quality K2 Chicken absorbs the rich flavors beautifully, creating a dish fit for royalty."
   },
   {
     name: "Tandoori Chicken",
@@ -208,7 +208,7 @@ const recipes = [
       "Bake or grill for 25–30 minutes.",
       "Serve with mint chutney."
     ],
-    description: "Classic tandoori chicken made with fresh Baramati Agro Chicken legs. The premium quality chicken marinates beautifully, absorbing all the yogurt and spice flavors. When grilled, the Baramati Agro Chicken develops a perfect char while staying incredibly juicy inside. Serve with fresh mint chutney for an authentic experience."
+    description: "Classic tandoori chicken made with fresh K2 Chicken legs. The premium quality chicken marinates beautifully, absorbing all the yogurt and spice flavors. When grilled, the K2 Chicken develops a perfect char while staying incredibly juicy inside. Serve with fresh mint chutney for an authentic experience."
   },
   {
     name: "Chicken Kolhapuri",
@@ -230,7 +230,7 @@ const recipes = [
       "Add chicken and spice paste.",
       "Cook until thick and spicy."
     ],
-    description: "A spicy Maharashtrian specialty made with premium Baramati Agro Chicken. This Kolhapuri-style preparation is known for its bold, fiery flavors that are perfectly balanced by the tender, high-quality chicken. The fresh Baramati Agro Chicken ensures that every bite is flavorful and succulent, making this dish a true celebration of Maharashtrian cuisine."
+    description: "A spicy Maharashtrian specialty made with premium K2 Chicken. This Kolhapuri-style preparation is known for its bold, fiery flavors that are perfectly balanced by the tender, high-quality chicken. The fresh K2 Chicken ensures that every bite is flavorful and succulent, making this dish a true celebration of Maharashtrian cuisine."
   },
   {
     name: "Pepper Chicken",
@@ -251,7 +251,7 @@ const recipes = [
       "Add chicken and crushed pepper.",
       "Cook dry or semi-gravy consistency."
     ],
-    description: "A simple yet flavorful South Indian dish made with fresh Baramati Agro Chicken. The bold flavors of black pepper and curry leaves complement the premium quality chicken beautifully. This quick and easy recipe showcases the natural taste of Baramati Agro Chicken while adding a delightful peppery kick."
+    description: "A simple yet flavorful South Indian dish made with fresh K2 Chicken. The bold flavors of black pepper and curry leaves complement the premium quality chicken beautifully. This quick and easy recipe showcases the natural taste of K2 Chicken while adding a delightful peppery kick."
   }
 ];
 

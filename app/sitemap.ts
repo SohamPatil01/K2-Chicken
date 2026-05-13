@@ -19,20 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
-        },
-        {
-            url: `${baseUrl}/shop`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.95,
-        },
-        // /cart and /checkout omitted — blocked in robots.txt (no utility in listing them for crawlers)
-        {
-            url: `${baseUrl}/login`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.5,
         }
+        // /shop redirects to /#products, and private/noindex pages are omitted.
     )
 
     // Fetch recipes for dynamic routes

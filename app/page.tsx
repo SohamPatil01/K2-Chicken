@@ -5,6 +5,7 @@ import MotionSection from "@/components/MotionSection";
 import pool from "@/lib/db";
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
+import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 
 const siteUrl = getSiteUrl();
 
@@ -229,7 +230,12 @@ async function getHomePageData() {
 
     return {
       products,
-      recipes: recipesResult.rows,
+      recipes: recipesResult.rows.map((recipe: any) => ({
+        ...recipe,
+        description: sanitizeRecipeText(recipe.description),
+        ingredients: sanitizeRecipeList(recipe.ingredients),
+        instructions: sanitizeRecipeList(recipe.instructions),
+      })),
       promotions: promotionsResult.rows,
       reviews: reviewsResult.rows,
       deliveryEnabled,

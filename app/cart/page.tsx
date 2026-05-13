@@ -64,13 +64,13 @@ function RecommendationCard({
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-red-200 group relative">
       {/* Discount Badge */}
       {hasDiscount && (
-        <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-red-500 to-brand-red-hover text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1 shadow-md">
+        <div className="absolute top-2 left-2 z-10 bg-brand-red text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1">
           <Sparkles className="h-2.5 w-2.5" />
           <span>{discountPercent}% OFF</span>
         </div>
       )}
 
-      <div className="relative h-28 bg-gradient-to-br from-brand-red to-red-50 overflow-hidden">
+      <div className="relative h-28 bg-gray-100 overflow-hidden border-b border-gray-200">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -106,8 +106,8 @@ function RecommendationCard({
                         onClick={() => setSelectedWeight(weight)}
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
                           selectedWeight?.weight === weight.weight
-                            ? "bg-gradient-to-r bg-brand-red text-white shadow-md"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            ? "bg-brand-red text-white"
+                            : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         {weight.weight}
@@ -142,7 +142,7 @@ function RecommendationCard({
               </div>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-brand-red">
+              <span className="text-lg font-bold text-gray-900">
                 ₹{currentPrice.toFixed(0)}
               </span>
               {selectedWeight && (
@@ -155,7 +155,7 @@ function RecommendationCard({
           </div>
           <button
             onClick={() => onAdd(product, selectedWeight)}
-            className="px-4 py-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-1.5"
+            className="px-4 py-2 bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             Add
@@ -348,7 +348,7 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-red via-red-50 to-brand-red-hover py-20">
+      <div className="min-h-screen bg-gray-50 py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div
@@ -358,7 +358,7 @@ export default function CartPage() {
                   : "opacity-0 scale-90 translate-y-10"
               }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+              <div className="absolute inset-0 bg-red-100 rounded-full blur-2xl opacity-40"></div>
               <ShoppingBag
                 size={120}
                 className="relative text-gray-300 mx-auto animate-bounce"
@@ -366,7 +366,7 @@ export default function CartPage() {
               />
             </div>
             <h1
-              className={`text-5xl font-extrabold text-gray-900 mb-4 bg-gradient-to-r bg-brand-red bg-clip-text text-transparent transition-all duration-700 ${
+              className={`text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 transition-all duration-700 ${
                 mounted
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
@@ -388,7 +388,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/"
-              className={`inline-flex items-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 ${
+              className={`inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-colors ${
                 mounted
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
@@ -396,7 +396,7 @@ export default function CartPage() {
               style={{ transitionDelay: "0.6s" }}
             >
               <Sparkles className="h-5 w-5" />
-              <span>Start Shopping 🍗</span>
+              <span>Start Shopping</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
@@ -406,13 +406,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-20"></div>
-      </div>
-
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div
@@ -422,8 +416,8 @@ export default function CartPage() {
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-brand-red to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <ShoppingCart className="w-7 h-7 text-white" />
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center border border-red-100 bg-red-50">
+                <ShoppingCart className="w-7 h-7 text-brand-red" />
               </div>
               <div>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-1">
@@ -523,7 +517,7 @@ export default function CartPage() {
                         </div>
                         <button
                           onClick={() => handleQuickReorder(order)}
-                          className="px-4 py-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                          className="px-4 py-2 bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold rounded-xl transition-colors flex items-center gap-2"
                         >
                           <ShoppingCart className="w-4 h-4" />
                           Reorder
@@ -571,23 +565,20 @@ export default function CartPage() {
             }`}
             style={{ transitionDelay: "0.3s" }}
           >
-            <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden sticky top-8 hover:shadow-2xl transition-all duration-300">
+            <div className="bg-white rounded-3xl shadow-soft border border-gray-200 overflow-hidden sticky top-8 transition-shadow hover:shadow-card">
               {/* Summary Header */}
-              <div className="bg-gradient-to-br from-brand-red via-gray-50 to-red-600 p-6 text-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.1),transparent)]"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <ShoppingCart className="w-5 h-5" />
-                    </div>
-                    <h2 className="text-2xl font-semibold">Order Summary</h2>
+              <div className="bg-brand-red p-6 text-white">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center">
+                    <ShoppingCart className="w-5 h-5" />
                   </div>
-                  <p className="text-brand-red text-sm flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    {state.items.length}{" "}
-                    {state.items.length === 1 ? "item" : "items"} in cart
-                  </p>
+                  <h2 className="text-xl font-semibold tracking-tight">Order Summary</h2>
                 </div>
+                <p className="text-sm text-white/90 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 shrink-0" />
+                  {state.items.length}{" "}
+                  {state.items.length === 1 ? "item" : "items"} in cart
+                </p>
               </div>
 
               <div className="p-6">
@@ -644,9 +635,9 @@ export default function CartPage() {
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
-                  <div className="bg-gradient-to-r from-brand-red to-red-50 rounded-xl p-3 border border-red-200">
-                    <p className="text-xs text-gray-600 mb-1 flex items-center gap-2">
-                      <Truck className="w-3 h-3 text-brand-red" />
+                  <div className="rounded-xl p-3 border border-gray-200 bg-gray-50">
+                    <p className="text-xs text-gray-600 flex items-center gap-2">
+                      <Truck className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                       Delivery charges calculated at checkout
                     </p>
                   </div>
@@ -654,7 +645,7 @@ export default function CartPage() {
                     <span className="text-xl font-semibold text-gray-800">
                       Total Amount
                     </span>
-                    <span className="text-3xl font-bold text-brand-red">
+                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
@@ -664,7 +655,7 @@ export default function CartPage() {
                 <div className="space-y-3">
                   <Link
                     href="/checkout"
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-2xl active:scale-95 group min-h-[56px] text-base sm:text-lg"
+                    className="group w-full flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-colors min-h-[56px] text-base sm:text-lg"
                   >
                     <Shield className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span>Proceed to Checkout</span>

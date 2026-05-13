@@ -180,20 +180,19 @@ export default function AboutSection() {
           >
             <div className="bg-gradient-to-r from-brand-red to-red-500 px-6 sm:px-8 py-4">
               <h4 className="text-xl sm:text-2xl font-semibold text-white">
-                Now a Franchise Partner of Chicken Vicken – Baramati Agro
+                Trusted Fresh Chicken Standards
               </h4>
             </div>
             <div className="p-6 sm:p-8 lg:p-10">
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-                To serve you even better, K2 Chicken is now officially a
-                franchise of Chicken Vicken, Baramati Agro—one of India's most
-                respected and fastest-growing brands in the poultry industry.
-                With this partnership, we bring you:
+                K2 Chicken is built around consistent sourcing, hygienic
+                handling, and freshly prepared cuts for families across Pune.
+                With every order, we focus on:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 {[
                   "International-grade processing standards",
-                  "Farm-fresh chicken sourced directly from Baramati Agro farms",
+                  "Farm-fresh chicken sourced through trusted suppliers",
                   "Unmatched hygiene, safety, and consistency",
                   "Premium cuts crafted with expert precision",
                 ].map((point, index) => (
@@ -210,10 +209,10 @@ export default function AboutSection() {
                 ))}
               </div>
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-                This collaboration elevates K2 Chicken's commitment to quality
-                while giving our customers access to trusted, certified, and
-                professionally processed Chicken Vicken products—right here in
-                your neighborhood.
+                This approach strengthens K2 Chicken's commitment to quality
+                while giving customers access to trusted, fresh, and
+                professionally handled chicken products right in their
+                neighborhood.
               </p>
             </div>
           </div>

@@ -65,7 +65,7 @@ export default function CartItem({
                     {item.selectedWeight.weight_unit}
                   </div>
                 )}
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-600 mt-1">
                   Unit: ₹{Number(itemPrice).toFixed(0)}
                 </p>
               </div>
@@ -114,7 +114,7 @@ export default function CartItem({
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-lg font-bold text-brand-red">
+              <p className="text-lg font-bold text-gray-900 tabular-nums">
                 ₹{totalPrice.toFixed(0)}
               </p>
             </div>
