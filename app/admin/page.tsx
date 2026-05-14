@@ -608,7 +608,14 @@ export default function AdminPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-white flex items-center justify-center px-4">
-        <div className="text-center">
+        <div
+          className="text-center"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+          aria-label="Loading admin dashboard"
+        >
+          <span className="sr-only">Loading admin dashboard</span>
           <div className="flex flex-col items-center mb-4 sm:mb-6">
             <div className="relative inline-block">
               <img
@@ -624,7 +631,10 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
+          <div
+            className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-brand-red mx-auto mb-4"
+            aria-hidden
+          />
           <p className="text-gray-600 font-semibold text-sm sm:text-base">
             Loading Admin Dashboard...
           </p>

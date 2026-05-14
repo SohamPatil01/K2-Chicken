@@ -2,6 +2,13 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
 import MotionSection from "@/components/MotionSection";
+import {
+  HomeContactSectionFallback,
+  HomeProductCatalogFallback,
+  HomePromotionsSectionFallback,
+  HomeRecipeSectionFallback,
+  HomeReviewsSectionFallback,
+} from "@/components/ui/LoadingState";
 import pool from "@/lib/db";
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
@@ -11,20 +18,12 @@ const siteUrl = getSiteUrl();
 
 // Lazy load heavy components for better performance
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
-  loading: () => (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-brand-red"></div>
-    </div>
-  ),
+  loading: () => <HomeProductCatalogFallback />,
   ssr: true,
 });
 
 const RecipeSection = dynamic(() => import("@/components/RecipeSection"), {
-  loading: () => (
-    <div className="min-h-[300px] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-10 w-10 border-4 border-red-200 border-t-brand-red"></div>
-    </div>
-  ),
+  loading: () => <HomeRecipeSectionFallback />,
   ssr: true,
 });
 
@@ -41,22 +40,31 @@ const AboutSection = dynamic(() => import("@/components/AboutSection"), {
 });
 
 const ContactSection = dynamic(() => import("@/components/ContactSection"), {
+  loading: () => <HomeContactSectionFallback />,
   ssr: false, // Client-side only for map
 });
 
 const PromotionsFlyer = dynamic(() => import("@/components/PromotionsFlyer"), {
-  loading: () => <div className="min-h-[200px]"></div>,
+  loading: () => <HomePromotionsSectionFallback />,
   ssr: true,
 });
 
 const ReviewsSection = dynamic(() => import("@/components/ReviewsSection"), {
-  loading: () => <div className="min-h-[300px]"></div>,
+  loading: () => <HomeReviewsSectionFallback />,
   ssr: true,
 });
 
 const InauguralDiscountFlyer = dynamic(
   () => import("@/components/InauguralDiscountFlyer"),
   {
+    loading: () => (
+      <div
+        className="min-h-[72px] w-full bg-amber-50/80 animate-pulse"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading offer banner"
+      />
+    ),
     ssr: false, // Client-side only component
   }
 );

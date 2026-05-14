@@ -211,7 +211,14 @@ export default function ProductManagement() {
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div
+        className="p-6"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        aria-label="Loading products"
+      >
+        <span className="sr-only">Loading products</span>
         <div className="animate-pulse">
           <div className="h-8 bg-gray-300 rounded mb-4"></div>
           <div className="space-y-4">

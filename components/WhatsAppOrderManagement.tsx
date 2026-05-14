@@ -108,7 +108,14 @@ export default function WhatsAppOrderManagement() {
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div
+        className="p-6"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        aria-label="Loading WhatsApp orders"
+      >
+        <span className="sr-only">Loading WhatsApp orders</span>
         <div className="animate-pulse">
           <div className="h-8 bg-gray-300 rounded mb-6"></div>
           <div className="space-y-4">

@@ -9,6 +9,7 @@ import {
   Truck,
   X,
 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingState";
 
 interface SettingsData {
   delivery_radius_km: { value: string; description: string };
@@ -168,7 +169,11 @@ export default function SettingsManagement() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-chicken-red"></div>
+        <LoadingSpinner
+          label="Loading delivery settings"
+          size="sm"
+          showLabel={false}
+        />
       </div>
     );
   }
@@ -433,13 +438,16 @@ export default function SettingsManagement() {
 
         {/* Save Button */}
         <button
+          type="button"
           onClick={handleSave}
           disabled={isSaving}
+          aria-busy={isSaving}
           className="w-full flex items-center justify-center space-x-2 bg-gray-50 text-white py-3 px-6 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
         >
           {isSaving ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <span className="sr-only">Saving settings</span>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" aria-hidden />
               <span>Saving...</span>
             </>
           ) : (

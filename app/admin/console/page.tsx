@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { LoadingSpinner } from '@/components/ui/LoadingState'
 
 export default function AdminConsole() {
   const router = useRouter()
@@ -12,11 +13,8 @@ export default function AdminConsole() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
-        <p className="text-gray-700 font-semibold">Redirecting...</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-50 flex items-center justify-center px-4">
+      <LoadingSpinner label="Redirecting to admin" size="md" />
     </div>
   )
 }

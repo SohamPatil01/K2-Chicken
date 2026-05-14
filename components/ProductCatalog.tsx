@@ -382,7 +382,14 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
 
   if (loading && !products.length) {
     return (
-      <section className="pb-20 bg-white">
+      <section
+        className="pb-20 bg-white"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        aria-label="Loading products"
+      >
+        <span className="sr-only">Loading products</span>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (

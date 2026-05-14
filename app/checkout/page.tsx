@@ -12,6 +12,7 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { LoadingSpinner } from "@/components/ui/LoadingState";
 import {
   MessageCircle,
   MapPin,
@@ -808,10 +809,16 @@ function CheckoutPageContent() {
     <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
-            <div className="relative inline-block mb-6">
-              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-brand-red"></div>
+            <span className="sr-only">Placing your order, please wait</span>
+            <div className="relative inline-block mb-6" aria-hidden>
+              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-brand-red" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Placing Your Order
@@ -2222,8 +2229,8 @@ export default function CheckoutPage() {
       fallback={
         <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-            <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center text-gray-600 shadow-sm">
-              Loading checkout...
+            <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm flex justify-center">
+              <LoadingSpinner label="Loading checkout" size="md" />
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Save, X, Image as ImageIcon } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingState";
 
 interface Promotion {
   id?: number;
@@ -195,8 +196,7 @@ export default function PromotionManagement() {
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-200 border-t-brand-red mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading promotions...</p>
+        <LoadingSpinner label="Loading promotions" size="sm" />
       </div>
     );
   }

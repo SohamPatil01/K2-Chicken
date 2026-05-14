@@ -22,6 +22,7 @@ import {
   ShoppingBag,
   Home,
 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/LoadingState";
 
 interface Order {
   id: number;
@@ -158,12 +159,11 @@ export default function OrderConfirmationPage() {
     return (
       <div className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-200 border-t-brand-red mx-auto"></div>
-            <p className="mt-6 text-lg text-gray-600 font-medium">
-              Loading order details...
-            </p>
-          </div>
+          <LoadingSpinner
+            label="Loading order details"
+            size="lg"
+            className="text-center py-8"
+          />
         </div>
       </div>
     );
