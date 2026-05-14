@@ -530,7 +530,7 @@ function CheckoutPageContent() {
 
   // Check for promo code in URL and auto-apply it (moved after handleApplyPromoCode is defined)
   useEffect(() => {
-    const promoFromUrl = searchParams.get("promo");
+    const promoFromUrl = searchParams?.get("promo");
     if (promoFromUrl && !appliedPromo && !promoCode && subtotal > 0) {
       // Set the promo code and apply it
       setPromoCode(promoFromUrl.toUpperCase());
@@ -893,7 +893,7 @@ function CheckoutPageContent() {
                 </h3>
                 <p className="text-gray-700 mb-4">
                   Please login or create an account to place your order. As a
-                  registered customer, you'll get:
+                  registered customer, you&apos;ll get:
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1 mb-4">
                   <li className="flex items-center gap-2">
@@ -1451,7 +1451,7 @@ function CheckoutPageContent() {
                       Pimpri-Chinchwad, Pune, Maharashtra 411027
                     </p>
                     <p className="text-sm text-gray-600">
-                      We'll call you when your order is ready for pickup!
+                      We&apos;ll call you when your order is ready for pickup!
                     </p>
                   </div>
                 )}
@@ -2130,7 +2130,7 @@ function CheckoutPageContent() {
                 </div>
                 <ol className="text-xs text-blue-800 space-y-2 list-decimal list-inside">
                   <li>Open your UPI app (PhonePe, Google Pay, Paytm, etc.)</li>
-                  <li>Tap on "Scan QR Code" in your app</li>
+                  <li>Tap on &quot;Scan QR Code&quot; in your app</li>
                   <li>Point your camera at the QR code above</li>
                   <li>
                     Verify the amount{" "}
@@ -2140,7 +2140,7 @@ function CheckoutPageContent() {
                     and merchant name <strong>K2 Chicken</strong>
                   </li>
                   <li>Enter your UPI PIN to complete payment</li>
-                  <li>Click "I've Paid" below after successful payment</li>
+                  <li>Click &quot;I&apos;ve Paid&quot; below after successful payment</li>
                 </ol>
               </div>
 
@@ -2159,7 +2159,7 @@ function CheckoutPageContent() {
                   ) : (
                     <span className="flex items-center justify-center gap-2">
                       <CheckCircle className="h-5 w-5" />
-                      I've Paid Successfully
+                      I&apos;ve Paid Successfully
                     </span>
                   )}
                 </button>

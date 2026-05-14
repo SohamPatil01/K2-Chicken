@@ -476,7 +476,7 @@ export default function PromotionManagement() {
           <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 font-semibold">No promotions yet</p>
           <p className="text-sm text-gray-500 mt-2">
-            Click "Add Promotion" to create your first offer flyer
+            Click &quot;Add Promotion&quot; to create your first offer flyer
           </p>
         </div>
       )}

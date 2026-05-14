@@ -383,8 +383,8 @@ export default function CartPage() {
               }`}
               style={{ transitionDelay: "0.4s" }}
             >
-              Looks like you haven't added any delicious chicken to your cart
-              yet! Let's fix that.
+              Looks like you haven&apos;t added any delicious chicken to your cart
+              yet! Let&apos;s fix that.
             </p>
             <Link
               href="/"

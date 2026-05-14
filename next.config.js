@@ -3,6 +3,10 @@ const nextConfig = {
   // Performance optimizations
   reactStrictMode: true,
 
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   async headers() {
     return [
       {

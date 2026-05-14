@@ -212,7 +212,7 @@ export default function ContactSection() {
                 Send us a Message
               </h3>
               <p className="text-sm text-gray-600">
-                Fill out the form below and we'll get back to you within 24
+                Fill out the form below and we&apos;ll get back to you within 24
                 hours
               </p>
             </div>
@@ -225,7 +225,7 @@ export default function ContactSection() {
                     Message sent successfully!
                   </p>
                   <p className="text-xs text-green-600">
-                    We'll get back to you soon.
+                    We&apos;ll get back to you soon.
                   </p>
                 </div>
               </div>
@@ -478,7 +478,7 @@ export default function ContactSection() {
                     Operating Hours
                   </h4>
                   <p className="text-xs text-gray-600">
-                    We're open 7 days a week
+                    We&apos;re open 7 days a week
                   </p>
                 </div>
               </div>

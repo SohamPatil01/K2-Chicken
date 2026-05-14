@@ -18,7 +18,7 @@ export default function Footer() {
               <span className="text-2xl font-serif font-bold break-words">K2 Chicken</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Pune's trusted source for 100% fresh, raw, Halal-certified chicken. Sourced daily, cut to order, delivered fresh. No frozen stock, no compromises.
+              Pune&apos;s trusted source for 100% fresh, raw, Halal-certified chicken. Sourced daily, cut to order, delivered fresh. No frozen stock, no compromises.
             </p>
             <div className="flex gap-3">
               <a href="https://facebook.com/k2chicken" target="_blank" rel="noopener noreferrer"

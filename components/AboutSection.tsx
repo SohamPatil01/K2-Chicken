@@ -157,7 +157,7 @@ export default function AboutSection() {
               K2 Chicken was founded with a simple mission: to bring the most
               delicious, fresh, and high-quality chicken to your table. What
               started as a small neighborhood business has today grown into
-              Pune's most trusted name in fresh chicken—and we are proud to take
+              Pune&apos;s most trusted name in fresh chicken—and we are proud to take
               the next big leap forward.
             </p>
           </div>
@@ -206,7 +206,7 @@ export default function AboutSection() {
                 ))}
               </div>
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-                This approach strengthens K2 Chicken's commitment to quality
+                This approach strengthens K2 Chicken&apos;s commitment to quality
                 while giving customers access to trusted, fresh, and
                 professionally handled chicken products right in their
                 neighborhood.

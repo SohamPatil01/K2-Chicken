@@ -832,7 +832,7 @@ export default function ProductManagement() {
           ))
         ) : (
           <div className="text-center py-8 text-gray-500 text-sm">
-            No products found. Click "Add" to create your first product.
+            No products found. Click &quot;Add&quot; to create your first product.
           </div>
         )}
       </div>

@@ -46,23 +46,24 @@ interface Order {
 
 export default function OrderConfirmationPage() {
   const params = useParams();
+  const orderId = typeof params?.id === "string" ? params.id : null;
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStatus, setCurrentStatus] = useState<string>("");
   const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
-    console.log("useEffect triggered, params:", params);
-    if (params.id) {
-      console.log("Fetching order for ID:", params.id);
-      fetchOrder(params.id as string);
-      const cleanup = setupStatusStream(params.id as string);
+    console.log("useEffect triggered, orderId:", orderId);
+    if (orderId) {
+      console.log("Fetching order for ID:", orderId);
+      fetchOrder(orderId);
+      const cleanup = setupStatusStream(orderId);
       return cleanup;
     } else {
       console.log("No order ID found in params");
       setLoading(false);
     }
-  }, [params.id]);
+  }, [orderId]);
 
   const setupStatusStream = (orderId: string) => {
     let eventSource: EventSource | null = null;
@@ -180,7 +181,7 @@ export default function OrderConfirmationPage() {
               Order Not Found
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              The order you're looking for doesn't exist or has been removed.
+              The order you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link
               href="/"
@@ -731,7 +732,7 @@ export default function OrderConfirmationPage() {
                     Order Confirmed
                   </h4>
                   <p className="text-sm text-gray-600">
-                    We've received your order and it's being processed
+                    We&apos;ve received your order and it&apos;s being processed
                   </p>
                 </div>
               </div>
