@@ -18,6 +18,7 @@ interface Recipe {
   prep_time: number;
   cook_time: number;
   servings: number;
+  created_at?: string;
 }
 
 async function getRecipe(id: string): Promise<Recipe | null> {
@@ -26,7 +27,7 @@ async function getRecipe(id: string): Promise<Recipe | null> {
     try {
       const result = await client.query(
         `
-        SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
+        SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings, created_at
         FROM recipes 
         WHERE id = $1
       `,
@@ -155,8 +156,12 @@ export default async function RecipeDetailPage({
         url: `${siteUrl}/logo.png`,
       },
     },
-    datePublished: new Date().toISOString(),
-    dateModified: new Date().toISOString(),
+    datePublished: recipe.created_at
+      ? new Date(recipe.created_at).toISOString()
+      : "2024-01-01T00:00:00.000Z",
+    dateModified: recipe.created_at
+      ? new Date(recipe.created_at).toISOString()
+      : "2024-01-01T00:00:00.000Z",
   };
 
   const breadcrumbStructuredData = {

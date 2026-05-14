@@ -134,7 +134,7 @@ const jsonLd = {
         "Sunday",
       ],
       opens: "08:00",
-      closes: "22:00",
+      closes: "20:00",
     },
   },
   address: {
@@ -170,7 +170,7 @@ const jsonLd = {
         "Sunday",
       ],
       opens: "08:00",
-      closes: "22:00",
+      closes: "20:00",
     },
   ],
   aggregateRating: {

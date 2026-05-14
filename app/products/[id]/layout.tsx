@@ -130,7 +130,7 @@ export default async function ProductRouteLayout({
           "@type": "ListItem",
           position: 2,
           name: "Shop",
-          item: `${siteUrl}/shop`,
+          item: `${siteUrl}/`,
         },
         {
           "@type": "ListItem",
