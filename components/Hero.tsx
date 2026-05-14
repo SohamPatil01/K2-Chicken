@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -43,9 +40,6 @@ export default function Hero({
   freeDeliveryAbove = 350,
   heroProducts,
 }: HeroProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
   const displayProducts = (heroProducts && heroProducts.length > 0 ? heroProducts : FALLBACK_PRODUCTS).slice(0, 3);
   const cardPositions = [
     "absolute top-0 right-0 w-60",
@@ -58,11 +52,14 @@ export default function Hero({
     <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-white">
       {/* Background image with heavy white overlay */}
       <div className="absolute inset-0 z-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1606728035253-49e8a23146de?q=80&w=2070&auto=format&fit=crop"
+        <Image
+          src="/hero-fresh-simple.png"
           alt=""
           aria-hidden="true"
+          fill
+          priority
+          quality={55}
+          sizes="100vw"
           className="w-full h-full object-cover opacity-15"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/40" />
@@ -73,20 +70,20 @@ export default function Hero({
           {/* Left text column */}
           <div className="space-y-6">
             {/* Fresh badge */}
-            <div className={`inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-700 text-sm font-semibold ${mounted ? "hero-text-reveal" : "opacity-0"}`}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-700 text-sm font-semibold hero-text-reveal">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               100% Fresh Raw Chicken — Never Frozen, Never Cooked
             </div>
 
             {/* Headline */}
-            <h1 className={`text-5xl md:text-6xl font-serif font-bold text-gray-900 leading-[1.1] ${mounted ? "hero-text-reveal stagger-1" : "opacity-0"}`}>
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 leading-[1.1] hero-text-reveal stagger-1">
               Farm Fresh <br />
               <span className="text-brand-red italic">Raw Chicken</span><br />
               Delivered Daily
             </h1>
 
             {/* Sub */}
-            <p className={`text-lg text-gray-600 max-w-lg leading-relaxed ${mounted ? "hero-text-reveal stagger-2" : "opacity-0"}`}>
+            <p className="text-lg text-gray-600 max-w-lg leading-relaxed hero-text-reveal stagger-2">
               Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to your kitchen in Pune.
               {deliveryEnabled && freeDeliveryAbove > 0 && (
                 <span className="block mt-2 font-semibold text-brand-red">Free delivery above ₹{freeDeliveryAbove}</span>
@@ -94,7 +91,7 @@ export default function Hero({
             </p>
 
             {/* CTA buttons */}
-            <div className={`flex flex-wrap gap-4 ${mounted ? "hero-text-reveal stagger-3" : "opacity-0"}`}>
+            <div className="flex flex-wrap gap-4 hero-text-reveal stagger-3">
               <Link
                 href="/#products"
                 className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center gap-3"
@@ -104,19 +101,15 @@ export default function Hero({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  const el = document.getElementById("process");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
+              <Link
+                href="/#about"
                 className="px-8 py-4 rounded-full border-2 border-gray-300 text-gray-700 font-semibold hover:border-brand-red hover:text-brand-red transition-all text-lg flex items-center gap-3"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
                 Our Process
-              </button>
+              </Link>
             </div>
 
           </div>
@@ -142,7 +135,6 @@ export default function Hero({
                       sizes="240px"
                       className="object-cover"
                       alt={product.name}
-                      onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }}
                       unoptimized={imgSrc.startsWith("http")}
                     />
                   </div>

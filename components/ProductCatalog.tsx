@@ -154,7 +154,6 @@ function ProductCard({
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover object-center"
-          priority={index < 8}
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-50" />

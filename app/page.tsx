@@ -91,9 +91,8 @@ async function checkOriginalPriceColumn(client: any): Promise<boolean> {
   }
 }
 
-// Fetch data directly from database for better performance
-// Revalidate every 10 seconds to balance freshness and performance
-export const revalidate = 10; // Cache for 10 seconds
+// Cache homepage data to reduce mobile TTFB while keeping stock/promos fresh enough.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Fresh & Premium Chicken Delivery in Pune | K2 Chicken",
@@ -378,9 +377,9 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
       <div className="bg-white min-h-screen w-full max-w-[100vw] overflow-x-hidden">
+        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} heroProducts={products.slice(0, 3)} />
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
-        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} heroProducts={products.slice(0, 3)} />
         <div className="reveal-up"><TrustBar /></div>
 
         <div id="products" className="scroll-mt-20 reveal-up">
