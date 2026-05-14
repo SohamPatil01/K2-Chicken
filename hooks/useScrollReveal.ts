@@ -1,17 +1,23 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 /**
  * Attaches an IntersectionObserver to every element matching the selector
  * and adds the "in-view" class when the element enters the viewport.
  * Works with the CSS classes: reveal-up, reveal-left, reveal-right,
  * reveal-scale, stagger-children.
+ *
+ * Re-runs on route changes so client navigations (e.g. back to home) pick up
+ * newly mounted reveal nodes; otherwise sections stay at opacity 0.
  */
 export function useScrollReveal(
   selector = ".reveal-up, .reveal-left, .reveal-right, .reveal-scale, .stagger-children",
   threshold = 0.12
 ) {
+  const pathname = usePathname();
+
   useEffect(() => {
     if (typeof window === "undefined" || !("IntersectionObserver" in window))
       return;
@@ -43,5 +49,5 @@ export function useScrollReveal(
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [selector, threshold]);
+  }, [selector, threshold, pathname]);
 }
