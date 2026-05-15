@@ -150,8 +150,9 @@ export const metadata: Metadata = {
 };
 
 async function getHomePageData() {
-  const client = await pool.connect();
+  let client: import("pg").PoolClient | undefined;
   try {
+    client = await pool.connect();
     // Check column existence once
     const hasOriginalPrice = await checkOriginalPriceColumn(client);
 
@@ -261,7 +262,7 @@ async function getHomePageData() {
       deliveryEnabled: true,
     };
   } finally {
-    client.release();
+    client?.release();
   }
 }
 

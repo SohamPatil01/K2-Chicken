@@ -1,22 +1,44 @@
 import { Pool } from 'pg';
 
+function connectionStringNeedsSsl(url: string): boolean {
+  if (/sslmode=require|sslmode=verify-full|sslmode=no-verify/i.test(url)) {
+    return true;
+  }
+  // Hosted Postgres typically requires TLS even without sslmode in the URL
+  return (
+    url.includes('neon.tech') ||
+    url.includes('supabase.co') ||
+    url.includes('pooler.supabase.com') ||
+    url.includes('amazonaws.com') ||
+    url.includes('render.com') ||
+    url.includes('railway.app') ||
+    url.includes('vercel-storage.com')
+  );
+}
+
 // Support both connection string (for cloud databases) and individual config (for local)
 let poolConfig: any;
 
 if (process.env.DATABASE_URL) {
-  // Use connection string (preferred for cloud databases like Neon, Supabase, Railway)
+  const url = process.env.DATABASE_URL;
   poolConfig = {
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined,
+    connectionString: url,
+    ssl: connectionStringNeedsSsl(url)
+      ? { rejectUnauthorized: false }
+      : undefined,
   };
 } else {
-  // Fallback to individual config (for local development)
+  if (process.env.VERCEL && !process.env.DATABASE_URL) {
+    console.warn(
+      '[lib/db] DATABASE_URL is not set. Add it in Vercel → Settings → Environment Variables (Production + Preview as needed), then redeploy. See .env.example.'
+    );
+  }
   poolConfig = {
     user: process.env.POSTGRES_USER || 'postgres',
     host: process.env.POSTGRES_HOST || 'localhost',
     database: process.env.POSTGRES_DB || 'chicken_vicken',
     password: process.env.POSTGRES_PASSWORD || 'password',
-    port: parseInt(process.env.POSTGRES_PORT || '5432'),
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
   };
 }
 
@@ -69,15 +91,20 @@ pool.on('error', (err: any) => {
 const INIT_KEY = Symbol('db-init');
 if (!(globalThis as any)[INIT_KEY]) {
   (globalThis as any)[INIT_KEY] = true;
-  // Test connection asynchronously without blocking
-  pool.connect()
-    .then((client) => {
-      console.log('✅ Database connection pool initialized');
-      client.release();
-    })
-    .catch((err) => {
-      console.error('❌ Failed to initialize database connection pool:', err);
-    });
+  const skipStartupProbe =
+    (process.env.VERCEL && !process.env.DATABASE_URL) ||
+    process.env.SKIP_DB_STARTUP_PROBE === '1';
+  if (!skipStartupProbe) {
+    pool
+      .connect()
+      .then((client) => {
+        console.log('✅ Database connection pool initialized');
+        client.release();
+      })
+      .catch((err) => {
+        console.error('❌ Failed to initialize database connection pool:', err);
+      });
+  }
 }
 
 export default pool;
