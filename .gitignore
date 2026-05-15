@@ -1,7 +1,9 @@
 node_modules/
 .next/
-.env.local
-.env*.local
+# Secrets & local env (never commit)
+.env
+.env.*
+!.env.example
 *.log
 .DS_Store
 *.tsbuildinfo
