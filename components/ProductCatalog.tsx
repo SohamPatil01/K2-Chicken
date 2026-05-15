@@ -408,47 +408,49 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
   }
 
   return (
-    <div className="pb-20 bg-white w-full overflow-hidden">
+    <div className="pb-20 bg-white w-full overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Category filter pills */}
-        <div className="flex gap-3 overflow-x-auto scroll-hidden mobile-scroll touch-pan-x pb-4 pr-4 justify-start md:justify-center mb-8 snap-x snap-proximity">
-          <button
-            type="button"
-            onClick={() => setSelectedCategory("all")}
-            className={`category-pill px-5 py-2.5 rounded-full ${selectedCategory === "all" ? "active" : ""}`}
-          >
-            All Cuts
-          </button>
-          {categoryFilters
-            .filter((filter) => filter.value !== "all")
-            .map((filter) => (
+        {/* Category filter pills — centered on phone; wrap instead of one-sided scroll */}
+        <div className="mb-8 flex w-full justify-center">
+          <div className="flex w-full max-w-4xl flex-wrap justify-center gap-2 sm:gap-2.5 md:gap-3">
             <button
-              key={filter.value}
               type="button"
-              onClick={() => setSelectedCategory(filter.value)}
-              className={`category-pill px-5 py-2.5 rounded-full capitalize snap-start ${selectedCategory === filter.value ? "active" : ""}`}
+              onClick={() => setSelectedCategory("all")}
+              className={`category-pill shrink-0 rounded-full px-3.5 py-2 text-xs font-medium sm:px-5 sm:py-2.5 sm:text-sm ${selectedCategory === "all" ? "active" : ""}`}
             >
-              {filter.label}
+              All Cuts
             </button>
-          ))}
+            {categoryFilters
+              .filter((filter) => filter.value !== "all")
+              .map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => setSelectedCategory(filter.value)}
+                  className={`category-pill shrink-0 rounded-full px-3.5 py-2 text-xs font-medium capitalize sm:px-5 sm:py-2.5 sm:text-sm ${selectedCategory === filter.value ? "active" : ""}`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+          </div>
         </div>
 
         {/* Search + sort */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          <div className="relative flex-1 max-w-md">
+        <div className="mb-8 flex w-full flex-col gap-3 sm:flex-row sm:items-stretch">
+          <div className="relative min-w-0 flex-1 sm:max-w-md">
             <input
               type="text"
               placeholder="Search chicken cuts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-100 text-gray-900 pl-11 pr-4 py-3 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
+              className="w-full rounded-full border border-gray-200 bg-gray-100 py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 transition-all search-glow focus:outline-none"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-4 py-3 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none search-glow"
+            className="w-full shrink-0 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none search-glow sm:w-auto sm:min-w-[11rem]"
           >
             <option value="popular">Popular</option>
             <option value="price_low">Price: Low to High</option>

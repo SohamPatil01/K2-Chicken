@@ -7,11 +7,11 @@ import { Phone, Mail, MapPin, Clock, Lock, ShieldCheck, BadgeCheck } from "lucid
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 grid grid-cols-1 gap-10 text-center sm:gap-12 md:grid-cols-2 md:text-left lg:grid-cols-4">
           {/* Brand column */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
+          <div className="md:text-left">
+            <div className="mb-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:justify-start">
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm shrink-0">
                 <Image src="/logo.png" alt="K2 Chicken" width={40} height={40} className="w-full h-full object-cover" />
               </div>
@@ -20,7 +20,7 @@ export default function Footer() {
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Pune&apos;s trusted source for 100% fresh, raw, Halal-certified chicken. Sourced daily, cut to order, delivered fresh. No frozen stock, no compromises.
             </p>
-            <div className="flex gap-3">
+            <div className="flex justify-center gap-3 md:justify-start">
               <a href="https://facebook.com/k2chicken" target="_blank" rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:bg-brand-red hover:text-white transition-all">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
@@ -69,19 +69,19 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-6">Contact</h4>
             <ul className="space-y-4 text-sm text-gray-400">
-              <li className="flex items-start gap-3">
+              <li className="flex items-start justify-center gap-3 md:justify-start">
                 <MapPin className="w-4 h-4 text-brand-red mt-0.5 flex-shrink-0" />
                 <span className="break-words">Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune 411027</span>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center justify-center gap-3 md:justify-start">
                 <Phone className="w-4 h-4 text-brand-red flex-shrink-0" />
                 <a href="tel:+918484978622" className="hover:text-brand-red transition-colors">+91 84849 78622</a>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center justify-center gap-3 md:justify-start">
                 <Mail className="w-4 h-4 text-brand-red flex-shrink-0" />
                 <a href="mailto:k2foodindia@gmail.com" className="hover:text-brand-red transition-colors break-all">k2foodindia@gmail.com</a>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center justify-center gap-3 md:justify-start">
                 <Clock className="w-4 h-4 text-brand-red flex-shrink-0" />
                 <span>8:00 AM – 8:00 PM Daily</span>
               </li>

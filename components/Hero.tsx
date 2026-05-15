@@ -49,7 +49,7 @@ export default function Hero({
   const delays = ["0s", "2s", "4s"];
 
   return (
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-white">
+    <section className="relative flex min-h-[75vh] items-center overflow-hidden bg-white sm:min-h-[80vh]">
       {/* Background image with heavy white overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -65,25 +65,25 @@ export default function Hero({
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/40" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
           {/* Left text column */}
-          <div className="space-y-6">
+          <div className="mx-auto w-full max-w-xl space-y-5 text-center lg:mx-0 lg:max-w-none lg:text-left">
             {/* Fresh badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-700 text-sm font-semibold hero-text-reveal">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              100% Fresh Raw Chicken — Never Frozen, Never Cooked
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-2 text-left text-xs font-semibold text-green-700 hero-text-reveal sm:px-4 sm:text-sm">
+              <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-500" />
+              <span className="leading-snug">100% Fresh Raw Chicken — Never Frozen, Never Cooked</span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 leading-[1.1] hero-text-reveal stagger-1">
+            <h1 className="font-serif text-4xl font-bold leading-[1.12] text-gray-900 hero-text-reveal stagger-1 sm:text-5xl md:text-6xl">
               Farm Fresh <br />
               <span className="text-brand-red italic">Raw Chicken</span><br />
               Delivered Daily
             </h1>
 
             {/* Sub */}
-            <p className="text-lg text-gray-600 max-w-lg leading-relaxed hero-text-reveal stagger-2">
+            <p className="mx-auto max-w-lg text-base leading-relaxed text-gray-600 hero-text-reveal stagger-2 sm:text-lg lg:mx-0">
               Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to your kitchen in Pune.
               {deliveryEnabled && freeDeliveryAbove > 0 && (
                 <span className="block mt-2 font-semibold text-brand-red">Free delivery above ₹{freeDeliveryAbove}</span>
@@ -91,21 +91,21 @@ export default function Hero({
             </p>
 
             {/* CTA buttons */}
-            <div className="flex flex-wrap gap-4 hero-text-reveal stagger-3">
+            <div className="flex flex-col gap-3 hero-text-reveal stagger-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
               <Link
                 href="/#products"
-                className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center gap-3"
+                className="btn-primary inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-3.5 text-base font-semibold text-white sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
               >
                 Shop Fresh Cuts
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>
               <Link
                 href="/#about"
-                className="px-8 py-4 rounded-full border-2 border-gray-300 text-gray-700 font-semibold hover:border-brand-red hover:text-brand-red transition-all text-lg flex items-center gap-3"
+                className="inline-flex w-full items-center justify-center gap-3 rounded-full border-2 border-gray-300 px-6 py-3.5 text-base font-semibold text-gray-700 transition-all hover:border-brand-red hover:text-brand-red sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
                 Our Process
