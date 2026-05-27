@@ -21,12 +21,13 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Product | K2 Chicken",
+      title: "Product Not Found",
       robots: { index: false, follow: true },
     };
   }
 
-  const title = `${product.name} | Buy Online | K2 Chicken`;
+  const pageTitle = `${product.name} | Buy Online`;
+  const socialTitle = `${pageTitle} | K2 Chicken`;
   const description = product.description
     ? truncateMetaDescription(product.description)
     : `Buy ${product.name} online — fresh halal chicken delivery in Pune from K2 Chicken.`;
@@ -44,11 +45,11 @@ export async function generateMetadata({
   ].filter(Boolean) as string[];
 
   return {
-    title,
+    title: pageTitle,
     description,
     keywords,
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: `${siteUrl}/products/${id}`,
       siteName: "K2 Chicken",
@@ -58,7 +59,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: [ogImage],
     },

@@ -4,9 +4,9 @@ import { getSiteUrl } from "@/lib/siteUrl";
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: "Checkout | K2 Chicken - Secure Online Payment",
+  title: "Checkout - Secure Online Payment",
   description:
-    "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options including UPI, cards, and cash on delivery. Fast 30-minute delivery available.",
+    "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options including UPI, cards, and cash on delivery. Delivery in ~90 minutes across Pune.",
   keywords: [
     "chicken delivery checkout",
     "online chicken order pune",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Checkout | K2 Chicken",
     description:
-      "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options.",
+      "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options. Delivery in ~90 minutes across Pune.",
     url: `${siteUrl}/checkout`,
     siteName: "K2 Chicken",
     type: "website",

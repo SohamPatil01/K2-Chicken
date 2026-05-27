@@ -104,7 +104,7 @@ async function checkOriginalPriceColumn(client: any): Promise<boolean> {
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Fresh & Premium Chicken Delivery in Pune | K2 Chicken",
+  title: "Fresh & Premium Chicken Delivery in Pune",
   description:
     "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
   keywords: [
@@ -142,7 +142,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
     images: ["/hero-fresh-simple.png"],
   },
   alternates: {

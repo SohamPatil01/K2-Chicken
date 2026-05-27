@@ -61,7 +61,7 @@ export async function generateMetadata({
 
   if (!recipe) {
     return {
-      title: "Recipe Not Found | K2 Chicken",
+      title: "Recipe Not Found",
     };
   }
 

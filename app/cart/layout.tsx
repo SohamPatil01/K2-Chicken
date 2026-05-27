@@ -4,7 +4,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: "Shopping Cart | K2 Chicken - Your Fresh Chicken Order",
+  title: "Shopping Cart - Your Fresh Chicken Order",
   description:
     "Review your cart items before checkout. Add more fresh chicken products, adjust quantities, and proceed to secure checkout for fast delivery in Pune.",
   keywords: [
