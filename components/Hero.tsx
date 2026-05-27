@@ -23,9 +23,9 @@ const FALLBACK_PRODUCTS: HeroProduct[] = [
 ];
 
 const FALLBACK_IMAGES = [
-  "https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg",
-  "https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png",
-  "https://kimi-web-img.moonshot.cn/img/assets.tendercuts.in/5fa64d1ab650743d25f21156c24dd0bef06a8edf.jpg",
+  "/images/Chicken-Breast-Boneless.jpg",
+  "/images/Whole-Chicken-5.jpg",
+  "/images/Chicken-Drumstick.jpg",
 ];
 
 function formatPrice(product: HeroProduct) {

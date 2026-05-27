@@ -71,7 +71,7 @@ export async function generateMetadata({
     `${siteUrl}/hero-fresh-simple.png`;
 
   return {
-    title: `${recipe.title} | K2 Chicken Recipe`,
+    title: `${recipe.title} Recipe`,
     description: `${recipe.description} - Prep time: ${recipe.prep_time} min, Cook time: ${recipe.cook_time} min, Serves: ${recipe.servings} people. Step-by-step instructions included.`,
     keywords: [
       recipe.title.toLowerCase(),
@@ -82,7 +82,7 @@ export async function generateMetadata({
       ...recipe.ingredients.slice(0, 5).map((ing: string) => ing.toLowerCase()),
     ],
     openGraph: {
-      title: `${recipe.title} | K2 Chicken Recipe`,
+      title: `${recipe.title} Recipe`,
       description: recipe.description,
       url: `${siteUrl}/recipes/${id}`,
       siteName: "K2 Chicken",
@@ -98,7 +98,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${recipe.title} | K2 Chicken Recipe`,
+      title: `${recipe.title} Recipe`,
       description: recipe.description,
       images: [absoluteUrl(imageUrl)],
     },

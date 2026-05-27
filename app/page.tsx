@@ -13,6 +13,7 @@ import pool from "@/lib/db";
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
 import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
+import { FAQ_ITEMS } from "@/lib/seo/faq";
 
 const siteUrl = getSiteUrl();
 
@@ -105,7 +106,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Fresh & Premium Chicken Delivery in Pune | K2 Chicken",
   description:
-    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
+    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
   keywords: [
     "chicken delivery pune",
     "fresh chicken online pune",
@@ -123,7 +124,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
     url: siteUrl,
     siteName: "K2 Chicken",
     images: [
@@ -315,56 +316,11 @@ export default async function Home() {
   const faqStructuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How fast is the delivery?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "We offer fast delivery in 30-45 minutes for orders in Pune. Our delivery team ensures your fresh chicken reaches you quickly and safely.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is the chicken halal?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, all our chicken is 100% Halal certified. We follow strict halal guidelines in sourcing and preparation.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What is the minimum order for free delivery?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Free delivery is available for orders above ₹350 within our delivery radius. Orders below ₹350 may incur a delivery charge.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What payment methods do you accept?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "We accept multiple payment methods including UPI, credit cards, debit cards, and cash on delivery for your convenience.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is the chicken fresh?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, we guarantee 100% fresh, farm-fresh chicken. All our products are sourced daily and delivered fresh to your doorstep. We do not use any chemicals or preservatives.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "What are your operating hours?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "We are open from 8:00 AM to 8:00 PM, Monday through Sunday. You can place orders anytime during these hours.",
-        },
-      },
-    ],
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
   };
 
   return (

@@ -31,7 +31,7 @@ export default function LocationSelector() {
                             <MapPin className="w-5 h-5 text-brand-red mt-0.5" />
                             <div>
                                 <p className="text-sm font-bold text-gray-900">Pune</p>
-                                <p className="text-xs text-gray-600 mt-0.5">Delivery available in 30-45 mins</p>
+                                <p className="text-xs text-gray-600 mt-0.5">Delivery available in ~90 mins</p>
                             </div>
                             <div className="ml-auto w-2 h-2 rounded-full bg-green-500 mt-2"></div>
                         </div>

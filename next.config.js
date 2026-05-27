@@ -7,6 +7,18 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
+  // Redirect bare domain → www for canonical SEO
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "k2chicken.com" }],
+        destination: "https://www.k2chicken.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {
@@ -36,7 +48,6 @@ const nextConfig = {
     // Remote patterns if needed (for external images)
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
-      { protocol: "https", hostname: "kimi-web-img.moonshot.cn", pathname: "/**" },
     ],
   },
 

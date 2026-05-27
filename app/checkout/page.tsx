@@ -1211,7 +1211,7 @@ function CheckoutPageContent() {
                         Delivery
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {!deliveryEnabled ? "Unavailable" : "30-45 min"}
+                        {!deliveryEnabled ? "Unavailable" : "~90 mins"}
                       </div>
                       {!deliveryEnabled && (
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -1881,7 +1881,7 @@ function CheckoutPageContent() {
                   <p className="text-xs text-gray-600">
                     Estimated time:{" "}
                     <span className="font-medium">
-                      {deliveryType === "delivery" ? "30-45 min" : "15-20 min"}
+                      {deliveryType === "delivery" ? "~90 mins" : "15-20 min"}
                     </span>
                   </p>
                 </div>

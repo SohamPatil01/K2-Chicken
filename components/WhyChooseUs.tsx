@@ -35,22 +35,22 @@ const features = [
 
 const images = [
   {
-    src: "https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/5339c9121c7a3481ddc70f0574454df60ebc1a6f.jpg",
+    src: "/images/Chicken-Breast-Boneless.jpg",
     alt: "Fresh chicken breast",
     cls: "h-64",
   },
   {
-    src: "https://kimi-web-img.moonshot.cn/img/rollingwoodfarms.com/bf703c09d3970f00266fa9480f7bd35adecce33f.jpg",
+    src: "/images/Chicken-Drumstick.jpg",
     alt: "Chicken drumsticks",
     cls: "h-48",
   },
   {
-    src: "https://kimi-web-img.moonshot.cn/img/5.imimg.com/fb727c0dea5b0f27e5a26035d675c74dba083be4.png",
+    src: "/images/Whole-Chicken-5.jpg",
     alt: "Whole chicken",
     cls: "h-48",
   },
   {
-    src: "https://kimi-web-img.moonshot.cn/img/onestophalal.com/f26ae8db86477b04ea6cf7f3a30ec4f1175fb252.jpg",
+    src: "/images/Chicken-Wings.jpg",
     alt: "Chicken wings",
     cls: "h-64",
   },

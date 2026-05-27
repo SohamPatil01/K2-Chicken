@@ -8,17 +8,17 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation'],
+                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation', '/login'],
             },
             {
                 userAgent: 'Googlebot',
                 allow: '/',
-                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation'],
+                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation', '/login'],
             },
             {
                 userAgent: 'Bingbot',
                 allow: '/',
-                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation'],
+                disallow: ['/api/', '/admin/', '/checkout', '/cart', '/orders', '/order-confirmation', '/login'],
             },
         ],
         sitemap: `${siteUrl}/sitemap.xml`,

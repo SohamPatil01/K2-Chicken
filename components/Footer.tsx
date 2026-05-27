@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, Lock, ShieldCheck, BadgeCheck } from "lucide-react";
+import { FOOTER_PRODUCT_LINKS } from "@/lib/footerProductLinks";
 
 export default function Footer() {
   return (
@@ -40,9 +41,9 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-6">Fresh Cuts</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              {["Chicken Breast (Boneless)", "Chicken Curry Cut", "Chicken Drumsticks", "Chicken Mince / Keema", "Whole Chicken", "Liver & Gizzard"].map((item) => (
-                <li key={item}>
-                  <Link href="/#products" className="hover:text-brand-red transition-colors break-words">{item}</Link>
+              {FOOTER_PRODUCT_LINKS.map(({ id, label }) => (
+                <li key={id}>
+                  <Link href={`/products/${id}`} className="hover:text-brand-red transition-colors break-words">{label}</Link>
                 </li>
               ))}
             </ul>
@@ -57,11 +58,6 @@ export default function Footer() {
               <li><Link href="/recipes" className="hover:text-brand-red transition-colors">Recipes & Tips</Link></li>
               <li><Link href="/orders" className="hover:text-brand-red transition-colors">My Orders</Link></li>
               <li><Link href="/login" className="hover:text-brand-red transition-colors">Sign In</Link></li>
-              <li>
-                <Link href="/admin" className="hover:text-brand-red transition-colors opacity-50 hover:opacity-100">
-                  Admin Console
-                </Link>
-              </li>
             </ul>
           </div>
 

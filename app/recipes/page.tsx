@@ -49,7 +49,7 @@ const getRecipes = unstable_cache(
 );
 
 export const metadata: Metadata = {
-  title: "Chicken Recipes | K2 Chicken Recipe Cookbook",
+  title: "Chicken Recipes Cookbook",
   description:
     "Master the art of cooking delicious chicken dishes at home with K2 Chicken's recipe cookbook. Step-by-step instructions, ingredients, prep time, and serving sizes for premium chicken recipes.",
   keywords: [
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     "premium chicken recipes",
   ],
   openGraph: {
-    title: "Chicken Recipes | K2 Chicken Recipe Cookbook",
+    title: "Chicken Recipes Cookbook",
     description:
       "Master the art of cooking delicious chicken dishes at home with step-by-step recipes from K2 Chicken.",
     url: `${siteUrl}/recipes`,

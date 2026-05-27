@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s | K2 Chicken",
   },
   description:
-    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes. Order now!",
+    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes. Order now!",
   keywords: [
     "chicken delivery pune",
     "fresh chicken online pune",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     siteName: "K2 Chicken",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
     images: [
       {
         url: "/hero-fresh-simple.png",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
     description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
     images: ["/hero-fresh-simple.png"],
     creator: "@k2chicken",
   },
@@ -109,13 +109,14 @@ export const metadata: Metadata = {
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": ["FoodEstablishment", "LocalBusiness"],
   name: "K2 Chicken",
   alternateName: ["K2Chicken", "k2chicken", "K2 Chicken Pune"],
   image: `${siteUrl}/logo.png`,
   logo: `${siteUrl}/logo.png`,
   description:
-    "Fresh, premium quality chicken delivery in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in 30 minutes.",
+    "Fresh, premium quality chicken delivery in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+  email: "support@k2chicken.com",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-8484978622",
@@ -154,9 +155,23 @@ const jsonLd = {
   url: siteUrl,
   telephone: "+918484978622",
   priceRange: "₹₹",
-  servesCuisine: "Indian",
+  servesCuisine: ["Halal", "Indian"],
   paymentAccepted: "Cash, Credit Card, Debit Card, UPI",
   currenciesAccepted: "INR",
+  areaServed: [
+    { "@type": "City", name: "Pune" },
+    { "@type": "City", name: "Pimpri-Chinchwad" },
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Fresh Chicken Cuts",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Chicken Breast (Boneless)" } },
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Chicken Curry Cut" } },
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Whole Chicken" } },
+      { "@type": "Offer", itemOffered: { "@type": "Product", name: "Chicken Drumsticks" } },
+    ],
+  },
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -180,7 +195,11 @@ const jsonLd = {
     bestRating: "5",
     worstRating: "1",
   },
-  sameAs: ["https://facebook.com/k2chicken", "https://instagram.com/k2chicken"],
+  sameAs: [
+    "https://facebook.com/k2chicken",
+    "https://instagram.com/k2chicken",
+    "https://wa.me/918484978622",
+  ],
 };
 
 const organizationJsonLd = {
