@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import SectionHeader from "./SectionHeader";
+import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
 const SHOP_LOCATION = {
   lat: 18.578073140740553,
   lng: 73.78656665952684,
@@ -200,7 +201,7 @@ export default function ContactSection() {
         <SectionHeader
           eyebrow="We're here to help"
           title="Get in touch"
-          subtitle="Have questions about our products or need help with your order? We're just a call or message away."
+          subtitle={`We deliver only in ${DELIVERY_AREAS_PHRASE}. Questions about our products or your order? We're just a call or message away.`}
           icon={MessageCircle}
         />
 

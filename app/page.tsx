@@ -14,6 +14,13 @@ import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
 import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 import { FAQ_ITEMS } from "@/lib/seo/faq";
+import {
+  LOCAL_SEO_KEYWORDS,
+  SITE_META_DESCRIPTION,
+  SITE_OG_DESCRIPTION,
+} from "@/lib/seo/metadata";
+import { buildProductItemListJsonLd } from "@/lib/seo/productListJsonLd";
+import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
 
 const siteUrl = getSiteUrl();
 
@@ -105,26 +112,16 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Fresh & Premium Chicken Delivery in Pune",
-  description:
-    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes. Browse our wide selection of chicken cuts, marinated options, and ready-to-cook products. Order now!",
+  description: `${SITE_META_DESCRIPTION} Browse boneless, curry cut, whole chicken, drumsticks & more.`,
   keywords: [
-    "chicken delivery pune",
-    "fresh chicken online pune",
-    "halal chicken pune",
-    "raw chicken delivery",
-    "K2 chicken pune",
-    "K2Chicken",
-    "k2chicken",
-    "premium chicken delivery",
-    "meat delivery app pune",
+    ...LOCAL_SEO_KEYWORDS,
     "chicken cuts pune",
     "marinated chicken pune",
     "farm fresh chicken",
   ],
   openGraph: {
     title: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
-    description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+    description: SITE_OG_DESCRIPTION,
     url: siteUrl,
     siteName: "K2 Chicken",
     images: [
@@ -141,8 +138,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
-    description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+    description: SITE_OG_DESCRIPTION,
     images: ["/hero-fresh-simple.png"],
   },
   alternates: {
@@ -278,6 +274,8 @@ export default async function Home() {
     "@type": "WebSite",
     name: "K2 Chicken",
     url: siteUrl,
+    description: `Fresh halal chicken delivery in ${DELIVERY_AREAS_PHRASE}.`,
+    inLanguage: "en-IN",
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -288,30 +286,7 @@ export default async function Home() {
     },
   };
 
-  const itemListStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: products
-      .slice(0, 10)
-      .map((product: any, index: number) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        item: {
-          "@type": "Product",
-          name: product.name,
-          description: product.description,
-          image: product.image_url,
-          offers: {
-            "@type": "Offer",
-            price: product.price,
-            priceCurrency: "INR",
-            availability: product.is_available
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-          },
-        },
-      })),
-  };
+  const itemListStructuredData = buildProductItemListJsonLd(products);
 
   const faqStructuredData = {
     "@context": "https://schema.org",

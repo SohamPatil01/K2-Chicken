@@ -1,3 +1,5 @@
+import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
+
 export interface FaqItem {
   question: string;
   answer: string;
@@ -22,12 +24,12 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "How fast is the delivery?",
     answer:
-      "We offer delivery in ~90 minutes across Pune. Our delivery team ensures your fresh chicken reaches you quickly and safely in temperature-controlled packaging.",
+      `We offer delivery in ~90 minutes in ${DELIVERY_AREAS_PHRASE}. Our delivery team ensures your fresh chicken reaches you quickly and safely in temperature-controlled packaging.`,
   },
   {
     question: "What are the delivery charges and areas?",
     answer:
-      "We deliver across Pune including Koregaon Park, Kalyani Nagar, Baner, Aundh, Pimple Nilakh, and surrounding areas. Free delivery on orders above ₹350. Orders below ₹350 have a small delivery fee.",
+      `We deliver only in ${DELIVERY_AREAS_PHRASE}. Free delivery on orders above ₹350. Orders below ₹350 have a small delivery fee.`,
   },
   {
     question: "How should I store the chicken after delivery?",

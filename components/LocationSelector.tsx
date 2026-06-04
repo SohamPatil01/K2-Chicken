@@ -2,10 +2,11 @@
 
 import { MapPin, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { DELIVERY_AREAS_COMPACT } from "@/lib/deliveryAreas";
 
 export default function LocationSelector() {
     const [isOpen, setIsOpen] = useState(false);
-    const location = "Pune, Maharashtra"; // Service area
+    const location = "Pimple Nilakh & nearby";
 
     return (
         <div className="relative z-50">
@@ -30,8 +31,9 @@ export default function LocationSelector() {
                         <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer">
                             <MapPin className="w-5 h-5 text-brand-red mt-0.5" />
                             <div>
-                                <p className="text-sm font-bold text-gray-900">Pune</p>
-                                <p className="text-xs text-gray-600 mt-0.5">Delivery available in ~90 mins</p>
+                                <p className="text-sm font-bold text-gray-900">Delivery areas</p>
+                                <p className="text-xs text-gray-600 mt-0.5 leading-snug">{DELIVERY_AREAS_COMPACT}</p>
+                                <p className="text-xs text-brand-red font-medium mt-1">~90 mins delivery</p>
                             </div>
                             <div className="ml-auto w-2 h-2 rounded-full bg-green-500 mt-2"></div>
                         </div>

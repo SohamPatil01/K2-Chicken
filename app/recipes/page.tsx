@@ -3,7 +3,9 @@ import { Clock, Users, ChefHat, ArrowLeft } from "lucide-react";
 import pool from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
-import { getSiteUrl } from "@/lib/siteUrl";
+import { absoluteUrl, getSiteUrl } from "@/lib/siteUrl";
+import { getRecipeImageUrl } from "@/lib/recipeImages";
+import { LOCAL_SEO_KEYWORDS } from "@/lib/seo/metadata";
 import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 
 const siteUrl = getSiteUrl();
@@ -60,6 +62,7 @@ export const metadata: Metadata = {
     "chicken recipe ideas",
     "K2 chicken recipes",
     "premium chicken recipes",
+    ...LOCAL_SEO_KEYWORDS.slice(0, 6),
   ],
   openGraph: {
     title: "Chicken Recipes Cookbook",
@@ -76,6 +79,13 @@ export const metadata: Metadata = {
       },
     ],
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chicken Recipes Cookbook",
+    description:
+      "Step-by-step halal chicken recipes from K2 Chicken — curry, biryani, grills & more.",
+    images: ["/hero-fresh-simple.png"],
   },
   alternates: {
     canonical: `${siteUrl}/recipes`,
@@ -124,8 +134,12 @@ export default async function RecipesPage() {
         item: {
           "@type": "Recipe",
           name: recipe.title,
+          url: `${siteUrl}/recipes/${recipe.id}`,
           description: sanitizeRecipeText(recipe.description),
-          image: recipe.image_url,
+          image: absoluteUrl(
+            getRecipeImageUrl(recipe.title, recipe.image_url) || "/hero-fresh-simple.png"
+          ),
+          recipeCategory: "Chicken",
           prepTime: `PT${recipe.prep_time}M`,
           cookTime: `PT${recipe.cook_time}M`,
           recipeYield: recipe.servings.toString(),

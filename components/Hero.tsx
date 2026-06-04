@@ -84,7 +84,7 @@ export default function Hero({
 
             {/* Sub */}
             <p className="mx-auto max-w-lg text-base leading-relaxed text-gray-600 hero-text-reveal stagger-2 sm:text-lg lg:mx-0">
-              Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to your kitchen in Pune.
+              Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad.
               {deliveryEnabled && freeDeliveryAbove > 0 && (
                 <span className="block mt-2 font-semibold text-brand-red">Free delivery above ₹{freeDeliveryAbove}</span>
               )}

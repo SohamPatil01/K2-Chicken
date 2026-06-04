@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { getProductForSeo } from "@/lib/getProductForSeo";
 import { absoluteUrl, getSiteUrl } from "@/lib/siteUrl";
+import { LOCAL_SEO_KEYWORDS, truncateMetaDescription } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
-
-function truncateMetaDescription(text: string, max = 155): string {
-  const t = text.trim().replace(/\s+/g, " ");
-  if (t.length <= max) return t;
-  return `${t.slice(0, max - 1)}…`;
-}
 
 export async function generateMetadata({
   params,
@@ -30,7 +25,7 @@ export async function generateMetadata({
   const socialTitle = `${pageTitle} | K2 Chicken`;
   const description = product.description
     ? truncateMetaDescription(product.description)
-    : `Buy ${product.name} online — fresh halal chicken delivery in Pune from K2 Chicken.`;
+    : `Buy ${product.name} online — fresh halal chicken delivery in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad from K2 Chicken.`;
 
   const ogImage = product.image_url
     ? absoluteUrl(product.image_url)
@@ -39,9 +34,8 @@ export async function generateMetadata({
   const keywords = [
     product.name,
     product.category,
-    "chicken delivery Pune",
     "K2 Chicken",
-    "halal chicken Pune",
+    ...LOCAL_SEO_KEYWORDS.slice(0, 8),
   ].filter(Boolean) as string[];
 
   return {

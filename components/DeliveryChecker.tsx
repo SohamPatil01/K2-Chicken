@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MapPin, Check, X } from "lucide-react";
+import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
 
 export default function DeliveryChecker() {
   const [pincode, setPincode] = useState("");
@@ -29,7 +30,10 @@ export default function DeliveryChecker() {
         );
       } else {
         setStatus("no");
-        setMessage(data.error || "We don't deliver to this area yet.");
+        setMessage(
+          data.error ||
+            `We deliver only in ${DELIVERY_AREAS_PHRASE}. This address may be outside our service area.`
+        );
       }
     } catch {
       setStatus("error");
@@ -50,7 +54,7 @@ export default function DeliveryChecker() {
               setStatus("idle");
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCheck()}
-            placeholder="Enter pincode"
+            placeholder="Enter area or pincode (Pimple Nilakh, Baner, etc.)"
             className="w-full pl-10 pr-4 py-3 rounded-button border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-red-200 shadow-soft"
           />
         </div>

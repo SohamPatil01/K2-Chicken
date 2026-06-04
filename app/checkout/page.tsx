@@ -1410,7 +1410,7 @@ function CheckoutPageContent() {
                           <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
                             <p className="text-sm text-green-700 font-semibold flex items-center gap-2">
                               <Check size={16} />
-                              Free delivery within service area!
+                              Free delivery in our service area (Pimple Nilakh, Baner, Pancard Club, Aundh, Wakad)!
                             </p>
                           </div>
                         )}

@@ -6,7 +6,7 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   title: "Shopping Cart - Your Fresh Chicken Order",
   description:
-    "Review your cart items before checkout. Add more fresh chicken products, adjust quantities, and proceed to secure checkout for fast delivery in Pune.",
+    "Review your cart items before checkout. Add more fresh chicken products, adjust quantities, and proceed to secure checkout. Delivery in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad.",
   keywords: [
     "chicken cart",
     "shopping cart",
@@ -25,9 +25,6 @@ export const metadata: Metadata = {
   robots: {
     index: false,
     follow: true,
-  },
-  alternates: {
-    canonical: `${siteUrl}/cart`,
   },
 };
 

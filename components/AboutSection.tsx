@@ -183,7 +183,7 @@ export default function AboutSection() {
             <div className="p-6 sm:p-8 lg:p-10">
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
                 K2 Chicken is built around consistent sourcing, hygienic
-                handling, and freshly prepared cuts for families across Pune.
+                handling, and freshly prepared cuts for families in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad.
                 With every order, we focus on:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">

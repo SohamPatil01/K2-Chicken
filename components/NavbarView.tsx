@@ -46,7 +46,7 @@ export default function NavbarView({
           <span className="hidden text-white/80 sm:inline" aria-hidden="true">
             |
           </span>
-          <span>Fresh chicken delivered in ~90 mins across Pune</span>
+          <span>Fresh chicken delivered in ~90 mins — Pimple Nilakh, Baner, Pancard Club, Aundh & Wakad</span>
         </span>
       </div>
 

@@ -1,10 +1,11 @@
 import { MetadataRoute } from 'next'
+import { SITE_OG_DESCRIPTION } from '@/lib/seo/metadata'
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
         name: 'K2 Chicken - Fresh Delivery',
         short_name: 'K2 Chicken',
-        description: 'Order fresh, premium quality chicken online in Pune.',
+        description: SITE_OG_DESCRIPTION,
         start_url: '/',
         display: 'standalone',
         background_color: '#FFFAF5', // chicken-cream

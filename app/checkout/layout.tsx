@@ -6,7 +6,7 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   title: "Checkout - Secure Online Payment",
   description:
-    "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options including UPI, cards, and cash on delivery. Delivery in ~90 minutes across Pune.",
+    "Complete your order for fresh chicken delivery in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad. Secure checkout with UPI, cards, and cash on delivery. Delivery in ~90 minutes.",
   keywords: [
     "chicken delivery checkout",
     "online chicken order pune",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Checkout | K2 Chicken",
     description:
-      "Complete your order for fresh, premium chicken delivery in Pune. Secure checkout with multiple payment options. Delivery in ~90 minutes across Pune.",
+      "Complete your order for fresh chicken delivery in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad. Secure checkout with multiple payment options. Delivery in ~90 minutes.",
     url: `${siteUrl}/checkout`,
     siteName: "K2 Chicken",
     type: "website",
@@ -25,9 +25,6 @@ export const metadata: Metadata = {
   robots: {
     index: false,
     follow: true,
-  },
-  alternates: {
-    canonical: `${siteUrl}/checkout`,
   },
 };
 

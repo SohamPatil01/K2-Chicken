@@ -8,6 +8,12 @@ import ScrollRevealInit from "@/components/ScrollRevealInit";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteUrl } from "@/lib/siteUrl";
+import {
+  LOCAL_SEO_KEYWORDS,
+  SITE_META_DESCRIPTION,
+  SITE_OG_DESCRIPTION,
+} from "@/lib/seo/metadata";
+import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
 
 const siteUrl = getSiteUrl();
 
@@ -48,19 +54,8 @@ export const metadata: Metadata = {
     default: "K2 Chicken | Fresh & Premium Chicken Delivery in Pune",
     template: "%s | K2 Chicken",
   },
-  description:
-    "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes. Order now!",
-  keywords: [
-    "chicken delivery pune",
-    "fresh chicken online pune",
-    "halal chicken pune",
-    "raw chicken delivery",
-    "K2 chicken",
-    "K2Chicken",
-    "k2chicken",
-    "premium chicken",
-    "meat delivery app",
-  ],
+  description: SITE_META_DESCRIPTION,
+  keywords: LOCAL_SEO_KEYWORDS,
   authors: [{ name: "K2 Chicken Team" }],
   creator: "K2 Chicken",
   publisher: "K2 Chicken",
@@ -81,22 +76,20 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "K2 Chicken",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
-    description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+    description: SITE_OG_DESCRIPTION,
     images: [
       {
         url: "/hero-fresh-simple.png",
         width: 1200,
         height: 630,
-        alt: "K2 Chicken - Fresh & Premium Quality",
+        alt: "K2 Chicken - Fresh halal chicken delivery in Pune",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "K2 Chicken | Fresh & Premium Chicken Delivery",
-    description:
-      "Order fresh, premium quality chicken online in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+    description: SITE_OG_DESCRIPTION,
     images: ["/hero-fresh-simple.png"],
     creator: "@k2chicken",
   },
@@ -114,8 +107,7 @@ const jsonLd = {
   alternateName: ["K2Chicken", "k2chicken", "K2 Chicken Pune"],
   image: `${siteUrl}/logo.png`,
   logo: `${siteUrl}/logo.png`,
-  description:
-    "Fresh, premium quality chicken delivery in Pune. 100% Halal, farm-fresh, chemical-free chicken delivered to your doorstep in ~90 minutes.",
+  description: SITE_META_DESCRIPTION,
   email: "support@k2chicken.com",
   contactPoint: {
     "@type": "ContactPoint",
@@ -159,8 +151,11 @@ const jsonLd = {
   paymentAccepted: "Cash, Credit Card, Debit Card, UPI",
   currenciesAccepted: "INR",
   areaServed: [
-    { "@type": "City", name: "Pune" },
-    { "@type": "City", name: "Pimpri-Chinchwad" },
+    { "@type": "Place", name: "Pimple Nilakh" },
+    { "@type": "Place", name: "Baner" },
+    { "@type": "Place", name: "Pancard Club" },
+    { "@type": "Place", name: "Aundh" },
+    { "@type": "Place", name: "Wakad" },
   ],
   hasOfferCatalog: {
     "@type": "OfferCatalog",
@@ -209,7 +204,7 @@ const organizationJsonLd = {
   url: siteUrl,
   logo: `${siteUrl}/logo.png`,
   description:
-    "Fresh, premium quality halal chicken delivery in Pune and Pimpri-Chinchwad.",
+    `Fresh, premium quality halal chicken delivery to ${DELIVERY_AREAS_PHRASE}.`,
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-8484978622",
@@ -217,7 +212,11 @@ const organizationJsonLd = {
     areaServed: "IN",
     availableLanguage: ["English", "Hindi"],
   },
-  sameAs: ["https://facebook.com/k2chicken", "https://instagram.com/k2chicken"],
+  sameAs: [
+    "https://facebook.com/k2chicken",
+    "https://instagram.com/k2chicken",
+    "https://wa.me/918484978622",
+  ],
 };
 
 export default function RootLayout({
