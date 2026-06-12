@@ -125,20 +125,20 @@ function ProductCard({
   const hasDiscount = baseOriginalPrice > baseProductPrice;
   const discountPercent = hasDiscount ? Math.round(((baseOriginalPrice - baseProductPrice) / baseOriginalPrice) * 100) : 0;
   const currentWeightQuantity = getWeightQuantity(product.id, activeWeight);
-  const badges = getProductBadges(product);
+
+  const tagLabel = hasDiscount
+    ? `${discountPercent}% OFF`
+    : isBestseller
+      ? "BESTSELLER"
+      : "FRESH TODAY";
 
   return (
-    <div className="product-card group relative">
-      {/* Discount / bestseller badge */}
-      {hasDiscount ? (
-        <div className="absolute top-4 left-4 z-10">
-          <span className="bg-brand-red text-white text-xs font-bold px-3 py-1.5 rounded-full badge-glow">{discountPercent}% OFF</span>
-        </div>
-      ) : isBestseller ? (
-        <div className="absolute top-4 left-4 z-10">
-          <span className="bg-brand-red text-white text-xs font-bold px-3 py-1.5 rounded-full badge-glow">Best Seller</span>
-        </div>
-      ) : null}
+    <div className="product-card group relative flex flex-col">
+      <div className="absolute top-3 left-3 z-10">
+        <span className="fresh-tag rounded-pill px-2.5 py-1 font-mono text-[10.5px] font-semibold uppercase tracking-wider">
+          {tagLabel}
+        </span>
+      </div>
 
       {stockStatus.status === "out" && (
         <div className="absolute top-4 right-4 z-10">
@@ -146,8 +146,7 @@ function ProductCard({
         </div>
       )}
 
-      {/* Product image */}
-      <div className="image-hover-zoom relative h-52 bg-gray-100">
+      <div className="image-hover-zoom relative aspect-[4/3] bg-gradient-to-br from-[#F3E2C8] to-[#E9C9A1]">
         <Image
           src={product.image_url || getProductFallbackImage(product.name)}
           alt={product.name}
@@ -156,47 +155,28 @@ function ProductCard({
           className="object-cover object-center"
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-50" />
-        <div className="absolute bottom-3 left-3 flex gap-2 flex-wrap">
-          {badges.map((badge, badgeIndex) => (
-            <span
-              key={`${product.id}-${badge}-${badgeIndex}`}
-              className={badge === "FRESH"
-                ? "fresh-tag text-white text-[10px] font-bold px-2 py-0.5 rounded-full"
-                : "cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full"}
-            >
-              {badge}
-            </span>
-          ))}
-        </div>
       </div>
 
-      {/* Card body */}
-      <div className="p-5 min-w-0">
+      <div className="flex flex-1 flex-col gap-3 p-5 min-w-0">
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-base font-serif font-semibold text-gray-900 group-hover:text-brand-red transition-colors mb-1.5 leading-tight break-words">
+          <h3 className="font-display text-lg font-bold text-k2-green-deep transition-colors group-hover:text-k2-saffron leading-tight break-words">
             {product.name}
           </h3>
         </Link>
         {product.description && (
-          <p className="text-gray-500 text-sm mb-3 line-clamp-2 leading-relaxed break-words">
+          <p className="flex-1 text-[13.5px] text-[#5a6a61] line-clamp-2 leading-relaxed break-words">
             {product.description}
           </p>
         )}
 
-        {/* Weight options */}
         {!isWholeChicken && product.weightOptions && product.weightOptions.length > 1 && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
+          <div className="weight-toggle" role="group" aria-label="weight">
             {product.weightOptions.map((w) => (
               <button
                 key={w.id || w.weight}
                 type="button"
                 onClick={() => { setSelectedWeight(w); setCustomWeightEnabled(false); }}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
-                  selectedWeight?.weight === w.weight && !customWeightEnabled
-                    ? "bg-brand-red text-white border-brand-red"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-brand-red hover:text-brand-red"
-                }`}
+                className={selectedWeight?.weight === w.weight && !customWeightEnabled ? "on" : ""}
               >
                 {w.weight}{w.weight_unit}
               </button>
@@ -204,49 +184,49 @@ function ProductCard({
           </div>
         )}
 
-        {/* Price + Add */}
         <div className="flex items-center justify-between gap-2">
           <div>
-            <span className="text-xl font-bold price-tag">
+            <span className="price-tag text-2xl">
               ₹{currentPrice.toFixed(0)}
             </span>
-            {activeWeight && !isWholeChicken && (
-              <span className="text-gray-400 text-xs ml-1">/{activeWeight.weight}{activeWeight.weight_unit}</span>
-            )}
+            <small className="ml-1 font-mono text-[11px] text-[#7b877f]">
+              incl. taxes
+            </small>
             {hasDiscount && (
-              <span className="ml-2 text-xs line-through text-gray-400">
+              <span className="ml-2 text-xs line-through text-[#7b877f]">
                 ₹{Math.round(originalPricePerGram * referenceWeight)}
               </span>
             )}
           </div>
 
           {stockStatus.status === "out" ? (
-            <button disabled className="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm font-semibold cursor-not-allowed">
+            <button disabled className="rounded-pill bg-k2-cream-dark px-4 py-2 text-sm font-semibold text-[#7b877f] cursor-not-allowed">
               Out of Stock
             </button>
           ) : currentWeightQuantity === 0 ? (
             <button
               type="button"
               onClick={() => onAddToCart(product, isWholeChicken ? undefined : activeWeight)}
-              className="btn-primary px-5 py-2 rounded-full text-white text-sm font-semibold flex items-center gap-2"
+              className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-k2-saffron text-2xl leading-none text-white transition-all hover:scale-110 hover:bg-k2-saffron-hot hover:rotate-90"
+              aria-label={`Add ${product.name} to cart`}
             >
-              <Plus className="w-3.5 h-3.5" /> Add
+              +
             </button>
           ) : (
-            <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1">
+            <div className="flex items-center gap-1.5 rounded-pill bg-k2-cream-dark p-1">
               <button
                 type="button"
                 onClick={() => onUpdateQuantity(product.id, currentWeightQuantity - 1, isWholeChicken ? undefined : activeWeight)}
-                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-700 hover:bg-brand-red hover:text-white transition-colors border border-gray-200"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-k2-green transition-colors hover:bg-k2-green hover:text-k2-cream"
               >
                 <Minus className="w-3 h-3" />
               </button>
-              <span className="text-gray-900 font-semibold w-6 text-center text-sm">{currentWeightQuantity}</span>
+              <span className="w-6 text-center text-sm font-semibold text-k2-ink">{currentWeightQuantity}</span>
               <button
                 type="button"
                 onClick={() => onUpdateQuantity(product.id, currentWeightQuantity + 1, isWholeChicken ? undefined : activeWeight)}
                 disabled={stockStatus.status === "out"}
-                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-700 hover:bg-brand-red hover:text-white transition-colors border border-gray-200 disabled:opacity-50"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-k2-saffron text-white transition-colors hover:bg-k2-saffron-hot disabled:opacity-50"
               >
                 <Plus className="w-3 h-3" />
               </button>
@@ -408,8 +388,8 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
   }
 
   return (
-    <div className="pb-20 bg-white w-full overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full overflow-x-hidden bg-k2-cream pb-20">
+      <div className="mx-auto max-w-[1180px] px-6">
         {/* Category filter pills — centered on phone; wrap instead of one-sided scroll */}
         <div className="mb-8 flex w-full justify-center">
           <div className="flex w-full max-w-4xl flex-wrap justify-center gap-2 sm:gap-2.5 md:gap-3">
@@ -459,20 +439,20 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
           </select>
         </div>
 
-        {/* Products grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.map((product, index) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                index={index}
-                isBestseller={bestsellerIds.includes(product.id)}
-                getStockStatus={getStockStatus}
-                getWeightQuantity={getWeightQuantity}
-                onAddToCart={addToCart}
-                onUpdateQuantity={updateQuantity}
-              />
+              <div key={product.id} className="rv">
+                <ProductCard
+                  product={product}
+                  index={index}
+                  isBestseller={bestsellerIds.includes(product.id)}
+                  getStockStatus={getStockStatus}
+                  getWeightQuantity={getWeightQuantity}
+                  onAddToCart={addToCart}
+                  onUpdateQuantity={updateQuantity}
+                />
+              </div>
             ))}
           </div>
         ) : (
@@ -489,6 +469,26 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
             </button>
           </div>
         )}
+
+        <div className="rv mt-10 flex flex-wrap items-center justify-between gap-6 rounded-card bg-k2-green p-7 text-k2-cream sm:p-8">
+          <div className="max-w-xl">
+            <h3 className="font-display text-[22px] font-bold">
+              🔪 Want it cut your way?
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-k2-cream/80">
+              Biryani cut, 16 pieces, butterflied breast, skin off — our master
+              butchers cut to your exact instructions. Just add a note at
+              checkout, free of charge.
+            </p>
+          </div>
+          <Link
+            href="/cart"
+            className="btn-primary inline-flex items-center gap-2 rounded-pill px-7 py-3.5 text-[15px] font-semibold"
+          >
+            Add Custom Instructions
+            <span>→</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -195,7 +195,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-mt-[4.5rem] sm:scroll-mt-20 py-16 sm:py-20 section-alt border-t border-gray-100"
+      className="scroll-mt-[4.5rem] border-t border-k2-paper section-alt py-16 sm:scroll-mt-20 sm:py-20"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader

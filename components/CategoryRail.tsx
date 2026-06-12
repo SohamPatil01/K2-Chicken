@@ -1,20 +1,20 @@
-"use client";
-
-// CategoryRail is now a visual header above the product catalog.
-// The actual category filter pills are inside ProductCatalog.
 export default function CategoryRail() {
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="reveal-up mb-6 px-1 text-center sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3 px-2">
-            Shop Fresh Chicken Cuts
+    <div className="rv mx-auto max-w-[1180px] px-6 pt-20 pb-2">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <span className="section-eyebrow">Today&apos;s fresh cuts</span>
+          <h2 className="font-display text-[clamp(1.875rem,4vw,2.875rem)] font-extrabold leading-[1.08] tracking-tight text-k2-green-deep">
+            Cut at dawn.
+            <br />
+            On your stove by dinner.
           </h2>
-          <p className="text-gray-500 text-sm sm:text-base max-w-2xl mx-auto px-2">
-            Hand-cut daily by master butchers. Raw, fresh, and ready for your kitchen.
-          </p>
         </div>
+        <p className="max-w-md text-base text-[#4d5a52]">
+          Pick your weight, add to cart, done. Every pack is hand-cut to order
+          from this morning&apos;s batch.
+        </p>
       </div>
-    </section>
+    </div>
   );
 }

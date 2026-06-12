@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
 
 interface Review {
   id: number;
@@ -17,15 +16,16 @@ interface ReviewsSectionProps {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-0.5 text-brand-red mb-4">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className="w-4 h-4" fill={i <= Math.floor(rating) ? "currentColor" : "none"} />
-      ))}
+    <div className="mb-3.5 tracking-widest text-k2-saffron" aria-label={`${rating} out of 5 stars`}>
+      {"★".repeat(Math.floor(rating))}
+      {"☆".repeat(5 - Math.floor(rating))}
     </div>
   );
 }
 
-export default function ReviewsSection({ initialReviews }: ReviewsSectionProps = {}) {
+export default function ReviewsSection({
+  initialReviews,
+}: ReviewsSectionProps = {}) {
   const [reviews, setReviews] = useState<Review[]>(initialReviews || []);
   const [loading, setLoading] = useState(!initialReviews);
 
@@ -33,7 +33,9 @@ export default function ReviewsSection({ initialReviews }: ReviewsSectionProps =
     if (!initialReviews) {
       fetch("/api/reviews")
         .then((r) => r.json())
-        .then((data) => setReviews(Array.isArray(data) ? data.slice(0, 6) : []))
+        .then((data) =>
+          setReviews(Array.isArray(data) ? data.slice(0, 6) : [])
+        )
         .catch(() => setReviews([]))
         .finally(() => setLoading(false));
     } else {
@@ -44,21 +46,20 @@ export default function ReviewsSection({ initialReviews }: ReviewsSectionProps =
   if (loading) {
     return (
       <section
-        className="py-20 bg-white"
+        className="px-6 py-20"
         role="status"
         aria-live="polite"
         aria-busy="true"
         aria-label="Loading reviews"
       >
         <span className="sr-only">Loading reviews</span>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="grid gap-6 md:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="testimonial-card p-8 animate-pulse">
-                <div className="h-4 bg-gray-100 rounded w-1/4 mb-4" />
-                <div className="h-20 bg-gray-100 rounded mb-6" />
-                <div className="h-4 bg-gray-100 rounded w-1/2" />
-              </div>
+              <div
+                key={i}
+                className="h-56 animate-pulse rounded-card border border-k2-paper bg-white"
+              />
             ))}
           </div>
         </div>
@@ -69,33 +70,36 @@ export default function ReviewsSection({ initialReviews }: ReviewsSectionProps =
   const displayed = reviews.slice(0, 3);
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">What Home Chefs Say</h2>
-          <p className="text-gray-500">Real reviews from Pune&apos;s cooking enthusiasts</p>
+    <section className="px-6 pb-20 pt-4" id="reviews">
+      <div className="mx-auto max-w-[1180px]">
+        <div className="rv">
+          <span className="section-eyebrow">What home chefs say</span>
+          <h2 className="font-display text-[clamp(1.875rem,4vw,2.875rem)] font-extrabold tracking-tight text-k2-green-deep">
+            Trusted in 2,000+ Pune kitchens
+          </h2>
         </div>
 
         {displayed.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            <Star className="w-12 h-12 mx-auto mb-4 opacity-30" />
+          <div className="py-12 text-center text-[#7b877f]">
             <p>Be the first to share your experience!</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8 stagger-children">
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
             {displayed.map((review) => (
-              <div key={review.id} className="testimonial-card p-8 hover:shadow-lg transition-shadow min-w-0">
+              <div key={review.id} className="testimonial-card rv p-7">
                 <StarRating rating={review.rating} />
-                <p className="text-gray-600 mb-6 leading-relaxed text-sm break-words">
-                  &ldquo;{review.comment}&rdquo;
+                <p className="mb-4 text-sm leading-relaxed text-k2-ink">
+                  {review.comment}
                 </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm flex-shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-k2-green font-display font-bold text-k2-cream">
                     {review.user_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-gray-900 font-semibold text-sm break-words">{review.user_name}</h4>
-                    <p className="text-gray-400 text-xs">Verified Customer</p>
+                    <b className="block text-sm">{review.user_name}</b>
+                    <span className="font-mono text-[11px] uppercase tracking-wide text-[#7b877f]">
+                      Verified Customer
+                    </span>
                   </div>
                 </div>
               </div>

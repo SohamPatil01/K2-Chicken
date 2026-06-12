@@ -57,7 +57,7 @@ export default function RecipeSection({
   if (loading) {
     return (
       <section
-        className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100"
+        className="border-t border-k2-paper bg-k2-cream py-16 sm:py-20"
         role="status"
         aria-live="polite"
         aria-busy="true"
@@ -93,7 +93,7 @@ export default function RecipeSection({
   }
 
   return (
-    <section className="py-16 sm:py-20 bg-gray-50 border-t border-gray-100">
+    <section className="border-t border-k2-paper bg-k2-cream py-16 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Recipes"

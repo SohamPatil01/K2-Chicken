@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import FreshnessClock from "@/components/FreshnessClock";
+import HeroAreaChecker from "@/components/HeroAreaChecker";
+import { getProductFallbackImage } from "@/lib/productImageFallbacks";
 
 interface HeroProduct {
   id: number;
@@ -16,23 +21,11 @@ interface HeroProps {
   heroProducts?: HeroProduct[];
 }
 
-const FALLBACK_PRODUCTS: HeroProduct[] = [
-  { id: 0, name: "Chicken Breast", price: 289, category: "boneless" },
-  { id: 0, name: "Whole Chicken", price: 259, category: "whole bird" },
-  { id: 0, name: "Chicken Drumsticks", price: 249, category: "with bone" },
-];
-
-const FALLBACK_IMAGES = [
-  "/images/Chicken-Breast-Boneless.jpg",
-  "/images/Whole-Chicken-5.jpg",
-  "/images/Chicken-Drumstick.jpg",
-];
-
-function formatPrice(product: HeroProduct) {
-  const defaultWeight = product.weightOptions?.find((w) => w.is_default) ?? product.weightOptions?.[0];
-  const price = defaultWeight ? defaultWeight.price : product.price;
-  const unit = defaultWeight ? `/${defaultWeight.weight}` : "/kg";
-  return { price, unit };
+function getBatchCode() {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `K2-${mm}${dd}-A`;
 }
 
 export default function Hero({
@@ -40,116 +33,129 @@ export default function Hero({
   freeDeliveryAbove = 350,
   heroProducts,
 }: HeroProps) {
-  const displayProducts = (heroProducts && heroProducts.length > 0 ? heroProducts : FALLBACK_PRODUCTS).slice(0, 3);
-  const cardPositions = [
-    "absolute top-0 right-0 w-60",
-    "absolute top-36 left-0 w-60",
-    "absolute bottom-8 right-8 w-60",
-  ];
-  const delays = ["0s", "2s", "4s"];
+  const featured =
+    heroProducts?.find((p) =>
+      p.name.toLowerCase().includes("curry cut")
+    ) ??
+    heroProducts?.[0];
+
+  const featuredImage = featured?.image_url
+    ? featured.image_url
+    : getProductFallbackImage(featured?.name || "Chicken Curry Cut");
 
   return (
-    <section className="relative flex min-h-[75vh] items-center overflow-hidden bg-white sm:min-h-[80vh]">
-      {/* Background image with heavy white overlay */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/hero-fresh-simple.png"
-          alt=""
-          aria-hidden="true"
-          fill
-          priority
-          quality={55}
-          sizes="100vw"
-          className="w-full h-full object-cover opacity-15"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/40" />
-      </div>
+    <header className="hero relative overflow-hidden bg-k2-green text-k2-cream">
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 85% 20%, rgba(244,114,11,.18), transparent 60%), radial-gradient(ellipse 50% 60% at 10% 90%, rgba(191,232,217,.10), transparent 60%)",
+        }}
+      />
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
-          {/* Left text column */}
-          <div className="mx-auto w-full max-w-xl space-y-5 text-center lg:mx-0 lg:max-w-none lg:text-left">
-            {/* Fresh badge */}
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-2 text-left text-xs font-semibold text-green-700 hero-text-reveal sm:px-4 sm:text-sm">
-              <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-500" />
-              <span className="leading-snug">100% Fresh Raw Chicken — Never Frozen, Never Cooked</span>
-            </div>
-
-            {/* Headline */}
-            <h1 className="font-serif text-4xl font-bold leading-[1.12] text-gray-900 hero-text-reveal stagger-1 sm:text-5xl md:text-6xl">
-              Farm Fresh <br />
-              <span className="text-brand-red italic">Raw Chicken</span><br />
-              Delivered Daily
-            </h1>
-
-            {/* Sub */}
-            <p className="mx-auto max-w-lg text-base leading-relaxed text-gray-600 hero-text-reveal stagger-2 sm:text-lg lg:mx-0">
-              Premium quality raw chicken cuts, hand-cleaned by master butchers and hygienically packed. Delivered fresh to Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad.
-              {deliveryEnabled && freeDeliveryAbove > 0 && (
-                <span className="block mt-2 font-semibold text-brand-red">Free delivery above ₹{freeDeliveryAbove}</span>
-              )}
-            </p>
-
-            {/* CTA buttons */}
-            <div className="flex flex-col gap-3 hero-text-reveal stagger-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
-              <Link
-                href="/#products"
-                className="btn-primary inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-3.5 text-base font-semibold text-white sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
-              >
-                Shop Fresh Cuts
-                <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-              <Link
-                href="/#about"
-                className="inline-flex w-full items-center justify-center gap-3 rounded-full border-2 border-gray-300 px-6 py-3.5 text-base font-semibold text-gray-700 transition-all hover:border-brand-red hover:text-brand-red sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
-              >
-                <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                </svg>
-                Our Process
-              </Link>
-            </div>
-
+      <div className="relative mx-auto grid max-w-[1180px] items-center gap-14 px-6 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 lg:px-6 lg:py-20">
+        <div>
+          <div className="mb-6 inline-flex max-w-full items-center gap-2.5 rounded-pill border border-k2-cream/25 bg-k2-cream/10 px-4 py-2 font-mono text-xs tracking-wide">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="absolute inset-0 rounded-full bg-emerald-400" />
+              <span className="absolute -inset-1 rounded-full border-2 border-emerald-400 animate-pulse-ring" />
+            </span>
+            <span>
+              TODAY&apos;S BATCH · CUT AT 6:00 AM ·{" "}
+              <FreshnessClock /> FRESH
+            </span>
           </div>
 
-          {/* Right floating product cards (desktop only) */}
-          <div className="hidden lg:block relative h-[500px]">
-            {displayProducts.map((product, i) => {
-              const { price, unit } = formatPrice(product);
-              const imgSrc = product.image_url || FALLBACK_IMAGES[i] || "/hero-fresh-simple.png";
-              const tag = product.category
-                ? product.category.replace(/_/g, " ").toUpperCase()
-                : "FRESH CUT";
-              return (
-                <div
-                  key={product.id || i}
-                  className={`${cardPositions[i]} bg-white rounded-2xl p-3 border border-gray-200 shadow-xl animate-float`}
-                  style={{ animationDelay: delays[i] }}
-                >
-                  <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3">
-                    <Image
-                      src={imgSrc}
-                      fill
-                      sizes="240px"
-                      className="object-cover"
-                      alt={product.name}
-                      unoptimized={imgSrc.startsWith("http")}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="fresh-tag text-[10px] font-bold px-2 py-0.5 rounded-full">FRESH</span>
-                    <span className="cut-badge text-[10px] font-bold px-2 py-0.5 rounded-full capitalize">{tag}</span>
-                  </div>
-                  <h3 className="font-serif text-sm text-gray-900 font-semibold">{product.name}</h3>
-                  <p className="price-tag text-base">₹{price} <span className="text-xs text-gray-400 font-normal">{unit}</span></p>
-                </div>
-              );
-            })}
+          <h1 className="font-display text-[clamp(2.75rem,6.2vw,4.75rem)] font-extrabold leading-[1.02] tracking-tight">
+            Farm fresh chicken,
+            <br />
+            cut this morning,
+            <br />
+            <span className="relative whitespace-nowrap text-k2-saffron">
+              at your door in 90&nbsp;min
+              <svg
+                className="absolute -bottom-2 left-0 h-3.5 w-full overflow-visible"
+                viewBox="0 0 320 14"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 10 Q 160 -2 316 8"
+                  stroke="#F4720B"
+                  strokeWidth="5"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray="320"
+                  strokeDashoffset="320"
+                  className="animate-draw-line"
+                />
+              </svg>
+            </span>
+          </h1>
+
+          <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-k2-cream/80">
+            Hand-cleaned by master butchers, vacuum-packed at 0–4°C, and
+            delivered the same day it&apos;s cut. No frozen stock. No chemicals.
+            No compromises.
+            {deliveryEnabled && freeDeliveryAbove > 0 && (
+              <span className="mt-2 block font-semibold text-k2-saffron">
+                Free delivery above ₹{freeDeliveryAbove}
+              </span>
+            )}
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3.5">
+            <Link
+              href="/#products"
+              className="btn-primary inline-flex items-center gap-2.5 rounded-pill px-7 py-4 text-[15px] font-semibold"
+            >
+              Shop Fresh Cuts
+              <span className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+            <Link
+              href="/#process"
+              className="inline-flex items-center gap-2.5 rounded-pill border-[1.5px] border-k2-cream/35 px-7 py-4 text-[15px] font-semibold text-k2-cream transition-colors hover:bg-k2-cream/10"
+            >
+              See Our Process
+            </Link>
+          </div>
+
+          <div className="mt-10">
+            <HeroAreaChecker freeDeliveryAbove={freeDeliveryAbove} />
           </div>
         </div>
+
+        <aside
+          className="hero-card mx-auto w-full max-w-md rotate-[1.5deg] rounded-card-lg bg-k2-cream p-6 text-k2-ink shadow-hero transition-transform duration-300 hover:rotate-0 hover:scale-[1.01] lg:max-w-none"
+          aria-label="featured product"
+        >
+          <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-orange-200 to-orange-400">
+            <Image
+              src={featuredImage}
+              alt={featured?.name || "Fresh chicken curry cut"}
+              fill
+              sizes="(max-width: 1024px) 100vw, 420px"
+              className="object-cover"
+              priority
+              unoptimized={featuredImage.startsWith("http")}
+            />
+          </div>
+          <div className="mb-3 flex flex-wrap justify-between gap-2 rounded-lg bg-k2-ice px-3.5 py-2.5 font-mono text-[11.5px] text-k2-green">
+            <span>BATCH #{getBatchCode()}</span>
+            <span>CUT 06:00 · PACKED 07:15</span>
+          </div>
+          <h3 className="font-display text-xl font-bold">
+            {featured?.name || "Chicken Curry Cut"}
+          </h3>
+          <p className="mt-1 text-sm text-[#5a6a61]">
+            Today&apos;s most ordered ·{" "}
+            <FreshnessClock className="font-mono font-semibold text-k2-saffron-hot" />{" "}
+            since cutting
+          </p>
+        </aside>
       </div>
-    </section>
+    </header>
   );
 }

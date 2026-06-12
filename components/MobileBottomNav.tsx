@@ -22,7 +22,7 @@ export default function MobileBottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden safe-bottom pt-2">
-      <div className="bg-white/98 backdrop-blur-2xl border-t border-gray-200/50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+      <div className="border-t border-k2-paper bg-k2-cream/98 shadow-[0_-4px_20px_rgba(18,61,43,0.08)] backdrop-blur-2xl">
         <div className="flex items-center justify-around py-2 px-1 min-h-[56px]">
           {navItems.map((item) => {
             const isActive =
@@ -39,15 +39,15 @@ export default function MobileBottomNav() {
                 <div
                   className={`flex flex-col items-center justify-center rounded-2xl transition-all duration-200 ${
                     isActive
-                      ? "text-brand-red"
-                      : "text-gray-500 active:text-gray-700"
+                      ? "text-k2-saffron"
+                      : "text-[#5a6a61] active:text-k2-ink"
                   }`}
                 >
                   <div className="relative mb-1">
                     <div
                       className={`absolute inset-0 rounded-full transition-all duration-200 ${
                         isActive
-                          ? "bg-red-50 scale-150"
+                          ? "scale-150 bg-k2-cream-dark"
                           : "bg-transparent scale-0"
                       }`}
                     ></div>
@@ -65,7 +65,7 @@ export default function MobileBottomNav() {
                   </div>
                   <span
                     className={`text-[11px] font-bold transition-colors duration-200 ${
-                      isActive ? "text-brand-red" : "text-gray-500"
+                      isActive ? "text-k2-saffron" : "text-[#5a6a61]"
                     }`}
                   >
                     {item.label}

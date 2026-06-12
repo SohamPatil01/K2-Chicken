@@ -1,39 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { FAQ_ITEMS } from "@/lib/seo/faq";
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-20 section-alt">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
-          <p className="text-gray-500">Everything you need to know about our fresh chicken</p>
+    <section id="faq" className="section-alt px-6 py-20">
+      <div className="mx-auto max-w-[1180px]">
+        <div className="rv text-center">
+          <span className="section-eyebrow">Good to know</span>
+          <h2 className="font-display text-[clamp(1.875rem,4vw,2.875rem)] font-extrabold tracking-tight text-k2-green-deep">
+            Frequently asked questions
+          </h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="rv mx-auto mt-12 max-w-3xl">
           {FAQ_ITEMS.map((item, index) => {
             const isOpen = openIndex === index;
             return (
-              <div key={index} className="faq-item">
+              <div key={index} className="faq-item mb-3">
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                  className="flex w-full items-center justify-between gap-4 p-5 text-left text-[15.5px] font-semibold text-k2-ink transition-colors hover:bg-k2-cream/50"
+                  aria-expanded={isOpen}
                 >
-                  <span className="text-gray-900 font-medium pr-4">{item.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-                  />
+                  <span>{item.question}</span>
+                  <span
+                    className={`shrink-0 font-display text-2xl text-k2-saffron transition-transform ${isOpen ? "rotate-45" : ""}`}
+                    aria-hidden="true"
+                  >
+                    +
+                  </span>
                 </button>
-                <div className={`overflow-hidden transition-all duration-300 ${isOpen ? "max-h-48" : "max-h-0"}`}>
-                  <div className="px-6 pb-6 text-gray-500 text-sm leading-relaxed border-t border-gray-100 pt-4">
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96" : "max-h-0"}`}
+                >
+                  <p className="px-5 pb-5 text-sm leading-relaxed text-[#4d5a52]">
                     {item.answer}
-                  </div>
+                  </p>
                 </div>
               </div>
             );

@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
  * newly mounted reveal nodes; otherwise sections stay at opacity 0.
  */
 export function useScrollReveal(
-  selector = ".reveal-up, .reveal-left, .reveal-right, .reveal-scale, .stagger-children",
+  selector = ".reveal-up, .reveal-left, .reveal-right, .reveal-scale, .stagger-children, .rv, .process-timeline",
   threshold = 0.12
 ) {
   const pathname = usePathname();

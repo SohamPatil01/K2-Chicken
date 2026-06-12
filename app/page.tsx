@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
-import MotionSection from "@/components/MotionSection";
 import {
   HomeContactSectionFallback,
   HomeProductCatalogFallback,
@@ -316,50 +315,35 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
       />
-      <div className="bg-white min-h-screen w-full max-w-[100vw] overflow-x-hidden">
-        <Hero deliveryEnabled={deliveryEnabled} freeDeliveryAbove={350} heroProducts={products.slice(0, 3)} />
+      <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-k2-cream">
+        <Hero
+          deliveryEnabled={deliveryEnabled}
+          freeDeliveryAbove={350}
+          heroProducts={products.slice(0, 3)}
+        />
+        <TrustBar />
         <InauguralDiscountFlyer />
         <PromotionsFlyer initialPromotions={promotions} />
-        <div className="reveal-up"><TrustBar /></div>
 
-        <div id="products" className="scroll-mt-20 reveal-up">
+        <section id="products" className="scroll-mt-20">
           <CategoryRail />
-        </div>
-
-        <MotionSection delay={0.2}>
           <ProductCatalog
             initialProducts={products}
             deliveryEnabled={deliveryEnabled}
           />
-        </MotionSection>
+        </section>
 
-        <MotionSection delay={0.3}>
-          <HomeOffersSection promotions={promotions} />
-        </MotionSection>
+        <HomeOffersSection promotions={promotions} />
 
-        <MotionSection
-          delay={0.35}
-          id="about"
-          className="scroll-mt-[4.5rem] sm:scroll-mt-20"
-        >
-          <WhyChooseUs />
-        </MotionSection>
+        <WhyChooseUs />
 
-        <MotionSection delay={0.4}>
-          <ReviewsSection initialReviews={reviews} />
-        </MotionSection>
+        <ReviewsSection initialReviews={reviews} />
 
-        <MotionSection delay={0.5}>
-          <RecipeSection initialRecipes={recipes} />
-        </MotionSection>
+        <RecipeSection initialRecipes={recipes} />
 
-        <MotionSection delay={0.7}>
-          <FAQSection />
-        </MotionSection>
+        <FAQSection />
 
-        <MotionSection delay={0.8}>
-          <ContactSection />
-        </MotionSection>
+        <ContactSection />
       </div>
     </>
   );

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Poppins, Playfair_Display } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Instrument_Sans,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -17,30 +21,29 @@ import { DELIVERY_AREAS_PHRASE } from "@/lib/deliveryAreas";
 
 const siteUrl = getSiteUrl();
 
-const inter = Inter({
+const displayFont = Bricolage_Grotesque({
   subsets: ["latin"],
+  variable: "--font-display",
   display: "swap",
   preload: true,
 });
 
-const poppins = Poppins({
+const bodyFont = Instrument_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  variable: "--font-body",
   display: "swap",
   preload: true,
 });
 
-const playfair = Playfair_Display({
+const monoFont = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-playfair",
+  variable: "--font-mono",
   display: "swap",
   preload: true,
 });
 
 export const viewport = {
-  themeColor: "#F97316",
+  themeColor: "#123D2B",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -227,7 +230,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} ${poppins.variable} ${playfair.variable}`}
+        className={`${bodyFont.className} ${displayFont.variable} ${bodyFont.variable} ${monoFont.variable} font-body bg-k2-cream text-k2-ink antialiased`}
         suppressHydrationWarning
       >
         <AuthProvider>

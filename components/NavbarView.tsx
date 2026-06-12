@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { ShoppingBag, Menu, X, User, LogOut, LogIn, Search, MapPin, ChevronDown, Home, Package, ChefHat, Users, MessageCircle } from "lucide-react";
+import {
+  ShoppingBag,
+  Menu,
+  X,
+  User,
+  LogOut,
+  LogIn,
+  Search,
+  Home,
+  Package,
+  ChefHat,
+  Users,
+  MessageCircle,
+} from "lucide-react";
+import { DELIVERY_AREAS_COMPACT } from "@/lib/deliveryAreas";
 
 export type NavbarViewProps = {
   bannerClass: string;
@@ -18,8 +31,29 @@ export type NavbarViewProps = {
   mounted: boolean;
 };
 
+const TICKER_ITEMS = [
+  "FREE DELIVERY ON ORDERS ABOVE ₹350",
+  "FRESH CHICKEN IN ~90 MINUTES",
+  DELIVERY_AREAS_COMPACT,
+  "CUT FRESH EVERY MORNING — NEVER FROZEN",
+  "100% HALAL CERTIFIED · FSSAI LICENSED",
+];
+
+function TickerContent() {
+  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  return (
+    <>
+      {items.map((text, i) => (
+        <span key={`${text}-${i}`} className="flex items-center gap-2.5">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
+          {text}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export default function NavbarView({
-  bannerClass,
   isMenuOpen,
   isActive,
   scrollToSection,
@@ -33,175 +67,286 @@ export default function NavbarView({
 }: NavbarViewProps) {
   return (
     <div role="banner" className="sticky top-0 z-50 w-full">
-      {/* Promo top bar */}
-      <div className="bg-brand-red px-3 py-2 text-center text-[10px] font-semibold leading-snug tracking-wide text-white sm:px-4 sm:text-xs">
-        <span className="inline-flex max-w-full flex-col items-center gap-1 sm:inline sm:flex-row sm:gap-2">
-          <span className="inline-flex items-center gap-1.5">
-            <svg className="h-3.5 w-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
-              <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h3.05a2.5 2.5 0 014.9 0H19a1 1 0 001-1v-5a1 1 0 00-.293-.707l-3-3A1 1 0 0016 4H3z"/>
-            </svg>
-            <span>FREE DELIVERY on orders above ₹350</span>
-          </span>
-          <span className="hidden text-white/80 sm:inline" aria-hidden="true">
-            |
-          </span>
-          <span>Fresh chicken delivered in ~90 mins — Pimple Nilakh, Baner, Pancard Club, Aundh & Wakad</span>
-        </span>
+      {/* Promo ticker */}
+      <div
+        className="overflow-hidden bg-k2-saffron py-2 text-white"
+        aria-label="offers"
+      >
+        <div className="marquee-track animate-marquee font-mono text-[12.5px] tracking-wide">
+          <TickerContent />
+          <TickerContent />
+        </div>
       </div>
 
       {/* Main nav */}
       <nav className="glass-nav w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
-
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 shrink-0 group">
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-red shadow-brand-sm shrink-0">
-                <Image src="/logo.png" alt="K2 Chicken" width={40} height={40} className="w-full h-full object-cover" />
-              </div>
-              <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-xl font-serif font-bold text-gray-900 group-hover:text-brand-red transition-colors tracking-tight">K2 Chicken</span>
-                <span className="text-[9px] text-gray-400 uppercase tracking-widest">Only Fresh, Never Frozen</span>
-              </div>
+        <div className="mx-auto max-w-[1180px] px-6">
+          <div className="flex h-[60px] items-center justify-between gap-4">
+            <Link href="/" className="group flex shrink-0 items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-k2-green font-display text-base font-extrabold text-k2-cream">
+                K2
+              </span>
+              <span className="hidden flex-col leading-tight sm:flex">
+                <span className="font-display text-[22px] font-extrabold text-k2-green transition-colors group-hover:text-k2-green-soft">
+                  K2 Chicken
+                </span>
+                <span className="font-mono text-[9.5px] font-normal uppercase tracking-widest text-k2-saffron-hot">
+                  Only fresh, never frozen
+                </span>
+              </span>
             </Link>
 
-            {/* Desktop search */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search chicken cuts, mince, whole bird..."
-                  className="w-full bg-gray-100 text-gray-900 pl-11 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const val = (e.target as HTMLInputElement).value.trim();
-                      if (val) window.location.href = `/?search=${encodeURIComponent(val)}#products`;
-                    }
-                  }}
-                />
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              </div>
+            <div className="hidden items-center gap-7 font-medium text-[15px] md:flex">
+              <button
+                type="button"
+                onClick={() => scrollToSection("products")}
+                className="nav-link relative py-1 text-k2-ink transition-colors hover:text-k2-green"
+              >
+                Fresh Cuts
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("process")}
+                className="nav-link relative py-1 text-k2-ink transition-colors hover:text-k2-green"
+              >
+                Our Process
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("reviews")}
+                className="nav-link relative py-1 text-k2-ink transition-colors hover:text-k2-green"
+              >
+                Reviews
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("faq")}
+                className="nav-link relative py-1 text-k2-ink transition-colors hover:text-k2-green"
+              >
+                FAQ
+              </button>
+              <Link
+                href="/recipes"
+                className={`nav-link relative py-1 transition-colors ${isActive("/recipes") ? "text-k2-saffron" : "text-k2-ink hover:text-k2-green"}`}
+              >
+                Recipes
+              </Link>
             </div>
 
-            {/* Desktop right actions */}
-            <div className="flex items-center gap-2 shrink-0">
-              {/* Location indicator */}
-              <div className="hidden lg:flex items-center gap-1.5 bg-gray-100 px-3 py-2 rounded-full text-sm text-gray-600 border border-gray-200 cursor-default select-none">
-                <MapPin className="w-3.5 h-3.5 text-brand-red" />
-                <span>Pune</span>
-                <ChevronDown className="w-3 h-3" />
+            <div className="flex items-center gap-2">
+              <div className="hidden lg:block">
+                <div className="relative w-52">
+                  <input
+                    type="text"
+                    placeholder="Search cuts..."
+                    className="search-glow w-full rounded-pill border border-k2-paper bg-white/80 py-2 pl-10 pr-4 text-sm text-k2-ink placeholder:text-[#7b877f] focus:outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const val = (e.target as HTMLInputElement).value.trim();
+                        if (val)
+                          window.location.href = `/?search=${encodeURIComponent(val)}#products`;
+                      }
+                    }}
+                  />
+                  <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7b877f]" />
+                </div>
               </div>
 
-              {/* Desktop nav links */}
-              <nav className="hidden md:flex items-center gap-0.5">
-                <Link href="/" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/") ? "text-brand-red" : "text-gray-600 hover:text-brand-red hover:bg-gray-50"}`}>Home</Link>
-                <button type="button" onClick={() => scrollToSection("products")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">Products</button>
-                <Link href="/recipes" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive("/recipes") ? "text-brand-red" : "text-gray-600 hover:text-brand-red hover:bg-gray-50"}`}>Recipes</Link>
-                <button type="button" onClick={() => scrollToSection("about")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">About</button>
-                <button type="button" onClick={() => scrollToSection("contact")} className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">Contact</button>
-              </nav>
-
-              {/* Auth */}
               {!authLoading && (
                 <>
                   {isAuthenticated ? (
-                    <div className="hidden md:flex items-center gap-1">
-                      <Link href="/orders" title="My Orders" className="p-2 rounded-lg text-gray-600 hover:text-brand-red hover:bg-gray-50 transition-colors">
-                        <User className="w-5 h-5" />
+                    <div className="hidden items-center gap-0.5 md:flex">
+                      <Link
+                        href="/orders"
+                        title="My Orders"
+                        className="rounded-lg p-2 text-k2-ink transition-colors hover:bg-k2-cream-dark hover:text-k2-green"
+                      >
+                        <User className="h-5 w-5" />
                       </Link>
-                      <button type="button" onClick={handleLogout} title="Logout" className="p-2 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors">
-                        <LogOut className="w-5 h-5" />
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        title="Logout"
+                        className="rounded-lg p-2 text-k2-ink transition-colors hover:bg-red-50 hover:text-red-600"
+                      >
+                        <LogOut className="h-5 w-5" />
                       </button>
                     </div>
                   ) : (
-                    <Link href="/login" className="hidden md:block px-5 py-2 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-700 transition-all text-sm">
+                    <Link
+                      href="/login"
+                      className="hidden rounded-pill px-4 py-2 text-sm font-semibold text-k2-green transition-colors hover:text-k2-saffron md:block"
+                    >
                       Sign In
                     </Link>
                   )}
                 </>
               )}
 
-              {/* Cart */}
-              <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <ShoppingBag className="w-5 h-5 text-gray-800" />
+              <Link
+                href="/cart"
+                className="relative rounded-full p-2 transition-colors hover:bg-k2-cream-dark"
+                aria-label="Cart"
+              >
+                <ShoppingBag className="h-5 w-5 text-k2-ink" />
                 {mounted && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center badge-glow">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-k2-saffron text-xs font-bold text-white badge-glow">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
               </Link>
 
-              {/* Mobile menu toggle */}
               <button
                 type="button"
-                className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                onClick={() => scrollToSection("products")}
+                className="btn-green hidden items-center gap-2 rounded-pill px-5 py-2.5 text-sm font-semibold sm:inline-flex"
+              >
+                🛒 Order Now
+              </button>
+
+              <button
+                type="button"
+                className="rounded-lg p-2 text-k2-ink transition-colors hover:bg-k2-cream-dark md:hidden"
                 onClick={onMenuToggle}
                 aria-label="Toggle menu"
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {isMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
 
-          {/* Mobile search bar */}
-          <div className="md:hidden pb-3">
+          <div className="pb-3 lg:hidden">
             <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search chicken cuts..."
-                className="w-full bg-gray-100 text-gray-900 pl-10 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none search-glow transition-all text-sm placeholder-gray-400"
+                className="search-glow w-full rounded-pill border border-k2-paper bg-white/80 py-2.5 pl-10 pr-4 text-sm placeholder:text-[#7b877f] focus:outline-none"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     const val = (e.target as HTMLInputElement).value.trim();
-                    if (val) window.location.href = `/?search=${encodeURIComponent(val)}#products`;
+                    if (val)
+                      window.location.href = `/?search=${encodeURIComponent(val)}#products`;
                   }
                 }}
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7b877f]" />
             </div>
           </div>
         </div>
 
-        {/* Mobile menu */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}>
-          <div className="py-3 px-4 border-t border-gray-100 bg-white">
+        <div
+          className={`overflow-hidden transition-all duration-300 md:hidden ${isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}
+        >
+          <div className="border-t border-k2-paper bg-k2-cream px-4 py-3">
             <nav className="flex flex-col gap-0.5">
-              <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium" onClick={onMenuClose}>
-                <Home className="w-5 h-5" /> Home
+              <Link
+                href="/"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-k2-ink hover:bg-white"
+                onClick={onMenuClose}
+              >
+                <Home className="h-5 w-5" /> Home
               </Link>
-              <button type="button" onClick={() => { scrollToSection("products"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
-                <Package className="w-5 h-5" /> Products
+              <button
+                type="button"
+                onClick={() => {
+                  scrollToSection("products");
+                  onMenuClose();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-k2-ink hover:bg-white"
+              >
+                <Package className="h-5 w-5" /> Fresh Cuts
               </button>
-              <Link href="/recipes" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium" onClick={onMenuClose}>
-                <ChefHat className="w-5 h-5" /> Recipes
+              <button
+                type="button"
+                onClick={() => {
+                  scrollToSection("process");
+                  onMenuClose();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-k2-ink hover:bg-white"
+              >
+                <Users className="h-5 w-5" /> Our Process
+              </button>
+              <Link
+                href="/recipes"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-k2-ink hover:bg-white"
+                onClick={onMenuClose}
+              >
+                <ChefHat className="h-5 w-5" /> Recipes
               </Link>
-              <button type="button" onClick={() => { scrollToSection("about"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
-                <Users className="w-5 h-5" /> About
+              <button
+                type="button"
+                onClick={() => {
+                  scrollToSection("reviews");
+                  onMenuClose();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-k2-ink hover:bg-white"
+              >
+                <MessageCircle className="h-5 w-5" /> Reviews
               </button>
-              <button type="button" onClick={() => { scrollToSection("contact"); onMenuClose(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 hover:text-brand-red font-medium w-full text-left">
-                <MessageCircle className="w-5 h-5" /> Contact
+              <button
+                type="button"
+                onClick={() => {
+                  scrollToSection("faq");
+                  onMenuClose();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-k2-ink hover:bg-white"
+              >
+                FAQ
               </button>
-              {!authLoading && (
-                isAuthenticated ? (
+              {!authLoading &&
+                (isAuthenticated ? (
                   <>
-                    <Link href="/orders" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-800 hover:bg-gray-50 font-medium" onClick={onMenuClose}>
-                      <User className="w-5 h-5" /> My Orders
+                    <Link
+                      href="/orders"
+                      className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-k2-ink hover:bg-white"
+                      onClick={onMenuClose}
+                    >
+                      <User className="h-5 w-5" /> My Orders
                     </Link>
-                    <button type="button" onClick={() => { onMenuClose(); handleLogout(); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-medium w-full text-left">
-                      <LogOut className="w-5 h-5" /> Logout
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onMenuClose();
+                        handleLogout();
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut className="h-5 w-5" /> Logout
                     </button>
                   </>
                 ) : (
-                  <Link href="/login" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900 text-white font-semibold mt-2" onClick={onMenuClose}>
-                    <LogIn className="w-5 h-5" /> Sign In
+                  <Link
+                    href="/login"
+                    className="mt-2 flex items-center gap-3 rounded-xl bg-k2-green px-4 py-3 font-semibold text-k2-cream"
+                    onClick={onMenuClose}
+                  >
+                    <LogIn className="h-5 w-5" /> Sign In
                   </Link>
-                )
-              )}
+                ))}
             </nav>
           </div>
         </div>
       </nav>
+
+      <style jsx>{`
+        .nav-link::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 0;
+          height: 2px;
+          background: #f4720b;
+          transition: width 0.25s;
+        }
+        .nav-link:hover::after {
+          width: 100%;
+        }
+      `}</style>
     </div>
   );
 }

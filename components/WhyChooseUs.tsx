@@ -1,229 +1,211 @@
 "use client";
 
-import {
-  Award,
-  Package,
-  Scissors,
-  ShieldCheck,
-  Snowflake,
-  Tractor,
-  Truck,
-} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-const features = [
+const whyFeatures = [
   {
-    icon: Award,
+    icon: "🌾",
     title: "Premium Farm Sources",
-    desc: "Partnered with certified farms that raise chickens naturally without antibiotics or growth hormones.",
+    desc: "Partnered with certified farms raising chickens naturally — no antibiotics, no growth hormones.",
   },
   {
-    icon: Scissors,
+    icon: "🔪",
     title: "Master Butcher Cuts",
-    desc: "Hand-cut by experienced butchers to your exact preference — curry cut, biryani cut, or custom portions.",
+    desc: "Curry cut, biryani cut or fully custom portions — cut by hand to your exact preference.",
   },
   {
-    icon: Package,
-    title: "Hygienic Vacuum Packing",
-    desc: "Sealed in food-grade vacuum packs to lock in freshness and prevent contamination during transit.",
+    icon: "🧊",
+    title: "Cold Chain, Never Frozen",
+    desc: "0–4°C from cutting table to your door. Vacuum-sealed to lock freshness, never stockpiled.",
   },
   {
-    icon: ShieldCheck,
-    title: "100% Safe & Traceable",
-    desc: "Batch-coded packaging for full traceability. Strict FSSAI compliance and regular lab testing.",
-  },
-];
-
-const images = [
-  {
-    src: "/images/Chicken-Breast-Boneless.jpg",
-    alt: "Fresh chicken breast",
-    cls: "h-64",
-  },
-  {
-    src: "/images/Chicken-Drumstick.jpg",
-    alt: "Chicken drumsticks",
-    cls: "h-48",
-  },
-  {
-    src: "/images/Whole-Chicken-5.jpg",
-    alt: "Whole chicken",
-    cls: "h-48",
-  },
-  {
-    src: "/images/Chicken-Wings.jpg",
-    alt: "Chicken wings",
-    cls: "h-64",
+    icon: "🔍",
+    title: "100% Traceable",
+    desc: "Every pack carries a batch code. FSSAI compliant with regular independent lab testing.",
   },
 ];
 
 const processSteps = [
   {
-    num: 1,
-    icon: Tractor,
-    label: "Farm Sourcing",
-    desc: "Daily morning procurement from certified local farms within 50km radius.",
+    emoji: "🌅",
+    time: "05:30 AM",
+    title: "Farm Sourcing",
+    desc: "Birds procured from certified farms within 50 km — antibiotic and hormone free.",
   },
   {
-    num: 2,
-    icon: Scissors,
-    label: "Master Cutting",
-    desc: "Hand-cut by expert butchers in our FSSAI-approved processing unit.",
+    emoji: "🔪",
+    time: "06:00 AM",
+    title: "Master Cutting",
+    desc: "Hand-cut and halal processed in our FSSAI-approved unit, the same morning.",
   },
   {
-    num: 3,
-    icon: Package,
-    label: "Vacuum Packing",
-    desc: "Hygienically packed in temperature-controlled environment with ice gel packs.",
+    emoji: "📦",
+    time: "07:15 AM",
+    title: "Vacuum Packing",
+    desc: "Sealed with ice-gel packs in a temperature-controlled room, batch-coded for traceability.",
   },
   {
-    num: 4,
-    icon: Truck,
-    label: "Swift Delivery",
-    desc: "Insulated delivery bags ensure your chicken arrives at 0-4C freshness.",
+    emoji: "🛵",
+    time: "YOUR SLOT",
+    title: "90-Min Delivery",
+    desc: "Insulated bags hold 0–4°C until it reaches your kitchen — never frozen at any step.",
   },
 ];
 
-export default function WhyChooseUs() {
+const coldStats = [
+  { target: 4, suffix: "", label: "°C max storage temp" },
+  { target: 12, suffix: "", label: "hours farm to door" },
+  { target: 100, suffix: "", label: "% halal & chemical-free" },
+];
+
+function AnimatedCounter({
+  target,
+  suffix = "",
+  active,
+}: {
+  target: number;
+  suffix?: string;
+  active: boolean;
+}) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!active) return;
+    const t0 = performance.now();
+    let frame: number;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / 1200);
+      setValue(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [active, target]);
+
   return (
-    <section className="py-20 bg-white" id="about">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Text column */}
-          <div>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">
-              Why K2 Chicken{" "}
-              <br />
-              <span className="text-brand-red">Stands Apart</span>
+    <b className="block font-display text-[34px] font-extrabold text-k2-ice">
+      {value}
+      {suffix}
+    </b>
+  );
+}
+
+export default function WhyChooseUs() {
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [statsActive, setStatsActive] = useState(false);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsActive(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <>
+      <section className="px-6 py-20" id="about">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="rv">
+            <span className="section-eyebrow">Why K2 stands apart</span>
+            <h2 className="font-display text-[clamp(1.875rem,4vw,2.875rem)] font-extrabold tracking-tight text-k2-green-deep">
+              Not just another chicken shop
             </h2>
-            <p className="text-gray-500 text-lg mb-10 leading-relaxed">
-              We&apos;re not just another chicken shop &mdash; we&apos;re your trusted source for premium
-              raw chicken. Every cut tells a story of quality, hygiene, and uncompromising freshness.
-            </p>
-
-            <div className="space-y-6 stagger-children">
-              {features.map((f) => {
-                const Icon = f.icon;
-                return (
-                  <div key={f.title} className="flex gap-5 group">
-                    <div className="trust-icon w-14 h-14 rounded-2xl flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">{f.title}</h3>
-                      <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
-
-          {/* Image mosaic */}
-          <div className="relative hidden md:block">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 mt-8">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <div className="rounded-2xl overflow-hidden h-64 shadow-lg">
-                  <img src={images[0].src} className="w-full h-full object-cover" alt={images[0].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
-                </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <div className="rounded-2xl overflow-hidden h-48 shadow-lg">
-                  <img src={images[1].src} className="w-full h-full object-cover" alt={images[1].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
-                </div>
-              </div>
-              <div className="space-y-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <div className="rounded-2xl overflow-hidden h-48 shadow-lg">
-                  <img src={images[2].src} className="w-full h-full object-cover" alt={images[2].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
-                </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <div className="rounded-2xl overflow-hidden h-64 shadow-lg">
-                  <img src={images[3].src} className="w-full h-full object-cover" alt={images[3].alt} onError={(e) => { (e.target as HTMLImageElement).src = "/hero-fresh-simple.png"; }} />
-                </div>
-              </div>
-            </div>
-            {/* Floating badge */}
-            <div className="absolute -bottom-6 -left-6 bg-brand-red text-white p-6 rounded-2xl shadow-xl">
-              <div className="text-3xl font-bold">8+</div>
-              <div className="text-sm opacity-90">Years of Freshness</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Process section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24" id="process">
-        <div className="text-center mb-14 reveal-up">
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-3">
-            From Farm to Your Kitchen
-          </h2>
-          <p className="text-gray-500 text-sm md:text-base">
-            Our 4-step freshness guarantee
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-4 gap-10 relative stagger-children">
-          <div className="hidden md:block absolute top-9 left-[11%] right-[11%] h-px process-line" />
-
-          {processSteps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.num} className="relative text-center group">
-                <div className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center mb-6 border border-gray-200 group-hover:border-brand-red transition-all duration-300 relative z-10 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
-                  <Icon className="w-7 h-7 text-brand-red" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {step.num}. {step.label}
-                </h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                  {step.desc}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Stats bar */}
-        <div className="mt-20 bg-white border border-gray-200 rounded-[28px] p-8 md:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 shadow-[0_10px_30px_rgba(0,0,0,0.05)] reveal-up">
-          <div className="flex-1 max-w-2xl">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center text-brand-green">
-                <Snowflake className="w-4 h-4" />
-              </div>
-              <span className="text-brand-green font-semibold text-xs sm:text-sm uppercase tracking-[0.18em]">
-                Cold Chain Maintained
-              </span>
-            </div>
-            <h3 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-3">
-              Freshness You Can Trust
-            </h3>
-            <p className="text-gray-500 leading-relaxed text-sm md:text-base max-w-xl">
-              Every cut is sourced daily from certified farms, processed in our hygienic facility, and
-              delivered in temperature-controlled packaging. We never freeze, never stockpile.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-0 w-full lg:w-auto border border-gray-100 rounded-2xl overflow-hidden">
-            {[
-              { val: "0-4C", label: "Storage Temp" },
-              { val: "12h", label: "Farm to Door" },
-              { val: "100%", label: "Halal Cut" },
-            ].map((stat, i) => (
+          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {whyFeatures.map((f) => (
               <div
-                key={stat.label}
-                className={`px-6 py-5 text-center bg-white ${i > 0 ? "border-l border-gray-100" : ""}`}
+                key={f.title}
+                className="rv rounded-card border border-k2-paper bg-white p-7 transition-all hover:-translate-y-1 hover:border-k2-saffron"
               >
-                <div className="text-3xl md:text-4xl font-bold text-brand-red mb-1">
-                  {stat.val}
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-k2-ice text-2xl">
+                  {f.icon}
                 </div>
-                <div className="text-xs md:text-sm text-gray-500">
-                  {stat.label}
-                </div>
+                <h3 className="font-display text-lg font-bold text-k2-green-deep">
+                  {f.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#5a6a61]">
+                  {f.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section
+        className="bg-k2-green px-6 py-20 text-k2-cream"
+        id="process"
+      >
+        <div className="mx-auto max-w-[1180px]">
+          <div className="rv">
+            <span className="section-eyebrow text-k2-ice">
+              Farm to door in 12 hours
+            </span>
+            <h2 className="font-display text-[clamp(1.875rem,4vw,2.875rem)] font-extrabold leading-[1.08] tracking-tight text-k2-cream">
+              Where your chicken
+              <br />
+              was at 6 AM today
+            </h2>
+            <p className="mt-3 max-w-xl text-base text-k2-cream/75">
+              Full traceability on every batch-coded pack — here&apos;s the
+              journey, hour by hour.
+            </p>
+          </div>
+
+          <div className="process-timeline rv relative mt-16 grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            <div
+              className="tl-line absolute top-[26px] left-[6%] hidden h-0.5 bg-k2-saffron lg:block"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute top-[26px] right-[6%] left-[6%] hidden h-0.5 process-line lg:block"
+              aria-hidden="true"
+            />
+            {processSteps.map((step) => (
+              <div key={step.title} className="relative px-2 text-center">
+                <div className="timeline-node relative z-10 mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-k2-cream/30 bg-k2-green-deep text-[22px] transition-all duration-400">
+                  {step.emoji}
+                </div>
+                <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-k2-ice">
+                  {step.time}
+                </span>
+                <h3 className="font-display text-lg font-bold">{step.title}</h3>
+                <p className="mt-2 text-sm text-k2-cream/70">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div
+            ref={statsRef}
+            className="rv mt-16 grid grid-cols-1 overflow-hidden rounded-card bg-k2-cream/15 sm:grid-cols-3"
+          >
+            {coldStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="bg-k2-green-deep px-7 py-7 text-center"
+              >
+                <AnimatedCounter
+                  target={stat.target}
+                  suffix={stat.suffix}
+                  active={statsActive}
+                />
+                <span className="mt-1 block font-mono text-[11.5px] uppercase tracking-wider text-k2-cream/60">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
