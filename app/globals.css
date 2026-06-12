@@ -301,9 +301,11 @@
 
   /* ── Scroll reveal (reference .rv) ── */
   .rv {
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .rv:not(.in-view) {
     opacity: 0;
     transform: translateY(28px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
   }
   .rv.in-view {
     opacity: 1;

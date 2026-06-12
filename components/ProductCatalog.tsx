@@ -442,17 +442,16 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.map((product, index) => (
-              <div key={product.id} className="rv">
-                <ProductCard
-                  product={product}
-                  index={index}
-                  isBestseller={bestsellerIds.includes(product.id)}
-                  getStockStatus={getStockStatus}
-                  getWeightQuantity={getWeightQuantity}
-                  onAddToCart={addToCart}
-                  onUpdateQuantity={updateQuantity}
-                />
-              </div>
+              <ProductCard
+                key={product.id}
+                product={product}
+                index={index}
+                isBestseller={bestsellerIds.includes(product.id)}
+                getStockStatus={getStockStatus}
+                getWeightQuantity={getWeightQuantity}
+                onAddToCart={addToCart}
+                onUpdateQuantity={updateQuantity}
+              />
             ))}
           </div>
         ) : (
@@ -470,7 +469,7 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
           </div>
         )}
 
-        <div className="rv mt-10 flex flex-wrap items-center justify-between gap-6 rounded-card bg-k2-green p-7 text-k2-cream sm:p-8">
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-card bg-k2-green p-7 text-k2-cream sm:p-8">
           <div className="max-w-xl">
             <h3 className="font-display text-[22px] font-bold">
               🔪 Want it cut your way?
