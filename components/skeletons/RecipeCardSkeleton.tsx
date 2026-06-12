@@ -1,6 +1,6 @@
 export default function RecipeCardSkeleton() {
   return (
-    <div className="bg-white rounded-card shadow-soft overflow-hidden border border-gray-100 animate-pulse">
+    <div className="bg-white rounded-card shadow-soft overflow-hidden border border-k2-paper animate-pulse">
       <div className="aspect-[16/10] bg-gray-200" />
       <div className="p-4 space-y-2">
         <div className="h-5 bg-gray-200 rounded w-4/5" />

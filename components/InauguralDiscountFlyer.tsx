@@ -35,7 +35,7 @@ export default function InauguralDiscountFlyer() {
 
   return (
     <div
-      className={`fixed bottom-6 right-4 z-50 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 ${
+      className={`fixed bottom-6 right-4 z-50 w-72 bg-white rounded-card shadow-2xl border border-k2-paper overflow-hidden transition-all duration-300 ${
         isExiting
           ? "opacity-0 translate-y-4 pointer-events-none"
           : "opacity-100 translate-y-0"
@@ -62,8 +62,8 @@ export default function InauguralDiscountFlyer() {
       {/* Body */}
       <div className="px-4 py-3">
         <p className="text-2xl font-extrabold text-brand-red leading-none mb-0.5">10% OFF</p>
-        <p className="text-sm text-gray-700 font-medium">your first order</p>
-        <p className="text-xs text-gray-500 mt-1 mb-3">Sign up now and save on fresh premium chicken delivered to your door.</p>
+        <p className="text-sm text-k2-ink font-medium">your first order</p>
+        <p className="text-xs text-[#7b877f] mt-1 mb-3">Sign up now and save on fresh premium chicken delivered to your door.</p>
         <Link
           href="/login?redirect=/checkout"
           onClick={handleClose}
@@ -73,7 +73,7 @@ export default function InauguralDiscountFlyer() {
         </Link>
         <button
           onClick={handleClose}
-          className="block w-full text-center text-xs text-gray-400 hover:text-gray-600 mt-2 transition-colors"
+          className="block w-full text-center text-xs text-gray-400 hover:text-[#5a6a61] mt-2 transition-colors"
         >
           No thanks
         </button>

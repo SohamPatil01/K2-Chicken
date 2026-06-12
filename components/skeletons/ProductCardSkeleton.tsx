@@ -1,6 +1,6 @@
 export default function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-card shadow-soft overflow-hidden border border-gray-100 animate-pulse flex flex-col h-full">
+    <div className="bg-white rounded-card shadow-soft overflow-hidden border border-k2-paper animate-pulse flex flex-col h-full">
       <div className="aspect-[4/3] w-full bg-gray-200" />
       <div className="p-4 space-y-3">
         <div className="h-4 bg-gray-200 rounded w-3/4" />

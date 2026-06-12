@@ -55,7 +55,7 @@ export default function DeliveryChecker() {
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCheck()}
             placeholder="Enter area or pincode (Pimple Nilakh, Baner, etc.)"
-            className="w-full pl-10 pr-4 py-3 rounded-button border border-gray-200 bg-white/80 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-red-200 shadow-soft"
+            className="w-full pl-10 pr-4 py-3 rounded-button border border-k2-paper bg-white/80 text-k2-green-deep placeholder:text-[#7b877f] focus:outline-none focus:ring-2 focus:ring-k2-saffron/20 focus:border-k2-paper shadow-soft"
           />
         </div>
         <button
@@ -70,7 +70,7 @@ export default function DeliveryChecker() {
       {message && (
         <div
           className={`mt-2 flex items-center gap-2 text-sm font-medium ${
-            status === "yes" ? "text-green-700" : status === "no" || status === "error" ? "text-red-700" : "text-gray-600"
+            status === "yes" ? "text-green-700" : status === "no" || status === "error" ? "text-k2-saffron-hot" : "text-[#5a6a61]"
           }`}
         >
           {status === "yes" && <Check className="w-4 h-4 flex-shrink-0" />}

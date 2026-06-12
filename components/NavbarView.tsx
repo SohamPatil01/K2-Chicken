@@ -11,7 +11,6 @@ import {
   Search,
   Home,
   Package,
-  ChefHat,
   Users,
   MessageCircle,
 } from "lucide-react";
@@ -125,12 +124,6 @@ export default function NavbarView({
               >
                 FAQ
               </button>
-              <Link
-                href="/recipes"
-                className={`nav-link relative py-1 transition-colors ${isActive("/recipes") ? "text-k2-saffron" : "text-k2-ink hover:text-k2-green"}`}
-              >
-                Recipes
-              </Link>
             </div>
 
             <div className="flex items-center gap-2">
@@ -167,7 +160,7 @@ export default function NavbarView({
                         type="button"
                         onClick={handleLogout}
                         title="Logout"
-                        className="rounded-lg p-2 text-k2-ink transition-colors hover:bg-red-50 hover:text-red-600"
+                        className="rounded-lg p-2 text-k2-ink transition-colors hover:bg-k2-cream-dark hover:text-k2-saffron-hot"
                       >
                         <LogOut className="h-5 w-5" />
                       </button>
@@ -270,13 +263,6 @@ export default function NavbarView({
               >
                 <Users className="h-5 w-5" /> Our Process
               </button>
-              <Link
-                href="/recipes"
-                className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-k2-ink hover:bg-white"
-                onClick={onMenuClose}
-              >
-                <ChefHat className="h-5 w-5" /> Recipes
-              </Link>
               <button
                 type="button"
                 onClick={() => {
@@ -313,7 +299,7 @@ export default function NavbarView({
                         onMenuClose();
                         handleLogout();
                       }}
-                      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-red-600 hover:bg-red-50"
+                      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-k2-saffron-hot hover:bg-k2-cream-dark"
                     >
                       <LogOut className="h-5 w-5" /> Logout
                     </button>

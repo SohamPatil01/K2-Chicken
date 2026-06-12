@@ -30,7 +30,7 @@ export default function ConditionalLayout({
   return (
     <>
       <Navbar />
-      <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden pb-24 md:pb-0 min-h-screen main-mobile-pad">
+      <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden bg-k2-cream pb-24 md:pb-0 min-h-screen main-mobile-pad">
         {children}
       </main>
       <Footer />

@@ -21,9 +21,9 @@ export default function CategoryCard({
   return (
     <Link
       href={href}
-      className="group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200"
+      className="group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-k2-paper hover:border-k2-saffron/40"
     >
-      <div className="aspect-square sm:aspect-[4/3] relative bg-gray-100 overflow-hidden">
+      <div className="aspect-square sm:aspect-[4/3] relative bg-k2-cream-dark overflow-hidden">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -41,11 +41,11 @@ export default function CategoryCard({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth text-balance">
+        <h3 className="font-semibold text-k2-green-deep group-hover:text-brand-red transition-colors duration-smooth text-balance">
           {label}
         </h3>
         {description && (
-          <p className="text-sm text-gray-500 mt-0.5 line-clamp-2">
+          <p className="text-sm text-[#7b877f] mt-0.5 line-clamp-2">
             {description}
           </p>
         )}

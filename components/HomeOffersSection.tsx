@@ -22,7 +22,7 @@ export default function HomeOffersSection({ promotions }: HomeOffersSectionProps
 
   return (
     <section className="border-t border-k2-paper bg-k2-cream py-16 sm:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Offers"
           title="Save more with our promotions"

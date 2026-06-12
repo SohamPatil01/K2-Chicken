@@ -159,25 +159,25 @@ export default function PromotionsFlyer({
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-red-50 border-y border-red-100"
+      className="relative w-full overflow-hidden bg-k2-cream-dark border-y border-k2-paper"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+      <div className="relative z-10 max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         <div className="relative">
           {/* Navigation Arrows */}
           {promotions.length > 1 && (
             <>
               <button
                 onClick={goToPrevious}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-red-200 hover:bg-white hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-sm group"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-k2-paper hover:bg-white hover:border-k2-saffron/40 transition-all duration-300 hover:scale-105 shadow-sm group"
                 aria-label="Previous promotion"
               >
                 <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-brand-red group-hover:translate-x-[-2px] transition-transform" />
               </button>
               <button
                 onClick={goToNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-red-200 hover:bg-white hover:border-red-200 transition-all duration-300 hover:scale-105 shadow-sm group"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-8 z-20 p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-full border border-k2-paper hover:bg-white hover:border-k2-saffron/40 transition-all duration-300 hover:scale-105 shadow-sm group"
                 aria-label="Next promotion"
               >
                 <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-brand-red group-hover:translate-x-[2px] transition-transform" />
@@ -189,7 +189,7 @@ export default function PromotionsFlyer({
             {/* Left side - Animated Discount Badge */}
             <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 animate-slide-in-from-left">
               <div className="relative group">
-                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-red-200 shadow-md transform group-hover:scale-105 transition-all duration-300">
+                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-k2-paper shadow-md transform group-hover:scale-105 transition-all duration-300">
                   <div className="relative">
                     <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-brand-red" />
                   </div>
@@ -215,7 +215,7 @@ export default function PromotionsFlyer({
                       </span>
                     )}
                   {currentPromo.discount_type === "free_delivery" && (
-                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-gray-700">
+                    <span className="text-lg sm:text-xl md:text-2xl ml-1.5 text-k2-ink">
                       DELIVERY
                     </span>
                   )}
@@ -232,18 +232,18 @@ export default function PromotionsFlyer({
             >
               <div className="inline-flex items-center space-x-2 mb-2 animate-scale-in">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-brand-red" />
-                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-brand-red/80 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-red-200">
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wide text-brand-red/80 bg-white/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-k2-paper">
                   Limited Time
                 </span>
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-brand-red" />
               </div>
 
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight text-gray-900">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight text-k2-green-deep">
                 {currentPromo.title}
               </h3>
 
               {currentPromo.description && (
-                <p className="text-sm sm:text-base text-gray-700 mb-3 font-normal max-w-2xl mx-auto leading-relaxed">
+                <p className="text-sm sm:text-base text-k2-ink mb-3 font-normal max-w-2xl mx-auto leading-relaxed">
                   {currentPromo.description}
                 </p>
               )}
@@ -274,7 +274,7 @@ export default function PromotionsFlyer({
               )}
 
               {(currentPromo.start_date || currentPromo.end_date) && (
-                <div className="mt-3 flex items-center justify-center space-x-2 text-xs sm:text-sm text-gray-600">
+                <div className="mt-3 flex items-center justify-center space-x-2 text-xs sm:text-sm text-[#5a6a61]">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="font-medium">
                     {currentPromo.start_date &&
@@ -303,7 +303,7 @@ export default function PromotionsFlyer({
                     className={`relative transition-all duration-300 group ${index === currentIndex ? "w-2.5 h-8 lg:h-10" : "w-2 h-2"
                       } rounded-full ${index === currentIndex
                         ? "bg-brand-red shadow-md"
-                        : "bg-red-50/50 hover:bg-red-50"
+                        : "bg-k2-cream-dark/50 hover:bg-k2-cream-dark"
                       }`}
                     aria-label={`Go to promotion ${index + 1}`}
                   >

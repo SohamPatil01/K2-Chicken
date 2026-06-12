@@ -776,7 +776,7 @@ function CheckoutPageContent() {
   // Don't show empty cart if we're redirecting to order confirmation
   if (state.items.length === 0 && !redirectingToOrder) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20">
+      <div className="min-h-screen bg-k2-cream py-20">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="relative inline-block mb-8">
@@ -785,15 +785,15 @@ function CheckoutPageContent() {
                 className="relative text-gray-300 mx-auto"
               />
             </div>
-            <h1 className="text-5xl font-extrabold text-gray-900 mb-4">
+            <h1 className="text-5xl font-extrabold text-k2-green-deep mb-4">
               Your Cart is Empty
             </h1>
-            <p className="text-xl text-gray-600 mb-10 max-w-md mx-auto">
+            <p className="text-xl text-[#5a6a61] mb-10 max-w-md mx-auto">
               You need to add some delicious chicken to your cart first!
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-colors shadow-soft hover:shadow-card"
+              className="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-card transition-colors shadow-soft hover:shadow-card"
             >
               <Sparkles className="h-5 w-5" />
               <span>Start Shopping </span>
@@ -806,7 +806,7 @@ function CheckoutPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
+    <div className="min-h-screen bg-k2-cream py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
         <div
@@ -815,15 +815,15 @@ function CheckoutPageContent() {
           aria-live="polite"
           aria-busy="true"
         >
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
+          <div className="bg-white rounded-card shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
             <span className="sr-only">Placing your order, please wait</span>
             <div className="relative inline-block mb-6" aria-hidden>
-              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-brand-red" />
+              <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-k2-paper border-t-brand-red" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold text-k2-green-deep mb-2">
               Placing Your Order
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-[#5a6a61] mb-4">
               Please wait while we process your order...
             </p>
             <div className="flex items-center justify-center gap-2">
@@ -844,16 +844,16 @@ function CheckoutPageContent() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-4 sm:mb-6 md:mb-8 animate-slide-down">
           <div className="relative inline-block mb-2 sm:mb-3">
-            <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-1 sm:mb-2">
+            <h1 className="relative text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-k2-green-deep mb-1 sm:mb-2">
               Checkout{" "}
               <span className="text-brand-red">Details</span>
             </h1>
           </div>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg animate-slide-up stagger-1">
+          <p className="text-[#5a6a61] text-sm sm:text-base md:text-lg animate-slide-up stagger-1">
             Complete your order in just a few steps
           </p>
           {/* Step indicator */}
@@ -869,12 +869,12 @@ function CheckoutPageContent() {
                   className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-sm font-bold transition-all duration-smooth ${
                     step.num <= 2
                       ? "bg-brand-red text-white shadow-soft"
-                      : "bg-gray-200 text-gray-500"
+                      : "bg-gray-200 text-[#7b877f]"
                   }`}
                 >
                   {step.num}
                 </div>
-                <span className={`hidden sm:inline text-sm font-medium ${step.num <= 2 ? "text-gray-900" : "text-gray-500"}`}>
+                <span className={`hidden sm:inline text-sm font-medium ${step.num <= 2 ? "text-k2-green-deep" : "text-[#7b877f]"}`}>
                   {step.label}
                 </span>
                 {step.num < 4 && (
@@ -887,7 +887,7 @@ function CheckoutPageContent() {
 
         {/* Login Prompt */}
         {!authLoading && !isAuthenticated && (
-          <div className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-6 animate-scale-in stagger-1 shadow-sm transition-shadow hover:shadow-md">
+          <div className="mb-6 bg-k2-cream border border-k2-paper rounded-xl p-6 animate-scale-in stagger-1 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 animate-bounce-in">
                 <div className="p-3 bg-white rounded-full shadow-md">
@@ -895,14 +895,14 @@ function CheckoutPageContent() {
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-k2-green-deep mb-2">
                   Login Required to Place Order
                 </h3>
-                <p className="text-gray-700 mb-4">
+                <p className="text-k2-ink mb-4">
                   Please login or create an account to place your order. As a
                   registered customer, you&apos;ll get:
                 </p>
-                <ul className="text-sm text-gray-600 space-y-1 mb-4">
+                <ul className="text-sm text-[#5a6a61] space-y-1 mb-4">
                   <li className="flex items-center gap-2">
                     <span className="text-green-500 font-bold">✓</span>
                     <span>
@@ -934,17 +934,17 @@ function CheckoutPageContent() {
         {/* Offers Section - Subtle and Animated */}
         {(deliveryType === "delivery" || activePromotions.length > 0) && (
           <div className="mb-6 animate-fade-in">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-              <div className="bg-gray-50/50 px-5 py-3.5 border-b border-gray-100">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-k2-paper shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+              <div className="bg-k2-cream/50 px-5 py-3.5 border-b border-k2-paper">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-red-50 rounded-lg">
+                  <div className="p-1.5 bg-k2-cream-dark rounded-lg">
                     <Tag className="h-4 w-4 text-brand-red" />
                   </div>
                   <div>
-                    <h2 className="text-base font-semibold text-gray-800">
+                    <h2 className="text-base font-semibold text-k2-green-deep">
                       Available Offers
                     </h2>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-[#7b877f]">
                       Save more on your order
                     </p>
                   </div>
@@ -955,16 +955,16 @@ function CheckoutPageContent() {
                 {deliveryType === "delivery" &&
                   !qualifiesForFreeDelivery &&
                   amountNeededForFreeDelivery > 0 && (
-                    <div className="bg-red-50/50 border border-red-100 rounded-lg p-3.5 hover:bg-red-50 transition-all duration-300 animate-slide-in">
+                    <div className="bg-k2-cream-dark/50 border border-k2-paper rounded-lg p-3.5 hover:bg-k2-cream-dark transition-all duration-300 animate-slide-in">
                       <div className="flex items-start gap-2.5">
-                        <div className="p-2 bg-red-50 rounded-lg flex-shrink-0">
+                        <div className="p-2 bg-k2-cream-dark rounded-lg flex-shrink-0">
                           <Truck className="h-4 w-4 text-brand-red" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-800 text-sm mb-0.5">
+                          <h3 className="font-semibold text-k2-green-deep text-sm mb-0.5">
                             Free Delivery Available
                           </h3>
-                          <p className="text-xs text-gray-600 mb-2.5">
+                          <p className="text-xs text-[#5a6a61] mb-2.5">
                             Add{" "}
                             <span className="font-semibold text-brand-red">
                               ₹{amountNeededForFreeDelivery.toFixed(0)}
@@ -972,8 +972,8 @@ function CheckoutPageContent() {
                             more
                           </p>
                           {loadingSuggestions ? (
-                            <div className="flex items-center justify-center gap-2 py-2 text-sm text-gray-500">
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-200"></div>
+                            <div className="flex items-center justify-center gap-2 py-2 text-sm text-[#7b877f]">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-k2-paper"></div>
                               Loading suggestions...
                             </div>
                           ) : suggestedProducts.length > 0 ? (
@@ -999,7 +999,7 @@ function CheckoutPageContent() {
                                           },
                                         });
                                       }}
-                                      className="w-full flex items-center gap-2.5 p-2.5 bg-white rounded-lg border border-gray-200 hover:border-red-200 hover:shadow-sm transition-all duration-200 group animate-fade-in"
+                                      className="w-full flex items-center gap-2.5 p-2.5 bg-white rounded-lg border border-k2-paper hover:border-k2-saffron/40 hover:shadow-sm transition-all duration-200 group animate-fade-in"
                                       style={{
                                         animationDelay: `${idx * 100}ms`,
                                       }}
@@ -1011,12 +1011,12 @@ function CheckoutPageContent() {
                                           className="w-10 h-10 rounded-md object-contain flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
                                         />
                                       ) : (
-                                        <div className="w-10 h-10 rounded-md bg-red-50 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-md bg-k2-cream-dark flex items-center justify-center flex-shrink-0">
                                           <span className="text-lg">🍗</span>
                                         </div>
                                       )}
                                       <div className="flex-1 min-w-0 text-left">
-                                        <p className="text-xs font-medium text-gray-800 truncate group-hover:text-brand-red transition-colors">
+                                        <p className="text-xs font-medium text-k2-green-deep truncate group-hover:text-brand-red transition-colors">
                                           {product.name}
                                         </p>
                                         <div className="flex items-center gap-1.5 mt-0.5">
@@ -1030,7 +1030,7 @@ function CheckoutPageContent() {
                                           )}
                                         </div>
                                       </div>
-                                      <div className="flex-shrink-0 p-1.5 bg-red-50 rounded-md group-hover:bg-red-50 transition-colors">
+                                      <div className="flex-shrink-0 p-1.5 bg-k2-cream-dark rounded-md group-hover:bg-k2-cream-dark transition-colors">
                                         <Plus className="h-3.5 w-3.5 text-brand-red group-hover:rotate-90 transition-transform duration-200" />
                                       </div>
                                     </button>
@@ -1046,7 +1046,7 @@ function CheckoutPageContent() {
                           ) : (
                             <Link
                               href="/#products"
-                              className="block text-center text-sm text-brand-red hover:text-brand-red font-semibold bg-white px-3 py-2 rounded-lg border border-red-200 hover:border-red-200 transition-all"
+                              className="block text-center text-sm text-brand-red hover:text-brand-red font-semibold bg-white px-3 py-2 rounded-lg border border-k2-paper hover:border-k2-saffron/40 transition-all"
                             >
                               Browse Products →
                             </Link>
@@ -1080,11 +1080,11 @@ function CheckoutPageContent() {
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-800 text-sm mb-0.5">
+                          <h3 className="font-semibold text-k2-green-deep text-sm mb-0.5">
                             {promo.title}
                           </h3>
                           {promo.description && (
-                            <p className="text-xs text-gray-600 mb-2">
+                            <p className="text-xs text-[#5a6a61] mb-2">
                               {promo.description}
                             </p>
                           )}
@@ -1132,18 +1132,18 @@ function CheckoutPageContent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
           {/* Order Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+            <div className="bg-white rounded-card shadow-sm border border-k2-paper/60 overflow-hidden">
               {/* Form Header - More Subtle */}
-              <div className="bg-gray-50 p-6 border-b border-gray-200">
+              <div className="bg-k2-cream p-6 border-b border-k2-paper">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/60">
+                  <div className="p-2 bg-white rounded-lg shadow-sm border border-k2-paper/60">
                     <ShoppingBag className="h-5 w-5 text-brand-red" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-k2-green-deep">
                       Order Details
                     </h2>
-                    <p className="text-sm text-gray-600 mt-0.5">
+                    <p className="text-sm text-[#5a6a61] mt-0.5">
                       Complete your information to proceed
                     </p>
                   </div>
@@ -1153,13 +1153,13 @@ function CheckoutPageContent() {
               <form onSubmit={handleSubmit} className="p-6 space-y-6">
                 {/* Delivery Type Selection - Subtle Design */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="block text-sm font-medium text-k2-ink mb-3">
                     Order Type
                   </label>
                   {!deliveryEnabled && (
-                    <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+                    <div className="mb-4 p-4 bg-k2-cream-dark border-2 border-k2-paper rounded-xl">
                       <div className="flex items-center space-x-2">
-                        <AlertCircle className="h-5 w-5 text-red-600" />
+                        <AlertCircle className="h-5 w-5 text-k2-saffron-hot" />
                         <p className="text-sm font-semibold text-red-800">
                           Delivery service is currently unavailable. Please
                           select pickup.
@@ -1171,10 +1171,10 @@ function CheckoutPageContent() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-5 border rounded-xl transition-all duration-200 ${
                         !deliveryEnabled
-                          ? "border-gray-200 bg-gray-100/50 cursor-not-allowed opacity-50"
+                          ? "border-k2-paper bg-k2-cream-dark/50 cursor-not-allowed opacity-50"
                           : deliveryType === "delivery"
-                          ? "border-red-200 bg-red-50/50 shadow-sm cursor-pointer"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50 cursor-pointer"
+                          ? "border-k2-paper bg-k2-cream-dark/50 shadow-sm cursor-pointer"
+                          : "border-k2-paper bg-k2-cream/50 hover:border-k2-paper hover:bg-k2-cream-dark/50 cursor-pointer"
                       }`}
                     >
                       <input
@@ -1202,15 +1202,15 @@ function CheckoutPageContent() {
                       <div
                         className={`font-semibold text-sm transition-colors ${
                           !deliveryEnabled
-                            ? "text-gray-500"
+                            ? "text-[#7b877f]"
                             : deliveryType === "delivery"
                             ? "text-brand-red"
-                            : "text-gray-700"
+                            : "text-k2-ink"
                         }`}
                       >
                         Delivery
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-[#7b877f] mt-1">
                         {!deliveryEnabled ? "Unavailable" : "~90 mins"}
                       </div>
                       {!deliveryEnabled && (
@@ -1223,8 +1223,8 @@ function CheckoutPageContent() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-5 border rounded-xl cursor-pointer transition-all duration-200 ${
                         deliveryType === "pickup"
-                          ? "border-red-200 bg-red-50/50 shadow-sm"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
+                          ? "border-k2-paper bg-k2-cream-dark/50 shadow-sm"
+                          : "border-k2-paper bg-k2-cream/50 hover:border-k2-paper hover:bg-k2-cream-dark/50"
                       }`}
                     >
                       <input
@@ -1249,12 +1249,12 @@ function CheckoutPageContent() {
                         className={`font-semibold text-sm transition-colors ${
                           deliveryType === "pickup"
                             ? "text-brand-red"
-                            : "text-gray-700"
+                            : "text-k2-ink"
                         }`}
                       >
                         Pickup
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-[#7b877f] mt-1">
                         15-20 min
                       </div>
                     </label>
@@ -1265,7 +1265,7 @@ function CheckoutPageContent() {
                 <div>
                   <label
                     htmlFor="customerName"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-k2-ink mb-2"
                   >
                     Full Name
                   </label>
@@ -1275,7 +1275,7 @@ function CheckoutPageContent() {
                     name="customerName"
                     value={formData.customerName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-red-200 transition-all duration-200 bg-white text-base placeholder:text-gray-400"
+                    className="w-full px-4 py-3 border border-k2-paper rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-k2-paper transition-all duration-200 bg-white text-base placeholder:text-gray-400"
                     placeholder="Enter your full name"
                     required
                   />
@@ -1285,7 +1285,7 @@ function CheckoutPageContent() {
                 <div>
                   <label
                     htmlFor="customerPhone"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-k2-ink mb-2"
                   >
                     Phone Number
                   </label>
@@ -1295,7 +1295,7 @@ function CheckoutPageContent() {
                     name="customerPhone"
                     value={formData.customerPhone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-red-200 transition-all duration-200 bg-white placeholder:text-gray-400"
+                    className="w-full px-4 py-3 border border-k2-paper rounded-lg focus:ring-2 focus:ring-red-200/20 focus:border-k2-paper transition-all duration-200 bg-white placeholder:text-gray-400"
                     placeholder="Enter your phone number"
                     required
                   />
@@ -1306,7 +1306,7 @@ function CheckoutPageContent() {
                     {/* Saved Addresses */}
                     {isAuthenticated && savedAddresses.length > 0 && (
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-k2-ink mb-2">
                           <Home className="inline h-4 w-4 mr-1" />
                           Saved Addresses
                         </label>
@@ -1325,7 +1325,7 @@ function CheckoutPageContent() {
                               setSelectedCoordinates(null);
                             }
                           }}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200"
+                          className="w-full px-4 py-3 border-2 border-k2-paper rounded-xl focus:ring-2 focus:ring-red-200 focus:border-k2-saffron transition-all duration-200"
                         >
                           <option value="">Select a saved address</option>
                           {savedAddresses.map((address) => (
@@ -1350,7 +1350,7 @@ function CheckoutPageContent() {
                     <div>
                       <label
                         htmlFor="deliveryAddress"
-                        className="block text-sm font-semibold text-gray-700 mb-2"
+                        className="block text-sm font-semibold text-k2-ink mb-2"
                       >
                         <MapPin className="inline h-4 w-4 mr-1" />
                         {isAuthenticated && savedAddresses.length > 0
@@ -1364,14 +1364,14 @@ function CheckoutPageContent() {
                           value={formData.deliveryAddress}
                           onChange={handleInputChange}
                           rows={4}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200 resize-none"
+                          className="w-full px-4 py-3 border-2 border-k2-paper rounded-xl focus:ring-2 focus:ring-red-200 focus:border-k2-saffron transition-all duration-200 resize-none"
                           placeholder="Enter your complete delivery address (street, area, landmark)"
                           required={!selectedAddressId}
                         />
                         <button
                           type="button"
                           onClick={() => setShowMapPicker(true)}
-                          className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-red-200 hover:bg-red-50 transition-all duration-200 text-sm font-semibold"
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-k2-paper rounded-xl hover:border-k2-saffron/40 hover:bg-k2-cream-dark transition-all duration-200 text-sm font-semibold"
                         >
                           <MapPin size={18} className="text-brand-red" />
                           <span>Pick Address on Map</span>
@@ -1382,7 +1382,7 @@ function CheckoutPageContent() {
                             <button
                               type="button"
                               onClick={saveNewAddress}
-                              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-semibold transition-all duration-200"
+                              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-k2-cream-dark hover:bg-gray-200 rounded-xl text-sm font-semibold transition-all duration-200"
                             >
                               <Home size={16} />
                               <span>Save This Address</span>
@@ -1390,14 +1390,14 @@ function CheckoutPageContent() {
                           )}
                       </div>
                       {calculatingDelivery && (
-                        <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-200"></div>
+                        <div className="mt-3 flex items-center gap-2 text-sm text-[#5a6a61]">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-k2-paper"></div>
                           <span>Calculating delivery charge...</span>
                         </div>
                       )}
                       {!calculatingDelivery && deliveryCharge > 0 && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                          <p className="text-sm text-gray-700">
+                          <p className="text-sm text-k2-ink">
                             <span className="text-brand-red font-semibold">
                               Delivery charge: ₹{deliveryCharge}
                             </span>
@@ -1423,7 +1423,7 @@ function CheckoutPageContent() {
                   <div>
                     <label
                       htmlFor="deliveryInstructions"
-                      className="block text-sm font-semibold text-gray-700 mb-2"
+                      className="block text-sm font-semibold text-k2-ink mb-2"
                     >
                       <Info className="inline h-4 w-4 mr-1" />
                       Delivery Instructions (Optional)
@@ -1434,30 +1434,30 @@ function CheckoutPageContent() {
                       value={formData.deliveryInstructions}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 border-2 border-k2-paper rounded-xl focus:ring-2 focus:ring-red-200 focus:border-k2-saffron transition-all duration-200 resize-none"
                       placeholder="Add special instructions for delivery (e.g., Gate code: A123, Floor: 3rd, Landmark: Near blue building, Call before delivery, etc.)"
                       maxLength={200}
                     />
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-[#7b877f]">
                       Help our delivery team find you easily
                     </p>
                   </div>
                 )}
 
                 {deliveryType === "pickup" && (
-                  <div className="p-6 bg-gray-50 border border-gray-200 rounded-xl">
+                  <div className="p-6 bg-k2-cream border border-k2-paper rounded-xl">
                     <div className="flex items-center gap-3 mb-3">
                       <Store className="h-6 w-6 text-brand-red" />
-                      <h3 className="font-bold text-gray-900 text-lg">
+                      <h3 className="font-bold text-k2-green-deep text-lg">
                         Pickup Information
                       </h3>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">
+                    <p className="text-sm text-k2-ink mb-2">
                       <strong>Store Address:</strong> Shop No. 4, 24K Avenue,
                       New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh,
                       Pimpri-Chinchwad, Pune, Maharashtra 411027
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#5a6a61]">
                       We&apos;ll call you when your order is ready for pickup!
                     </p>
                   </div>
@@ -1465,7 +1465,7 @@ function CheckoutPageContent() {
 
                 {/* Promo Code Section */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-k2-ink mb-2">
                     <Tag className="inline h-4 w-4 mr-1" />
                     Promo Code
                   </label>
@@ -1487,7 +1487,7 @@ function CheckoutPageContent() {
                                 handleApplyPromoCode();
                               }
                             }}
-                            className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-200 focus:border-brand-red transition-all duration-200"
+                            className="w-full pl-12 pr-4 py-3 border-2 border-k2-paper rounded-xl focus:ring-2 focus:ring-red-200 focus:border-k2-saffron transition-all duration-200"
                             placeholder="Enter promo code"
                           />
                         </div>
@@ -1500,7 +1500,7 @@ function CheckoutPageContent() {
                           {validatingPromo ? "Applying..." : "Apply"}
                         </button>
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[#7b877f]">
                         Try{" "}
                         <button
                           type="button"
@@ -1543,7 +1543,7 @@ function CheckoutPageContent() {
                     </div>
                   )}
                   {promoError && (
-                    <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
+                    <p className="text-sm text-k2-saffron-hot mt-2 flex items-center gap-1">
                       <X size={14} />
                       {promoError}
                     </p>
@@ -1551,16 +1551,16 @@ function CheckoutPageContent() {
                 </div>
 
                 {/* Payment Method Selection - Subtle */}
-                <div className="pt-6 border-t border-gray-200/60">
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                <div className="pt-6 border-t border-k2-paper/60">
+                  <label className="block text-sm font-medium text-k2-ink mb-3">
                     Payment Method
                   </label>
                   <div className="grid grid-cols-3 gap-3">
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "cash"
-                          ? "border-red-200 bg-red-50/50 shadow-sm"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
+                          ? "border-k2-paper bg-k2-cream-dark/50 shadow-sm"
+                          : "border-k2-paper bg-k2-cream/50 hover:border-k2-paper hover:bg-k2-cream-dark/50"
                       }`}
                     >
                       <input
@@ -1586,12 +1586,12 @@ function CheckoutPageContent() {
                         className={`font-bold text-sm ${
                           paymentMethod === "cash"
                             ? "text-brand-red"
-                            : "text-gray-700"
+                            : "text-k2-ink"
                         }`}
                       >
                         Cash
                       </div>
-                      <div className="text-xs text-gray-600 mt-1 text-center">
+                      <div className="text-xs text-[#5a6a61] mt-1 text-center">
                         Pay on delivery
                       </div>
                     </label>
@@ -1599,8 +1599,8 @@ function CheckoutPageContent() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "upi"
-                          ? "border-red-200 bg-red-50/50 shadow-sm"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
+                          ? "border-k2-paper bg-k2-cream-dark/50 shadow-sm"
+                          : "border-k2-paper bg-k2-cream/50 hover:border-k2-paper hover:bg-k2-cream-dark/50"
                       }`}
                     >
                       <input
@@ -1626,12 +1626,12 @@ function CheckoutPageContent() {
                         className={`font-semibold text-sm ${
                           paymentMethod === "upi"
                             ? "text-brand-red"
-                            : "text-gray-700"
+                            : "text-k2-ink"
                         }`}
                       >
                         UPI
                       </div>
-                      <div className="text-xs text-gray-600 mt-1 text-center">
+                      <div className="text-xs text-[#5a6a61] mt-1 text-center">
                         QR Code
                       </div>
                     </label>
@@ -1639,8 +1639,8 @@ function CheckoutPageContent() {
                     <label
                       className={`relative flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                         paymentMethod === "card"
-                          ? "border-red-200 bg-red-50/50 shadow-sm"
-                          : "border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-100/50"
+                          ? "border-k2-paper bg-k2-cream-dark/50 shadow-sm"
+                          : "border-k2-paper bg-k2-cream/50 hover:border-k2-paper hover:bg-k2-cream-dark/50"
                       }`}
                     >
                       <input
@@ -1666,12 +1666,12 @@ function CheckoutPageContent() {
                         className={`font-semibold text-sm ${
                           paymentMethod === "card"
                             ? "text-brand-red"
-                            : "text-gray-700"
+                            : "text-k2-ink"
                         }`}
                       >
                         Card
                       </div>
-                      <div className="text-xs text-gray-600 mt-1 text-center">
+                      <div className="text-xs text-[#5a6a61] mt-1 text-center">
                         Debit/Credit
                       </div>
                     </label>
@@ -1727,20 +1727,20 @@ function CheckoutPageContent() {
 
           {/* Order Summary - Subtle Design */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden sticky top-8">
+            <div className="bg-white rounded-card shadow-sm border border-k2-paper/60 overflow-hidden sticky top-8">
               {/* Summary Header - Subtle */}
-              <div className="bg-gray-50 p-6 border-b border-gray-200">
+              <div className="bg-k2-cream p-6 border-b border-k2-paper">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-k2-green-deep">
                       Order Summary
                     </h2>
-                    <p className="text-sm text-gray-600 mt-0.5">
+                    <p className="text-sm text-[#5a6a61] mt-0.5">
                       {state.items.length}{" "}
                       {state.items.length === 1 ? "item" : "items"}
                     </p>
                   </div>
-                  <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-200/60">
+                  <div className="p-2 bg-white rounded-lg shadow-sm border border-k2-paper/60">
                     <ShoppingBag className="h-5 w-5 text-brand-red" />
                   </div>
                 </div>
@@ -1748,14 +1748,14 @@ function CheckoutPageContent() {
 
               <div className="p-6">
                 {/* Items List */}
-                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 max-h-64 overflow-y-auto">
+                <div className="space-y-4 mb-6 pb-6 border-b border-k2-paper max-h-64 overflow-y-auto">
                   {state.items.map((item) => {
                     const itemPrice =
                       item.selectedWeight?.price || item.product.price;
                     const totalPrice = Number(itemPrice) * item.quantity;
                     return (
                       <div key={item.product.id} className="flex gap-3">
-                        <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0">
+                        <div className="w-16 h-16 rounded-lg overflow-hidden border border-k2-paper flex-shrink-0">
                           {item.product.image_url ? (
                             <img
                               src={item.product.image_url}
@@ -1772,25 +1772,25 @@ function CheckoutPageContent() {
                           <div
                             className={`w-full h-full ${
                               item.product.image_url ? "hidden" : "flex"
-                            } bg-gray-100 items-center justify-center`}
+                            } bg-k2-cream-dark items-center justify-center`}
                           >
                             <span className="text-2xl">🍗</span>
                           </div>
                         </div>
                         <div className="flex-grow min-w-0">
-                          <p className="font-semibold text-gray-900 text-sm truncate">
+                          <p className="font-semibold text-k2-green-deep text-sm truncate">
                             {item.product.name}
                           </p>
                           {item.selectedWeight && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-[#7b877f]">
                               {item.selectedWeight.weight}
                               {item.selectedWeight.weight_unit}
                             </p>
                           )}
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-[#7b877f]">
                             Qty: {item.quantity}
                           </p>
-                          <p className="text-sm font-bold text-gray-900 mt-1">
+                          <p className="text-sm font-bold text-k2-green-deep mt-1">
                             ₹{totalPrice.toFixed(0)}
                           </p>
                         </div>
@@ -1802,8 +1802,8 @@ function CheckoutPageContent() {
                 {/* Price Breakdown */}
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="text-[#5a6a61]">Subtotal</span>
+                    <span className="font-semibold text-k2-green-deep">
                       ₹{subtotal.toFixed(0)}
                     </span>
                   </div>
@@ -1829,7 +1829,7 @@ function CheckoutPageContent() {
                   )}
                   {deliveryType === "delivery" && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Delivery Charge</span>
+                      <span className="text-[#5a6a61]">Delivery Charge</span>
                       <span>
                         {calculatingDelivery ? (
                           <span className="text-gray-400">Calculating...</span>
@@ -1853,11 +1853,11 @@ function CheckoutPageContent() {
                       </span>
                     </div>
                   )}
-                  <div className="flex justify-between items-center pt-4 border-t-2 border-gray-200">
-                    <span className="text-xl font-bold text-gray-900">
+                  <div className="flex justify-between items-center pt-4 border-t-2 border-k2-paper">
+                    <span className="text-xl font-bold text-k2-green-deep">
                       Total
                     </span>
-                    <span className="text-3xl font-extrabold text-gray-900">
+                    <span className="text-3xl font-extrabold text-k2-green-deep">
                       ₹
                       {calculatingDelivery
                         ? "..."
@@ -1867,18 +1867,18 @@ function CheckoutPageContent() {
                 </div>
 
                 {/* Order Info - Subtle */}
-                <div className="p-4 bg-gray-50/50 border border-gray-200/60 rounded-lg">
+                <div className="p-4 bg-k2-cream/50 border border-k2-paper/60 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     {deliveryType === "delivery" ? (
                       <Truck className="h-4 w-4 text-brand-red" />
                     ) : (
                       <Store className="h-4 w-4 text-brand-red" />
                     )}
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold text-k2-green-deep">
                       {deliveryType === "delivery" ? "Delivery" : "Pickup"}
                     </p>
                   </div>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-[#5a6a61]">
                     Estimated time:{" "}
                     <span className="font-medium">
                       {deliveryType === "delivery" ? "~90 mins" : "15-20 min"}
@@ -1887,23 +1887,23 @@ function CheckoutPageContent() {
                 </div>
 
                 {/* Trust Badges - Subtle */}
-                <div className="mt-6 pt-6 border-t border-gray-200/60">
+                <div className="mt-6 pt-6 border-t border-k2-paper/60">
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="flex flex-col items-center p-3 bg-gray-50/50 rounded-lg border border-gray-200/60">
-                      <Shield className="h-4 w-4 text-gray-600 mb-1" />
-                      <span className="text-xs text-gray-600 font-medium">
+                    <div className="flex flex-col items-center p-3 bg-k2-cream/50 rounded-lg border border-k2-paper/60">
+                      <Shield className="h-4 w-4 text-[#5a6a61] mb-1" />
+                      <span className="text-xs text-[#5a6a61] font-medium">
                         Secure
                       </span>
                     </div>
-                    <div className="flex flex-col items-center p-3 bg-gray-50/50 rounded-lg border border-gray-200/60">
-                      <Zap className="h-4 w-4 text-gray-600 mb-1" />
-                      <span className="text-xs text-gray-600 font-medium">
+                    <div className="flex flex-col items-center p-3 bg-k2-cream/50 rounded-lg border border-k2-paper/60">
+                      <Zap className="h-4 w-4 text-[#5a6a61] mb-1" />
+                      <span className="text-xs text-[#5a6a61] font-medium">
                         Fast
                       </span>
                     </div>
-                    <div className="flex flex-col items-center p-3 bg-gray-50/50 rounded-lg border border-gray-200/60">
-                      <Award className="h-4 w-4 text-gray-600 mb-1" />
-                      <span className="text-xs text-gray-600 font-medium">
+                    <div className="flex flex-col items-center p-3 bg-k2-cream/50 rounded-lg border border-k2-paper/60">
+                      <Award className="h-4 w-4 text-[#5a6a61] mb-1" />
+                      <span className="text-xs text-[#5a6a61] font-medium">
                         Fresh
                       </span>
                     </div>
@@ -1927,7 +1927,7 @@ function CheckoutPageContent() {
       {/* UPI QR Code Modal */}
       {showUPIQR && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-bounce-in">
+          <div className="bg-white rounded-card shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-bounce-in">
             {/* Header */}
             <div className="sticky top-0 bg-brand-red text-white p-6 rounded-t-2xl overflow-hidden">
               <div className="flex items-center justify-between mb-2">
@@ -1992,25 +1992,25 @@ function CheckoutPageContent() {
             <div className="p-6">
               {/* Order Summary */}
               {currentOrderId && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div className="mb-6 p-4 bg-k2-cream rounded-xl border border-k2-paper">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <span className="text-xs font-semibold text-[#7b877f] uppercase tracking-wide">
                       Order ID
                     </span>
-                    <span className="text-sm font-bold text-gray-900">
+                    <span className="text-sm font-bold text-k2-green-deep">
                       #{currentOrderId}
                     </span>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-[#5a6a61]">
                       <span>Customer:</span>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-k2-green-deep">
                         {formData.customerName || user?.name || "Customer"}
                       </span>
                     </div>
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-[#5a6a61]">
                       <span>Date & Time:</span>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-k2-green-deep">
                         {new Date().toLocaleString("en-IN", {
                           day: "2-digit",
                           month: "short",
@@ -2026,7 +2026,7 @@ function CheckoutPageContent() {
 
               {/* Order Items Breakdown */}
               <div className="mb-6">
-                <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                <h4 className="text-sm font-semibold text-k2-ink mb-3">
                   Order Details
                 </h4>
                 <div className="space-y-2 mb-4">
@@ -2039,19 +2039,19 @@ function CheckoutPageContent() {
                     return (
                       <div
                         key={index}
-                        className="flex justify-between items-start p-3 bg-gray-50 rounded-lg"
+                        className="flex justify-between items-start p-3 bg-k2-cream rounded-lg"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-k2-green-deep">
                             {item.product.name}
                             {weightInfo}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-[#7b877f]">
                             Qty: {item.quantity} × ₹
                             {Number(item.product.price).toFixed(0)}
                           </p>
                         </div>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-sm font-semibold text-k2-green-deep">
                           ₹{itemTotal.toFixed(0)}
                         </p>
                       </div>
@@ -2060,10 +2060,10 @@ function CheckoutPageContent() {
                 </div>
 
                 {/* Price Breakdown */}
-                <div className="border-t border-gray-200 pt-3 space-y-2">
+                <div className="border-t border-k2-paper pt-3 space-y-2">
                   {subtotal !== totalWithDelivery && (
                     <>
-                      <div className="flex justify-between text-sm text-gray-600">
+                      <div className="flex justify-between text-sm text-[#5a6a61]">
                         <span>Subtotal</span>
                         <span className="font-medium">
                           ₹{subtotal.toFixed(0)}
@@ -2071,7 +2071,7 @@ function CheckoutPageContent() {
                       </div>
                       {deliveryType === "delivery" &&
                         (deliveryCharge || 0) > 0 && (
-                          <div className="flex justify-between text-sm text-gray-600">
+                          <div className="flex justify-between text-sm text-[#5a6a61]">
                             <span>Delivery Charge</span>
                             <span className="font-medium">
                               ₹{deliveryCharge.toFixed(0)}
@@ -2081,7 +2081,7 @@ function CheckoutPageContent() {
                       {deliveryType === "delivery" &&
                         (deliveryCharge || 0) === 0 && (
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">
+                            <span className="text-[#5a6a61]">
                               Delivery Charge
                             </span>
                             <span className="font-semibold text-green-600">
@@ -2091,7 +2091,7 @@ function CheckoutPageContent() {
                         )}
                       {(totalDiscountAmount || 0) > 0 && (
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Discount</span>
+                          <span className="text-[#5a6a61]">Discount</span>
                           <span className="font-semibold text-green-600">
                             -₹{totalDiscountAmount.toFixed(0)}
                           </span>
@@ -2099,8 +2099,8 @@ function CheckoutPageContent() {
                       )}
                     </>
                   )}
-                  <div className="flex justify-between items-center pt-2 border-t-2 border-gray-300">
-                    <span className="text-base font-bold text-gray-900">
+                  <div className="flex justify-between items-center pt-2 border-t-2 border-k2-paper">
+                    <span className="text-base font-bold text-k2-green-deep">
                       Total Amount
                     </span>
                     <span className="text-2xl font-bold text-brand-red">
@@ -2112,7 +2112,7 @@ function CheckoutPageContent() {
 
               {/* QR Code */}
               <div className="mb-6">
-                <div className="flex justify-center p-6 bg-white rounded-xl border-2 border-gray-200 shadow-sm">
+                <div className="flex justify-center p-6 bg-white rounded-xl border-2 border-k2-paper shadow-sm">
                   {upiPaymentUrl && (
                     <QRCodeSVG
                       value={upiPaymentUrl}
@@ -2122,7 +2122,7 @@ function CheckoutPageContent() {
                     />
                   )}
                 </div>
-                <p className="text-center text-xs text-gray-500 mt-3">
+                <p className="text-center text-xs text-[#7b877f] mt-3">
                   Scan with PhonePe, Google Pay, Paytm, or any UPI app
                 </p>
               </div>
@@ -2200,7 +2200,7 @@ function CheckoutPageContent() {
                       setUpiPaymentUrl("");
                     }
                   }}
-                  className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                  className="w-full px-6 py-3 border-2 border-k2-paper text-k2-ink font-semibold rounded-xl hover:bg-k2-cream transition-colors"
                 >
                   Cancel Order
                 </button>
@@ -2227,9 +2227,9 @@ export default function CheckoutPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-            <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm flex justify-center">
+        <div className="min-h-screen bg-k2-cream py-6 sm:py-8 md:py-12 pb-24 sm:pb-20 md:pb-0">
+          <div className="max-w-[1180px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+            <div className="rounded-card border border-k2-paper bg-white p-8 shadow-sm flex justify-center">
               <LoadingSpinner label="Loading checkout" size="md" />
             </div>
           </div>

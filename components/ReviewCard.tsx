@@ -18,7 +18,7 @@ export interface ReviewCardProps {
 export default function ReviewCard({ review, className = "" }: ReviewCardProps) {
   return (
     <div
-      className={`bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth p-6 border border-gray-100 ${className}`}
+      className={`bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth p-6 border border-k2-paper ${className}`}
     >
       <div className="flex items-center gap-1 mb-3">
         {Array.from({ length: 5 }).map((_, i) => (
@@ -33,10 +33,10 @@ export default function ReviewCard({ review, className = "" }: ReviewCardProps) 
         ))}
       </div>
       <Quote className="h-8 w-8 text-brand-red mb-2" />
-      <p className="text-gray-700 leading-relaxed mb-4 line-clamp-4">
+      <p className="text-k2-ink leading-relaxed mb-4 line-clamp-4">
         {review.comment}
       </p>
-      <p className="font-medium text-gray-900">{review.user_name}</p>
+      <p className="font-medium text-k2-green-deep">{review.user_name}</p>
     </div>
   );
 }

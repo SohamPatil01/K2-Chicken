@@ -15,12 +15,12 @@ const CATEGORIES = [
 export default function HomeCategorySection() {
   return (
     <section className="py-12 sm:py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-balance mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-k2-green-deep text-balance mb-2">
             Shop by Category
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-[#5a6a61] max-w-xl mx-auto">
             Choose from our range of fresh chicken cuts and products.
           </p>
         </div>

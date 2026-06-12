@@ -105,15 +105,15 @@ export default function AboutSection() {
 
       {/* Decorative Elements - More subtle to match flow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-k2-cream-dark rounded-full blur-3xl opacity-20"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-15"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+      <div className="relative max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
           <div
-            className={`inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-red-200 rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold text-brand-red mb-5 shadow-sm transition-all duration-300 hover:shadow-md ${
+            className={`inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-k2-paper rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold text-brand-red mb-5 shadow-sm transition-all duration-300 hover:shadow-md ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
@@ -121,7 +121,7 @@ export default function AboutSection() {
             <span>Our Story</span>
           </div>
           <h2
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-900 mb-5 leading-tight transition-all duration-700 ${
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-k2-green-deep mb-5 leading-tight transition-all duration-700 ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ animationDelay: "0.2s" }}
@@ -129,7 +129,7 @@ export default function AboutSection() {
             About <span className="text-brand-red">K2 Chicken</span>
           </h2>
           <p
-            className={`text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${
+            className={`text-base sm:text-lg text-[#5a6a61] max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${
               mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ animationDelay: "0.4s" }}
@@ -150,10 +150,10 @@ export default function AboutSection() {
                 : "opacity-0 translate-y-8"
             }`}
           >
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-4">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-k2-green-deep mb-4">
               A Legacy of Excellence
             </h3>
-            <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg text-k2-ink leading-relaxed max-w-3xl mx-auto">
               K2 Chicken was founded with a simple mission: to bring the most
               delicious, fresh, and high-quality chicken to your table. What
               started as a small neighborhood business has today grown into
@@ -169,7 +169,7 @@ export default function AboutSection() {
             ref={(el) => {
               sectionRefs.current[1] = el;
             }}
-            className={`max-w-5xl mx-auto bg-white rounded-3xl shadow-lg border border-red-200 overflow-hidden transition-all duration-700 hover:shadow-xl ${
+            className={`max-w-5xl mx-auto bg-white rounded-card-lg shadow-lg border border-k2-paper overflow-hidden transition-all duration-700 hover:shadow-xl ${
               visibleSections.has(1)
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -181,7 +181,7 @@ export default function AboutSection() {
               </h4>
             </div>
             <div className="p-6 sm:p-8 lg:p-10">
-              <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
+              <p className="text-base sm:text-lg text-k2-ink leading-relaxed mb-6">
                 K2 Chicken is built around consistent sourcing, hygienic
                 handling, and freshly prepared cuts for families in Pimple Nilakh, Baner, Pancard Club, Aundh, and Wakad.
                 With every order, we focus on:
@@ -195,17 +195,17 @@ export default function AboutSection() {
                 ].map((point, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-3 bg-red-50/50 rounded-xl p-4 transition-all duration-300 hover:bg-red-50 hover:shadow-md hover:-translate-y-1"
+                    className="flex items-start gap-3 bg-k2-cream-dark/50 rounded-xl p-4 transition-all duration-300 hover:bg-k2-cream-dark hover:shadow-md hover:-translate-y-1"
                     style={{ transitionDelay: `${index * 0.1}s` }}
                   >
                     <CheckCircle className="w-5 h-5 text-brand-red mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm sm:text-base">
+                    <span className="text-k2-ink text-sm sm:text-base">
                       {point}
                     </span>
                   </div>
                 ))}
               </div>
-              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
+              <p className="text-base sm:text-lg text-k2-ink leading-relaxed">
                 This approach strengthens K2 Chicken&apos;s commitment to quality
                 while giving customers access to trusted, fresh, and
                 professionally handled chicken products right in their
@@ -228,19 +228,19 @@ export default function AboutSection() {
                 : "opacity-0 -translate-x-8"
             }`}
           >
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-              <h4 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded-card p-6 sm:p-8 shadow-md border border-k2-paper hover:shadow-lg transition-shadow duration-300">
+              <h4 className="text-2xl sm:text-3xl font-semibold text-k2-green-deep mb-4">
                 Freshness You Can Taste
               </h4>
-              <p className="text-base text-gray-700 leading-relaxed mb-4">
+              <p className="text-base text-k2-ink leading-relaxed mb-4">
                 Our secret remains unchanged:
               </p>
-              <p className="text-base text-gray-700 leading-relaxed mb-5">
+              <p className="text-base text-k2-ink leading-relaxed mb-5">
                 We source only the freshest, highest-grade chicken, cut and
                 portioned with precision, and delivered chilled to preserve
                 perfect texture and flavor.
               </p>
-              <p className="text-base text-gray-900 font-medium mb-3">
+              <p className="text-base text-k2-green-deep font-medium mb-3">
                 Every piece goes through:
               </p>
               <ul className="space-y-3 mb-5">
@@ -257,11 +257,11 @@ export default function AboutSection() {
                     <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
                       <CheckCircle className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-gray-700 font-medium">{point}</span>
+                    <span className="text-k2-ink font-medium">{point}</span>
                   </li>
                 ))}
               </ul>
-              <p className="text-base text-gray-700 leading-relaxed italic border-l-4 border-red-200 pl-4">
+              <p className="text-base text-k2-ink leading-relaxed italic border-l-4 border-k2-paper pl-4">
                 The result? Restaurant-quality chicken, ready for your favorite
                 recipes—juicy, tender, and unbelievably fresh.
               </p>
@@ -279,7 +279,7 @@ export default function AboutSection() {
                 : "opacity-0 scale-95 translate-x-8"
             }`}
           >
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition-all duration-500 border border-red-200 group">
+            <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-xl transform hover:scale-[1.02] transition-all duration-500 border border-k2-paper group">
               <Image
                 src="/images/Whole-Chicken-5.jpg"
                 alt="Fresh Premium Chicken - K2 Chicken offers the finest quality chicken, expertly cut and prepared for your favorite recipes"
@@ -299,7 +299,7 @@ export default function AboutSection() {
             ref={(el) => {
               sectionRefs.current[4] = el;
             }}
-            className={`max-w-4xl mx-auto bg-brand-red rounded-3xl p-8 sm:p-10 lg:p-12 text-white shadow-xl transition-all duration-700 hover:shadow-2xl ${
+            className={`max-w-4xl mx-auto bg-brand-red rounded-card-lg p-8 sm:p-10 lg:p-12 text-white shadow-xl transition-all duration-700 hover:shadow-2xl ${
               visibleSections.has(4)
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -336,7 +336,7 @@ export default function AboutSection() {
                 key={index}
                 className={`group bg-white border ${
                   feature.borderColor
-                } rounded-2xl p-6 sm:p-8 hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${
+                } rounded-card p-6 sm:p-8 hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 ${
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-10"
@@ -348,10 +348,10 @@ export default function AboutSection() {
                 >
                   <Icon className="w-7 h-7 text-white" />
                 </div>
-                <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+                <h4 className="text-lg sm:text-xl font-semibold text-k2-green-deep mb-2">
                   {feature.title}
                 </h4>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                <p className="text-sm sm:text-base text-[#5a6a61] leading-relaxed">
                   {feature.description}
                 </p>
               </div>

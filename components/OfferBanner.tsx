@@ -29,10 +29,10 @@ export default function OfferBanner({
 
   return (
     <div
-      className={`bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth overflow-hidden border border-gray-100 flex flex-col sm:flex-row ${className}`}
+      className={`bg-white rounded-card shadow-soft hover:shadow-card transition-all duration-smooth overflow-hidden border border-k2-paper flex flex-col sm:flex-row ${className}`}
     >
       {imageUrl && (
-        <div className="relative w-full sm:w-40 h-32 sm:h-auto sm:min-h-[120px] flex-shrink-0 bg-gray-100">
+        <div className="relative w-full sm:w-40 h-32 sm:h-auto sm:min-h-[120px] flex-shrink-0 bg-k2-cream-dark">
           <Image
             src={imageUrl}
             alt={title}
@@ -43,20 +43,20 @@ export default function OfferBanner({
         </div>
       )}
       {!imageUrl && (
-        <div className="w-full sm:w-24 flex items-center justify-center bg-red-50 border-r border-red-100 p-4 flex-shrink-0">
+        <div className="w-full sm:w-24 flex items-center justify-center bg-k2-cream-dark border-r border-k2-paper p-4 flex-shrink-0">
           <Icon className="w-10 h-10 text-brand-red" />
         </div>
       )}
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center">
-        <h3 className="font-semibold text-gray-900 text-balance">{title}</h3>
+        <h3 className="font-semibold text-k2-green-deep text-balance">{title}</h3>
         {description && (
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+          <p className="text-sm text-[#5a6a61] mt-1 line-clamp-2">
             {description}
           </p>
         )}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {promoCode && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-brand-red rounded-button text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-k2-cream-dark text-brand-red rounded-button text-xs font-semibold">
               <Tag className="w-3.5 h-3.5" />
               {promoCode}
             </span>

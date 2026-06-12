@@ -200,6 +200,46 @@
     transform: translateY(-1px);
   }
 
+  .btn-ghost-cream {
+    @apply inline-flex items-center gap-2 rounded-pill border-[1.5px] border-k2-cream/35 px-7 py-3.5 font-semibold text-k2-cream transition-colors hover:bg-k2-cream/10;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill border border-k2-paper bg-white px-6 py-3 font-semibold text-k2-green-deep transition-colors hover:border-k2-saffron hover:text-k2-saffron;
+  }
+
+  /* ── Page shell (all non-admin pages) ── */
+  .k2-page {
+    @apply min-h-screen bg-k2-cream text-k2-ink;
+  }
+  .k2-wrap {
+    @apply mx-auto max-w-[1180px] px-6;
+  }
+  .k2-card {
+    @apply rounded-card border border-k2-paper bg-white;
+  }
+  .k2-card-padded {
+    @apply k2-card p-6 sm:p-8;
+  }
+  .k2-title {
+    @apply font-display text-3xl font-extrabold tracking-tight text-k2-green-deep sm:text-4xl;
+  }
+  .k2-muted {
+    @apply text-[#5a6a61];
+  }
+  .k2-label {
+    @apply mb-2 block text-sm font-medium text-k2-green-deep;
+  }
+  .k2-input {
+    @apply w-full rounded-button border border-k2-paper bg-white px-4 py-3 text-k2-ink placeholder:text-[#7b877f] focus:outline-none search-glow;
+  }
+  .k2-summary-header {
+    @apply bg-k2-green p-6 text-k2-cream;
+  }
+  .k2-chip {
+    @apply inline-flex items-center gap-1.5 rounded-pill bg-k2-cream-dark px-2.5 py-1 font-mono text-xs font-semibold text-k2-green;
+  }
+
   /* ── Glass nav ── */
   .glass-nav {
     background: rgba(250, 244, 232, 0.88);

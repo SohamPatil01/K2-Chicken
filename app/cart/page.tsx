@@ -61,7 +61,7 @@ function RecommendationCard({
     : currentPrice;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-red-200 group relative">
+    <div className="bg-white rounded-card shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-k2-saffron/40 group relative">
       {/* Discount Badge */}
       {hasDiscount && (
         <div className="absolute top-2 left-2 z-10 bg-brand-red text-white px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1">
@@ -70,7 +70,7 @@ function RecommendationCard({
         </div>
       )}
 
-      <div className="relative h-28 bg-gray-100 overflow-hidden border-b border-gray-200">
+      <div className="relative h-28 bg-k2-cream-dark overflow-hidden border-b border-k2-paper">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -84,7 +84,7 @@ function RecommendationCard({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm">
+        <h3 className="font-semibold text-k2-green-deep mb-2 line-clamp-2 text-sm">
           {product.name}
         </h3>
 
@@ -93,7 +93,7 @@ function RecommendationCard({
           <div className="mb-3">
             {product.weightOptions.length > 1 ? (
               <>
-                <p className="text-xs text-gray-600 mb-1.5 font-medium">
+                <p className="text-xs text-[#5a6a61] mb-1.5 font-medium">
                   Select Weight:
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -107,7 +107,7 @@ function RecommendationCard({
                         className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all duration-200 ${
                           selectedWeight?.weight === weight.weight
                             ? "bg-brand-red text-white"
-                            : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300"
+                            : "bg-white text-k2-ink border border-k2-paper hover:border-k2-paper"
                         }`}
                       >
                         {weight.weight}
@@ -118,8 +118,8 @@ function RecommendationCard({
               </>
             ) : (
               <div className="flex items-center gap-1.5 mb-2">
-                <Package className="w-3 h-3 text-gray-500" />
-                <span className="text-xs text-gray-600 font-medium">
+                <Package className="w-3 h-3 text-[#7b877f]" />
+                <span className="text-xs text-[#5a6a61] font-medium">
                   {selectedWeight?.weight || defaultWeight?.weight}
                   {selectedWeight?.weight_unit || defaultWeight?.weight_unit}
                 </span>
@@ -133,20 +133,20 @@ function RecommendationCard({
           <div>
             {hasDiscount && (
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs text-gray-500 line-through">
+                <span className="text-xs text-[#7b877f] line-through">
                   ₹{displayOriginalPrice.toFixed(0)}
                 </span>
-                <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-semibold">
+                <span className="text-xs bg-red-100 text-k2-saffron-hot px-1.5 py-0.5 rounded font-semibold">
                   {discountPercent}% OFF
                 </span>
               </div>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg font-bold text-k2-green-deep">
                 ₹{currentPrice.toFixed(0)}
               </span>
               {selectedWeight && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-[#7b877f]">
                   / {selectedWeight.weight}
                   {selectedWeight.weight_unit}
                 </span>
@@ -348,66 +348,25 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div
-              className={`relative inline-block mb-8 transition-all duration-700 ${
-                mounted
-                  ? "opacity-100 scale-100 translate-y-0"
-                  : "opacity-0 scale-90 translate-y-10"
-              }`}
-            >
-              <div className="absolute inset-0 bg-red-100 rounded-full blur-2xl opacity-40"></div>
-              <ShoppingBag
-                size={120}
-                className="relative text-gray-300 mx-auto animate-bounce"
-                style={{ animationDuration: "3s" }}
-              />
-            </div>
-            <h1
-              className={`text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 transition-all duration-700 ${
-                mounted
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: "0.2s" }}
-            >
-              Your Cart is Empty
-            </h1>
-            <p
-              className={`text-xl text-gray-600 mb-10 max-w-md mx-auto transition-all duration-700 ${
-                mounted
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: "0.4s" }}
-            >
-              Looks like you haven&apos;t added any delicious chicken to your cart
-              yet! Let&apos;s fix that.
-            </p>
-            <Link
-              href="/"
-              className={`inline-flex items-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 px-8 rounded-2xl transition-colors ${
-                mounted
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: "0.6s" }}
-            >
-              <Sparkles className="h-5 w-5" />
-              <span>Start Shopping</span>
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </div>
+      <div className="k2-page py-20">
+        <div className="k2-wrap mx-auto max-w-2xl text-center">
+          <ShoppingBag size={96} className="mx-auto mb-6 text-k2-ice" />
+          <h1 className="k2-title mb-4">Your Cart is Empty</h1>
+          <p className="mb-8 text-[#5a6a61]">
+            Looks like you haven&apos;t added any delicious chicken to your cart
+            yet! Let&apos;s fix that.
+          </p>
+          <Link href="/#products" className="btn-primary inline-flex items-center gap-2 rounded-pill px-8 py-4 font-semibold">
+            Shop Fresh Cuts →
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div className="k2-page py-8 sm:py-12 pb-24 sm:pb-20 md:pb-0 relative">
+      <div className="k2-wrap relative z-10">
         {/* Header */}
         <div
           className={`mb-8 sm:mb-12 transition-all duration-700 ${
@@ -416,14 +375,14 @@ export default function CartPage() {
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center border border-red-100 bg-red-50">
-                <ShoppingCart className="w-7 h-7 text-brand-red" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-card border border-k2-paper bg-k2-ice">
+                <ShoppingCart className="h-7 w-7 text-k2-green" />
               </div>
               <div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-1">
+                <h1 className="k2-title mb-1">
                   Your Cart
                 </h1>
-                <p className="text-gray-600 text-sm sm:text-base flex items-center gap-2">
+                <p className="text-[#5a6a61] text-sm sm:text-base flex items-center gap-2">
                   <Package className="w-4 h-4" />
                   {state.items.length}{" "}
                   {state.items.length === 1 ? "item" : "items"} ready to
@@ -434,7 +393,7 @@ export default function CartPage() {
             {state.items.length > 0 && (
               <button
                 onClick={clearCart}
-                className="flex items-center gap-2 px-4 py-2.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium text-sm transform hover:scale-105 active:scale-95 border border-red-200 hover:border-red-300"
+                className="flex items-center gap-2 px-4 py-2.5 text-k2-saffron-hot hover:text-k2-saffron-hot hover:bg-k2-cream-dark rounded-xl transition-all duration-300 font-medium text-sm transform hover:scale-105 active:scale-95 border border-k2-paper hover:border-k2-saffron/50"
               >
                 <Trash2
                   size={18}
@@ -474,7 +433,7 @@ export default function CartPage() {
               <div className="mt-8">
                 <div className="flex items-center gap-3 mb-4">
                   <TrendingUp className="w-6 h-6 text-brand-red" />
-                  <h2 className="text-2xl font-semibold text-gray-800">
+                  <h2 className="text-2xl font-semibold text-k2-green-deep">
                     You May Also Like
                   </h2>
                 </div>
@@ -494,8 +453,8 @@ export default function CartPage() {
             {isAuthenticated && favoriteOrders.length > 0 && (
               <div className="mt-8">
                 <div className="flex items-center gap-3 mb-4">
-                  <Heart className="w-6 h-6 text-red-600 fill-red-600" />
-                  <h2 className="text-2xl font-semibold text-gray-800">
+                  <Heart className="w-6 h-6 text-k2-saffron-hot fill-red-600" />
+                  <h2 className="text-2xl font-semibold text-k2-green-deep">
                     Your Favorite Orders
                   </h2>
                 </div>
@@ -503,14 +462,14 @@ export default function CartPage() {
                   {favoriteOrders.slice(0, 3).map((order) => (
                     <div
                       key={order.id}
-                      className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-red-200 p-4"
+                      className="bg-white rounded-card shadow-sm hover:shadow-lg transition-all duration-300 border-2 border-k2-paper hover:border-k2-saffron/40 p-4"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-semibold text-gray-700 mb-1">
+                          <h3 className="font-semibold text-k2-ink mb-1">
                             {order.order_name || `Order #${order.order_id}`}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-[#5a6a61]">
                             {order.items?.length || 0} items • ₹
                             {Number(order.total_amount || 0).toFixed(0)}
                           </p>
@@ -530,13 +489,13 @@ export default function CartPage() {
                             .map((item: any, idx: number) => (
                               <span
                                 key={idx}
-                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-lg"
+                                className="text-xs bg-k2-cream-dark text-k2-ink px-2 py-1 rounded-lg"
                               >
                                 {item.product_name} × {item.quantity}
                               </span>
                             ))}
                           {order.items.length > 3 && (
-                            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-lg">
+                            <span className="text-xs bg-k2-cream-dark text-k2-ink px-2 py-1 rounded-lg">
                               +{order.items.length - 3} more
                             </span>
                           )}
@@ -565,16 +524,17 @@ export default function CartPage() {
             }`}
             style={{ transitionDelay: "0.3s" }}
           >
-            <div className="bg-white rounded-3xl shadow-soft border border-gray-200 overflow-hidden sticky top-8 transition-shadow hover:shadow-card">
-              {/* Summary Header */}
-              <div className="bg-brand-red p-6 text-white">
+            <div className="k2-card sticky top-8 overflow-hidden transition-shadow hover:shadow-card">
+              <div className="k2-summary-header">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center">
-                    <ShoppingCart className="w-5 h-5" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-k2-cream/15">
+                    <ShoppingCart className="h-5 w-5" />
                   </div>
-                  <h2 className="text-xl font-semibold tracking-tight">Order Summary</h2>
+                  <h2 className="font-display text-xl font-semibold tracking-tight">
+                    Order Summary
+                  </h2>
                 </div>
-                <p className="text-sm text-white/90 flex items-center gap-2">
+                <p className="flex items-center gap-2 text-sm text-k2-cream/90">
                   <CheckCircle className="w-4 h-4 shrink-0" />
                   {state.items.length}{" "}
                   {state.items.length === 1 ? "item" : "items"} in cart
@@ -583,8 +543,8 @@ export default function CartPage() {
 
               <div className="p-6">
                 {/* Items Breakdown */}
-                <div className="space-y-3 mb-6 pb-6 border-b-2 border-gray-100">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                <div className="space-y-3 mb-6 pb-6 border-b-2 border-k2-paper">
+                  <p className="text-xs font-semibold text-[#7b877f] uppercase tracking-wide mb-3">
                     Order Details
                   </p>
                   {state.items.map((item, index) => {
@@ -594,7 +554,7 @@ export default function CartPage() {
                     return (
                       <div
                         key={item.product.id}
-                        className={`flex justify-between items-start p-3 bg-gray-50 rounded-xl transition-all duration-500 ${
+                        className={`flex justify-between items-start p-3 bg-k2-cream rounded-xl transition-all duration-500 ${
                           mounted
                             ? "opacity-100 translate-y-0"
                             : "opacity-0 translate-y-4"
@@ -602,22 +562,22 @@ export default function CartPage() {
                         style={{ transitionDelay: `${0.4 + index * 0.1}s` }}
                       >
                         <div className="flex-grow min-w-0 pr-2">
-                          <p className="font-medium text-gray-700 truncate text-sm">
+                          <p className="font-medium text-k2-ink truncate text-sm">
                             {item.product.name}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
                             {item.selectedWeight && (
-                              <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded">
+                              <span className="text-xs text-[#7b877f] bg-white px-2 py-0.5 rounded">
                                 {item.selectedWeight.weight}
                                 {item.selectedWeight.weight_unit}
                               </span>
                             )}
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-[#7b877f]">
                               × {item.quantity}
                             </span>
                           </div>
                         </div>
-                        <span className="font-semibold text-gray-700 whitespace-nowrap text-sm">
+                        <span className="font-semibold text-k2-ink whitespace-nowrap text-sm">
                           ₹{totalPrice.toFixed(0)}
                         </span>
                       </div>
@@ -628,24 +588,24 @@ export default function CartPage() {
                 {/* Total */}
                 <div className="mb-6 space-y-3">
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-base font-medium text-gray-600">
+                    <span className="text-base font-medium text-[#5a6a61]">
                       Subtotal
                     </span>
-                    <span className="text-base font-semibold text-gray-700">
+                    <span className="text-base font-semibold text-k2-ink">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
-                  <div className="rounded-xl p-3 border border-gray-200 bg-gray-50">
-                    <p className="text-xs text-gray-600 flex items-center gap-2">
-                      <Truck className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                  <div className="rounded-xl p-3 border border-k2-paper bg-k2-cream">
+                    <p className="text-xs text-[#5a6a61] flex items-center gap-2">
+                      <Truck className="w-3.5 h-3.5 text-[#7b877f] shrink-0" />
                       Delivery charges calculated at checkout
                     </p>
                   </div>
-                  <div className="flex justify-between items-center pt-4 border-t-2 border-gray-200">
-                    <span className="text-xl font-semibold text-gray-800">
+                  <div className="flex justify-between items-center pt-4 border-t-2 border-k2-paper">
+                    <span className="text-xl font-semibold text-k2-green-deep">
                       Total Amount
                     </span>
-                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <span className="text-2xl sm:text-3xl font-bold text-k2-green-deep">
                       ₹{state.total.toFixed(0)}
                     </span>
                   </div>
@@ -655,7 +615,7 @@ export default function CartPage() {
                 <div className="space-y-3">
                   <Link
                     href="/checkout"
-                    className="group w-full flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-red-hover text-white font-bold py-4 sm:py-4 px-6 rounded-xl sm:rounded-2xl transition-colors min-h-[56px] text-base sm:text-lg"
+                    className="btn-primary group flex min-h-[56px] w-full items-center justify-center gap-2 rounded-pill py-4 text-base font-bold sm:text-lg"
                   >
                     <Shield className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span>Proceed to Checkout</span>
@@ -664,7 +624,7 @@ export default function CartPage() {
 
                   <Link
                     href="/"
-                    className="w-full flex items-center justify-center gap-2 text-gray-700 hover:text-gray-900 font-semibold py-3 px-6 rounded-2xl transition-all duration-300 hover:bg-gray-50 border-2 border-gray-200 hover:border-gray-300 transform hover:scale-[1.02] active:scale-95 group"
+                    className="w-full flex items-center justify-center gap-2 text-k2-ink hover:text-k2-green-deep font-semibold py-3 px-6 rounded-card transition-all duration-300 hover:bg-k2-cream border-2 border-k2-paper hover:border-k2-paper transform hover:scale-[1.02] active:scale-95 group"
                   >
                     <ArrowRight className="h-4 w-4 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
                     <span>Continue Shopping</span>
@@ -672,23 +632,23 @@ export default function CartPage() {
                 </div>
 
                 {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t-2 border-gray-100">
+                <div className="mt-6 pt-6 border-t-2 border-k2-paper">
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
+                    <div className="flex flex-col items-center gap-1.5 p-2 bg-k2-cream rounded-xl">
                       <Shield className="w-5 h-5 text-green-600" />
-                      <span className="text-xs font-semibold text-gray-700">
+                      <span className="text-xs font-semibold text-k2-ink">
                         Secure
                       </span>
                     </div>
-                    <div className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
+                    <div className="flex flex-col items-center gap-1.5 p-2 bg-k2-cream rounded-xl">
                       <Truck className="w-5 h-5 text-blue-600" />
-                      <span className="text-xs font-semibold text-gray-700">
+                      <span className="text-xs font-semibold text-k2-ink">
                         Fast
                       </span>
                     </div>
-                    <div className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
+                    <div className="flex flex-col items-center gap-1.5 p-2 bg-k2-cream rounded-xl">
                       <CheckCircle className="w-5 h-5 text-brand-red" />
-                      <span className="text-xs font-semibold text-gray-700">
+                      <span className="text-xs font-semibold text-k2-ink">
                         Fresh
                       </span>
                     </div>

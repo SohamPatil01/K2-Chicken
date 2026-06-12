@@ -157,7 +157,7 @@ export default function OrderConfirmationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16">
+      <div className="min-h-screen bg-k2-cream py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <LoadingSpinner
             label="Loading order details"
@@ -171,16 +171,16 @@ export default function OrderConfirmationPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16 flex items-center">
+      <div className="min-h-screen bg-k2-cream py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
+          <div className="bg-white rounded-card shadow-xl p-12">
+            <div className="w-20 h-20 bg-k2-cream-dark rounded-full flex items-center justify-center mx-auto mb-6 border border-k2-paper">
               <Package className="h-10 w-10 text-red-500" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-k2-green-deep mb-4">
               Order Not Found
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-[#5a6a61] mb-8">
               The order you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link
@@ -239,7 +239,7 @@ export default function OrderConfirmationPage() {
   const currentStatusDisplay = currentStatus || order.status;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-k2-cream py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header with Subtle Animation */}
         <div className="text-center mb-8 sm:mb-10 no-print relative">
@@ -316,7 +316,7 @@ export default function OrderConfirmationPage() {
           </div>
 
           <h1
-            className={`text-3xl sm:text-4xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+            className={`text-3xl sm:text-4xl font-bold text-k2-green-deep mb-3 transition-all duration-700 ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -326,7 +326,7 @@ export default function OrderConfirmationPage() {
             🎉 Order Placed Successfully!
           </h1>
           <p
-            className={`text-lg sm:text-xl text-gray-700 max-w-xl mx-auto mb-3 font-semibold transition-all duration-700 ${
+            className={`text-lg sm:text-xl text-k2-ink max-w-xl mx-auto mb-3 font-semibold transition-all duration-700 ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -340,7 +340,7 @@ export default function OrderConfirmationPage() {
               : "Your order has been confirmed"}
           </p>
           <p
-            className={`text-base sm:text-lg text-gray-600 max-w-xl mx-auto mb-5 transition-all duration-700 ${
+            className={`text-base sm:text-lg text-[#5a6a61] max-w-xl mx-auto mb-5 transition-all duration-700 ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -370,7 +370,7 @@ export default function OrderConfirmationPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
           {/* Order Info Card */}
           <div
-            className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${
+            className={`bg-white rounded-xl shadow-sm p-5 border border-k2-paper hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -378,45 +378,45 @@ export default function OrderConfirmationPage() {
             style={{ transitionDelay: "1s" }}
           >
             <div className="flex items-center gap-2 mb-5">
-              <div className="p-2 bg-red-50 rounded-lg">
+              <div className="p-2 bg-k2-cream-dark rounded-lg">
                 <Receipt className="h-5 w-5 text-brand-red" />
               </div>
-              <h2 className="text-lg font-semibold text-gray-800">
+              <h2 className="text-lg font-semibold text-k2-green-deep">
                 Order Info
               </h2>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 bg-red-50/50 rounded-lg border border-red-100">
-                <p className="text-xs font-medium text-gray-500 mb-1">
+              <div className="p-3 bg-k2-cream-dark/50 rounded-lg border border-k2-paper">
+                <p className="text-xs font-medium text-[#7b877f] mb-1">
                   Order Number
                 </p>
-                <p className="text-xl font-semibold text-gray-900">
+                <p className="text-xl font-semibold text-k2-green-deep">
                   #{order.id}
                 </p>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-k2-cream rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <p className="text-xs font-medium text-gray-500">
+                  <p className="text-xs font-medium text-[#7b877f]">
                     Order Date
                   </p>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-k2-ink">
                   {formatDate(order.created_at)}
                 </p>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-k2-cream rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Clock className="h-4 w-4 text-brand-red" />
-                  <p className="text-xs font-medium text-gray-500">
+                  <p className="text-xs font-medium text-[#7b877f]">
                     Estimated{" "}
                     {order.delivery_type === "pickup" ? "Pickup" : "Delivery"}
                   </p>
                 </div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-k2-ink">
                   {formatDate(order.estimated_delivery)}
                 </p>
               </div>
@@ -426,14 +426,14 @@ export default function OrderConfirmationPage() {
                   currentStatusDisplay === "delivered"
                     ? "bg-green-50 border-green-200"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-red-50 border-red-200"
+                    ? "bg-k2-cream-dark border-k2-paper"
                     : currentStatusDisplay === "ready" ||
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-50 border-blue-200"
-                    : "bg-gray-50 border-gray-200"
+                    : "bg-k2-cream border-k2-paper"
                 }`}
               >
-                <p className="text-xs font-medium text-gray-500 mb-1">
+                <p className="text-xs font-medium text-[#7b877f] mb-1">
                   Current Status
                 </p>
                 <p
@@ -445,7 +445,7 @@ export default function OrderConfirmationPage() {
                       : currentStatusDisplay === "ready" ||
                         currentStatusDisplay === "ready_for_pickup"
                       ? "text-blue-700"
-                      : "text-gray-700"
+                      : "text-k2-ink"
                   }`}
                 >
                   {getStatusText(currentStatusDisplay)}
@@ -456,7 +456,7 @@ export default function OrderConfirmationPage() {
 
           {/* Delivery Info Card */}
           <div
-            className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${
+            className={`bg-white rounded-xl shadow-sm p-5 border border-k2-paper hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] no-print ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -477,32 +477,32 @@ export default function OrderConfirmationPage() {
                   <Truck className="h-5 w-5 text-purple-600" />
                 )}
               </div>
-              <h2 className="text-lg font-semibold text-gray-800">
+              <h2 className="text-lg font-semibold text-k2-green-deep">
                 {order.delivery_type === "pickup" ? "Pickup" : "Delivery"} Info
               </h2>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-k2-cream rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Phone className="h-4 w-4 text-gray-400" />
-                  <p className="text-xs font-medium text-gray-500">
+                  <p className="text-xs font-medium text-[#7b877f]">
                     Contact Number
                   </p>
                 </div>
-                <p className="text-sm text-gray-700">{order.customer_phone}</p>
+                <p className="text-sm text-k2-ink">{order.customer_phone}</p>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-k2-cream rounded-lg">
                 <div className="flex items-center gap-2 mb-1.5">
                   <MapPin className="h-4 w-4 text-gray-400" />
-                  <p className="text-xs font-medium text-gray-500">
+                  <p className="text-xs font-medium text-[#7b877f]">
                     {order.delivery_type === "pickup"
                       ? "Pickup Location"
                       : "Delivery Address"}
                   </p>
                 </div>
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-sm text-k2-ink leading-relaxed">
                   {order.delivery_type === "pickup"
                     ? "Shop No. 4, 24K Avenue, New DP Rd, Kolte Patil, Vishal Nagar, Pimple Nilakh, Pimpri-Chinchwad, Pune, Maharashtra 411027"
                     : order.delivery_address}
@@ -527,7 +527,7 @@ export default function OrderConfirmationPage() {
                     ) : (
                       <Wallet className="h-4 w-4 text-green-600" />
                     )}
-                    <p className="text-xs font-medium text-gray-500">
+                    <p className="text-xs font-medium text-[#7b877f]">
                       Payment Method
                     </p>
                   </div>
@@ -553,7 +553,7 @@ export default function OrderConfirmationPage() {
 
           {/* Order Summary Card */}
           <div
-            className={`bg-white rounded-xl shadow-sm p-5 border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] ${
+            className={`bg-white rounded-xl shadow-sm p-5 border border-k2-paper hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] ${
               showAnimation
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-4"
@@ -565,16 +565,16 @@ export default function OrderConfirmationPage() {
                 <div className="p-2 bg-green-50 rounded-lg">
                   <Package className="h-5 w-5 text-green-600" />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-k2-green-deep">
                   Order Summary
                 </h2>
               </div>
               <button
                 onClick={handlePrint}
-                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 transform hover:scale-110"
+                className="p-2 bg-k2-cream-dark hover:bg-gray-200 rounded-lg transition-all duration-300 transform hover:scale-110"
                 title="Print Bill"
               >
-                <Printer className="h-4 w-4 text-gray-600" />
+                <Printer className="h-4 w-4 text-[#5a6a61]" />
               </button>
             </div>
 
@@ -584,27 +584,27 @@ export default function OrderConfirmationPage() {
                   order.items.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-2.5 bg-k2-cream rounded-lg hover:bg-k2-cream-dark transition-colors"
                     >
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 text-sm">
+                        <p className="font-medium text-k2-green-deep text-sm">
                           {item.product_name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-[#7b877f]">
                           Qty: {item.quantity} × ₹
                           {Number(item.price).toFixed(0)}
                         </p>
                       </div>
-                      <p className="font-semibold text-gray-900 text-sm">
+                      <p className="font-semibold text-k2-green-deep text-sm">
                         ₹{(Number(item.price) * item.quantity).toFixed(0)}
                       </p>
                     </div>
                   ))}
               </div>
 
-              <div className="border-t border-gray-200 pt-3 space-y-2">
+              <div className="border-t border-k2-paper pt-3 space-y-2">
                 {order.subtotal && order.subtotal !== order.total_amount && (
-                  <div className="flex justify-between text-sm text-gray-600">
+                  <div className="flex justify-between text-sm text-[#5a6a61]">
                     <span>Subtotal</span>
                     <span className="font-medium">
                       ₹
@@ -619,7 +619,7 @@ export default function OrderConfirmationPage() {
                 )}
                 {order.delivery_type === "delivery" &&
                   (order.delivery_charge || 0) > 0 && (
-                    <div className="flex justify-between text-sm text-gray-600">
+                    <div className="flex justify-between text-sm text-[#5a6a61]">
                       <span>Delivery Charge</span>
                       <span className="font-medium">
                         ₹{Number(order.delivery_charge || 0).toFixed(0)}
@@ -629,7 +629,7 @@ export default function OrderConfirmationPage() {
                 {order.delivery_type === "delivery" &&
                   (order.delivery_charge || 0) === 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Delivery Charge</span>
+                      <span className="text-[#5a6a61]">Delivery Charge</span>
                       <span className="font-medium text-green-600">FREE</span>
                     </div>
                   )}
@@ -644,8 +644,8 @@ export default function OrderConfirmationPage() {
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between items-center pt-3 border-t border-gray-300">
-                  <span className="text-base font-semibold text-gray-900">
+                <div className="flex justify-between items-center pt-3 border-t border-k2-paper">
+                  <span className="text-base font-semibold text-k2-green-deep">
                     Total Amount
                   </span>
                   <span className="text-2xl font-bold text-brand-red">
@@ -659,14 +659,14 @@ export default function OrderConfirmationPage() {
 
         {/* Order Progress Timeline */}
         <div
-          className={`bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-6 no-print hover:shadow-md transition-all duration-300 ${
+          className={`bg-white rounded-xl shadow-sm p-6 border border-k2-paper mb-6 no-print hover:shadow-md transition-all duration-300 ${
             showAnimation
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-4"
           }`}
           style={{ transitionDelay: "1.6s" }}
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-k2-green-deep mb-5 flex items-center gap-2">
             <ChefHat className="h-5 w-5 text-brand-red" />
             Order Progress
           </h3>
@@ -682,7 +682,7 @@ export default function OrderConfirmationPage() {
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-400 h-3/4"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-red-50 h-1/2"
+                    ? "bg-k2-cream-dark h-1/2"
                     : "bg-gray-300 h-1/4"
                 }`}
                 style={{
@@ -711,7 +711,7 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "ready_for_pickup" ||
                     currentStatusDisplay === "delivered"
                       ? "bg-green-50 border-green-300"
-                      : "bg-gray-100 border-gray-300"
+                      : "bg-k2-cream-dark border-k2-paper"
                   }`}
                 >
                   <CheckCircle
@@ -728,10 +728,10 @@ export default function OrderConfirmationPage() {
                   />
                 </div>
                 <div className="flex-1 pt-1">
-                  <h4 className="text-base font-semibold text-gray-900 mb-1">
+                  <h4 className="text-base font-semibold text-k2-green-deep mb-1">
                     Order Confirmed
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#5a6a61]">
                     We&apos;ve received your order and it&apos;s being processed
                   </p>
                 </div>
@@ -745,8 +745,8 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "ready" ||
                     currentStatusDisplay === "ready_for_pickup" ||
                     currentStatusDisplay === "delivered"
-                      ? "bg-red-50 border-red-200"
-                      : "bg-gray-100 border-gray-300"
+                      ? "bg-k2-cream-dark border-k2-paper"
+                      : "bg-k2-cream-dark border-k2-paper"
                   }`}
                 >
                   <ChefHat
@@ -761,10 +761,10 @@ export default function OrderConfirmationPage() {
                   />
                 </div>
                 <div className="flex-1 pt-1">
-                  <h4 className="text-base font-semibold text-gray-900 mb-1">
+                  <h4 className="text-base font-semibold text-k2-green-deep mb-1">
                     Preparing Your Order
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#5a6a61]">
                     Our chefs are cooking your delicious chicken with care
                   </p>
                 </div>
@@ -778,7 +778,7 @@ export default function OrderConfirmationPage() {
                     currentStatusDisplay === "ready_for_pickup" ||
                     currentStatusDisplay === "delivered"
                       ? "bg-blue-50 border-blue-300"
-                      : "bg-gray-100 border-gray-300"
+                      : "bg-k2-cream-dark border-k2-paper"
                   }`}
                 >
                   {order.delivery_type === "pickup" ? (
@@ -804,12 +804,12 @@ export default function OrderConfirmationPage() {
                   )}
                 </div>
                 <div className="flex-1 pt-1">
-                  <h4 className="text-base font-semibold text-gray-900 mb-1">
+                  <h4 className="text-base font-semibold text-k2-green-deep mb-1">
                     {order.delivery_type === "pickup"
                       ? "Ready for Pickup"
                       : "Ready for Delivery"}
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#5a6a61]">
                     {order.delivery_type === "pickup"
                       ? "Your order is ready! We'll call you when you can pick it up."
                       : "Your order is ready! We'll call you when it's out for delivery."}
@@ -824,10 +824,10 @@ export default function OrderConfirmationPage() {
                     <CheckCircle className="h-6 w-6 text-green-600" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <h4 className="text-base font-semibold text-gray-900 mb-1">
+                    <h4 className="text-base font-semibold text-k2-green-deep mb-1">
                       Delivered
                     </h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#5a6a61]">
                       Enjoy your delicious meal! We hope you loved it 🍗
                     </p>
                   </div>
@@ -837,18 +837,18 @@ export default function OrderConfirmationPage() {
           </div>
 
           {/* Current Status Badge */}
-          <div className="mt-6 pt-5 border-t border-gray-200">
+          <div className="mt-6 pt-5 border-t border-k2-paper">
             <div className="flex items-center justify-center">
               <div
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${
                   currentStatusDisplay === "delivered"
                     ? "bg-green-50 border-green-200 text-green-700"
                     : currentStatusDisplay === "preparing"
-                    ? "bg-red-50 border-red-200 text-brand-red"
+                    ? "bg-k2-cream-dark border-k2-paper text-brand-red"
                     : currentStatusDisplay === "ready" ||
                       currentStatusDisplay === "ready_for_pickup"
                     ? "bg-blue-50 border-blue-200 text-blue-700"
-                    : "bg-gray-50 border-gray-200 text-gray-700"
+                    : "bg-k2-cream border-k2-paper text-k2-ink"
                 }`}
               >
                 <div
@@ -889,7 +889,7 @@ export default function OrderConfirmationPage() {
           </Link>
           <Link
             href="/orders"
-            className="inline-flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
+            className="inline-flex items-center justify-center gap-2 bg-white border border-k2-paper text-k2-ink px-6 py-3 rounded-lg font-medium hover:bg-k2-cream transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
           >
             <Receipt className="h-4 w-4" />
             <span>View All Orders</span>

@@ -197,7 +197,7 @@ export default function ContactSection() {
       id="contact"
       className="scroll-mt-[4.5rem] border-t border-k2-paper section-alt py-16 sm:scroll-mt-20 sm:py-20"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="We're here to help"
           title="Get in touch"
@@ -207,12 +207,12 @@ export default function ContactSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Contact Form */}
-          <div className="bg-white rounded-card p-6 sm:p-8 shadow-soft border border-gray-100">
+          <div className="bg-white rounded-card p-6 sm:p-8 shadow-soft border border-k2-paper">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-2xl font-bold text-k2-green-deep mb-2">
                 Send us a Message
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#5a6a61]">
                 Fill out the form below and we&apos;ll get back to you within 24
                 hours
               </p>
@@ -238,7 +238,7 @@ export default function ContactSection() {
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "name" || formData.name
                       ? "top-2 text-xs text-brand-red font-semibold"
-                      : "top-4 text-sm text-gray-500"
+                      : "top-4 text-sm text-[#7b877f]"
                   }`}
                 >
                   Your Name
@@ -250,7 +250,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-k2-paper rounded-button focus:border-k2-saffron focus:ring-2 focus:ring-k2-saffron/20 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -261,7 +261,7 @@ export default function ContactSection() {
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "email" || formData.email
                       ? "top-2 text-xs text-brand-red font-semibold"
-                      : "top-4 text-sm text-gray-500"
+                      : "top-4 text-sm text-[#7b877f]"
                   }`}
                 >
                   Email Address
@@ -273,7 +273,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-k2-paper rounded-button focus:border-k2-saffron focus:ring-2 focus:ring-k2-saffron/20 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -284,7 +284,7 @@ export default function ContactSection() {
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "phone" || formData.phone
                       ? "top-2 text-xs text-brand-red font-semibold"
-                      : "top-4 text-sm text-gray-500"
+                      : "top-4 text-sm text-[#7b877f]"
                   }`}
                 >
                   Phone Number
@@ -296,7 +296,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   onFocus={() => setFocusedField("phone")}
                   onBlur={() => setFocusedField(null)}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-k2-paper rounded-button focus:border-k2-saffron focus:ring-2 focus:ring-k2-saffron/20 outline-none transition-all duration-smooth bg-white"
                   required
                 />
               </div>
@@ -307,7 +307,7 @@ export default function ContactSection() {
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "address" || formData.address
                       ? "top-2 text-xs text-brand-red font-semibold"
-                      : "top-4 text-sm text-gray-500"
+                      : "top-4 text-sm text-[#7b877f]"
                   }`}
                 >
                   Delivery Address (Optional)
@@ -319,10 +319,10 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("address")}
                   onBlur={() => setFocusedField(null)}
                   rows={3}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth resize-none bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-k2-paper rounded-button focus:border-k2-saffron focus:ring-2 focus:ring-k2-saffron/20 outline-none transition-all duration-smooth resize-none bg-white"
                   placeholder="Enter your delivery address for faster service..."
                 />
-                <p className="text-xs text-gray-500 mt-1 ml-1">
+                <p className="text-xs text-[#7b877f] mt-1 ml-1">
                   Include your address to get a Google Maps link in the message
                 </p>
               </div>
@@ -333,7 +333,7 @@ export default function ContactSection() {
                   className={`absolute left-4 transition-all duration-300 ${
                     focusedField === "message" || formData.message
                       ? "top-2 text-xs text-brand-red font-semibold"
-                      : "top-4 text-sm text-gray-500"
+                      : "top-4 text-sm text-[#7b877f]"
                   }`}
                 >
                   Your Message
@@ -345,7 +345,7 @@ export default function ContactSection() {
                   onFocus={() => setFocusedField("message")}
                   onBlur={() => setFocusedField(null)}
                   rows={5}
-                  className="w-full pt-6 pb-2 px-4 border border-gray-200 rounded-button focus:border-brand-red focus:ring-2 focus:ring-red-100 outline-none transition-all duration-smooth resize-none bg-white"
+                  className="w-full pt-6 pb-2 px-4 border border-k2-paper rounded-button focus:border-k2-saffron focus:ring-2 focus:ring-k2-saffron/20 outline-none transition-all duration-smooth resize-none bg-white"
                   required
                 />
               </div>
@@ -362,17 +362,17 @@ export default function ContactSection() {
 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
+                    <div className="w-full border-t border-k2-paper"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-white text-gray-500">Or</span>
+                    <span className="px-4 bg-white text-[#7b877f]">Or</span>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleWhatsAppClick}
-                  className="w-full bg-white hover:bg-red-50 text-brand-red font-semibold py-4 px-6 rounded-button border border-red-200 hover:border-red-300 transition-all duration-smooth flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-k2-cream-dark text-brand-red font-semibold py-4 px-6 rounded-button border border-k2-paper hover:border-k2-saffron/50 transition-all duration-smooth flex items-center justify-center gap-2"
                 >
                   <MessageCircle className="w-5 h-5" />
                   Chat on WhatsApp
@@ -384,11 +384,11 @@ export default function ContactSection() {
           {/* Map and Contact Info */}
           <div className="space-y-6">
             {/* Map */}
-            <div className="bg-white rounded-card overflow-hidden shadow-soft border border-gray-100 relative h-64 sm:h-80">
-              <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-button px-4 py-2 shadow-soft border border-gray-200">
+            <div className="bg-white rounded-card overflow-hidden shadow-soft border border-k2-paper relative h-64 sm:h-80">
+              <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-button px-4 py-2 shadow-soft border border-k2-paper">
                 <div className="flex items-center gap-2">
                   <MapPinIcon className="w-4 h-4 text-brand-red" />
-                  <span className="text-xs font-semibold text-gray-900">
+                  <span className="text-xs font-semibold text-k2-green-deep">
                     Our Location
                   </span>
                 </div>
@@ -399,7 +399,7 @@ export default function ContactSection() {
                   href={`https://www.google.com/maps/search/?api=1&query=${SHOP_LOCATION.lat},${SHOP_LOCATION.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-brand-red px-4 py-2 rounded-button text-xs font-medium border border-red-200 hover:border-red-300 transition-all duration-smooth flex items-center gap-2 shadow-soft"
+                  className="bg-white/95 hover:bg-white backdrop-blur-sm text-brand-red px-4 py-2 rounded-button text-xs font-medium border border-k2-paper hover:border-k2-saffron/50 transition-all duration-smooth flex items-center gap-2 shadow-soft"
                 >
                   <MapPinIcon className="w-3 h-3" />
                   Open in Maps
@@ -411,10 +411,10 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 gap-3 mb-6">
               <a
                 href="tel:+918484978622"
-                className="bg-white hover:bg-red-50 text-brand-red rounded-card p-5 border border-gray-100 hover:border-red-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
+                className="bg-white hover:bg-k2-cream-dark text-brand-red rounded-card p-5 border border-k2-paper hover:border-k2-saffron/40 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-50 transition-colors">
+                  <div className="w-12 h-12 bg-k2-cream-dark rounded-xl flex items-center justify-center group-hover:bg-k2-cream-dark transition-colors">
                     <PhoneCall className="w-6 h-6 text-brand-red" />
                   </div>
                   <div>
@@ -427,10 +427,10 @@ export default function ContactSection() {
 
               <button
                 onClick={handleWhatsAppClick}
-                className="bg-white hover:bg-red-50 text-brand-red rounded-card p-5 border border-gray-100 hover:border-red-200 shadow-soft transition-all duration-smooth group flex items-center justify-between"
+                className="bg-white hover:bg-k2-cream-dark text-brand-red rounded-card p-5 border border-k2-paper hover:border-k2-saffron/40 shadow-soft transition-all duration-smooth group flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center group-hover:bg-red-50 transition-colors">
+                  <div className="w-12 h-12 bg-k2-cream-dark rounded-xl flex items-center justify-center group-hover:bg-k2-cream-dark transition-colors">
                     <MessageCircle className="w-6 h-6 text-brand-red" />
                   </div>
                   <div>
@@ -448,37 +448,37 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <a
                 href="mailto:k2foodindia@gmail.com"
-                className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-red-200 hover:shadow-card transition-all duration-smooth group"
+                className="bg-white border border-k2-paper rounded-card p-5 shadow-soft hover:border-k2-saffron/40 hover:shadow-card transition-all duration-smooth group"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
                   <Mail className="w-6 h-6 text-blue-600" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1">Email Us</h4>
-                <p className="text-gray-600 text-sm">k2foodindia@gmail.com</p>
+                <h4 className="font-bold text-k2-green-deep mb-1">Email Us</h4>
+                <p className="text-[#5a6a61] text-sm">k2foodindia@gmail.com</p>
               </a>
 
-              <div className="bg-white border border-gray-100 rounded-card p-5 shadow-soft hover:border-red-200 transition-all duration-smooth group">
-                <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-red-50 transition-colors">
+              <div className="bg-white border border-k2-paper rounded-card p-5 shadow-soft hover:border-k2-saffron/40 transition-all duration-smooth group">
+                <div className="w-12 h-12 bg-k2-cream-dark rounded-xl flex items-center justify-center mb-3 group-hover:bg-k2-cream-dark transition-colors">
                   <MapPinIcon className="w-6 h-6 text-brand-red" />
                 </div>
-                <h4 className="font-bold text-gray-900 mb-1">Visit Us</h4>
-                <p className="text-gray-600 text-xs leading-relaxed">
+                <h4 className="font-bold text-k2-green-deep mb-1">Visit Us</h4>
+                <p className="text-[#5a6a61] text-xs leading-relaxed">
                   Shop No. 4, 24K Avenue, Pimple Nilakh, Pune
                 </p>
               </div>
             </div>
 
             {/* Operating Hours */}
-            <div className="bg-red-50 border border-red-200 rounded-card p-6 shadow-soft">
+            <div className="bg-k2-cream-dark border border-k2-paper rounded-card p-6 shadow-soft">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center shadow-md">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 text-lg">
+                  <h4 className="font-bold text-k2-green-deep text-lg">
                     Operating Hours
                   </h4>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-[#5a6a61]">
                     We&apos;re open 7 days a week
                   </p>
                 </div>
@@ -487,19 +487,19 @@ export default function ContactSection() {
                 {operatingHours.map((schedule, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-red-100"
+                    className="flex justify-between items-center py-2.5 px-3 bg-white/60 rounded-lg border border-k2-paper"
                   >
-                    <span className="text-gray-800 font-semibold text-sm">
+                    <span className="text-k2-green-deep font-semibold text-sm">
                       {schedule.day}
                     </span>
-                    <span className="text-gray-700 font-medium text-sm">
+                    <span className="text-k2-ink font-medium text-sm">
                       {schedule.hours}
                     </span>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-red-200">
-                <p className="text-xs text-gray-600 flex items-center gap-2">
+              <div className="mt-4 pt-4 border-t border-k2-paper">
+                <p className="text-xs text-[#5a6a61] flex items-center gap-2">
                   <Zap className="w-3 h-3 text-brand-red" />
                   <span>
                     Same-day delivery available for orders placed before 6 PM

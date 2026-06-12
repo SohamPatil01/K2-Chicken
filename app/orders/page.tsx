@@ -219,7 +219,7 @@ export default function OrdersPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16">
+      <div className="min-h-screen bg-k2-cream py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <LoadingSpinner
             label="Loading your orders"
@@ -233,16 +233,16 @@ export default function OrdersPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16 flex items-center">
+      <div className="min-h-screen bg-k2-cream py-16 flex items-center">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-12">
-            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
+          <div className="bg-white rounded-card shadow-xl p-12">
+            <div className="w-20 h-20 bg-k2-cream-dark rounded-full flex items-center justify-center mx-auto mb-6 border border-k2-paper">
               <ShoppingBag className="h-10 w-10 text-brand-red" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-k2-green-deep mb-4">
               Please Login
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-[#5a6a61] mb-8">
               You need to be logged in to view your order history.
             </p>
             <Link
@@ -259,24 +259,24 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-k2-cream py-8 sm:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8 sm:mb-12 animate-slide-down">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <div className="inline-block mb-2">
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900">
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-k2-green-deep">
                   My Orders
                 </h1>
               </div>
-              <p className="text-gray-600 text-lg animate-slide-up stagger-1">
+              <p className="text-[#5a6a61] text-lg animate-slide-up stagger-1">
                 Track your orders and view your history
               </p>
             </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-white border-2 border-red-200 text-brand-red px-6 py-3 rounded-xl font-semibold hover:bg-red-50 transition-all shadow-sm hover:shadow-md transform hover:scale-105 animate-scale-in stagger-2"
+              className="inline-flex items-center gap-2 bg-white border-2 border-k2-paper text-brand-red px-6 py-3 rounded-xl font-semibold hover:bg-k2-cream-dark transition-all shadow-sm hover:shadow-md transform hover:scale-105 animate-scale-in stagger-2"
             >
               <ShoppingBag className="h-5 w-5" />
               <span>Continue Shopping</span>
@@ -285,14 +285,14 @@ export default function OrdersPage() {
         </div>
 
         {orders.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-xl border-2 border-gray-100 animate-bounce-in">
-            <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100">
+          <div className="text-center py-20 bg-white rounded-card shadow-xl border-2 border-k2-paper animate-bounce-in">
+            <div className="w-24 h-24 bg-k2-cream-dark rounded-full flex items-center justify-center mx-auto mb-6 border border-k2-paper">
               <Package className="h-12 w-12 text-brand-red" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-3xl font-bold text-k2-green-deep mb-3">
               No Orders Yet
             </h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+            <p className="text-lg text-[#5a6a61] mb-8 max-w-md mx-auto">
               Start your delicious journey! Place your first order and
               experience the best chicken in town.
             </p>
@@ -312,11 +312,11 @@ export default function OrdersPage() {
                 return (
                   <div
                     key={order.id}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 transform hover:scale-[1.01] animate-slide-up"
+                    className="bg-white rounded-card shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-k2-paper transform hover:scale-[1.01] animate-slide-up"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {/* Order Header */}
-                    <div className="bg-gray-50 p-6 border-b border-gray-200">
+                    <div className="bg-k2-cream p-6 border-b border-k2-paper">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="flex items-start gap-4">
                           <div
@@ -328,7 +328,7 @@ export default function OrdersPage() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-2xl font-bold text-gray-900">
+                              <h3 className="text-2xl font-bold text-k2-green-deep">
                                 Order #{order.id}
                               </h3>
                               <span
@@ -339,7 +339,7 @@ export default function OrdersPage() {
                                 {getStatusText(order.status)}
                               </span>
                             </div>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-[#5a6a61]">
                               <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
                                 <span>
@@ -378,7 +378,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-4xl font-extrabold text-gray-900 mb-2">
+                          <div className="text-4xl font-extrabold text-k2-green-deep mb-2">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </div>
                           <div className="flex items-center gap-2 justify-end">
@@ -386,8 +386,8 @@ export default function OrdersPage() {
                               onClick={() => toggleFavorite(order.id)}
                               className={`p-2 rounded-lg transition-all duration-300 ${
                                 favoriteOrderIds.has(order.id)
-                                  ? "text-red-600 bg-red-50 hover:bg-red-100"
-                                  : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+                                  ? "text-k2-saffron-hot bg-k2-cream-dark hover:bg-red-100"
+                                  : "text-gray-400 hover:text-k2-saffron-hot hover:bg-k2-cream-dark"
                               }`}
                               title={
                                 favoriteOrderIds.has(order.id)
@@ -405,7 +405,7 @@ export default function OrdersPage() {
                             </button>
                             <Link
                               href={`/order-confirmation/${order.id}`}
-                              className="inline-flex items-center gap-2 text-sm text-brand-red hover:text-brand-red font-semibold group px-4 py-2 rounded-lg hover:bg-red-50 transition-all duration-300"
+                              className="inline-flex items-center gap-2 text-sm text-brand-red hover:text-brand-red font-semibold group px-4 py-2 rounded-lg hover:bg-k2-cream-dark transition-all duration-300"
                             >
                               <span>View Details</span>
                               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -417,7 +417,7 @@ export default function OrdersPage() {
                       {/* Progress Bar */}
                       {order.status !== "cancelled" && (
                         <div className="mt-4">
-                          <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                          <div className="flex items-center justify-between text-xs text-[#5a6a61] mb-2">
                             <span>Order Progress</span>
                             <span>{progress}%</span>
                           </div>
@@ -444,7 +444,7 @@ export default function OrdersPage() {
                     <div className="p-6">
                       {/* Items List */}
                       <div className="mb-6">
-                        <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-k2-ink mb-3 flex items-center gap-2">
                           <Package className="h-4 w-4" />
                           Order Items ({order.items?.length || 0})
                         </h4>
@@ -452,19 +452,19 @@ export default function OrdersPage() {
                           {order.items?.map((item, index) => (
                             <div
                               key={index}
-                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-[1.02] animate-slide-up"
+                              className="flex items-center justify-between p-3 bg-k2-cream rounded-lg hover:bg-k2-cream-dark transition-all duration-300 transform hover:scale-[1.02] animate-slide-up"
                               style={{ animationDelay: `${index * 0.05}s` }}
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 bg-brand-red rounded-full"></div>
-                                <span className="text-sm font-medium text-gray-900">
+                                <span className="text-sm font-medium text-k2-green-deep">
                                   {item.product_name}
                                 </span>
-                                <span className="text-xs text-gray-500 bg-white px-2 py-0.5 rounded-full">
+                                <span className="text-xs text-[#7b877f] bg-white px-2 py-0.5 rounded-full">
                                   x{item.quantity}
                                 </span>
                               </div>
-                              <span className="text-sm font-bold text-gray-900">
+                              <span className="text-sm font-bold text-k2-green-deep">
                                 ₹
                                 {(Number(item.price) * item.quantity).toFixed(
                                   0
@@ -512,10 +512,10 @@ export default function OrdersPage() {
                       </div>
 
                       {/* Price Breakdown */}
-                      <div className="border-t border-gray-200 pt-4 space-y-2">
+                      <div className="border-t border-k2-paper pt-4 space-y-2">
                         {order.subtotal &&
                           order.subtotal !== order.total_amount && (
-                            <div className="flex justify-between text-sm text-gray-600">
+                            <div className="flex justify-between text-sm text-[#5a6a61]">
                               <span>Subtotal</span>
                               <span className="font-medium">
                                 ₹{Number(order.subtotal).toFixed(0)}
@@ -523,7 +523,7 @@ export default function OrdersPage() {
                             </div>
                           )}
                         {order.delivery_charge && order.delivery_charge > 0 && (
-                          <div className="flex justify-between text-sm text-gray-600">
+                          <div className="flex justify-between text-sm text-[#5a6a61]">
                             <span>Delivery Charge</span>
                             <span className="font-medium">
                               ₹{Number(order.delivery_charge).toFixed(0)}
@@ -531,7 +531,7 @@ export default function OrdersPage() {
                           </div>
                         )}
                         {order.discount_amount && order.discount_amount > 0 && (
-                          <div className="flex justify-between text-sm pt-2 border-t border-gray-100">
+                          <div className="flex justify-between text-sm pt-2 border-t border-k2-paper">
                             <span className="text-green-600 font-semibold flex items-center gap-2">
                               <Sparkles className="h-4 w-4" />
                               Discount Applied
@@ -541,11 +541,11 @@ export default function OrdersPage() {
                             </span>
                           </div>
                         )}
-                        <div className="flex justify-between items-center pt-3 border-t-2 border-gray-300">
-                          <span className="text-base font-bold text-gray-900">
+                        <div className="flex justify-between items-center pt-3 border-t-2 border-k2-paper">
+                          <span className="text-base font-bold text-k2-green-deep">
                             Total Amount
                           </span>
-                          <span className="text-2xl font-extrabold text-gray-900">
+                          <span className="text-2xl font-extrabold text-k2-green-deep">
                             ₹{Number(order.total_amount).toFixed(0)}
                           </span>
                         </div>
@@ -557,7 +557,7 @@ export default function OrdersPage() {
             ) : (
               <div className="text-center py-12">
                 <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg">No orders found</p>
+                <p className="text-[#5a6a61] text-lg">No orders found</p>
               </div>
             )}
           </div>

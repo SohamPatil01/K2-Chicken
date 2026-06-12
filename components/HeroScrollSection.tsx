@@ -24,7 +24,7 @@ export function HeroScrollSection() {
                 Delivered to You
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-[#5a6a61] dark:text-gray-400 mt-4 max-w-2xl mx-auto">
               100% Halal · Farm-fresh · Delivered in 30–45 mins
             </p>
           </>
@@ -35,7 +35,7 @@ export function HeroScrollSection() {
           alt="Fresh premium chicken - K2 Chicken Pune"
           height={720}
           width={1400}
-          className="mx-auto rounded-2xl object-cover h-full object-center"
+          className="mx-auto rounded-card object-cover h-full object-center"
           draggable={false}
           priority={false}
         />

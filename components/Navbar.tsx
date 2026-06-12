@@ -42,8 +42,8 @@ export default function Navbar() {
     path === "/" ? pathname === "/" : (pathname && pathname.startsWith(path)) || false;
 
   const bannerClass = scrolled
-    ? "bg-white/98 backdrop-blur-xl shadow-card border-b border-gray-200/50"
-    : "bg-white/95 backdrop-blur-lg shadow-soft border-b border-gray-100/50";
+    ? "bg-white/98 backdrop-blur-xl shadow-card border-b border-k2-paper/50"
+    : "bg-white/95 backdrop-blur-lg shadow-soft border-b border-k2-paper/50";
 
   return (
     <NavbarView

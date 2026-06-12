@@ -40,9 +40,9 @@ export default function RecipeCard({
     return (
       <Link
         href={`/recipes/${recipe.id}`}
-        className={`group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200 ${className}`}
+        className={`group block bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-k2-paper hover:border-k2-saffron/40 ${className}`}
       >
-        <div className="aspect-[16/6] sm:aspect-[3/1] relative bg-gray-100 overflow-hidden">
+        <div className="aspect-[16/6] sm:aspect-[3/1] relative bg-k2-cream-dark overflow-hidden">
           <Image
             src={imageUrl}
             alt={recipe.title}
@@ -87,9 +87,9 @@ export default function RecipeCard({
   return (
     <Link
       href={`/recipes/${recipe.id}`}
-      className={`group flex flex-col bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-gray-100 hover:border-red-200 h-full ${className}`}
+      className={`group flex flex-col bg-white rounded-card shadow-soft hover:shadow-card-hover transition-all duration-smooth overflow-hidden border border-k2-paper hover:border-k2-saffron/40 h-full ${className}`}
     >
-      <div className="aspect-[4/3] relative w-full overflow-hidden bg-gray-100 flex-shrink-0">
+      <div className="aspect-[4/3] relative w-full overflow-hidden bg-k2-cream-dark flex-shrink-0">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -104,21 +104,21 @@ export default function RecipeCard({
             }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+          <div className="w-full h-full flex items-center justify-center bg-k2-cream-dark">
             <ChefHat className="w-16 h-16 text-gray-400" />
           </div>
         )}
       </div>
       <div className="p-4 flex-1 flex flex-col min-w-0">
-        <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth text-balance line-clamp-2 mb-2">
+        <h3 className="font-semibold text-k2-green-deep group-hover:text-brand-red transition-colors duration-smooth text-balance line-clamp-2 mb-2">
           {recipe.title}
         </h3>
         {description && (
-          <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
+          <p className="text-sm text-[#7b877f] line-clamp-2 mb-3 flex-1">
             {description}
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-[#5a6a61]">
           {totalTime > 0 && (
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />

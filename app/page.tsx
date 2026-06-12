@@ -5,13 +5,11 @@ import {
   HomeContactSectionFallback,
   HomeProductCatalogFallback,
   HomePromotionsSectionFallback,
-  HomeRecipeSectionFallback,
   HomeReviewsSectionFallback,
 } from "@/components/ui/LoadingState";
 import pool from "@/lib/db";
 import type { Metadata } from "next";
 import { getSiteUrl } from "@/lib/siteUrl";
-import { sanitizeRecipeList, sanitizeRecipeText } from "@/lib/recipeBranding";
 import { FAQ_ITEMS } from "@/lib/seo/faq";
 import {
   LOCAL_SEO_KEYWORDS,
@@ -26,11 +24,6 @@ const siteUrl = getSiteUrl();
 // Lazy load heavy components for better performance
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
   loading: () => <HomeProductCatalogFallback />,
-  ssr: true,
-});
-
-const RecipeSection = dynamic(() => import("@/components/RecipeSection"), {
-  loading: () => <HomeRecipeSectionFallback />,
   ssr: true,
 });
 
@@ -153,7 +146,7 @@ async function getHomePageData() {
     const hasOriginalPrice = await checkOriginalPriceColumn(client);
 
     // Fetch all data in parallel
-    const [productsResult, recipesResult, promotionsResult, reviewsResult] =
+    const [productsResult, promotionsResult, reviewsResult] =
       await Promise.all([
         client.query(`
         SELECT id, name, description, price, ${
@@ -167,12 +160,6 @@ async function getHomePageData() {
         FROM products 
         WHERE is_available = true 
         ORDER BY category, name
-      `),
-        client.query(`
-        SELECT id, title, description, ingredients, instructions, image_url, prep_time, cook_time, servings
-        FROM recipes 
-        ORDER BY created_at DESC
-        LIMIT 3
       `),
         client.query(`
         SELECT * FROM promotions
@@ -234,12 +221,6 @@ async function getHomePageData() {
 
     return {
       products,
-      recipes: recipesResult.rows.map((recipe: any) => ({
-        ...recipe,
-        description: sanitizeRecipeText(recipe.description),
-        ingredients: sanitizeRecipeList(recipe.ingredients),
-        instructions: sanitizeRecipeList(recipe.instructions),
-      })),
       promotions: promotionsResult.rows,
       reviews: reviewsResult.rows,
       deliveryEnabled,
@@ -252,7 +233,6 @@ async function getHomePageData() {
     // Log the error but don't crash the page
     return {
       products: [],
-      recipes: [],
       promotions: [],
       reviews: [],
       deliveryEnabled: true,
@@ -264,7 +244,7 @@ async function getHomePageData() {
 
 export default async function Home() {
   // Fetch data server-side
-  const { products, recipes, promotions, reviews, deliveryEnabled } =
+  const { products, promotions, reviews, deliveryEnabled } =
     await getHomePageData();
 
   // Generate structured data for homepage
@@ -338,8 +318,6 @@ export default async function Home() {
         <WhyChooseUs />
 
         <ReviewsSection initialReviews={reviews} />
-
-        <RecipeSection initialRecipes={recipes} />
 
         <FAQSection />
 

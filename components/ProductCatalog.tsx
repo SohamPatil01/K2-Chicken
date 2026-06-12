@@ -315,7 +315,7 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
   useEffect(() => { filterAndSortProducts(); }, [products, searchTerm, selectedCategory, sortBy]);
 
   const getStockStatus = (product: Product) => {
-    if (!product.in_stock || (product.stock_quantity ?? 0) === 0) return { status: "out", label: "Out of Stock", color: "bg-red-100 text-red-700 border-red-200", icon: XCircle };
+    if (!product.in_stock || (product.stock_quantity ?? 0) === 0) return { status: "out", label: "Out of Stock", color: "bg-red-100 text-k2-saffron-hot border-k2-paper", icon: XCircle };
     if ((product.stock_quantity ?? 100) <= (product.low_stock_threshold ?? 10)) return { status: "low", label: "Low Stock", color: "bg-yellow-100 text-yellow-700 border-yellow-200", icon: AlertCircle };
     return { status: "in", label: "In Stock", color: "bg-green-100 text-green-700 border-green-200", icon: CheckCircle };
   };
@@ -370,14 +370,14 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
         aria-label="Loading products"
       >
         <span className="sr-only">Loading products</span>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-2xl h-80 animate-pulse">
-                <div className="bg-gray-100 h-52 w-full" />
+              <div key={i} className="bg-white border border-k2-paper rounded-card h-80 animate-pulse">
+                <div className="bg-k2-cream-dark h-52 w-full" />
                 <div className="p-5 space-y-3">
-                  <div className="h-4 bg-gray-100 rounded w-3/4" />
-                  <div className="h-4 bg-gray-100 rounded w-1/2" />
+                  <div className="h-4 bg-k2-cream-dark rounded w-3/4" />
+                  <div className="h-4 bg-k2-cream-dark rounded w-1/2" />
                 </div>
               </div>
             ))}
@@ -423,14 +423,14 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
               placeholder="Search chicken cuts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-full border border-gray-200 bg-gray-100 py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 transition-all search-glow focus:outline-none"
+              className="w-full rounded-full border border-k2-paper bg-k2-cream-dark py-3 pl-11 pr-4 text-sm text-k2-green-deep placeholder-gray-400 transition-all search-glow focus:outline-none"
             />
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="w-full shrink-0 rounded-full border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none search-glow sm:w-auto sm:min-w-[11rem]"
+            className="w-full shrink-0 rounded-full border border-k2-paper bg-white px-4 py-3 text-sm font-medium text-k2-ink focus:outline-none search-glow sm:w-auto sm:min-w-[11rem]"
           >
             <option value="popular">Popular</option>
             <option value="price_low">Price: Low to High</option>
@@ -455,10 +455,10 @@ export default function ProductCatalog({ initialProducts, deliveryEnabled = true
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+          <div className="text-center py-20 bg-white rounded-card-lg border border-dashed border-k2-paper">
             <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500 text-sm mb-6">Try a different search term or category filter.</p>
+            <h3 className="text-xl font-semibold text-k2-green-deep mb-2">No products found</h3>
+            <p className="text-[#7b877f] text-sm mb-6">Try a different search term or category filter.</p>
             <button
               type="button"
               onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }}

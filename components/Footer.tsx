@@ -93,11 +93,6 @@ export default function Footer() {
             </Link>
           </li>
           <li className="mb-2.5 text-sm">
-            <Link href="/recipes" className="hover:text-k2-saffron">
-              Recipes &amp; Tips
-            </Link>
-          </li>
-          <li className="mb-2.5 text-sm">
             <Link href="/orders" className="hover:text-k2-saffron">
               My Orders
             </Link>

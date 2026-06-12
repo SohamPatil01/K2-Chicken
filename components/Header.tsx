@@ -213,11 +213,11 @@ export default function Header() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 safe-top ${
         scrolled
-          ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-gray-200/50"
-          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100/30"
+          ? "bg-white/98 backdrop-blur-xl shadow-md border-b border-k2-paper/50"
+          : "bg-white/95 backdrop-blur-lg shadow-sm border-b border-k2-paper/30"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="flex justify-between items-center py-3 md:py-4">
           {/* Logo - Enhanced with animations */}
           <Link
@@ -230,7 +230,7 @@ export default function Header() {
                 <img
                   src="/logo.png"
                   alt="K2 Chicken"
-                  className="h-10 sm:h-12 md:h-16 w-auto rounded-xl md:rounded-2xl drop-shadow-sm transition-all duration-200"
+                  className="h-10 sm:h-12 md:h-16 w-auto rounded-xl md:rounded-card drop-shadow-sm transition-all duration-200"
                   onError={(e) => {
                     const target = e.currentTarget as HTMLImageElement;
                     target.src = "/logo.svg";
@@ -250,7 +250,7 @@ export default function Header() {
               >
                 Chicken Vicken
               </div>
-              <div className="text-xs sm:text-sm text-gray-500 font-medium tracking-wide mt-0.5 group-hover:text-gray-600 transition-colors duration-300">
+              <div className="text-xs sm:text-sm text-[#7b877f] font-medium tracking-wide mt-0.5 group-hover:text-[#5a6a61] transition-colors duration-300">
                 K2 Chicken
               </div>
             </div>
@@ -263,8 +263,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/")
-                  ? "text-chicken-wood bg-gray-50 border border-red-200"
-                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
+                  ? "text-chicken-wood bg-k2-cream border border-k2-paper"
+                  : "text-[#5a6a61] hover:text-brand-red hover:bg-k2-cream/50"
               }`}
               onClick={handleHomeClick}
             >
@@ -286,8 +286,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#products")
-                  ? "text-chicken-wood bg-gray-50 border border-red-200"
-                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
+                  ? "text-chicken-wood bg-k2-cream border border-k2-paper"
+                  : "text-[#5a6a61] hover:text-brand-red hover:bg-k2-cream/50"
               }`}
               onClick={handleProductsClick}
             >
@@ -309,8 +309,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/recipes")
-                  ? "text-chicken-wood bg-gray-50 border border-red-200"
-                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
+                  ? "text-chicken-wood bg-k2-cream border border-k2-paper"
+                  : "text-[#5a6a61] hover:text-brand-red hover:bg-k2-cream/50"
               }`}
             >
               <span className="relative z-10 flex items-center gap-2">
@@ -331,8 +331,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#about")
-                  ? "text-chicken-wood bg-gray-50 border border-red-200"
-                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
+                  ? "text-chicken-wood bg-k2-cream border border-k2-paper"
+                  : "text-[#5a6a61] hover:text-brand-red hover:bg-k2-cream/50"
               }`}
               onClick={handleAboutClick}
             >
@@ -354,8 +354,8 @@ export default function Header() {
               prefetch={true}
               className={`group relative px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 overflow-hidden ${
                 isActive("/#contact")
-                  ? "text-chicken-wood bg-gray-50 border border-red-200"
-                  : "text-gray-600 hover:text-brand-red hover:bg-gray-50/50"
+                  ? "text-chicken-wood bg-k2-cream border border-k2-paper"
+                  : "text-[#5a6a61] hover:text-brand-red hover:bg-k2-cream/50"
               }`}
               onClick={handleContactClick}
             >
@@ -378,7 +378,7 @@ export default function Header() {
             {/* Phone Number - Enhanced */}
             <a
               href="tel:+918484978622"
-              className="hidden lg:flex items-center gap-2 px-4 py-2 text-xs font-medium text-gray-700 hover:text-green-800 rounded-xl hover:bg-green-50 transition-all duration-300 group border border-transparent hover:border-green-200"
+              className="hidden lg:flex items-center gap-2 px-4 py-2 text-xs font-medium text-k2-ink hover:text-green-800 rounded-xl hover:bg-green-50 transition-all duration-300 group border border-transparent hover:border-green-200"
               title="Call us: +91 84849 78622"
             >
               <Phone className="h-4 w-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300" />
@@ -393,7 +393,7 @@ export default function Header() {
                     <Link
                       href="/orders"
                       prefetch={true}
-                      className="relative p-2.5 text-gray-600 hover:text-brand-red rounded-xl hover:bg-red-50 transition-all duration-300 group border border-transparent hover:border-red-100"
+                      className="relative p-2.5 text-[#5a6a61] hover:text-brand-red rounded-xl hover:bg-k2-cream-dark transition-all duration-300 group border border-transparent hover:border-k2-paper"
                       title="My Orders"
                     >
                       <User
@@ -403,7 +403,7 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="relative p-2.5 text-gray-600 hover:text-red-600 rounded-xl hover:bg-red-50 transition-all duration-300 group border border-transparent hover:border-red-100"
+                      className="relative p-2.5 text-[#5a6a61] hover:text-k2-saffron-hot rounded-xl hover:bg-k2-cream-dark transition-all duration-300 group border border-transparent hover:border-k2-paper"
                       title="Logout"
                     >
                       <LogOut
@@ -432,7 +432,7 @@ export default function Header() {
             <Link
               href="/cart"
               prefetch={true}
-              className="relative p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-800 rounded-xl active:scale-95 transition-all duration-200 group"
+              className="relative p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-k2-green-deep rounded-xl active:scale-95 transition-all duration-200 group"
             >
               <div className="relative">
                 <ShoppingCart
@@ -458,7 +458,7 @@ export default function Header() {
 
             {/* Mobile menu button - Modern */}
             <button
-              className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-800 rounded-xl active:scale-95 transition-all duration-200"
+              className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-k2-green-deep rounded-xl active:scale-95 transition-all duration-200"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -488,15 +488,15 @@ export default function Header() {
             isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="py-4 border-t border-gray-100/50 bg-white/98 backdrop-blur-sm">
+          <div className="py-4 border-t border-k2-paper/50 bg-white/98 backdrop-blur-sm">
             <nav className="flex flex-col space-y-2 px-4">
               <Link
                 href="/"
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/")
-                    ? "text-brand-red bg-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    ? "text-brand-red bg-k2-cream-dark border border-k2-paper"
+                    : "text-k2-green-deep hover:text-brand-red hover:bg-k2-cream border border-transparent hover:border-k2-paper"
                 }`}
                 onClick={(event) => {
                   handleHomeClick(event);
@@ -508,7 +508,7 @@ export default function Header() {
                   className={`transition-all duration-300 ${
                     isActive("/")
                       ? "text-brand-red scale-110"
-                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
+                      : "text-[#5a6a61] group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span>Home</span>
@@ -522,8 +522,8 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#products")
-                    ? "text-brand-red bg-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    ? "text-brand-red bg-k2-cream-dark border border-k2-paper"
+                    : "text-k2-green-deep hover:text-brand-red hover:bg-k2-cream border border-transparent hover:border-k2-paper"
                 }`}
                 onClick={(event) => {
                   handleProductsClick(event);
@@ -535,7 +535,7 @@ export default function Header() {
                   className={`transition-all duration-300 ${
                     isActive("/#products")
                       ? "text-brand-red scale-110"
-                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
+                      : "text-[#5a6a61] group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span>Products</span>
@@ -549,8 +549,8 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/recipes")
-                    ? "text-brand-red bg-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    ? "text-brand-red bg-k2-cream-dark border border-k2-paper"
+                    : "text-k2-green-deep hover:text-brand-red hover:bg-k2-cream border border-transparent hover:border-k2-paper"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -559,7 +559,7 @@ export default function Header() {
                   className={`transition-all duration-300 ${
                     isActive("/recipes")
                       ? "text-brand-red scale-110"
-                      : "text-gray-600 group-hover:text-brand-red group-hover:scale-110"
+                      : "text-[#5a6a61] group-hover:text-brand-red group-hover:scale-110"
                   }`}
                 />
                 <span>Recipes</span>
@@ -573,15 +573,15 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#about")
-                    ? "text-brand-red bg-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    ? "text-brand-red bg-k2-cream-dark border border-k2-paper"
+                    : "text-k2-green-deep hover:text-brand-red hover:bg-k2-cream border border-transparent hover:border-k2-paper"
                 }`}
                 onClick={(e) => {
                   handleAboutClick(e);
                   setIsMenuOpen(false);
                 }}
               >
-                <Users size={18} className="transition-all duration-300 text-gray-600 group-hover:text-brand-red" />
+                <Users size={18} className="transition-all duration-300 text-[#5a6a61] group-hover:text-brand-red" />
                 <span>About Us</span>
                 {isActive("/#about") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
@@ -593,15 +593,15 @@ export default function Header() {
                 prefetch={true}
                 className={`group relative px-5 py-3.5 text-sm font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 ${
                   isActive("/#contact")
-                    ? "text-brand-red bg-red-50 border border-red-200"
-                    : "text-gray-800 hover:text-brand-red hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    ? "text-brand-red bg-k2-cream-dark border border-k2-paper"
+                    : "text-k2-green-deep hover:text-brand-red hover:bg-k2-cream border border-transparent hover:border-k2-paper"
                 }`}
                 onClick={(e) => {
                   handleContactClick(e);
                   setIsMenuOpen(false);
                 }}
               >
-                <MessageCircle size={18} className="transition-all duration-300 text-gray-600 group-hover:text-brand-red" />
+                <MessageCircle size={18} className="transition-all duration-300 text-[#5a6a61] group-hover:text-brand-red" />
                 <span>Contact</span>
                 {isActive("/#contact") && (
                   <div className="absolute right-4 w-2 h-2 bg-brand-red rounded-full animate-pulse"></div>
@@ -615,12 +615,12 @@ export default function Header() {
                       <Link
                         href="/orders"
                         prefetch={true}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-brand-red rounded-xl hover:bg-gray-50 transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-gray-200"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-k2-green-deep hover:text-brand-red rounded-xl hover:bg-k2-cream transition-all duration-300 flex items-center gap-3 border border-transparent hover:border-k2-paper"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <User
                           size={18}
-                          className="text-gray-600 group-hover:text-brand-red group-hover:scale-110 transition-all duration-300"
+                          className="text-[#5a6a61] group-hover:text-brand-red group-hover:scale-110 transition-all duration-300"
                         />
                         <span>My Orders</span>
                       </Link>
@@ -629,7 +629,7 @@ export default function Header() {
                           setIsMenuOpen(false);
                           handleLogout();
                         }}
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-red-600 hover:text-red-700 rounded-xl hover:bg-red-50 transition-all duration-300 flex items-center gap-3 w-full text-left border border-transparent hover:border-red-100"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-k2-saffron-hot hover:text-k2-saffron-hot rounded-xl hover:bg-k2-cream-dark transition-all duration-300 flex items-center gap-3 w-full text-left border border-transparent hover:border-k2-paper"
                       >
                         <LogOut
                           size={18}
@@ -642,7 +642,7 @@ export default function Header() {
                     <>
                       <a
                         href="tel:+918484978622"
-                        className="group relative px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-green-800 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3"
+                        className="group relative px-5 py-3.5 text-sm font-semibold text-k2-green-deep hover:text-green-800 bg-green-50 hover:bg-green-100 rounded-xl border border-green-200 transition-all duration-300 flex items-center gap-3"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <Phone

@@ -42,12 +42,12 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-red-200 transition-all duration-300"
+      className="group relative bg-white border border-k2-paper rounded-card overflow-hidden hover:border-k2-saffron/40 transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Product Image Container - Filled Style */}
-      <div className="relative w-full h-64 bg-white overflow-hidden border-b border-gray-100">
+      <div className="relative w-full h-64 bg-white overflow-hidden border-b border-k2-paper">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -68,14 +68,14 @@ const ProductCard = ({ product }: { product: Product }) => {
         <div
           className={`w-full h-full ${
             product.image_url ? "hidden" : "flex"
-          } bg-gray-50 items-center justify-center`}
+          } bg-k2-cream items-center justify-center`}
         >
           <span className="text-6xl">🍗</span>
         </div>
 
         {/* Category Badge */}
         <div className="absolute top-3 left-3">
-          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold rounded-full capitalize">
+          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-k2-ink text-xs font-semibold rounded-full capitalize">
             {product.category}
           </span>
         </div>
@@ -101,19 +101,19 @@ const ProductCard = ({ product }: { product: Product }) => {
       {/* Product Info */}
       <div className="p-6">
         {/* Product Name */}
-        <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-brand-red transition-colors duration-300">
+        <h3 className="font-bold text-k2-green-deep text-lg mb-2 group-hover:text-brand-red transition-colors duration-300">
           {product.name}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-[#5a6a61] text-sm mb-4 line-clamp-2">
           {product.description}
         </p>
 
         {/* Price */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-2xl font-bold text-k2-green-deep">
               ₹{Number(product.price).toFixed(0)}
             </span>
           </div>
@@ -125,12 +125,12 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => updateQuantity(cartQuantity - 1)}
-                className="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                className="w-9 h-9 bg-k2-cream-dark hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
               >
-                <Minus size={16} className="text-gray-700" />
+                <Minus size={16} className="text-k2-ink" />
               </button>
-              <div className="w-10 h-9 bg-red-50 rounded-lg flex items-center justify-center">
-                <span className="font-bold text-gray-900">{cartQuantity}</span>
+              <div className="w-10 h-9 bg-k2-cream-dark rounded-lg flex items-center justify-center">
+                <span className="font-bold text-k2-green-deep">{cartQuantity}</span>
               </div>
               <button
                 onClick={() => updateQuantity(cartQuantity + 1)}
@@ -140,7 +140,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               </button>
             </div>
             <div className="text-right">
-              <div className="text-lg font-bold text-gray-900">
+              <div className="text-lg font-bold text-k2-green-deep">
                 ₹{(Number(product.price) * cartQuantity).toFixed(0)}
               </div>
             </div>
@@ -204,12 +204,12 @@ export default function FeaturedProducts({
         aria-label="Loading featured products"
       >
         <span className="sr-only">Loading featured products</span>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-200 rounded-2xl overflow-hidden animate-pulse"
+                className="bg-white border border-k2-paper rounded-card overflow-hidden animate-pulse"
               >
                 <div className="bg-gray-200 h-56"></div>
                 <div className="p-6 space-y-3">
@@ -230,20 +230,20 @@ export default function FeaturedProducts({
   }
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-k2-cream">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-k2-cream-dark border border-k2-paper rounded-full px-4 py-2 mb-6">
             <Zap className="text-brand-red" size={18} />
             <span className="text-sm font-semibold text-brand-red">
               Featured Products
             </span>
           </div>
-          <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
+          <h2 className="text-5xl md:text-6xl font-extrabold text-k2-green-deep mb-4">
             Our <span className="text-brand-red">Best Sellers</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-[#5a6a61] max-w-2xl mx-auto">
             Handpicked selection of premium chicken products with exceptional
             quality
           </p>
@@ -279,12 +279,12 @@ export default function FeaturedProducts({
           ].map((stat, index) => (
             <div
               key={index}
-              className="text-center p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border border-gray-100"
+              className="text-center p-6 bg-white rounded-card shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border border-k2-paper"
             >
-              <div className="text-3xl font-bold text-gray-900 mb-2">
+              <div className="text-3xl font-bold text-k2-green-deep mb-2">
                 {stat.number}
               </div>
-              <div className="text-gray-600 font-medium text-sm">
+              <div className="text-[#5a6a61] font-medium text-sm">
                 {stat.label}
               </div>
             </div>

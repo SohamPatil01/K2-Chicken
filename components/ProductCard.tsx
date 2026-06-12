@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, Minus, Star, Sparkles, ShoppingBag } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import type { Product, WeightOption } from "@/context/CartContext";
 
 export interface ProductCardProps {
@@ -81,67 +81,44 @@ export default function ProductCard({
   const outOfStock = stockStatus?.status === "out" || (product.stock_quantity ?? 0) === 0;
 
   return (
-    <div className="group flex flex-col bg-white rounded-card border border-gray-200 hover:border-red-200 transition-all duration-smooth overflow-hidden h-full">
-      <Link href={`/products/${product.id}`} className="block flex-shrink-0">
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+    <div className="product-card group flex h-full flex-col">
+      <Link href={`/products/${product.id}`} className="block shrink-0">
+        <div className="image-hover-zoom relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-[#F3E2C8] to-[#E9C9A1]">
           {product.image_url ? (
             <Image
               src={product.image_url}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover object-center group-hover:scale-105 transition-transform duration-smooth"
+              className="object-cover object-center"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center">
               <span className="text-4xl">🍗</span>
             </div>
           )}
-          {hasDiscount && (
-            <div className="absolute top-2 left-2 z-10 bg-brand-red text-white px-2 py-0.5 rounded-button text-xs font-semibold flex items-center gap-1">
-              <Sparkles className="h-3 w-3" />
-              {discountPercent}% OFF
-            </div>
-          )}
-          {isBestseller && !hasDiscount && (
-            <div className="absolute top-2 left-2 z-10 bg-white/95 backdrop-blur-sm rounded-button px-2 py-1 text-xs font-bold text-gray-800 shadow-soft border border-red-200">
-              Best Seller
-            </div>
-          )}
+          <div className="absolute top-3 left-3 z-10">
+            <span className="fresh-tag rounded-pill px-2.5 py-1 font-mono text-[10.5px] font-semibold uppercase tracking-wider">
+              {hasDiscount ? `${discountPercent}% OFF` : isBestseller ? "BESTSELLER" : "FRESH TODAY"}
+            </span>
+          </div>
           {outOfStock && (
-            <div className="absolute top-2 right-2 z-10 bg-red-100 text-red-700 px-2 py-0.5 rounded-button text-xs font-medium">
+            <div className="absolute top-3 right-3 z-10 rounded-pill bg-k2-green-deep px-2 py-1 text-xs font-medium text-k2-cream">
               Out of stock
-            </div>
-          )}
-          {lowStock && !outOfStock && (
-            <div className="absolute bottom-2 left-2 right-2 z-10 bg-amber-100 text-amber-800 px-2 py-0.5 rounded-button text-xs font-medium text-center">
-              Only {(product.stock_quantity ?? 0)} left
             </div>
           )}
         </div>
       </Link>
-      <div className="p-4 flex-1 flex flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 p-5">
         <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-gray-900 group-hover:text-brand-red transition-colors duration-smooth line-clamp-2 text-balance">
+          <h3 className="font-display text-lg font-bold text-k2-green-deep transition-colors group-hover:text-k2-saffron line-clamp-2">
             {product.name}
           </h3>
         </Link>
-        {showRating && rating > 0 && (
-          <div className="flex items-center gap-1 mt-1">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star
-                key={i}
-                className={`h-4 w-4 ${
-                  i <= rating ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                }`}
-              />
-            ))}
-          </div>
-        )}
         {!isWholeChicken &&
           product.weightOptions &&
           product.weightOptions.length > 1 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
+            <div className="weight-toggle" role="group" aria-label="weight">
               {product.weightOptions.map((w) => (
                 <button
                   key={w.id ?? w.weight}
@@ -150,11 +127,7 @@ export default function ProductCard({
                     e.preventDefault();
                     setSelectedWeight(w);
                   }}
-                  className={`px-2.5 py-1 rounded-button text-xs font-medium transition-all duration-smooth ${
-                    selectedWeight?.weight === w.weight
-                      ? "bg-brand-red text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={selectedWeight?.weight === w.weight ? "on" : ""}
                 >
                   {w.weight}
                   {w.weight_unit}
@@ -162,59 +135,43 @@ export default function ProductCard({
               ))}
             </div>
           )}
-        <div className="mt-auto pt-3 flex items-center justify-between gap-2">
+        <div className="mt-auto flex items-center justify-between gap-2">
           <div>
-            <span className="text-lg font-bold text-brand-red">
-              ₹{currentPrice.toFixed(0)}
-            </span>
-            {activeWeight && (
-              <span className="text-xs text-gray-500 ml-1">
-                /{activeWeight.weight}
-                {activeWeight.weight_unit}
-              </span>
-            )}
+            <span className="price-tag text-2xl">₹{currentPrice.toFixed(0)}</span>
+            <small className="ml-1 font-mono text-[11px] text-[#7b877f]">incl. taxes</small>
           </div>
           {outOfStock ? (
-            <button
-              disabled
-              className="px-4 py-2 rounded-button bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
-            >
+            <button disabled className="rounded-pill bg-k2-cream-dark px-4 py-2 text-sm font-semibold text-[#7b877f]">
               Out of stock
             </button>
           ) : inCart && onUpdateQuantity ? (
-            <div className="flex items-center gap-1.5 bg-gray-50 rounded-button p-1 border border-gray-100">
+            <div className="flex items-center gap-1.5 rounded-pill bg-k2-cream-dark p-1">
               <button
                 type="button"
-                onClick={() =>
-                  onUpdateQuantity(product.id, currentQty - 1, activeWeight)
-                }
-                className="w-9 h-9 flex items-center justify-center rounded-button bg-white hover:bg-red-50 text-gray-700 hover:text-brand-red transition-colors duration-smooth min-w-[44px] min-h-[44px]"
+                onClick={() => onUpdateQuantity(product.id, currentQty - 1, activeWeight)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-k2-green hover:bg-k2-green hover:text-k2-cream"
                 aria-label="Decrease"
               >
-                <Minus className="w-4 h-4" />
+                <Minus className="h-3 w-3" />
               </button>
-              <span className="w-8 text-center font-semibold text-sm">
-                {currentQty}
-              </span>
+              <span className="w-6 text-center text-sm font-semibold">{currentQty}</span>
               <button
                 type="button"
-                onClick={() =>
-                  onUpdateQuantity(product.id, currentQty + 1, activeWeight)
-                }
-                className="w-9 h-9 flex items-center justify-center rounded-button bg-brand-red hover:bg-brand-red-hover text-white transition-colors duration-smooth min-w-[44px] min-h-[44px]"
+                onClick={() => onUpdateQuantity(product.id, currentQty + 1, activeWeight)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-k2-saffron text-white hover:bg-k2-saffron-hot"
                 aria-label="Increase"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="h-3 w-3" />
               </button>
             </div>
           ) : (
             <button
               type="button"
               onClick={() => onAddToCart(product, activeWeight)}
-              className="px-4 py-2 rounded-button bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold flex items-center justify-center gap-1.5 transition-all duration-smooth shadow-soft hover:shadow-card min-w-[44px] min-h-[44px]"
+              className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-k2-saffron text-2xl leading-none text-white transition-all hover:scale-110 hover:bg-k2-saffron-hot hover:rotate-90"
+              aria-label={`Add ${product.name} to cart`}
             >
-              <Plus className="w-4 h-4" />
-              Add
+              +
             </button>
           )}
         </div>

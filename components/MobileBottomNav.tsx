@@ -34,10 +34,10 @@ export default function MobileBottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex-1 flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-2 px-2 rounded-2xl transition-all duration-200 active:scale-95 select-none"
+                className="flex-1 flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-2 px-2 rounded-card transition-all duration-200 active:scale-95 select-none"
               >
                 <div
-                  className={`flex flex-col items-center justify-center rounded-2xl transition-all duration-200 ${
+                  className={`flex flex-col items-center justify-center rounded-card transition-all duration-200 ${
                     isActive
                       ? "text-k2-saffron"
                       : "text-[#5a6a61] active:text-k2-ink"

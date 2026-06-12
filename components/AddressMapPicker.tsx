@@ -582,19 +582,19 @@ export default function AddressMapPicker({
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg p-6 max-w-md">
-          <h3 className="text-lg font-semibold mb-2 text-red-600">
+          <h3 className="text-lg font-semibold mb-2 text-k2-saffron-hot">
             Google Maps API Key Required
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-[#5a6a61] mb-4">
             Please add{" "}
-            <code className="bg-gray-100 px-2 py-1 rounded">
+            <code className="bg-k2-cream-dark px-2 py-1 rounded">
               NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
             </code>{" "}
             to your{" "}
-            <code className="bg-gray-100 px-2 py-1 rounded">.env.local</code>{" "}
+            <code className="bg-k2-cream-dark px-2 py-1 rounded">.env.local</code>{" "}
             file.
           </p>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-[#7b877f] mb-4">
             Make sure you have enabled:
             <ul className="list-disc list-inside mt-2">
               <li>Maps JavaScript API</li>
@@ -604,7 +604,7 @@ export default function AddressMapPicker({
           </p>
           <button
             onClick={onClose}
-            className="w-full bg-gray-50 text-white py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="w-full bg-k2-cream text-white py-2 rounded-lg hover:bg-red-700 transition-colors"
           >
             Close
           </button>
@@ -626,21 +626,21 @@ export default function AddressMapPicker({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-k2-cream-dark rounded-full transition-colors"
           >
             <X size={24} />
           </button>
         </div>
 
         {/* Address Search with Autocomplete */}
-        <div className="p-4 border-b bg-gray-50">
+        <div className="p-4 border-b bg-k2-cream">
           <div className="relative">
             <input
               ref={autocompleteInputRef}
               type="text"
               id="autocomplete-input"
               placeholder="Search or enter address..."
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-chicken-red focus:border-chicken-red transition-all bg-white text-base"
+              className="w-full px-4 py-3 border-2 border-k2-paper rounded-lg focus:ring-2 focus:ring-chicken-red focus:border-chicken-red transition-all bg-white text-base"
               autoComplete="off"
             />
             {isLoading && (
@@ -649,7 +649,7 @@ export default function AddressMapPicker({
               </div>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-[#7b877f] mt-2">
             Start typing to see address suggestions from Google Maps
           </p>
         </div>
@@ -660,24 +660,24 @@ export default function AddressMapPicker({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t bg-gray-50">
+        <div className="p-4 border-t bg-k2-cream">
           <div className="mb-3">
-            <p className="text-sm text-gray-600 mb-1">Selected Address:</p>
-            <p className="font-medium text-gray-900">
+            <p className="text-sm text-[#5a6a61] mb-1">Selected Address:</p>
+            <p className="font-medium text-k2-green-deep">
               {selectedAddress || "Click on map to select location"}
             </p>
           </div>
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-k2-paper rounded-lg hover:bg-k2-cream transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirm}
               disabled={!coordinates || !selectedAddress}
-              className="flex-1 px-4 py-2 bg-gray-50 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-2 bg-k2-cream text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Confirm Address
             </button>

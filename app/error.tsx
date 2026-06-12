@@ -15,16 +15,16 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-k2-cream-dark px-4">
+      <div className="max-w-md w-full bg-white rounded-card shadow-xl p-8 text-center">
         <div className="mb-6">
           <div className="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
             <span className="text-4xl">⚠️</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-k2-green-deep mb-2">
             Something went wrong!
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[#5a6a61] mb-6">
             We encountered an unexpected error. Please try again.
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function Error({
           </button>
           <Link
             href="/"
-            className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="block w-full bg-k2-cream-dark hover:bg-gray-200 text-k2-ink font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Go Home
           </Link>
@@ -46,10 +46,10 @@ export default function Error({
 
         {process.env.NODE_ENV === "development" && (
           <details className="mt-6 text-left">
-            <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+            <summary className="cursor-pointer text-sm text-[#7b877f] hover:text-k2-ink">
               Error Details
             </summary>
-            <pre className="mt-2 text-xs bg-gray-50 p-4 rounded overflow-auto">
+            <pre className="mt-2 text-xs bg-k2-cream p-4 rounded overflow-auto">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>

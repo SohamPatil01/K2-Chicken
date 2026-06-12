@@ -64,7 +64,7 @@ export default function RecipeSection({
         aria-label="Loading recipes"
       >
         <span className="sr-only">Loading recipes</span>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             eyebrow="Recipes"
             title="Chicken recipe cookbook"
@@ -76,7 +76,7 @@ export default function RecipeSection({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-card shadow-soft border border-gray-100 overflow-hidden animate-pulse"
+                className="bg-white rounded-card shadow-soft border border-k2-paper overflow-hidden animate-pulse"
               >
                 <div className="aspect-[4/3] bg-gray-200 w-full" />
                 <div className="p-4 space-y-3">
@@ -94,7 +94,7 @@ export default function RecipeSection({
 
   return (
     <section className="border-t border-k2-paper bg-k2-cream py-16 sm:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Recipes"
           title="Chicken recipe cookbook"
@@ -117,13 +117,13 @@ export default function RecipeSection({
         )}
 
         {recipes.length === 0 && (
-          <p className="text-center text-gray-500 py-8">No recipes yet. Check back soon.</p>
+          <p className="text-center text-[#7b877f] py-8">No recipes yet. Check back soon.</p>
         )}
 
         <div className="text-center mt-10 sm:mt-12">
           <Link
             href="/recipes"
-            className="inline-flex items-center gap-2 bg-white border border-red-200 hover:border-red-200 text-brand-red font-semibold px-6 sm:px-8 py-3 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth"
+            className="inline-flex items-center gap-2 bg-white border border-k2-paper hover:border-k2-saffron/40 text-brand-red font-semibold px-6 sm:px-8 py-3 rounded-button shadow-soft hover:shadow-card transition-all duration-smooth"
           >
             View all recipes
           </Link>
